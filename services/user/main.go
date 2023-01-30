@@ -1,12 +1,12 @@
 package main
 
 import (
-	kitex_gen "github.com/ozline/tiktok/services/user/kitex_gen/kitex_gen/kitexprotobuf"
+	user "github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
 	"log"
 )
 
 func main() {
-	svr := kitex_gen.NewServer(new(KitexProtoBufImpl))
+	svr := user.NewServer(new(TiktokUserServiceImpl))
 
 	err := svr.Run()
 

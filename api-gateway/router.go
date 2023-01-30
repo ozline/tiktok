@@ -3,8 +3,8 @@
 package main
 
 import (
-	handler "api-gateway/biz/handler"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	handler "github.com/ozline/tiktok/api-gateway/biz/handler"
 )
 
 // customizeRegister registers customize routers.

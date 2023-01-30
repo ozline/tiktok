@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "tiktok/user";
+
+service tiktokUserService {
+  rpc PingPong(Request1) returns (Response){};
+}
+
+message Response{
+    string message = 1;
+}
+
+message Request1{
+        string message = 1;
+}

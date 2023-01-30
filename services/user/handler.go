@@ -2,16 +2,14 @@ package main
 
 import (
 	"context"
-
-	kitex_gen "github.com/ozline/tiktok/services/user/kitex_gen/kitex_gen"
+	user "github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 )
 
-// KitexProtoBufImpl implements the last service interface defined in the IDL.
-type KitexProtoBufImpl struct{}
+// TiktokUserServiceImpl implements the last service interface defined in the IDL.
+type TiktokUserServiceImpl struct{}
 
-// MyHandT1 implements the KitexProtoBufImpl interface.
-func (s *KitexProtoBufImpl) MyHandT1(ctx context.Context, req *kitex_gen.Request1) (resp *kitex_gen.Response, err error) {
-	resp = &kitex_gen.Response{}
-	resp.Message = req.Message
+// PingPong implements the TiktokUserServiceImpl interface.
+func (s *TiktokUserServiceImpl) PingPong(ctx context.Context, req *user.Request1) (resp *user.Response, err error) {
+	// TODO: Your code here...
 	return
 }
