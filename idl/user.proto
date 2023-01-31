@@ -5,9 +5,20 @@ package user;
 option go_package = "tiktok/user";
 
 service tiktokUserService {
+  rpc PingPong(Request1) returns (Response1){};
   rpc Login(douyin_user_login_request)returns(douyin_user_login_response);
   rpc Register(douyin_user_register_request)returns(douyin_user_register_response);
   rpc Info(douyin_user_request)returns(douyin_user_response);
+}
+
+//测试请求
+message Request1{
+  string message = 1;
+}
+
+//测试响应
+message Response1{
+  string message = 1;
 }
 
 //用户注册请求
