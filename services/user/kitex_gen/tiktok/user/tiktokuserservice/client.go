@@ -11,7 +11,9 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	PingPong(ctx context.Context, Req *user.Request1, callOptions ...callopt.Option) (r *user.Response, err error)
+	Login(ctx context.Context, Req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error)
+	Register(ctx context.Context, Req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error)
+	Info(ctx context.Context, Req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -43,7 +45,17 @@ type kTiktokUserServiceClient struct {
 	*kClient
 }
 
-func (p *kTiktokUserServiceClient) PingPong(ctx context.Context, Req *user.Request1, callOptions ...callopt.Option) (r *user.Response, err error) {
+func (p *kTiktokUserServiceClient) Login(ctx context.Context, Req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.PingPong(ctx, Req)
+	return p.kClient.Login(ctx, Req)
+}
+
+func (p *kTiktokUserServiceClient) Register(ctx context.Context, Req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Register(ctx, Req)
+}
+
+func (p *kTiktokUserServiceClient) Info(ctx context.Context, Req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Info(ctx, Req)
 }
