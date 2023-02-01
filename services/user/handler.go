@@ -25,3 +25,9 @@ func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRe
 	// TODO: Your code here...
 	return
 }
+
+// PingPong implements the TiktokUserServiceImpl interface.
+func (s *TiktokUserServiceImpl) PingPong(ctx context.Context, req *user.Request1) (resp *user.Response1, err error) {
+	// TODO: Your code here...
+	return
+}

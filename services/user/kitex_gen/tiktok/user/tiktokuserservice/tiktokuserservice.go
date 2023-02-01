@@ -22,6 +22,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "tiktokUserService"
 	handlerType := (*user.TiktokUserService)(nil)
 	methods := map[string]kitex.MethodInfo{
+		"PingPong": kitex.NewMethodInfo(pingPongHandler, newPingPongArgs, newPingPongResult, false),
 		"Login":    kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
 		"Register": kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
 		"Info":     kitex.NewMethodInfo(infoHandler, newInfoArgs, newInfoResult, false),
@@ -38,6 +39,151 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		Extra:           extra,
 	}
 	return svcInfo
+}
+
+func pingPongHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.Request1)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.TiktokUserService).PingPong(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *PingPongArgs:
+		success, err := handler.(user.TiktokUserService).PingPong(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*PingPongResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newPingPongArgs() interface{} {
+	return &PingPongArgs{}
+}
+
+func newPingPongResult() interface{} {
+	return &PingPongResult{}
+}
+
+type PingPongArgs struct {
+	Req *user.Request1
+}
+
+func (p *PingPongArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.Request1)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *PingPongArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *PingPongArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *PingPongArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in PingPongArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *PingPongArgs) Unmarshal(in []byte) error {
+	msg := new(user.Request1)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var PingPongArgs_Req_DEFAULT *user.Request1
+
+func (p *PingPongArgs) GetReq() *user.Request1 {
+	if !p.IsSetReq() {
+		return PingPongArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *PingPongArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type PingPongResult struct {
+	Success *user.Response1
+}
+
+var PingPongResult_Success_DEFAULT *user.Response1
+
+func (p *PingPongResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.Response1)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *PingPongResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *PingPongResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *PingPongResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in PingPongResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *PingPongResult) Unmarshal(in []byte) error {
+	msg := new(user.Response1)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *PingPongResult) GetSuccess() *user.Response1 {
+	if !p.IsSetSuccess() {
+		return PingPongResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *PingPongResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.Response1)
+}
+
+func (p *PingPongResult) IsSetSuccess() bool {
+	return p.Success != nil
 }
 
 func loginHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -483,6 +629,16 @@ func newServiceClient(c client.Client) *kClient {
 	return &kClient{
 		c: c,
 	}
+}
+
+func (p *kClient) PingPong(ctx context.Context, Req *user.Request1) (r *user.Response1, err error) {
+	var _args PingPongArgs
+	_args.Req = Req
+	var _result PingPongResult
+	if err = p.c.Call(ctx, "PingPong", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) Login(ctx context.Context, Req *user.DouyinUserLoginRequest) (r *user.DouyinUserLoginResponse, err error) {
