@@ -5,13 +5,61 @@ package video;
 option go_package = "tiktok/video";
 
 service tiktokVideoService {
-  rpc PingPong(Request1) returns (Response){};
+  rpc putVideo(putVideoRequest) returns (putVideoResponse){};
+  rpc deleteVideo(deleteVideoRequest) returns (deleteVideoResponse){};
+  rpc getVideo(getVideoRequest) returns (getVideoResponse){};
 }
 
-message Response{
-  string message = 1;
+message User {
+  int64 id = 1; // 用户id
+  string name = 2; // 用户名称
+  int64 follow_count = 3; // 关注总数
+  int64 follower_count = 4; // 粉丝总数
+  bool is_follow = 5; // true-已关注，false-未关注
 }
 
-message Request1{
-  string message = 1;
+message Video {
+  int64 id = 1; // 视频ID
+  User author = 2; // 作者信息
+  string play_url = 3; // 播放地址
+  string cover_url = 4; // 封面地址
+  int64 favorite_count = 5; // 视频的点赞总数
+  int64 comment_count = 6; // 视频的评论总数
+  bool is_favorite = 7; // 是否本人已点赞
+  string title = 8; // 标题
 }
+
+message putVideoRequest{
+  Video videoInfo = 1;
+}
+
+message putVideoResponse{
+  string putState = 1;
+  Video videoInfo = 2;
+  string errState = 3;
+}
+
+message deleteVideoRequest {
+  Video videoInfo = 1;
+  string selecTion = 2;
+  string deleteTime = 3;
+}
+
+message deleteVideoResponse {
+  string deleteState = 1;
+  string deleteFileName = 2;
+  string deleteUserName = 3;
+  string fileOwnerName = 4;
+  string errState = 5;
+}
+
+message getVideoRequest {
+  string fileNumber = 1;
+}
+
+message getVideoResponse {
+  string getState = 1;
+  repeated Video videos = 2;
+  string errState = 3;
+}
+

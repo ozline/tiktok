@@ -2,18 +2,29 @@ package main
 
 import (
 	"context"
-	"fmt"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
 )
 
 // TiktokVideoServiceImpl implements the last service interface defined in the IDL.
-type TiktokVideoServiceImpl struct{}
+type TiktokVideoServiceImpl struct {
+	DatabaseTable string
+}
 
-// PingPong implements the TiktokVideoServiceImpl interface.
-func (s *TiktokVideoServiceImpl) PingPong(ctx context.Context, req *video.Request1) (resp *video.Response, err error) {
+// PutVideo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
+	//videoInfo := req.VideoInfo
+
+	return
+}
+
+// DeleteVideo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.DeleteVideoRequest) (resp *video.DeleteVideoResponse, err error) {
 	// TODO: Your code here...
-	resp = &video.Response{}
-	resp.Message = req.Message
-	fmt.Println("---- Server PingPong  ---")
+	return
+}
+
+// GetVideo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) GetVideo(ctx context.Context, req *video.GetVideoRequest) (resp *video.GetVideoResponse, err error) {
+	// TODO: Your code here...
 	return
 }

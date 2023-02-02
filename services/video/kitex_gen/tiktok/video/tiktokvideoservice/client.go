@@ -11,7 +11,9 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	PingPong(ctx context.Context, Req *video.Request1, callOptions ...callopt.Option) (r *video.Response, err error)
+	PutVideo(ctx context.Context, Req *video.PutVideoRequest, callOptions ...callopt.Option) (r *video.PutVideoResponse, err error)
+	DeleteVideo(ctx context.Context, Req *video.DeleteVideoRequest, callOptions ...callopt.Option) (r *video.DeleteVideoResponse, err error)
+	GetVideo(ctx context.Context, Req *video.GetVideoRequest, callOptions ...callopt.Option) (r *video.GetVideoResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -43,7 +45,17 @@ type kTiktokVideoServiceClient struct {
 	*kClient
 }
 
-func (p *kTiktokVideoServiceClient) PingPong(ctx context.Context, Req *video.Request1, callOptions ...callopt.Option) (r *video.Response, err error) {
+func (p *kTiktokVideoServiceClient) PutVideo(ctx context.Context, Req *video.PutVideoRequest, callOptions ...callopt.Option) (r *video.PutVideoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.PingPong(ctx, Req)
+	return p.kClient.PutVideo(ctx, Req)
+}
+
+func (p *kTiktokVideoServiceClient) DeleteVideo(ctx context.Context, Req *video.DeleteVideoRequest, callOptions ...callopt.Option) (r *video.DeleteVideoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteVideo(ctx, Req)
+}
+
+func (p *kTiktokVideoServiceClient) GetVideo(ctx context.Context, Req *video.GetVideoRequest, callOptions ...callopt.Option) (r *video.GetVideoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetVideo(ctx, Req)
 }
