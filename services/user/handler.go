@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	user "github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 )
 
@@ -11,5 +12,6 @@ type TiktokUserServiceImpl struct{}
 // PingPong implements the TiktokUserServiceImpl interface.
 func (s *TiktokUserServiceImpl) PingPong(ctx context.Context, req *user.Request1) (resp *user.Response, err error) {
 	// TODO: Your code here...
+	fmt.Println("Hello PingPand")
 	return
 }
