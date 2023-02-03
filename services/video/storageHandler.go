@@ -20,7 +20,7 @@ var secretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
 var mac = qbox.NewMac(accessKey, secretKey)
 
 // 上传文件 bucket="titok"
-func putFile(localFileName string, storageFileName string, bucketName string) error {
+func StoragetPutFile(localFileName string, storageFileName string, bucketName string) error {
 	bucket := bucketName
 	key := storageFileName
 	localFile := localFileName
@@ -43,7 +43,7 @@ func putFile(localFileName string, storageFileName string, bucketName string) er
 	err := formUploader.PutFile(context.Background(), &ret, upToken, key, localFile, &putExtra)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return err
 	}
 	fmt.Println("----- Return Response -----")
 	fmt.Println(ret.Bucket, ret.Key, ret.Fsize, ret.Hash, ret.Name)
@@ -51,7 +51,7 @@ func putFile(localFileName string, storageFileName string, bucketName string) er
 }
 
 // 删除文件
-func deleteFile(fileName string, bucketName string) error {
+func StorageDeleteFile(fileName string, bucketName string) error {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -73,7 +73,7 @@ func deleteFile(fileName string, bucketName string) error {
 }
 
 // 获取文件信息
-func getFileInfo(fileName string, bucketName string) {
+func StorageGetFileInfo(fileName string, bucketName string) {
 	bucket := bucketName
 	key := fileName
 
@@ -93,7 +93,7 @@ func getFileInfo(fileName string, bucketName string) {
 }
 
 // 移动文件
-func moveFile(srcBucketName string, srcFileName string, destBucketName string, destFileName string) {
+func StorageMoveFile(srcBucketName string, srcFileName string, destBucketName string, destFileName string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -116,7 +116,7 @@ func moveFile(srcBucketName string, srcFileName string, destBucketName string, d
 }
 
 // 复制文件
-func copyFile(srcBucketName string, srcFileName string, destBucketName string, destFileName string) {
+func StorageCopyFile(srcBucketName string, srcFileName string, destBucketName string, destFileName string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -139,7 +139,7 @@ func copyFile(srcBucketName string, srcFileName string, destBucketName string, d
 }
 
 // 获取指定前缀的文件列表
-func getFileList(bucketName string, prefix string) {
+func StorageGetFileList(bucketName string, prefix string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -171,7 +171,7 @@ func getFileList(bucketName string, prefix string) {
 }
 
 // 批量获取文件信息
-func batchGetFileInfo() {
+func StorageBatchGetFileInfo() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -219,7 +219,7 @@ func batchGetFileInfo() {
 }
 
 // 批量删除文件
-func batchDeleteFiles() {
+func StorageBatchDeleteFiles() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -263,7 +263,7 @@ func batchDeleteFiles() {
 }
 
 // 批量复制文件
-func batchCopyFiles() {
+func StorageBatchCopyFiles() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,

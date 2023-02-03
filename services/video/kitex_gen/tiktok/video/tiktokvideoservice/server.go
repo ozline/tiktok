@@ -13,6 +13,7 @@ func NewServer(handler video.TiktokVideoService, opts ...server.Option) server.S
 	options = append(options, opts...)
 
 	svr := server.NewServer(options...)
+
 	if err := svr.RegisterService(serviceInfo(), handler); err != nil {
 		panic(err)
 	}

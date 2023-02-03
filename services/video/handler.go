@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/md5"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
+	"time"
 )
 
 // TiktokVideoServiceImpl implements the last service interface defined in the IDL.
@@ -12,7 +14,17 @@ type TiktokVideoServiceImpl struct {
 
 // PutVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
-	//videoInfo := req.VideoInfo
+	video := req.VideoInfo
+
+	videoid := md5.Sum([]byte(video.Title))
+	videoidstr := string(videoid[:])
+
+	userid := md5.Sum([]byte(video.Author.Name))
+	useridstr := string(userid[:])
+	now := string(time.Now().UnixNano() / 1000000) // 转毫秒
+
+	id := useridstr + videoidstr + now
+	s.DataBasePutFile(video, id)
 
 	return
 }
