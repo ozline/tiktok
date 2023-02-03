@@ -1,6 +1,6 @@
 module github.com/ozline/tiktok
 
-go 1.18
+go 1.19
 
 require (
 	github.com/cloudwego/fastpb v0.0.3
