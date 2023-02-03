@@ -1,6 +1,6 @@
 module github.com/ozline/tiktok
 
-go 1.19
+go 1.18
 
 require (
 	github.com/cloudwego/fastpb v0.0.3
@@ -49,6 +49,6 @@ require (
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220817070843-5a390386f1f2 // indirect
-	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210513213006-bf773b8c8384 // indirect
 )
