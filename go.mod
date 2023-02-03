@@ -6,9 +6,10 @@ require (
 	github.com/cloudwego/fastpb v0.0.3
 	github.com/cloudwego/hertz v0.5.1
 	github.com/cloudwego/kitex v0.4.4
+	github.com/google/uuid v1.1.2
 	github.com/qiniu/go-sdk/v7 v7.14.0
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	google.golang.org/protobuf v1.28.1
-	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/driver/sqlite v1.4.4
 	gorm.io/gorm v1.24.3
@@ -51,4 +52,5 @@ require (
 	golang.org/x/sys v0.0.0-20220817070843-5a390386f1f2 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210513213006-bf773b8c8384 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

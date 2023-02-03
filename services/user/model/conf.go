@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	"github.com/ozline/tiktok/services/user/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -16,14 +15,10 @@ var db *gorm.DB
 var err error
 
 func InitDB() {
-	dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		utils.DbUser,
-		utils.DbPassword,
-		utils.DbHost,
-		utils.DbPort,
-		utils.DbName,
-	)
-	db, err = gorm.Open(mysql.Open(dns), &gorm.Config{
+
+	dsn := "root:root@tcp(127.0.0.1:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
+
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// gorm日志模式：silent
 		Logger: logger.Default.LogMode(logger.Silent),
 		// 外键约束
@@ -36,6 +31,8 @@ func InitDB() {
 			SingularTable: true,
 		},
 	})
+
+	db.AutoMigrate(&User{})
 	if err != nil {
 		fmt.Println("连接数据库失败，请检查参数：", err)
 		os.Exit(1)

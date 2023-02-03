@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -20,27 +22,37 @@ func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserL
 // 注册
 func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
 	var user model.User
-	username := req.Username
-	password := req.Password
+	//username := req.Username
+	//password := req.Password
+	username := "admin"
+	password := "admin123456"
 	//1.首先检查用户名是否已存在
 	if exist := model.CheckUser(username); exist == 1 {
 		resp.StatusCode = 1
 		*resp.StatusMsg = "用户已存在"
 		return nil, err
 	}
-	//2.用户数据赋值
+	//2.密码非对称加密
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		fmt.Println("加密失败:", err)
+	}
+	encodePWD := string(hash)
+	//3.用户数据赋值
+	uuserId := uuid.New()
+	user.UserId = int64(uuserId.ID())
 	user.Username = username
-	user.Password = password
+	user.Password = encodePWD
 	user.FollowCount = 0
 	user.FollowerCount = 0
 	user.CreateDate = time.Now()
-	//3.用户数据插入数据库
+	//4.用户数据插入数据库
 	if ok := model.AddUser(&user); ok == 1 {
 		resp.StatusCode = 1
 		*resp.StatusMsg = "用户注册失败!"
 		return nil, err
 	}
-	//4.查询注册用户的id
+	//5.查询注册用户的id
 	id := model.SelecUser(username)
 	user.UserId = id
 	fmt.Println(id)
