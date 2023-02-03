@@ -10,6 +10,7 @@ import (
 func main() {
 	//初始化数据库
 	model.InitDB()
+
 	svr := tiktokuserservice.NewServer(new(TiktokUserServiceImpl))
 
 	err := svr.Run()
