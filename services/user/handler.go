@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/ozline/tiktok/services/user/attestation"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
 	"golang.org/x/crypto/bcrypt"
@@ -13,9 +14,27 @@ import (
 // TiktokUserServiceImpl implements the last service interface defined in the IDL.
 type TiktokUserServiceImpl struct{}
 
-// Login implements the TiktokUserServiceImpl interface.
+// 登录
 func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
-	// TODO: Your code here...
+	//var user model.User
+	//username := req.Username
+	//password := req.Password
+	////1.检查用户是否存在
+	//if exist := model.LoginCheck(&user, username); exist == 1 {
+	//	resp.StatusCode = 1
+	//	*resp.StatusMsg = "该用户不存在!"
+	//	return nil, err
+	//}
+	//2.用户名存在校验密码
+	//err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	//if err != nil {
+	//	resp.StatusCode = 1
+	//	*resp.StatusMsg = "密码错误！"
+	//	return nil, err
+	//}
+	//if err != nil {
+	//
+	//}
 	return
 }
 
@@ -24,13 +43,13 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	var user model.User
 	//username := req.Username
 	//password := req.Password
-	username := "admin"
-	password := "admin123456"
+	username := "test1"
+	password := "test123"
 	//1.首先检查用户名是否已存在
 	if exist := model.CheckUser(username); exist == 1 {
 		resp.StatusCode = 1
-		*resp.StatusMsg = "用户已存在"
-		return nil, err
+		*resp.StatusMsg = "该用户名已存在！"
+		return nil, nil
 	}
 	//2.密码非对称加密
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -50,13 +69,33 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	if ok := model.AddUser(&user); ok == 1 {
 		resp.StatusCode = 1
 		*resp.StatusMsg = "用户注册失败!"
-		return nil, err
+		return nil, nil
 	}
 	//5.查询注册用户的id
 	id := model.SelecUser(username)
 	user.UserId = id
 	fmt.Println(id)
-	return nil, err
+	//6.生成token
+	token, err := attestation.CreateToken(id)
+	if err != nil {
+		resp.StatusCode = 1
+		*resp.StatusMsg = "Token创建失败!"
+		return nil, nil
+	}
+	//7.token放进缓存
+	err = model.AddToken(token, &user)
+	if err != nil {
+		fmt.Println("结构体异常: ", err)
+		resp.StatusCode = 1
+		*resp.StatusMsg = "token保存失败！"
+		return nil, nil
+	}
+	//8.注册成功
+	resp.StatusCode = 0
+	*resp.StatusMsg = "注册成功!"
+	resp.UserId = id
+	resp.Token = token
+	return nil, nil
 }
 
 // Info implements the TiktokUserServiceImpl interface.

@@ -10,7 +10,7 @@ import (
 func main() {
 	//初始化数据库
 	model.InitDB()
-
+	model.InitRedis()
 	svr := tiktokuserservice.NewServer(new(TiktokUserServiceImpl))
 
 	err := svr.Run()

@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -11,13 +12,12 @@ import (
 )
 
 var db *gorm.DB
-
+var RedisDb *redis.Client
 var err error
 
+// 初始化数据库
 func InitDB() {
-
 	dsn := "root:root@tcp(127.0.0.1:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
-
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// gorm日志模式：silent
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -31,8 +31,8 @@ func InitDB() {
 			SingularTable: true,
 		},
 	})
+	//db.AutoMigrate(&User{})
 
-	db.AutoMigrate(&User{})
 	if err != nil {
 		fmt.Println("连接数据库失败，请检查参数：", err)
 		os.Exit(1)
@@ -46,4 +46,12 @@ func InitDB() {
 
 	// SetConnMaxLifetiment 设置连接的最大可复用时间。
 	sqlDB.SetConnMaxLifetime(10 * time.Second)
+}
+
+func InitRedis() {
+	RedisDb = redis.NewClient(&redis.Options{
+		Addr:     "127.0.0.1:6379",
+		Password: "",
+		DB:       0, //使用的默认数据库
+	})
 }
