@@ -5,3 +5,8 @@ init:
 	-proto_path ./../ \
 	-idl ./../idl/api/gateway.proto \
 	&& go mod tidy
+
+update:
+	hz update \
+	-proto_path ./../ \
+	-idl ./../idl/api/gateway.proto
