@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package gateway;
+package api;
 
-option go_package = "/api/basic";
+option go_package = "/message/basic";
 
-import "idl/gateway/model.proto";
+import "idl/api/model.proto";
 
 // Basic API
 message FeedRequest {

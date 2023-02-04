@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package gateway;
+package api;
 
-option go_package = "/api/social";
+option go_package = "/message/social";
 
-import "idl/gateway/model.proto";
+import "idl/api/model.proto";
 
 // Social API
 message RelationActionRequest {

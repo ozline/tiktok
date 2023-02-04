@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package gateway;
+package api;
 
-option go_package = "/api/interactive";
+option go_package = "/message/interactive";
 
-import "idl/gateway/model.proto";
+import "idl/api/model.proto";
 
 // Interactive API
 message FavoriteActionRequest {

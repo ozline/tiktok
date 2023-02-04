@@ -1,14 +1,14 @@
 
 syntax = "proto3";
 
-package gateway;
+package api;
 
-option go_package = "/api/gateway";
+option go_package = "/api";
 
-import "idl/gateway/api.proto";
-import "idl/gateway/basic.proto";
-import "idl/gateway/interactive.proto";
-import "idl/gateway/social.proto";
+import "idl/api/api.proto";
+import "idl/api/message/basic.proto";
+import "idl/api/message/interactive.proto";
+import "idl/api/message/social.proto";
 
 
 // 基础接口
