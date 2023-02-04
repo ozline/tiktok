@@ -43,7 +43,7 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	var user model.User
 	//username := req.Username
 	//password := req.Password
-	username := "test1"
+	username := "test"
 	password := "test123"
 	//1.首先检查用户名是否已存在
 	if exist := model.CheckUser(username); exist == 1 {
