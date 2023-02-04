@@ -1,0 +1,285 @@
+{
+	"info": {
+		"_postman_id": "dc27d0b0-e1f8-4856-a421-46e2c5f48f73",
+		"name": "Social",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "19835992-dc27d0b0-e1f8-4856-a421-46e2c5f48f73"
+	},
+	"item": [
+		{
+			"name": "关注",
+			"id": "8894779b-2d34-4f8c-b057-68d7fc8ccead",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"type": "text",
+							"value": ""
+						},
+						{
+							"key": "to_user_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "action_type",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/douyin/relation/action/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"relation",
+						"action",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "关注列表",
+			"id": "7a1b1471-f47f-4d71-bcf6-8ca83b780da5",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/relation/follow/list?user_id&token",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"relation",
+						"follow",
+						"list"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": null
+						},
+						{
+							"key": "token",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "粉丝列表",
+			"id": "ba297231-3256-45e3-bb9b-16c691b0a4b9",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/relation/follower/list?user_id&token",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"relation",
+						"follower",
+						"list"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": null
+						},
+						{
+							"key": "token",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "好友列表",
+			"id": "7d053598-6917-4017-a3f0-505cd8cc45e2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/relation/friend/list?user_id&token",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"relation",
+						"friend",
+						"list"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": null
+						},
+						{
+							"key": "token",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "发送消息",
+			"id": "6602c2f6-508f-4718-b30a-cd76f79857dd",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"type": "text",
+							"value": ""
+						},
+						{
+							"key": "to_user_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "action_type",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/douyin/message/action/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"message",
+						"action",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "聊天记录",
+			"id": "0ac02935-720e-416a-b828-694702a5aff6",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/message/chat/?token&to_user_id",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"message",
+						"chat",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": null
+						},
+						{
+							"key": "to_user_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ae7ea148-9f68-46d8-8b73-fc5c21503286",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7d81704a-17f4-4ccc-8c6e-b81844b2756d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "0bb17b98-e8d1-4431-97ff-f6743eff287c",
+			"key": "host",
+			"value": "localhost:8888",
+			"type": "string"
+		}
+	]
+}
