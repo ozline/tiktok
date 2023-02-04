@@ -4,7 +4,7 @@ package api;
 
 option go_package = "/message/basic";
 
-import "idl/api/model.proto";
+import "idl/api/models.proto";
 
 // Basic API
 message FeedRequest {
