@@ -12,7 +12,7 @@ import "idl/api/message/social.proto";
 
 
 // 基础接口
-service BasicService {
+service Basic {
     // 用户注册
     rpc UserRegister (UserRegisterRequest) returns (UserRegisterResponse) {
         option (api.post) = "/v1/douyin/user/register";
@@ -45,7 +45,7 @@ service BasicService {
 }
 
 // 交互接口
-service InteractiveService {
+service Interactive {
     // 赞操作
     rpc FavoriteAction (FavoriteActionRequest) returns (FavoriteActionResponse) {
         option (api.post) = "/v1/douyin/favorite/action/";
@@ -68,7 +68,7 @@ service InteractiveService {
 }
 
 // 社交接口
-service SocialService {
+service Social {
     // 关系操作
     rpc RelationAction (RelationActionRequest) returns (RelationActionResponse) {
         option (api.post) = "/v1/douyin/relation/action";
