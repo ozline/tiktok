@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "/message/basic";
+
+import "idl/api/models.proto";
+
+// Basic API
+message FeedRequest {
+  int64 status_code = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒
+  string status_msg = 2; // 可选参数，登录用户设置
+}
+
+message FeedResponse {
+  int64 status_code = 1;          // 状态码，0-成功，其他值-失败
+  string status_msg = 2;          // 返回状态描述
+  repeated Video video_list = 3;  // 视频列表
+  int64 next_time = 4;            // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+}
+
+message UserRegisterRequest {
+  string username = 1;  // 注册用户名，最长32字符
+  string password = 2;  // 密码，最长32字符
+}
+
+message UserRegisterResponse {
+  int64 status_code = 1;  // 状态码，0-成功，其他值-失败
+  string status_msg = 2;  // 返回状态描述
+  int64 user_id = 3;      // 用户ID
+  string token = 4;       // 用户鉴权token
+}
+
+message UserLoginRequest {
+  string username = 1;  // 登录用户名
+  string password = 2;  // 登录密码
+}
+
+message UserLoginResponse {
+  int64 status_code = 1;  // 状态码，0-成功，其他值-失败
+  string status_mag = 2;  // 返回状态描述
+  int64 user_id = 3;      // 用户ID
+  string token = 4;       // 用户鉴权token
+}
+
+message UserRequest {
+  int64 user_id = 1;  // 用户ID
+  string token = 2;   // 用户鉴权token
+}
+
+message UserResponse {
+  int64 status_code = 1;  // 状态码，0-成功，其他值-失败
+  string status_msg = 2;  // 返回状态描述
+  User user = 3;          // 用户信息
+}
+
+message PublishActionRequest {
+  string token = 1; // 用户鉴权token
+  bytes video = 2;  // 视频数据
+  string title = 3; // 视频标题
+}
+
+message PublishActionResponse {
+  int64 status_code = 1;  // 状态码，0-成功，其他值-失败
+  string status_msg = 2;  // 返回状态描述
+}
+
+message PublishListRequest {
+  int64 user_id = 1;  // 用户ID
+  string token = 2;   // 用户鉴权token
+}
+
+message PublishListResponse {
+  int64 status_code = 1;          // 状态码 0-成功 其他值-失败
+  string status_msg = 2;          // 返回状态描述
+  repeated Video video_list = 3;  // 用户发布的视频列表
+}

@@ -13,7 +13,12 @@ files[] = {"id":"19835992-dc27d0b0-e1f8-4856-a421-46e2c5f48f73","path":"Social.j
 
 [relations.apiDefinition]
 rootDirectory = postman/schemas
+files[] = {"path":"api.proto","metaData":{}}
 files[] = {"path":"gateway.proto","metaData":{}}
+files[] = {"path":"message/basic.proto","metaData":{}}
+files[] = {"path":"message/interactive.proto","metaData":{}}
+files[] = {"path":"message/social.proto","metaData":{}}
+files[] = {"path":"model.proto","metaData":{}}
 
 [relations.apiDefinition.metaData]
 type = proto:3
