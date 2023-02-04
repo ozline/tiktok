@@ -14,6 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//--------------------运行测试-------------------------
 	//req1 := &user.Request1{
 	//	Message: "testPingPong",
 	//}
@@ -22,6 +23,7 @@ func main() {
 	//	log.Fatal(err.Error())
 	//}
 	//log.Println("PingPong Func Response", resp)
+	//--------------------注册测试-------------------------
 	registerRequest := &user.DouyinUserRegisterRequest{}
 
 	registerResponse, err := client.Register(context.Background(), registerRequest)
