@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api;
 
-option go_package = "/model";
+option go_package = "/models";
 
 // Model
 
