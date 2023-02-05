@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -12,7 +11,6 @@ import (
 )
 
 var db *gorm.DB
-var RedisDb *redis.Client
 var err error
 
 // 初始化数据库
@@ -46,12 +44,4 @@ func InitDB() {
 
 	// SetConnMaxLifetiment 设置连接的最大可复用时间。
 	sqlDB.SetConnMaxLifetime(10 * time.Second)
-}
-
-func InitRedis() {
-	RedisDb = redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
-		DB:       0, //使用的默认数据库
-	})
 }
