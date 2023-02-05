@@ -1,0 +1,213 @@
+{
+	"info": {
+		"_postman_id": "90c0f40f-b183-477a-8531-87fda47bd8ce",
+		"name": "Interactive",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "19835992-90c0f40f-b183-477a-8531-87fda47bd8ce"
+	},
+	"item": [
+		{
+			"name": "喜欢",
+			"id": "6135a858-5a30-4851-b7b3-b64af0eb46d5",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"type": "text",
+							"value": ""
+						},
+						{
+							"key": "video_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "action_type",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/douyin/favorite/action/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"favorite",
+						"action",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "喜欢列表",
+			"id": "eb3a7a53-7322-420c-893b-b75e8ff9f46d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/favorite/list?user_id&token",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"favorite",
+						"list"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": null
+						},
+						{
+							"key": "token",
+							"value": null,
+							"type": "text"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "评论",
+			"id": "0920993b-34c2-4d7e-8d04-e430a7086c23",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"type": "text",
+							"value": ""
+						},
+						{
+							"key": "video_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "action_type",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "comment_text",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "comment_id",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/douyin/comment/action/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"comment",
+						"action",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "评论列表",
+			"id": "ff72ce31-4cdb-4f93-95ab-dedd9f4e8f5f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/comment/list?token&video_id",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"comment",
+						"list"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": null
+						},
+						{
+							"key": "video_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "2524fa29-a237-4e4b-a01d-d84f0a15e220",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b7cfcc68-8807-43cc-9bee-627820657b12",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "cd8c996b-35f6-475a-9463-92c94bacc4cc",
+			"key": "host",
+			"value": "localhost:8888",
+			"type": "string"
+		}
+	]
+}
