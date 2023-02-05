@@ -11,7 +11,7 @@ import (
 )
 
 // RelationAction .
-// @router /v1/douyin/relation/action [POST]
+// @router /douyin/relation/action [POST]
 func RelationAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req social.RelationActionRequest
@@ -27,7 +27,7 @@ func RelationAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // RelationFollowList .
-// @router /v1/douyin/relation/follow/list [GET]
+// @router /douyin/relation/follow/list [GET]
 func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req social.RelationFollowListRequest
@@ -43,7 +43,7 @@ func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 }
 
 // RelationFollowerList .
-// @router /v1/douyin/relation/follower/list [GET]
+// @router /douyin/relation/follower/list [GET]
 func RelationFollowerList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req social.RelationFollowListRequest
@@ -59,7 +59,7 @@ func RelationFollowerList(ctx context.Context, c *app.RequestContext) {
 }
 
 // RleationFriendList .
-// @router /v1/douyin/relation/friend/list [GET]
+// @router /douyin/relation/friend/list [GET]
 func RleationFriendList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req social.RelationFriendListRequest
@@ -70,6 +70,38 @@ func RleationFriendList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(social.RelationFriendListResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// MessageSend .
+// @router /douyin/message/action [POST]
+func MessageSend(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req social.MessageSendRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(social.MessageSendResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// MessageChatMsg .
+// @router /douyin/message/chat [GET]
+func MessageChatMsg(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req social.MessageChatMsgRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(social.MessageChatMsgResponse)
 
 	c.JSON(consts.StatusOK, resp)
 }

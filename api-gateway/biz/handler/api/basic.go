@@ -11,7 +11,7 @@ import (
 )
 
 // UserRegister .
-// @router /v1/douyin/user/register [POST]
+// @router /douyin/user/register [POST]
 func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req basic.UserRegisterRequest
@@ -27,7 +27,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 }
 
 // UserLogin .
-// @router /v1/douyin/user/login [POST]
+// @router /douyin/user/login [POST]
 func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req basic.UserLoginRequest
@@ -43,7 +43,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 }
 
 // UserGetInfo .
-// @router /v1/douyin/user [GET]
+// @router /douyin/user [GET]
 func UserGetInfo(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req basic.UserRequest
@@ -59,7 +59,7 @@ func UserGetInfo(ctx context.Context, c *app.RequestContext) {
 }
 
 // VideoGetFeeds .
-// @router /v1/douyin/feed [GET]
+// @router /douyin/feed [GET]
 func VideoGetFeeds(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req basic.FeedRequest
@@ -75,7 +75,7 @@ func VideoGetFeeds(ctx context.Context, c *app.RequestContext) {
 }
 
 // VideoPublishAction .
-// @router /v1/douyin/publish/action [POST]
+// @router /douyin/publish/action [POST]
 func VideoPublishAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req basic.PublishActionRequest
@@ -91,7 +91,7 @@ func VideoPublishAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // VideoPublishList .
-// @router /v1/douyin/publish/list [GET]
+// @router /douyin/publish/list [GET]
 func VideoPublishList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req basic.PublishListRequest

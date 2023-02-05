@@ -1,3 +1,4 @@
+.PHONY: generate
 generate:
 	kitex \
 	-service "tiktok-chat" \

@@ -11,11 +11,6 @@ func rootMw() []app.HandlerFunc {
 	return nil
 }
 
-func _v1Mw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _douyinMw() []app.HandlerFunc {
 	// your code...
 	return nil
@@ -36,17 +31,7 @@ func _commentMw() []app.HandlerFunc {
 	return nil
 }
 
-func _actionMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _comment_ctionMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _listMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -61,22 +46,27 @@ func _favoriteMw() []app.HandlerFunc {
 	return nil
 }
 
-func _action0Mw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _favorite_ctionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _list0Mw() []app.HandlerFunc {
+func _favoritelistMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _favoritelistMw() []app.HandlerFunc {
+func _messageMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _messagesendMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _messagechatmsgMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
