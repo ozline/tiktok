@@ -30,7 +30,7 @@ message douyin_user_register_request {
 //用户注册响应
 message douyin_user_register_response {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
+  string status_msg = 2; // 返回状态描述
   int64 user_id = 3; // 用户id
   string token = 4; // 用户鉴权token
 }
@@ -44,7 +44,7 @@ message douyin_user_login_request {
 //用户登录响应
 message douyin_user_login_response {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
+  string status_msg = 2; // 返回状态描述
   int64 user_id = 3; // 用户id
   string token = 4; // 用户鉴权token
 }
@@ -58,7 +58,7 @@ message douyin_user_request {
 //用户信息响应
 message douyin_user_response {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
+  string status_msg = 2; // 返回状态描述
   User user = 3; // 用户信息
 }
 
@@ -66,7 +66,7 @@ message douyin_user_response {
 message User {
   int64 id = 1; // 用户id
   string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
+  int64 follow_count = 3; // 关注总数
+  int64 follower_count = 4; // 粉丝总数
   bool is_follow = 5; // true-已关注，false-未关注
 }

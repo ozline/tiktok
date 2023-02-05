@@ -53,3 +53,10 @@ func LoginCheck(data *User, username string) int {
 	}
 	return 0
 }
+
+// 通过id查询用户信息
+func GetUserById(userid int64) User {
+	var user User
+	db.Where("user_id = ?", userid).First(&user)
+	return user
+}

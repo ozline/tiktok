@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/ozline/tiktok/services/user/attestation"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
 	"golang.org/x/crypto/bcrypt"
@@ -16,26 +15,31 @@ type TiktokUserServiceImpl struct{}
 
 // 登录
 func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
-	//var user model.User
+	var user model.User
 	//username := req.Username
 	//password := req.Password
-	////1.检查用户是否存在
-	//if exist := model.LoginCheck(&user, username); exist == 1 {
-	//	resp.StatusCode = 1
-	//	*resp.StatusMsg = "该用户不存在!"
-	//	return nil, err
-	//}
-	//2.用户名存在校验密码
-	//err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	//if err != nil {
-	//	resp.StatusCode = 1
-	//	*resp.StatusMsg = "密码错误！"
-	//	return nil, err
-	//}
-	//if err != nil {
-	//
-	//}
-	return
+	username := "test1"
+	password := "test123"
+	//1.检查用户是否存在
+	if exist := model.LoginCheck(&user, username); exist == 1 {
+		fmt.Println("该用户不存在！")
+		resp.StatusCode = 1
+		*resp.StatusMsg = "该用户不存在!"
+		return nil, nil
+	}
+	//2.用户名存在则校验密码
+	result := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if result != nil {
+		fmt.Println("密码错误！")
+		resp.StatusCode = 1
+		*resp.StatusMsg = "密码错误！"
+		return nil, nil
+	}
+	//resp.StatusCode = 0 //0代表成功其他代表失败
+	//*resp.StatusMsg = "登录成功！"
+	//resp.UserId = user.UserId
+	fmt.Println("登陆成功!")
+	return nil, err
 }
 
 // 注册
@@ -49,7 +53,7 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	if exist := model.CheckUser(username); exist == 1 {
 		resp.StatusCode = 1
 		*resp.StatusMsg = "该用户名已存在！"
-		return nil, nil
+		return nil, err
 	}
 	//2.密码非对称加密
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -69,39 +73,40 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	if ok := model.AddUser(&user); ok == 1 {
 		resp.StatusCode = 1
 		*resp.StatusMsg = "用户注册失败!"
-		return nil, nil
+		return nil, err
 	}
 	//5.查询注册用户的id
 	id := model.SelecUser(username)
-	user.UserId = id
+	//user.UserId = id
 	fmt.Println(id)
-	//6.生成token
-	token, err := attestation.CreateToken(id)
-	if err != nil {
-		resp.StatusCode = 1
-		*resp.StatusMsg = "Token创建失败!"
-		return nil, nil
-	}
-	//7.token放进缓存
-	err = model.AddToken(token, &user)
-	if err != nil {
-		fmt.Println("结构体异常: ", err)
-		resp.StatusCode = 1
-		*resp.StatusMsg = "token保存失败！"
-		return nil, nil
-	}
-	//8.注册成功
-	resp.StatusCode = 0
-	*resp.StatusMsg = "注册成功!"
-	resp.UserId = id
-	resp.Token = token
-	return nil, nil
+	//6.注册成功
+	//resp.StatusCode = 0
+	//*resp.StatusMsg = "注册成功!"
+	//resp.UserId = id
+	//resp.Token = string(id)
+	return nil, err
 }
 
-// Info implements the TiktokUserServiceImpl interface.
+// 用户信息
 func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
-	// TODO: Your code here...
-	return
+	//1.获取id
+	id := req.UserId
+	//2.通过用户id查询对应用户
+	user_info := model.GetUserById(id)
+	//3.赋值
+	resp_user := &user.User{
+		Id:            user_info.UserId,
+		Name:          user_info.Username,
+		FollowCount:   &user_info.FollowCount,
+		FollowerCount: &user_info.FollowerCount,
+		IsFollow:      true,
+	}
+	//4.返回
+	resp.User = resp_user
+	resp.StatusCode = 0
+	*resp.StatusMsg = "成功获取用户信息！"
+	fmt.Println(resp_user)
+	return nil, nil
 }
 
 // 测试一下
