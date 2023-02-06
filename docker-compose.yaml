@@ -4,13 +4,14 @@ services:
 
   mysql:
     image: "mysql:latest"
+    restart: always
     ports:
-      - "3306:3306"
+      - 3306:3306
     environment:
       - MYSQL_DATABASE=tiktok
-      - MYSQL_USER=tikotk
+      - MYSQL_USER=tiktok
       - MYSQL_PASSWORD=tiktok
-      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+      - MYSQL_ROOT_PASSWORD=123456
 
   rabbitmq:
     image: "rabbitmq:latest"
