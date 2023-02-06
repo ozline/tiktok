@@ -28,4 +28,8 @@ const (
 	CommentTableName = "comment"
 	FollowTableName  = "follow"
 	VideoTableName   = "video"
+
+	// 雪花
+	SnowflakeWorkerID     = 0
+	SnowflakeDatacenterID = 0
 )

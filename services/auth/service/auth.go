@@ -2,28 +2,32 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	"github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth"
 	"github.com/ozline/tiktok/services/auth/model"
 )
 
-var (
-	secret = constants.JwtSecret
-)
-
 type AuthService struct {
 	ctx context.Context
+	s   *snowflake.Snowflake
 }
 
 // NewAuthService returns a new AuthService.
 func NewAuthService(ctx context.Context) *AuthService {
-	return &AuthService{ctx: ctx}
+	sf, _ := snowflake.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
+	return &AuthService{
+		ctx: ctx,
+		s:   sf,
+	}
 }
 
 func (a *AuthService) GetToken(req *auth.GetTokenRequest) (resp string, err error) {
+	fmt.Println(a.s.NextVal())
 	claims := model.Auth{
 		UserId:   req.UserId,
 		Username: req.Username,
@@ -35,7 +39,7 @@ func (a *AuthService) GetToken(req *auth.GetTokenRequest) (resp string, err erro
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	resp, err = token.SignedString([]byte(secret))
+	resp, err = token.SignedString([]byte(constants.JwtSecret))
 
 	if err != nil {
 		return "", err
@@ -46,7 +50,7 @@ func (a *AuthService) GetToken(req *auth.GetTokenRequest) (resp string, err erro
 
 func (a *AuthService) CheckToken(req *auth.CheckTokenRequest) (resp *model.Auth, err error) {
 	token, err := jwt.ParseWithClaims(req.Token, &model.Auth{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
+		return []byte(constants.JwtSecret), nil
 	})
 
 	if err != nil {

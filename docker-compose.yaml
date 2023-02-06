@@ -16,6 +16,14 @@ services:
       - MYSQL_PASSWORD=tiktok
       - MYSQL_ROOT_PASSWORD=123456
 
+  # Redis
+  redis:
+    image: "redis:latest"
+    restart: always
+    ports:
+      - 6379:6379
+    
+
   # Message Broker
   rabbitmq:
     image: "rabbitmq:latest"
