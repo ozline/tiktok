@@ -16,44 +16,39 @@ type TiktokUserServiceImpl struct{}
 // 登录
 func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
 	var user model.User
-	//username := req.Username
-	//password := req.Password
-	username := "test1"
-	password := "test123"
+	username := req.Username
+	password := req.Password
 	//1.检查用户是否存在
 	if exist := model.LoginCheck(&user, username); exist == 1 {
 		fmt.Println("该用户不存在！")
 		resp.StatusCode = 1
-		*resp.StatusMsg = "该用户不存在!"
-		return nil, nil
+		resp.StatusMsg = "该用户不存在!"
+		return resp, nil
 	}
 	//2.用户名存在则校验密码
 	result := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if result != nil {
 		fmt.Println("密码错误！")
 		resp.StatusCode = 1
-		*resp.StatusMsg = "密码错误！"
-		return nil, nil
+		resp.StatusMsg = "密码错误！"
+		return resp, nil
 	}
 	//resp.StatusCode = 0 //0代表成功其他代表失败
 	//*resp.StatusMsg = "登录成功！"
 	//resp.UserId = user.UserId
-	fmt.Println("登陆成功!")
-	return nil, err
+	return resp, err
 }
 
 // 注册
 func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
 	var user model.User
-	//username := req.Username
-	//password := req.Password
-	username := "test"
-	password := "test123"
+	username := req.Username
+	password := req.Password
 	//1.首先检查用户名是否已存在
 	if exist := model.CheckUser(username); exist == 1 {
 		resp.StatusCode = 1
-		*resp.StatusMsg = "该用户名已存在！"
-		return nil, err
+		resp.StatusMsg = "该用户名已存在！"
+		return resp, nil
 	}
 	//2.密码非对称加密
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -72,8 +67,8 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	//4.用户数据插入数据库
 	if ok := model.AddUser(&user); ok == 1 {
 		resp.StatusCode = 1
-		*resp.StatusMsg = "用户注册失败!"
-		return nil, err
+		resp.StatusMsg = "用户注册失败!"
+		return resp, nil
 	}
 	//5.查询注册用户的id
 	id := model.SelecUser(username)
@@ -81,35 +76,36 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	fmt.Println(id)
 	//6.注册成功
 	//resp.StatusCode = 0
-	//*resp.StatusMsg = "注册成功!"
+	//resp.StatusMsg = "注册成功!"
 	//resp.UserId = id
-	//resp.Token = string(id)
-	return nil, err
+	//resp.Token = ""
+	return resp, nil
 }
 
 // 用户信息
 func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
 	//1.获取id
-	id := req.UserId
+	//id := req.UserId
+	id := 2533548602
 	//2.通过用户id查询对应用户
-	user_info := model.GetUserById(id)
+	user_info := model.GetUserById(int64(id))
 	//3.赋值
 	resp_user := &user.User{
 		Id:            user_info.UserId,
 		Name:          user_info.Username,
-		FollowCount:   &user_info.FollowCount,
-		FollowerCount: &user_info.FollowerCount,
+		FollowCount:   user_info.FollowCount,
+		FollowerCount: user_info.FollowerCount,
 		IsFollow:      true,
 	}
 	//4.返回
 	resp.User = resp_user
 	resp.StatusCode = 0
-	*resp.StatusMsg = "成功获取用户信息！"
-	fmt.Println(resp_user)
-	return nil, nil
+	resp.StatusMsg = "成功获取用户信息！"
+	//fmt.Println(resp_user)
+	return resp, nil
 }
 
-// 测试一下
+// 框架运行测试
 func (s *TiktokUserServiceImpl) PingPong(ctx context.Context, req *user.Request1) (resp *user.Response1, err error) {
 	resp = &user.Response1{}
 	resp.Message = req.Message
