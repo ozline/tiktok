@@ -13,7 +13,9 @@ import (
 type Client interface {
 	PutVideo(ctx context.Context, Req *video.PutVideoRequest, callOptions ...callopt.Option) (r *video.PutVideoResponse, err error)
 	DeleteVideo(ctx context.Context, Req *video.DeleteVideoRequest, callOptions ...callopt.Option) (r *video.DeleteVideoResponse, err error)
-	GetVideo(ctx context.Context, Req *video.GetVideoRequest, callOptions ...callopt.Option) (r *video.GetVideoResponse, err error)
+	GetOneVideoInfo(ctx context.Context, Req *video.GetOneVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetOneVideoInfoResponse, err error)
+	DownloadOneVideo(ctx context.Context, Req *video.DownloadOneVideoRequest, callOptions ...callopt.Option) (r *video.DownloadOneVideoResponse, err error)
+	DownloadMultiVideo(ctx context.Context, Req *video.DownloadMultiVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMultiVideoResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -55,7 +57,17 @@ func (p *kTiktokVideoServiceClient) DeleteVideo(ctx context.Context, Req *video.
 	return p.kClient.DeleteVideo(ctx, Req)
 }
 
-func (p *kTiktokVideoServiceClient) GetVideo(ctx context.Context, Req *video.GetVideoRequest, callOptions ...callopt.Option) (r *video.GetVideoResponse, err error) {
+func (p *kTiktokVideoServiceClient) GetOneVideoInfo(ctx context.Context, Req *video.GetOneVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetOneVideoInfoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetVideo(ctx, Req)
+	return p.kClient.GetOneVideoInfo(ctx, Req)
+}
+
+func (p *kTiktokVideoServiceClient) DownloadOneVideo(ctx context.Context, Req *video.DownloadOneVideoRequest, callOptions ...callopt.Option) (r *video.DownloadOneVideoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DownloadOneVideo(ctx, Req)
+}
+
+func (p *kTiktokVideoServiceClient) DownloadMultiVideo(ctx context.Context, Req *video.DownloadMultiVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMultiVideoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DownloadMultiVideo(ctx, Req)
 }
