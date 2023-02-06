@@ -16,6 +16,7 @@ type TiktokUserServiceImpl struct{}
 
 // 登录
 func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
+	resp = new(user.DouyinUserLoginResponse)
 	var user model.User
 	username := req.Username
 	password := req.Password
@@ -34,14 +35,16 @@ func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserL
 		resp.StatusMsg = "密码错误！"
 		return resp, nil
 	}
-	//resp.StatusCode = 0 //0代表成功其他代表失败
-	//*resp.StatusMsg = "登录成功！"
-	//resp.UserId = user.UserId
+	resp.StatusCode = 0 //0代表成功其他代表失败
+	resp.StatusMsg = "登录成功！"
+	resp.UserId = user.UserId
+	resp.Token = ""
 	return resp, err
 }
 
 // 注册
 func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
+	resp = new(user.DouyinUserRegisterResponse)
 	var user model.User
 	username := req.Username
 	password := req.Password
@@ -73,13 +76,13 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	}
 	//5.查询注册用户的id
 	id := model.SelecUser(username)
-	//user.UserId = id
+	user.UserId = id
 	fmt.Println(id)
 	//6.注册成功
-	//resp.StatusCode = 0
-	//resp.StatusMsg = "注册成功!"
-	//resp.UserId = id
-	//resp.Token = ""
+	resp.StatusCode = 0
+	resp.StatusMsg = "注册成功!"
+	resp.UserId = id
+	resp.Token = ""
 	return resp, nil
 }
 
@@ -87,8 +90,7 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
 	resp = new(user.DouyinUserResponse)
 	//1.获取id
-	//id := req.UserId
-	id := 2533548602
+	id := req.UserId
 	//2.通过用户id查询对应用户
 	user_info := model.GetUserById(int64(id))
 	//4.返回
@@ -105,7 +107,6 @@ func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRe
 	}
 	resp.StatusCode = 0
 	resp.StatusMsg = "成功获取用户信息！"
-	//fmt.Println(resp_user)
 	return resp, nil
 }
 
