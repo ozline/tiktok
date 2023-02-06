@@ -3,6 +3,9 @@ package main
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"math/rand"
+	"sync"
+	"time"
 )
 
 type User struct {
@@ -13,15 +16,28 @@ type User struct {
 	IsFollow      bool   // true-已关注，false-未关注
 }
 
+type Video struct {
+	M             sync.Mutex //
+	ID            int64      // 视频ID
+	Author        *User      // 作者信息
+	PlayUrl       string     // 播放地址
+	CoverUrl      string     // 封面地址
+	FavoriteCount int64      // 视频的点赞总数
+	CommentCount  int64      // 视频的评论总数
+	IsFavorite    bool       // 是否本人已点赞
+	Title         string     // 标题
+}
+
 type VideoStorageInfo struct {
-	VideoID         string // 视频id
-	VideoTitle      string // 视频标题
+	VideoID         int64  // 视频id
+	VideoPlayUrl    string // 视频标题
+	VideoCoverUrl   string
+	VideoTitle      string
 	VideoCreateTime string // 视频创建时间
-	UserId          int64  // 用户id
 	UserName        string // 用户名称
 }
 
-func (s *TiktokVideoServiceImpl) CreateDataBaseTable(dataBaseName string) {
+func CreateDataBaseTable(dataBaseName string) {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
@@ -30,28 +46,79 @@ func (s *TiktokVideoServiceImpl) CreateDataBaseTable(dataBaseName string) {
 	db.AutoMigrate(&VideoStorageInfo{})
 }
 
-func (s *TiktokVideoServiceImpl) DataBasePutFile(video Video, privateKey string) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func (s *TiktokVideoServiceImpl) DataBasePutVideo(video Video, videoID int64) {
+	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 	var videostorageInfo = VideoStorageInfo{
-		VideoTitle: video.Title,
-		UserId:     video.Author.Id,
-		UserName:   video.Author.Name,
+		VideoID:         videoID,
+		VideoPlayUrl:    video.PlayUrl,
+		VideoCoverUrl:   video.CoverUrl,
+		VideoTitle:      video.Title,
+		VideoCreateTime: time.Now().Format("2006-01-02 15:04:05"), //当前时间的字符串
+		UserName:        video.Author.Name,
 	}
-	videostorageInfo.VideoID = privateKey
 
 	db.Create(&videostorageInfo)
 }
 
-func (s *TiktokVideoServiceImpl) DataBaseDeleteFile(fileName string) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func (s *TiktokVideoServiceImpl) DataBaseDeleteVideo(videoTitle string, userName string) (VideoStorageInfo, bool) {
+	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	var video VideoStorageInfo
-	db.Where("VideoTitle=?", fileName).First(&video)
-	db.Delete(&video)
+	videoInfo, findResult := s.DataBaseFindVideoIDByTitle(videoTitle)
+	if findResult == false {
+		return videoInfo, false
+	}
+
+	var deleteState bool
+
+	if videoInfo.UserName == userName {
+		db.Delete(&videoInfo, videoInfo.VideoID)
+		deleteState = true
+	} else {
+		deleteState = false
+	}
+
+	return videoInfo, deleteState
+}
+
+func (s *TiktokVideoServiceImpl) DataBaseFindVideoIDByTitle(videoTitle string) (VideoStorageInfo, bool) {
+	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	var videoStorage = VideoStorageInfo{
+		VideoID: -1,
+	}
+	db.First(&videoStorage, "video_title=?", videoTitle)
+	if videoStorage.VideoID == -1 {
+		return videoStorage, false
+	}
+	return videoStorage, true
+}
+
+func RandGetNVideo(number int) []VideoStorageInfo {
+	rand.Seed(time.Now().Unix())
+	videos := make([]VideoStorageInfo, number)
+
+	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	var rowsNumber int64
+	db.Model(&VideoStorageInfo{}).Count(&rowsNumber)
+
+	var videoStorage VideoStorageInfo
+	for i := 0; i < number; i++ {
+		index := rand.Intn(int(rowsNumber))
+		db.Offset(index).Take(&videoStorage)
+		videos[i] = videoStorage
+	}
+	return videos
 }
