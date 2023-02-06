@@ -18,59 +18,49 @@ func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
 	{
-		_v1 := root.Group("/v1", _v1Mw()...)
+		_douyin := root.Group("/douyin", _douyinMw()...)
+		_douyin.GET("/feed", append(_videogetfeedsMw(), api.VideoGetFeeds)...)
+		_douyin.GET("/user", append(_usergetinfoMw(), api.UserGetInfo)...)
 		{
-			_douyin := _v1.Group("/douyin", _douyinMw()...)
-			_douyin.GET("/feed", append(_videogetfeedsMw(), api.VideoGetFeeds)...)
-			_douyin.GET("/user", append(_usergetinfoMw(), api.UserGetInfo)...)
+			_comment := _douyin.Group("/comment", _commentMw()...)
+			_comment.POST("/action", append(_comment_ctionMw(), api.CommentAction)...)
+			_comment.GET("/list", append(_commentlistMw(), api.CommentList)...)
+		}
+		{
+			_favorite := _douyin.Group("/favorite", _favoriteMw()...)
+			_favorite.POST("/action", append(_favorite_ctionMw(), api.FavoriteAction)...)
+			_favorite.GET("/list", append(_favoritelistMw(), api.FavoriteList)...)
+		}
+		{
+			_message := _douyin.Group("/message", _messageMw()...)
+			_message.POST("/action", append(_messagesendMw(), api.MessageSend)...)
+			_message.GET("/chat", append(_messagechatmsgMw(), api.MessageChatMsg)...)
+		}
+		{
+			_publish := _douyin.Group("/publish", _publishMw()...)
+			_publish.POST("/action", append(_videopublish_ctionMw(), api.VideoPublishAction)...)
+			_publish.GET("/list", append(_videopublishlistMw(), api.VideoPublishList)...)
+		}
+		{
+			_relation := _douyin.Group("/relation", _relationMw()...)
+			_relation.POST("/action", append(_relation_ctionMw(), api.RelationAction)...)
 			{
-				_comment := _douyin.Group("/comment", _commentMw()...)
-				{
-					_action := _comment.Group("/action", _actionMw()...)
-					_action.POST("/", append(_comment_ctionMw(), api.CommentAction)...)
-				}
-				{
-					_list := _comment.Group("/list", _listMw()...)
-					_list.GET("/", append(_commentlistMw(), api.CommentList)...)
-				}
+				_follow := _relation.Group("/follow", _followMw()...)
+				_follow.GET("/list", append(_relationfollowlistMw(), api.RelationFollowList)...)
 			}
 			{
-				_favorite := _douyin.Group("/favorite", _favoriteMw()...)
-				{
-					_action0 := _favorite.Group("/action", _action0Mw()...)
-					_action0.POST("/", append(_favorite_ctionMw(), api.FavoriteAction)...)
-				}
-				{
-					_list0 := _favorite.Group("/list", _list0Mw()...)
-					_list0.GET("/", append(_favoritelistMw(), api.FavoriteList)...)
-				}
+				_follower := _relation.Group("/follower", _followerMw()...)
+				_follower.GET("/list", append(_relationfollowerlistMw(), api.RelationFollowerList)...)
 			}
 			{
-				_publish := _douyin.Group("/publish", _publishMw()...)
-				_publish.POST("/action", append(_videopublish_ctionMw(), api.VideoPublishAction)...)
-				_publish.GET("/list", append(_videopublishlistMw(), api.VideoPublishList)...)
+				_friend := _relation.Group("/friend", _friendMw()...)
+				_friend.GET("/list", append(_rleationfriendlistMw(), api.RleationFriendList)...)
 			}
-			{
-				_relation := _douyin.Group("/relation", _relationMw()...)
-				_relation.POST("/action", append(_relation_ctionMw(), api.RelationAction)...)
-				{
-					_follow := _relation.Group("/follow", _followMw()...)
-					_follow.GET("/list", append(_relationfollowlistMw(), api.RelationFollowList)...)
-				}
-				{
-					_follower := _relation.Group("/follower", _followerMw()...)
-					_follower.GET("/list", append(_relationfollowerlistMw(), api.RelationFollowerList)...)
-				}
-				{
-					_friend := _relation.Group("/friend", _friendMw()...)
-					_friend.GET("/list", append(_rleationfriendlistMw(), api.RleationFriendList)...)
-				}
-			}
-			{
-				_user := _douyin.Group("/user", _userMw()...)
-				_user.POST("/login", append(_userloginMw(), api.UserLogin)...)
-				_user.POST("/register", append(_userregisterMw(), api.UserRegister)...)
-			}
+		}
+		{
+			_user := _douyin.Group("/user", _userMw()...)
+			_user.POST("/login", append(_userloginMw(), api.UserLogin)...)
+			_user.POST("/register", append(_userregisterMw(), api.UserRegister)...)
 		}
 	}
 }

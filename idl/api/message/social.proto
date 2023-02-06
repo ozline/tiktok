@@ -50,3 +50,26 @@ message RelationFriendListResponse {
     string status_msg = 2;          // 返回状态描述
     repeated User user_list = 3;    // 用户列表
 }
+
+message MessageSendRequest {
+    string token = 1;       // 用户鉴权token
+    int64 to_user_id = 2;   // 对方用户ID
+    int64 action_type = 3;  // 1-发送消息，2-删除消息
+    string content = 4;     // 消息内容
+}
+
+message MessageSendResponse {
+    int64 status_code = 1;  // 状态码，0-成功，其他值-失败
+    string status_msg = 2;  // 返回状态描述
+}
+
+message MessageChatMsgRequest {
+    string token = 1;       // 用户鉴权token
+    int64 to_user_id = 2;   // 对方用户ID
+}
+
+message MessageChatMsgResponse {
+    int64 status_code = 1;              // 状态码，0-成功，其他值-失败
+    string status_msg = 2;              // 返回状态描述
+    repeated Message message_list = 3;  // 消息列表
+}

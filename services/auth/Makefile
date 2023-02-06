@@ -1,11 +1,10 @@
 .PHONY: generate
 generate:
 	kitex \
-	-service "tiktok-follow" \
+	-service "tiktok-auth" \
 	-module "github.com/ozline/tiktok" \
 	-type protobuf \
-	-I ./../../idl/ follow.proto \
-	&& go mod tidy
+	-I ./../../idl/ auth.proto
 
 .PHONY: run_client
 run_client:
@@ -15,6 +14,6 @@ run_client:
 run_server:
 	go run main.go handler.go
 
-# Service: follow
-# Path: services/follow
+# Service: auth
+# Path: services/auth
 # Optional: -use "github.com/ozline/tiktok/kitex_gen"

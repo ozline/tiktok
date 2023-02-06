@@ -138,8 +138,7 @@ func (x *DouyinUserRegisterResponse) fastReadField1(buf []byte, _type int8) (off
 }
 
 func (x *DouyinUserRegisterResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	tmp, offset, err := fastpb.ReadString(buf, _type)
-	x.StatusMsg = &tmp
+	x.StatusMsg, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -229,8 +228,7 @@ func (x *DouyinUserLoginResponse) fastReadField1(buf []byte, _type int8) (offset
 }
 
 func (x *DouyinUserLoginResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	tmp, offset, err := fastpb.ReadString(buf, _type)
-	x.StatusMsg = &tmp
+	x.StatusMsg, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -315,8 +313,7 @@ func (x *DouyinUserResponse) fastReadField1(buf []byte, _type int8) (offset int,
 }
 
 func (x *DouyinUserResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	tmp, offset, err := fastpb.ReadString(buf, _type)
-	x.StatusMsg = &tmp
+	x.StatusMsg, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -381,14 +378,12 @@ func (x *User) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *User) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	tmp, offset, err := fastpb.ReadInt64(buf, _type)
-	x.FollowCount = &tmp
+	x.FollowCount, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
 func (x *User) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	tmp, offset, err := fastpb.ReadInt64(buf, _type)
-	x.FollowerCount = &tmp
+	x.FollowerCount, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -474,10 +469,10 @@ func (x *DouyinUserRegisterResponse) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *DouyinUserRegisterResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.StatusMsg == nil {
+	if x.StatusMsg == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, *x.StatusMsg)
+	offset += fastpb.WriteString(buf[offset:], 2, x.StatusMsg)
 	return offset
 }
 
@@ -542,10 +537,10 @@ func (x *DouyinUserLoginResponse) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *DouyinUserLoginResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.StatusMsg == nil {
+	if x.StatusMsg == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, *x.StatusMsg)
+	offset += fastpb.WriteString(buf[offset:], 2, x.StatusMsg)
 	return offset
 }
 
@@ -609,10 +604,10 @@ func (x *DouyinUserResponse) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *DouyinUserResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.StatusMsg == nil {
+	if x.StatusMsg == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, *x.StatusMsg)
+	offset += fastpb.WriteString(buf[offset:], 2, x.StatusMsg)
 	return offset
 }
 
@@ -653,18 +648,18 @@ func (x *User) fastWriteField2(buf []byte) (offset int) {
 }
 
 func (x *User) fastWriteField3(buf []byte) (offset int) {
-	if x.FollowCount == nil {
+	if x.FollowCount == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 3, *x.FollowCount)
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.FollowCount)
 	return offset
 }
 
 func (x *User) fastWriteField4(buf []byte) (offset int) {
-	if x.FollowerCount == nil {
+	if x.FollowerCount == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 4, *x.FollowerCount)
+	offset += fastpb.WriteInt64(buf[offset:], 4, x.FollowerCount)
 	return offset
 }
 
@@ -753,10 +748,10 @@ func (x *DouyinUserRegisterResponse) sizeField1() (n int) {
 }
 
 func (x *DouyinUserRegisterResponse) sizeField2() (n int) {
-	if x.StatusMsg == nil {
+	if x.StatusMsg == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, *x.StatusMsg)
+	n += fastpb.SizeString(2, x.StatusMsg)
 	return n
 }
 
@@ -821,10 +816,10 @@ func (x *DouyinUserLoginResponse) sizeField1() (n int) {
 }
 
 func (x *DouyinUserLoginResponse) sizeField2() (n int) {
-	if x.StatusMsg == nil {
+	if x.StatusMsg == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, *x.StatusMsg)
+	n += fastpb.SizeString(2, x.StatusMsg)
 	return n
 }
 
@@ -888,10 +883,10 @@ func (x *DouyinUserResponse) sizeField1() (n int) {
 }
 
 func (x *DouyinUserResponse) sizeField2() (n int) {
-	if x.StatusMsg == nil {
+	if x.StatusMsg == "" {
 		return n
 	}
-	n += fastpb.SizeString(2, *x.StatusMsg)
+	n += fastpb.SizeString(2, x.StatusMsg)
 	return n
 }
 
@@ -932,18 +927,18 @@ func (x *User) sizeField2() (n int) {
 }
 
 func (x *User) sizeField3() (n int) {
-	if x.FollowCount == nil {
+	if x.FollowCount == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(3, *x.FollowCount)
+	n += fastpb.SizeInt64(3, x.FollowCount)
 	return n
 }
 
 func (x *User) sizeField4() (n int) {
-	if x.FollowerCount == nil {
+	if x.FollowerCount == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(4, *x.FollowerCount)
+	n += fastpb.SizeInt64(4, x.FollowerCount)
 	return n
 }
 

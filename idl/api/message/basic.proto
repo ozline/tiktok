@@ -8,8 +8,8 @@ import "idl/api/models.proto";
 
 // Basic API
 message FeedRequest {
-  int64 status_code = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒
-  string status_msg = 2; // 可选参数，登录用户设置
+  string latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒
+  string token = 2;       // 可选参数，登录用户设置
 }
 
 message FeedResponse {
@@ -55,8 +55,8 @@ message UserResponse {
 }
 
 message PublishActionRequest {
-  string token = 1; // 用户鉴权token
-  bytes video = 2;  // 视频数据
+  bytes data = 1;   // 视频数据
+  string token = 2; // 用户鉴权token
   string title = 3; // 视频标题
 }
 

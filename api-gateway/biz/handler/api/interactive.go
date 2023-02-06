@@ -11,7 +11,7 @@ import (
 )
 
 // FavoriteAction .
-// @router /v1/douyin/favorite/action/ [POST]
+// @router /douyin/favorite/action [POST]
 func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req interactive.FavoriteActionRequest
@@ -27,7 +27,7 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // FavoriteList .
-// @router /v1/douyin/favorite/list/ [GET]
+// @router /douyin/favorite/list [GET]
 func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req interactive.FavoriteListRequest
@@ -43,7 +43,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 }
 
 // CommentAction .
-// @router /v1/douyin/comment/action/ [POST]
+// @router /douyin/comment/action [POST]
 func CommentAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req interactive.CommentActionRequest
@@ -59,7 +59,7 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 }
 
 // CommentList .
-// @router /v1/douyin/comment/list/ [GET]
+// @router /douyin/comment/list [GET]
 func CommentList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req interactive.CommentListRequest
