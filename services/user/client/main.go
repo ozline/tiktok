@@ -43,10 +43,9 @@ func main() {
 	//	log.Fatal(err.Error())
 	//}
 	//log.Println(loginResponse)
-	//fmt.Println("登录成功！")
 	//--------------------获取用户信息测试-------------------------
 	userRequest := &user.DouyinUserRequest{
-		UserId: 481659944,
+		UserId: 3974384737,
 		Token:  "",
 	}
 	userResponse, err := client.Info(context.Background(), userRequest)
