@@ -2,41 +2,181 @@ package main
 
 import (
 	"context"
-	"crypto/md5"
+	"fmt"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
+	"strconv"
 	"time"
 )
 
 // TiktokVideoServiceImpl implements the last service interface defined in the IDL.
-type TiktokVideoServiceImpl struct {
-	DatabaseTable string
-}
+type TiktokVideoServiceImpl struct{}
 
 // PutVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
-	video := req.VideoInfo
+	fmt.Println("----- PutVideo -----")
+	user := User{
+		Name: req.GetOwnerName(),
+	}
 
-	videoid := md5.Sum([]byte(video.Title))
-	videoidstr := string(videoid[:])
+	videoInfo := Video{
+		PlayUrl:  req.GetPlayUrl(),
+		CoverUrl: req.GetCoverUrl(),
+		Title:    req.GetTitle(),
+		Author:   &user,
+	}
 
-	userid := md5.Sum([]byte(video.Author.Name))
-	useridstr := string(userid[:])
-	now := string(time.Now().UnixNano() / 1000000) // 转毫秒
+	// 雪花算法
+	snow := Snowflake{
+		timestamp:    time.Now().UnixNano() / 1000000,
+		workerid:     1,
+		datacenterid: 1,
+		sequence:     0,
+	}
+	videoID := snow.NextVal()
+	videoInfo.M.Lock()
+	videoInfo.ID = videoID
+	videoInfo.M.Unlock()
 
-	id := useridstr + videoidstr + now
-	s.DataBasePutFile(video, id)
+	s.DataBasePutVideo(videoInfo, videoInfo.ID)
+	s.StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
 
-	return
+	response := video.PutVideoResponse{
+		State:     true,
+		Title:     videoInfo.Title,
+		OwnerName: videoInfo.Author.Name,
+	}
+
+	return &response, nil
 }
 
 // DeleteVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.DeleteVideoRequest) (resp *video.DeleteVideoResponse, err error) {
-	// TODO: Your code here...
-	return
+	fmt.Println("----- DeleteVideo -----")
+	videoTitle := req.GetTitle()
+	deletorName := req.DeletorName
+	videoInfo, dataBaseResult := s.DataBaseDeleteVideo(videoTitle, deletorName)
+
+	storageResult := false
+	if dataBaseResult == true {
+		storageResult = s.StorageDeleteVideo(videoInfo.VideoID, "titok")
+	}
+
+	response := video.DeleteVideoResponse{
+		State: false,
+	}
+	if dataBaseResult == true && storageResult == true {
+		response = video.DeleteVideoResponse{
+			State:           true,
+			DeleteVideoName: videoInfo.VideoTitle,
+			DeletorName:     videoInfo.UserName,
+			VideoOwnerName:  videoInfo.UserName,
+		}
+	} else {
+		if dataBaseResult == false {
+			response.ErrState = "DataBase Delete Failed"
+		} else {
+			response.ErrState = "Storage Delete Failed"
+		}
+	}
+	return &response, nil
 }
 
-// GetVideo implements the TiktokVideoServiceImpl interface.
-func (s *TiktokVideoServiceImpl) GetVideo(ctx context.Context, req *video.GetVideoRequest) (resp *video.GetVideoResponse, err error) {
-	// TODO: Your code here...
-	return
+// GetOneVideoInfo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) GetOneVideoInfo(ctx context.Context, req *video.GetOneVideoInfoRequest) (resp *video.GetOneVideoInfoResponse, err error) {
+	fmt.Println("----- GetVideoInfo -----")
+	videoTitle := req.GetVideoName()
+	//userId := req.GetUserId()
+	videoInfo, findState := s.DataBaseFindVideoIDByTitle(videoTitle)
+	response := video.GetOneVideoInfoResponse{
+		State: false,
+	}
+	if findState == true {
+		_, videoSize, videoMimeType := s.StorageGetVideoInfo(videoInfo.VideoID, "titok")
+		response = video.GetOneVideoInfoResponse{
+			State:         true,
+			VideoId:       videoInfo.VideoID,
+			PlayUrl:       videoInfo.VideoPlayUrl,
+			CoverUrl:      videoInfo.VideoCoverUrl,
+			VideoTitle:    videoInfo.VideoTitle,
+			VideoSize:     videoSize,
+			VideoMimeType: videoMimeType,
+			OwnerName:     videoInfo.UserName,
+		}
+	} else {
+		response.ErrState = "----- Don't Find the Video -----"
+	}
+	return &response, nil
+}
+
+// DownloadOneVideo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) DownloadOneVideo(ctx context.Context, req *video.DownloadOneVideoRequest) (resp *video.DownloadOneVideoResponse, err error) {
+	fmt.Println("----- DownloadOneVideo -----")
+	videoTitle := req.GetVideoName()
+	videoInfo, dataBaseResult := s.DataBaseFindVideoIDByTitle(videoTitle)
+	response := video.DownloadOneVideoResponse{
+		State: false,
+	}
+	if dataBaseResult == true {
+		accessURL := StorageDownloadOneVideo(videoInfo.VideoID, "titok")
+		response = video.DownloadOneVideoResponse{
+			State:      true,
+			VideoTitle: videoInfo.VideoTitle,
+			VideoUrl:   accessURL,
+			OwnerName:  videoInfo.UserName,
+		}
+	}
+
+	return &response, nil
+}
+
+// DownloadMultiVideo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) DownloadMultiVideo(ctx context.Context, req *video.DownloadMultiVideoRequest) (resp *video.DownloadMultiVideoResponse, err error) {
+	number := int(req.GetVideoNumber())
+	keys, err := RDB.Keys("*").Result()
+
+	videos := RandGetNVideo(number)
+	videourls := make([]string, number)
+	fmt.Println("len(keys)=", len(keys))
+	fmt.Println("Number=", number)
+	if len(keys) >= int(number) {
+		fmt.Println("----- Redis Cache Has Enough Videos -----")
+		for i := 0; i < number; i++ {
+			videourls[i], err = RDB.Get(keys[i]).Result()
+		}
+		//for index, videoid := range keys {
+		//	videourls[index], err = RDB.Get(videoid).Result()
+		//}
+	} else {
+		fmt.Println("----- Redic Cache Don't Have Enough Videos -----")
+		videourls = GetNUrlByVideoID(videos)
+	}
+
+	response := video.DownloadMultiVideoResponse{
+		VideoNumber: int64(len(videourls)),
+		VideoUrls:   videourls,
+	}
+
+	if response.VideoNumber == req.GetVideoNumber() {
+		response.State = true
+	} else {
+		response.State = false
+		response.ErrState = "Dont't Have Enough Videos"
+	}
+
+	return &response, nil
+}
+
+func PerioUpdateVideoCache(number int) {
+	ticker := time.NewTicker(10 * time.Millisecond)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		RDB.FlushDB().Result()
+		videos := RandGetNVideo(number)
+		videourls := GetNUrlByVideoID(videos)
+		for index, videoInfo := range videos {
+
+			RDB.Set(strconv.FormatInt(videoInfo.VideoID, 10), videourls[index], 0).Result()
+		}
+	}
 }

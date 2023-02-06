@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+
+  mysql:
+    image: "mysql:latest"
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=tiktok
+      - MYSQL_USER=tiktok
+      - MYSQL_PASSWORD=tiktok
+      - MYSQL_ROOT_PASSWORD=123456
+
+  rabbitmq:
+    image: "rabbitmq:latest"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  etcd:
+    image: "quay.io/coreos/etcd:v3.5.5"
+    ports:
+      - "2379:2379"
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.9:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_API=3
+
+  jaeger:
+    image: "jaegertracing/all-in-one:latest"
+    ports:
+      - "16686:16686"
+      - "6381:6381"

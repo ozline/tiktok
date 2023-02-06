@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"strconv"
 )
 
 type MyPutRet struct {
@@ -20,9 +21,9 @@ var secretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
 var mac = qbox.NewMac(accessKey, secretKey)
 
 // 上传文件 bucket="titok"
-func StoragetPutFile(localFileName string, storageFileName string, bucketName string) error {
+func (s *TiktokVideoServiceImpl) StoragPutVideo(localFileName string, storageFileName int64, bucketName string) error {
 	bucket := bucketName
-	key := storageFileName
+	key := strconv.FormatInt(storageFileName, 10)
 	localFile := localFileName
 
 	putPolicy := storage.PutPolicy{
@@ -45,13 +46,18 @@ func StoragetPutFile(localFileName string, storageFileName string, bucketName st
 		fmt.Println(err)
 		return err
 	}
-	fmt.Println("----- Return Response -----")
-	fmt.Println(ret.Bucket, ret.Key, ret.Fsize, ret.Hash, ret.Name)
+
 	return err
+}
+func StorageDownloadOneVideo(videoID int64, bucketName string) string {
+	domain := "rp9zcsyip.hb-bkt.clouddn.com"
+	key := strconv.FormatInt(videoID, 10)
+	publicAccessURL := storage.MakePublicURL(domain, key)
+	return publicAccessURL
 }
 
 // 删除文件
-func StorageDeleteFile(fileName string, bucketName string) error {
+func (s *TiktokVideoServiceImpl) StorageDeleteVideo(videoID int64, bucketName string) bool {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -62,20 +68,20 @@ func StorageDeleteFile(fileName string, bucketName string) error {
 	bucketManager := storage.NewBucketManager(mac, &cfg)
 
 	bucket := bucketName
-	key := fileName
+	key := strconv.FormatInt(videoID, 10)
 
 	err := bucketManager.Delete(bucket, key)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return false
 	}
-	return err
+	return true
 }
 
-// 获取文件信息
-func StorageGetFileInfo(fileName string, bucketName string) {
+// 获取文件信息 FileHash,FileSize,FileMimeType
+func (s *TiktokVideoServiceImpl) StorageGetVideoInfo(videoID int64, bucketName string) (string, int64, string) {
 	bucket := bucketName
-	key := fileName
+	key := strconv.FormatInt(videoID, 10)
 
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
@@ -85,15 +91,14 @@ func StorageGetFileInfo(fileName string, bucketName string) {
 	fileInfo, sErr := bucketManager.Stat(bucket, key)
 	if sErr != nil {
 		fmt.Println(sErr)
-		return
+		return "-1", 0, "Nothing"
 	}
-	fmt.Println(fileInfo.String())
 	//可以解析文件的PutTime上传事件，最后一位使用者，文件的hash值，文件大小
-	fmt.Println(storage.ParsePutTime(fileInfo.PutTime))
+	return fileInfo.Hash, fileInfo.Fsize, fileInfo.MimeType
 }
 
 // 移动文件
-func StorageMoveFile(srcBucketName string, srcFileName string, destBucketName string, destFileName string) {
+func (s *TiktokVideoServiceImpl) StorageMoveVideo(srcBucketName string, srcVideoID int64, destBucketName string, destFileName string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -101,7 +106,7 @@ func StorageMoveFile(srcBucketName string, srcFileName string, destBucketName st
 	bucketManager := storage.NewBucketManager(mac, &cfg)
 
 	srcBucket := srcBucketName
-	srcKey := srcFileName
+	srcKey := strconv.FormatInt(srcVideoID, 10)
 	//目标空间可以和源空间相同，但是不能为跨机房的空间
 	destBucket := srcBucket
 	//目标文件名可以和源文件名相同，也可以不同
@@ -116,7 +121,7 @@ func StorageMoveFile(srcBucketName string, srcFileName string, destBucketName st
 }
 
 // 复制文件
-func StorageCopyFile(srcBucketName string, srcFileName string, destBucketName string, destFileName string) {
+func (s *TiktokVideoServiceImpl) StorageCopyVideo(srcBucketName string, srcVideoID int64, destBucketName string, destFileName string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -124,7 +129,7 @@ func StorageCopyFile(srcBucketName string, srcFileName string, destBucketName st
 	bucketManager := storage.NewBucketManager(mac, &cfg)
 
 	srcBucket := srcBucketName
-	srcKey := srcFileName
+	srcKey := strconv.FormatInt(srcVideoID, 10)
 	//目标空间可以和源空间相同，但是不能为跨机房的空间
 	destBucket := destBucketName
 	//目标文件名可以和源文件名相同，也可以不同
@@ -139,7 +144,7 @@ func StorageCopyFile(srcBucketName string, srcFileName string, destBucketName st
 }
 
 // 获取指定前缀的文件列表
-func StorageGetFileList(bucketName string, prefix string) {
+func (s *TiktokVideoServiceImpl) StorageGetVideoList(bucketName string, prefix string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -154,7 +159,6 @@ func StorageGetFileList(bucketName string, prefix string) {
 	for {
 		entries, _, nextMarker, hasNext, err := bucketManager.ListFiles(bucket, prefix, delimiter, marker, limit)
 		if err != nil {
-			fmt.Println("list error,", err)
 			break
 		}
 		//print entries
@@ -171,7 +175,7 @@ func StorageGetFileList(bucketName string, prefix string) {
 }
 
 // 批量获取文件信息
-func StorageBatchGetFileInfo() {
+func (s *TiktokVideoServiceImpl) StorageBatchGetVideoInfo() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -219,7 +223,7 @@ func StorageBatchGetFileInfo() {
 }
 
 // 批量删除文件
-func StorageBatchDeleteFiles() {
+func (s *TiktokVideoServiceImpl) StorageBatchDeleteVideos() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -263,7 +267,7 @@ func StorageBatchDeleteFiles() {
 }
 
 // 批量复制文件
-func StorageBatchCopyFiles() {
+func (s *TiktokVideoServiceImpl) StorageBatchCopyVideos() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -307,4 +311,14 @@ func StorageBatchCopyFiles() {
 			fmt.Printf("%v\n", ret.Data)
 		}
 	}
+}
+
+func GetNUrlByVideoID(videos []VideoStorageInfo) []string {
+	number := len(videos)
+	urls := make([]string, number)
+	for index, video := range videos {
+		urls[index] = StorageDownloadOneVideo(video.VideoID, "titok")
+	}
+
+	return urls
 }

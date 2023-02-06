@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 // TiktokUserServiceImpl implements the last service interface defined in the IDL.
@@ -84,21 +85,24 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 
 // 用户信息
 func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
+	resp = new(user.DouyinUserResponse)
 	//1.获取id
 	//id := req.UserId
 	id := 2533548602
 	//2.通过用户id查询对应用户
 	user_info := model.GetUserById(int64(id))
-	//3.赋值
-	resp_user := &user.User{
-		Id:            user_info.UserId,
-		Name:          user_info.Username,
-		FollowCount:   user_info.FollowCount,
-		FollowerCount: user_info.FollowerCount,
-		IsFollow:      true,
-	}
 	//4.返回
-	resp.User = resp_user
+	resp.User = &user.User{
+		Id: user_info.UserId,
+		// Id: 10086,
+		Name: user_info.Username,
+		// Name: "ozline-test",
+		FollowCount: user_info.FollowCount,
+		// FollowCount: 10087,
+		FollowerCount: user_info.FollowerCount,
+		// FollowerCount: 10088,
+		IsFollow: true,
+	}
 	resp.StatusCode = 0
 	resp.StatusMsg = "成功获取用户信息！"
 	//fmt.Println(resp_user)
