@@ -11,13 +11,26 @@ service tiktokAuthService {
     rpc CheckToken(CheckTokenRequest) returns (CheckTokenResponse){};
 }
 
+message BaseResp {
+    int64 code = 1;
+    string msg = 2;
+}
+
+message Auth {
+    int64 user_id = 1;
+    string username = 2;
+    int64 not_before = 3;
+    int64 expires_at = 4;
+}
+
 message GetTokenRequest {
     string username = 1;
-    string userid = 2;
+    int64 user_id = 2;
 }
 
 message GetTokenResponse {
-    string token = 1;
+    BaseResp base = 1;
+    string token = 2;
 }
 
 message CheckTokenRequest {
@@ -25,7 +38,8 @@ message CheckTokenRequest {
 }
 
 message CheckTokenResponse {
-    int64 result = 1;
+    BaseResp base = 1;
+    optional Auth info = 2;
 }
 
 message PingRequest{
