@@ -2,37 +2,51 @@ version: '3'
 
 services:
 
+  # Database
   mysql:
     image: "mysql:latest"
     restart: always
     ports:
       - 3306:3306
+    volumes:
+      - ./pkg/configs/sql:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_DATABASE=tiktok
       - MYSQL_USER=tiktok
       - MYSQL_PASSWORD=tiktok
       - MYSQL_ROOT_PASSWORD=123456
 
+  # Message Broker
   rabbitmq:
     image: "rabbitmq:latest"
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_USER=tiktok
+      - RABBITMQ_DEFAULT_PASS=tiktok
 
+  # k-v store
   etcd:
     image: "quay.io/coreos/etcd:v3.5.5"
     ports:
       - "2379:2379"
     environment:
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.9:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_API=3
 
+  # Tracer
   jaeger:
     image: "jaegertracing/all-in-one:latest"
     ports:
       - "16686:16686"
       - "6381:6381"
+
+  # Monitor
+  prometheus:
+    image: "prom/prometheus:latest"
+    ports:
+      - "9090:9090"
+    # volumes:
+    #   - ./prometheus.yml:/etc/prometheus/prometheus.yml

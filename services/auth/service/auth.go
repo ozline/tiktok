@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth"
 	"github.com/ozline/tiktok/services/auth/model"
 )
 
 var (
-	secret = "MTAxNTkwMTg1Mw=="
+	secret = constants.JwtSecret
 )
 
 type AuthService struct {
