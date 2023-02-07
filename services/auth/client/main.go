@@ -11,10 +11,15 @@ import (
 	"github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth/tiktokauthservice"
 
 	"github.com/cloudwego/kitex/client"
+
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/utils/snowflake"
 )
 
 func main() {
-	client, err := tiktokauthservice.NewClient("kitex-test", client.WithHostPorts("0.0.0.0:8888"))
+	snowflake.NewSnowflake(0, 0)
+
+	client, err := tiktokauthservice.NewClient("kitex-test", client.WithHostPorts(constants.AuthServiceListenAddress))
 	if err != nil {
 		log.Fatal(err)
 	}
