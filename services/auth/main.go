@@ -1,12 +1,17 @@
 package main
 
 import (
-	auth "github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth/tiktokauthservice"
 	"log"
+	"net"
+
+	"github.com/cloudwego/kitex/server"
+	"github.com/ozline/tiktok/pkg/constants"
+	auth "github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth/tiktokauthservice"
 )
 
 func main() {
-	svr := auth.NewServer(new(TiktokAuthServiceImpl))
+	addr, _ := net.ResolveTCPAddr("tcp", constants.AuthServiceListenAddress)
+	svr := auth.NewServer(new(TiktokAuthServiceImpl), server.WithServiceAddr(addr))
 
 	err := svr.Run()
 

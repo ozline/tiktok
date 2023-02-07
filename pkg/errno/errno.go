@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	SuccessCode                = 10000
+	SuccessCode                = 1000020
 	ServiceErrorCode           = 10001
 	ParamErrorCode             = 10002
 	AuthorizationFailedErrCode = 10003
