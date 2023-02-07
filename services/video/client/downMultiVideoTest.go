@@ -12,11 +12,12 @@ import (
 
 func main() {
 	fmt.Println("----- downMultiVideoTest -----")
-	startTime := time.Now().UnixMilli()
+
 	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8888"))
 	if err != nil {
 		log.Fatal(err)
 	}
+	startTime := time.Now().UnixMilli()
 	number := 5
 	request := &video.DownloadMultiVideoRequest{
 		VideoNumber:     int64(number),

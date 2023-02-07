@@ -12,7 +12,7 @@ import (
 
 func main() {
 	fmt.Println("----- getOneVideoInfoTest -----")
-	startTime := time.Now().UnixMilli()
+
 	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8888"))
 	if err != nil {
 		log.Fatal(err)
@@ -22,7 +22,7 @@ func main() {
 		Title:       "Video5",
 		DeletorName: "sunyiwen",
 	}
-
+	startTime := time.Now().UnixMilli()
 	response, err := client.DeleteVideo(context.Background(), request)
 	if err != nil {
 		log.Fatal("error", err.Error())
