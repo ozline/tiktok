@@ -1,17 +1,22 @@
 package main
 
 import (
+	"github.com/cloudwego/kitex/server"
 	"github.com/go-redis/redis"
+	"github.com/ozline/tiktok/pkg/constants"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video/tiktokvideoservice"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
+	"net"
 )
 
 var RDB *redis.Client
 
 func main() {
-	svr := video.NewServer(new(TiktokVideoServiceImpl))
+	addr, _ := net.ResolveTCPAddr("tcp", constants.VideoServiceListenAddress)
+	svr := video.NewServer(new(TiktokVideoServiceImpl), server.WithServiceAddr(addr))
+
 	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
