@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	addr, _ := net.ResolveTCPAddr("tcp", constants.AuthServiceListenAddress)
+	addr, _ := net.ResolveTCPAddr("tiktok-user", constants.AuthServiceListenAddress)
 	svr := auth.NewServer(new(TiktokAuthServiceImpl), server.WithServiceAddr(addr))
 
 	err := svr.Run()

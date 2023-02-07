@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/cloudwego/kitex/client"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
 	"log"
@@ -10,7 +11,7 @@ import (
 
 func main() {
 	//测试
-	client, err := tiktokuserservice.NewClient("user-test", client.WithHostPorts("0.0.0.0:8888"))
+	client, err := tiktokuserservice.NewClient("kitex-test", client.WithHostPorts(constants.UserServiceListenAddress))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,15 +25,15 @@ func main() {
 	//}
 	//log.Println("PingPong Func Response", resp)
 	//--------------------注册测试-------------------------
-	//registerRequest := &user.DouyinUserRegisterRequest{
-	//	Username: "test",
-	//	Password: "123456",
-	//}
-	//registerResponse, err := client.Register(context.Background(), registerRequest)
-	//if err != nil {
-	//	log.Fatal(err.Error())
-	//}
-	//log.Println(registerResponse)
+	registerRequest := &user.DouyinUserRegisterRequest{
+		Username: "test",
+		Password: "123456",
+	}
+	registerResponse, err := client.Register(context.Background(), registerRequest)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Println(registerResponse)
 	//--------------------登录测试-------------------------
 	//loginRequest := &user.DouyinUserLoginRequest{
 	//	Username: "test",
@@ -44,13 +45,13 @@ func main() {
 	//}
 	//log.Println(loginResponse)
 	//--------------------获取用户信息测试-------------------------
-	userRequest := &user.DouyinUserRequest{
-		UserId: 3974384737,
-		Token:  "",
-	}
-	userResponse, err := client.Info(context.Background(), userRequest)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	log.Println(userResponse)
+	//userRequest := &user.DouyinUserRequest{
+	//	UserId: 3974384737,
+	//	Token:  "",
+	//}
+	//userResponse, err := client.Info(context.Background(), userRequest)
+	//if err != nil {
+	//	log.Fatal(err.Error())
+	//}
+	//log.Println(userResponse)
 }

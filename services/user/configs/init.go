@@ -1,4 +1,4 @@
-package model
+package configs
 
 import (
 	"fmt"
@@ -9,14 +9,15 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+
+	"github.com/ozline/tiktok/pkg/constants"
 )
 
 var db *gorm.DB
 var err error
 
-// 初始化数据库
 func InitDB() {
-	dsn := "tiktok:tiktok@tcp(127.0.0.1:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := constants.MySQLDefaultDSN
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// gorm日志模式：silent
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -36,7 +37,7 @@ func InitDB() {
 		os.Exit(1)
 	}
 
-	// db.AutoMigrate(&User{})
+	//db.AutoMigrate(&model.User{})
 
 	sqlDB, _ := db.DB()
 	// SetMaxIdleCons 设置连接池中的最大闲置连接数。

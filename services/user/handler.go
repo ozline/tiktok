@@ -45,6 +45,7 @@ func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserL
 // 注册
 func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
 	resp = new(user.DouyinUserRegisterResponse)
+
 	var user model.User
 	username := req.Username
 	password := req.Password
@@ -68,6 +69,7 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	user.FollowCount = 0
 	user.FollowerCount = 0
 	user.CreateDate = time.Now()
+
 	//4.用户数据插入数据库
 	if ok := model.AddUser(&user); ok == 1 {
 		resp.StatusCode = 1

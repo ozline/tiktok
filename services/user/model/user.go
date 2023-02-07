@@ -1,8 +1,11 @@
 package model
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
+
+var db *gorm.DB
 
 type User struct {
 	UserId        int64
@@ -11,12 +14,6 @@ type User struct {
 	FollowCount   int64
 	FollowerCount int64
 	CreateDate    time.Time
-}
-type Follower struct {
-	Id         int64
-	UserId     int64
-	ToUserId   int64
-	CreateDate time.Time
 }
 
 // 注册检查
