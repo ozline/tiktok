@@ -13,7 +13,13 @@ run_client:
 
 .PHONY: run_server
 run_server:
-	go run main.go handler.go
+	go run main.go handler.go mysql_handler.go
+
+run_sendClient:
+	go run ./client/sendMessage.go
+
+run_receiveClient:
+	go run ./client/receiveMessage.go
 
 # Service: chat
 # Path: services/chat
