@@ -32,4 +32,11 @@ const (
 	// 雪花
 	SnowflakeWorkerID     = 0
 	SnowflakeDatacenterID = 0
+
+	// Etcd
+	EtcdEndpoints = "127.0.0.1:2379"
+
+	// Limit
+	MaxConnections = 1000
+	MaxQPS         = 100
 )
