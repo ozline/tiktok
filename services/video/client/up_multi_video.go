@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	fmt.Println("----- downMultiVideoTest -----")
+	//fmt.Println("----- UpMultiVideoTest -----")
 
 	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8892"))
 	if err != nil {
@@ -20,7 +20,6 @@ func main() {
 
 	startTime := time.Now().UnixMilli()
 	for i := 1; i <= 30; i++ {
-		fmt.Println("----- ", i, " -----")
 		picstr := fmt.Sprintf("%s%d%s", "/home/ubuntu/Desktop/QingXuYing/tiktok/services/video/client/picture/pic", i, ".jpg")
 		vidstr := fmt.Sprintf("%s%d%s", "/home/ubuntu/Desktop/QingXuYing/tiktok/services/video/client/video/video", i, ".mp4")
 		title := fmt.Sprintf("%s%d", "Video", i)
@@ -31,12 +30,12 @@ func main() {
 			Title:     title,
 			OwnerName: "sunyiwen",
 		}
-		response, err := client.PutVideo(context.Background(), request)
+		_, err := client.PutVideo(context.Background(), request)
 		if err != nil {
 			log.Fatal("err1", err.Error())
 		}
-		fmt.Println(response.State)
+
 	}
 	endTime := time.Now().UnixMilli()
-	fmt.Println("----- Total Time=", endTime-startTime, "ms -----")
+	fmt.Println("----- UpMultiVideoTest :", endTime-startTime, "ms -----")
 }

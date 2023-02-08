@@ -18,20 +18,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	request := &video.DeleteVideoRequest{
-		Title:       "Video5",
-		DeletorName: "sunyiwen",
-	}
 	startTime := time.Now().UnixMilli()
-	response, err := client.DeleteVideo(context.Background(), request)
+	request := &video.GetOneVideoInfoRequest{
+		VideoName: "Video5",
+	}
+
+	response, err := client.GetOneVideoInfo(context.Background(), request)
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}
 	endTime := time.Now().UnixMilli()
 	fmt.Println("----- Success To Receive Reponse -----")
 	fmt.Println("State=", response.State)
-	fmt.Println("DeleteVideoName=", response.DeleteVideoName)
-	fmt.Println("DeletorName=", response.DeletorName)
-	fmt.Println("VideoOwnerName=", response.VideoOwnerName)
-	fmt.Println("----- Total Time=", endTime-startTime, "ms -----")
+	fmt.Println("VideoId=", response.VideoId)
+	fmt.Println("PlayUrl=", response.PlayUrl)
+	fmt.Println("CoverUrl=", response.CoverUrl)
+	fmt.Println("VideoTitle=", response.VideoTitle)
+	fmt.Println("VideoSize=", response.VideoSize)
+	fmt.Println("VideoMimeType=", response.VideoMimeType)
+	fmt.Println("OwnerName=", response.OwnerName)
+	if response.State == true {
+		fmt.Println("----- GetOneVideoInfo :", endTime-startTime, "ms -----")
+	} else {
+		fmt.Println("----- GetOneVideoInfo Failed -----")
+	}
 }
