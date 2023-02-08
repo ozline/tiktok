@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	startTime := time.Now().UnixMilli()
+	startTime := time.Now().UnixNano()
 	number := 20
 	request := &video.DownloadMultiVideoRequest{
 		VideoNumber:     int64(number),
@@ -28,7 +28,7 @@ func main() {
 		log.Fatal("error", err.Error())
 	}
 
-	endTime := time.Now().UnixMilli()
+	endTime := time.Now().UnixNano()
 	//fmt.Println("----- Success To Receive Reponse -----")
 	//fmt.Println("State=", response.State)
 	//fmt.Println("VideoNumber=", response.VideoNumber)
@@ -39,7 +39,7 @@ func main() {
 	//fmt.Println("Owner", i, "=", response.OwnerNames[i-1])
 	//}
 	if response.State == true {
-		fmt.Println("----- DownMultiVideoTest=", endTime-startTime, "ms -----")
+		fmt.Println("----- DownMultiVideoTest=", endTime-startTime, "ns -----")
 	} else {
 		fmt.Println("----- DownMultiVideoTest Failed -----")
 	}

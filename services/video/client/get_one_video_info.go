@@ -11,14 +11,14 @@ import (
 )
 
 func main() {
-	fmt.Println("----- getOneVideoInfoTest -----")
+	//fmt.Println("----- getOneVideoInfoTest -----")
 
 	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8892"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	startTime := time.Now().UnixMilli()
+	startTime := time.Now().UnixNano()
 	request := &video.GetOneVideoInfoRequest{
 		VideoName: "Video5",
 	}
@@ -27,18 +27,18 @@ func main() {
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}
-	endTime := time.Now().UnixMilli()
+	endTime := time.Now().UnixNano()
 	fmt.Println("----- Success To Receive Reponse -----")
-	fmt.Println("State=", response.State)
-	fmt.Println("VideoId=", response.VideoId)
-	fmt.Println("PlayUrl=", response.PlayUrl)
-	fmt.Println("CoverUrl=", response.CoverUrl)
-	fmt.Println("VideoTitle=", response.VideoTitle)
-	fmt.Println("VideoSize=", response.VideoSize)
-	fmt.Println("VideoMimeType=", response.VideoMimeType)
+	//fmt.Println("State=", response.State)
+	//fmt.Println("VideoId=", response.VideoId)
+	//fmt.Println("PlayUrl=", response.PlayUrl)
+	//fmt.Println("CoverUrl=", response.CoverUrl)
+	//fmt.Println("VideoTitle=", response.VideoTitle)
+	//fmt.Println("VideoSize=", response.VideoSize)
+	//fmt.Println("VideoMimeType=", response.VideoMimeType)
 	fmt.Println("OwnerName=", response.OwnerName)
-	if response.State == true {
-		fmt.Println("----- GetOneVideoInfo :", endTime-startTime, "ms -----")
+	if response != nil && response.State == true {
+		fmt.Println("----- GetOneVideoInfo :", endTime-startTime, "ns -----")
 	} else {
 		fmt.Println("----- GetOneVideoInfo Failed -----")
 	}

@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-func DeleteOneVideoTest(videoName string, deletorName string) bool {
-	//fmt.Println("----- getOneVideoInfoTest -----")
+func main() {
+	//fmt.Println("----- DeleteOneVideoTest -----")
 
 	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8892"))
 	if err != nil {
@@ -19,20 +19,24 @@ func DeleteOneVideoTest(videoName string, deletorName string) bool {
 	}
 
 	request := &video.DeleteVideoRequest{
-		Title:       videoName,
-		DeletorName: deletorName,
+		Title:       "Video5",
+		DeletorName: "sunyiwen",
 	}
-	startTime := time.Now().UnixMilli()
+	startTime := time.Now().UnixNano()
 	response, err := client.DeleteVideo(context.Background(), request)
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}
-	endTime := time.Now().UnixMilli()
+	endTime := time.Now().UnixNano()
 	//fmt.Println("----- Success To Receive Reponse -----")
 	//fmt.Println("State=", response.State)
 	//fmt.Println("DeleteVideoName=", response.DeleteVideoName)
 	//fmt.Println("DeletorName=", response.DeletorName)
 	//fmt.Println("VideoOwnerName=", response.VideoOwnerName)
-	fmt.Println("----- Total Time=", endTime-startTime, "ms -----")
-	return response.State
+	if response.State == true {
+		fmt.Println("----- DeleteOneVideoTest :", endTime-startTime, "ns -----")
+	} else {
+		fmt.Println("----- DeleteOneVideoTest Failed -----")
+	}
+
 }

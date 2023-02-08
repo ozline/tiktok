@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	startTime := time.Now().UnixMilli()
+	startTime := time.Now().UnixNano()
 	for i := 1; i <= 30; i++ {
 		picstr := fmt.Sprintf("%s%d%s", "/home/ubuntu/Desktop/QingXuYing/tiktok/services/video/client/picture/pic", i, ".jpg")
 		vidstr := fmt.Sprintf("%s%d%s", "/home/ubuntu/Desktop/QingXuYing/tiktok/services/video/client/video/video", i, ".mp4")
@@ -36,6 +36,6 @@ func main() {
 		}
 
 	}
-	endTime := time.Now().UnixMilli()
-	fmt.Println("----- UpMultiVideoTest :", endTime-startTime, "ms -----")
+	endTime := time.Now().UnixNano()
+	fmt.Println("----- UpMultiVideoTest :", (endTime-startTime)/30, "ns -----")
 }

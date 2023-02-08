@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	startTime := time.Now().UnixMilli()
+	startTime := time.Now().UnixNano()
 	request := &video.DownloadOneVideoRequest{
 		VideoName: "Video3",
 	}
@@ -27,14 +27,14 @@ func main() {
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}
-	endTime := time.Now().UnixMilli()
+	endTime := time.Now().UnixNano()
 	//fmt.Println("----- Success To Receive Reponse -----")
 	//fmt.Println("State=", response.State)
 	//fmt.Println("VideoTitle=", response.VideoTitle)
 	//fmt.Println("VideoUrl=", response.VideoUrl)
 	//fmt.Println("OwnerName=", response.OwnerName)
 	if response.State == true {
-		fmt.Println("----- DownOneVideoTest :", endTime-startTime, "ms -----")
+		fmt.Println("----- DownOneVideoTest :", endTime-startTime, "ns -----")
 	} else {
 		fmt.Println("----- DownOneVideoTest Failed -----")
 	}
