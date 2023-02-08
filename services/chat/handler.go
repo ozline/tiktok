@@ -60,6 +60,9 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 
 	var messages []Message
 	db.Where("To_user_id <> ?", req.ToUserId).Find(&messages)
+	for index, _ := range messages {
+		db.Delete(&messages[index], messages[index].ID)
+	}
 	fromuserids := make([]int64, len(messages))
 	touserids := make([]int64, len(messages))
 	contents := make([]string, len(messages))
@@ -67,7 +70,6 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 		fromuserids[index] = message.From_user_id
 		touserids[index] = message.To_user_id
 		contents[index] = message.Content
-
 	}
 
 	response := chat.DouyinReceiveMessageResponse{

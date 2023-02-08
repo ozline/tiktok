@@ -27,6 +27,7 @@ func main() {
 	}
 
 	response, err := client.SendChatMessage(context.Background(), request)
+
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}

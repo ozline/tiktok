@@ -16,7 +16,7 @@ func main() {
 }
 
 func receive_message_by_id(userId int64) {
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(10 * time.Millisecond)
 	defer ticker.Stop()
 
 	for range ticker.C {
@@ -29,6 +29,7 @@ func receive_message_by_id(userId int64) {
 		}
 		response, _ := client.AcceptChatMessage(context.Background(), request)
 		if len(response.ToUserIds) > 0 {
+			fmt.Println("CurrentTime=", time.Now().UnixNano())
 			fmt.Println("----- User ", userId, "Receive ", len(response.ToUserIds), " Messages -----")
 			for index, _ := range response.ToUserIds {
 				fmt.Println("Message", index+1, ":", response.FromUserIds[index], "->", response.ToUserIds[index], "——", response.Contents[index])
