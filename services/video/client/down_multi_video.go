@@ -39,7 +39,7 @@ func main() {
 	//fmt.Println("Owner", i, "=", response.OwnerNames[i-1])
 	//}
 	if response.State == true {
-		fmt.Println("----- DownMultiVideoTest=", endTime-startTime, "ns -----")
+		fmt.Println("----- DownMultiVideoTest=", (endTime-startTime)/20, "ns -----")
 	} else {
 		fmt.Println("----- DownMultiVideoTest Failed -----")
 	}

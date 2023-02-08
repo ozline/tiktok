@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 	//go receive_message_by_id(int64(userId), seqId)
-	startTime := time.Now().UnixMilli()
+	startTime := time.Now().UnixNano()
 
 	request := &chat.DouyinSendMessageRequest{
 		FromUserId: int64(userId),
@@ -30,9 +30,9 @@ func main() {
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}
-	endTime := time.Now().UnixMilli()
+	endTime := time.Now().UnixNano()
 	if response.StatusMsg == "Success message" {
-		fmt.Println("----- Success To Send Message,Use ", endTime-startTime, " ms -----")
+		fmt.Println("----- Success To Send Message,Use ", endTime-startTime, " ns -----")
 	} else {
 		fmt.Println("----- Failure To Send Message -----")
 	}
