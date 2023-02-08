@@ -7,59 +7,73 @@ option go_package = "tiktok/video";
 service tiktokVideoService {
   rpc putVideo(putVideoRequest) returns (putVideoResponse){};
   rpc deleteVideo(deleteVideoRequest) returns (deleteVideoResponse){};
-  rpc getVideo(getVideoRequest) returns (getVideoResponse){};
-}
-
-message User {
-  int64 id = 1; // 用户id
-  string name = 2; // 用户名称
-  int64 follow_count = 3; // 关注总数
-  int64 follower_count = 4; // 粉丝总数
-  bool is_follow = 5; // true-已关注，false-未关注
-}
-
-message Video {
-  int64 id = 1; // 视频ID
-  User author = 2; // 作者信息
-  string play_url = 3; // 播放地址
-  string cover_url = 4; // 封面地址
-  int64 favorite_count = 5; // 视频的点赞总数
-  int64 comment_count = 6; // 视频的评论总数
-  bool is_favorite = 7; // 是否本人已点赞
-  string title = 8; // 标题
+  rpc getOneVideoInfo(getOneVideoInfoRequest) returns (getOneVideoInfoResponse){};
+  rpc downloadOneVideo(downloadOneVideoRequest) returns (downloadOneVideoResponse){};
+  rpc downloadMultiVideo(downloadMultiVideoRequest) returns (downloadMultiVideoResponse){};
 }
 
 message putVideoRequest{
-  Video videoInfo = 1;
+  string play_url = 1;
+  string cover_url = 2;
+  string title = 3;
+  string owner_name = 5;
 }
 
 message putVideoResponse{
-  string putState = 1;
-  Video videoInfo = 2;
-  string errState = 3;
+  bool state = 1;
+  string title = 2;
+  string owner_name = 3;
+  string errState = 4;
 }
 
 message deleteVideoRequest {
-  Video videoInfo = 1;
-  string selecTion = 2;
-  string deleteTime = 3;
+  string title = 1;
+  string deletor_name = 2;
 }
 
 message deleteVideoResponse {
-  string deleteState = 1;
-  string deleteFileName = 2;
-  string deleteUserName = 3;
-  string fileOwnerName = 4;
+  bool state = 1;
+  string deleteVideoName = 2;
+  string deletorName = 3;
+  string videoOwnerName = 4;
   string errState = 5;
 }
 
-message getVideoRequest {
-  string fileNumber = 1;
+message getOneVideoInfoRequest {
+  string videoName = 1;
 }
 
-message getVideoResponse {
-  string getState = 1;
-  repeated Video videos = 2;
-  string errState = 3;
+message getOneVideoInfoResponse {
+  bool state = 1;
+  int64 video_id = 2; // 视频ID
+  string play_url = 3; // 播放地址
+  string cover_url = 4; // 封面地址
+  string video_title = 5; // 标题
+  int64 video_size = 6;
+  string video_mime_type = 7;
+  string owner_name = 8; // 用户名称
+  string errState = 9;
+}
+message downloadOneVideoRequest {
+  string videoName = 1;
+}
+
+message downloadOneVideoResponse {
+  bool state = 1;
+  string video_title = 2;
+  string video_url = 3;
+  string owner_name = 4;
+}
+
+message downloadMultiVideoRequest {
+  int64 video_number = 1;
+  string downloador_Name = 2;
+}
+
+message downloadMultiVideoResponse {
+  bool state = 1;
+  int64 videoNumber = 2;
+  repeated string video_urls = 3;
+  string errState = 4;
 }
 

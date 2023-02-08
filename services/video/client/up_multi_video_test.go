@@ -12,12 +12,13 @@ import (
 
 func main() {
 	fmt.Println("----- downMultiVideoTest -----")
-	startTime := time.Now().UnixMilli()
+
 	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8888"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	startTime := time.Now().UnixMilli()
 	for i := 1; i <= 30; i++ {
 		fmt.Println("----- ", i, " -----")
 		picstr := fmt.Sprintf("%s%d%s", "/home/ubuntu/Desktop/QingXuYing/tiktok/services/video/client/picture/pic", i, ".jpg")

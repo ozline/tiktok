@@ -11,27 +11,27 @@ import (
 )
 
 func main() {
-	fmt.Println("----- getOneVideoInfoTest -----")
-	startTime := time.Now().UnixMilli()
+	fmt.Println("----- downMultiVideoTest -----")
+
 	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8888"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	request := &video.DeleteVideoRequest{
-		Title:       "Video5",
-		DeletorName: "sunyiwen",
+	startTime := time.Now().UnixMilli()
+	request := &video.DownloadOneVideoRequest{
+		VideoName: "Video5",
 	}
 
-	response, err := client.DeleteVideo(context.Background(), request)
+	response, err := client.DownloadOneVideo(context.Background(), request)
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}
 	endTime := time.Now().UnixMilli()
 	fmt.Println("----- Success To Receive Reponse -----")
 	fmt.Println("State=", response.State)
-	fmt.Println("DeleteVideoName=", response.DeleteVideoName)
-	fmt.Println("DeletorName=", response.DeletorName)
-	fmt.Println("VideoOwnerName=", response.VideoOwnerName)
+	fmt.Println("VideoTitle=", response.VideoTitle)
+	fmt.Println("VideoUrl=", response.VideoUrl)
+	fmt.Println("OwnerName=", response.OwnerName)
 	fmt.Println("----- Total Time=", endTime-startTime, "ms -----")
 }

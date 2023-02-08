@@ -43,7 +43,7 @@ func sendChatMessageHandler(ctx context.Context, handler interface{}, arg, resul
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(chat.DouyinMessageChatRequest)
+		req := new(chat.DouyinSendMessageRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -73,12 +73,12 @@ func newSendChatMessageResult() interface{} {
 }
 
 type SendChatMessageArgs struct {
-	Req *chat.DouyinMessageChatRequest
+	Req *chat.DouyinSendMessageRequest
 }
 
 func (p *SendChatMessageArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(chat.DouyinMessageChatRequest)
+		p.Req = new(chat.DouyinSendMessageRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -105,7 +105,7 @@ func (p *SendChatMessageArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *SendChatMessageArgs) Unmarshal(in []byte) error {
-	msg := new(chat.DouyinMessageChatRequest)
+	msg := new(chat.DouyinSendMessageRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -113,9 +113,9 @@ func (p *SendChatMessageArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var SendChatMessageArgs_Req_DEFAULT *chat.DouyinMessageChatRequest
+var SendChatMessageArgs_Req_DEFAULT *chat.DouyinSendMessageRequest
 
-func (p *SendChatMessageArgs) GetReq() *chat.DouyinMessageChatRequest {
+func (p *SendChatMessageArgs) GetReq() *chat.DouyinSendMessageRequest {
 	if !p.IsSetReq() {
 		return SendChatMessageArgs_Req_DEFAULT
 	}
@@ -127,14 +127,14 @@ func (p *SendChatMessageArgs) IsSetReq() bool {
 }
 
 type SendChatMessageResult struct {
-	Success *chat.DouyinMessageChatResponse
+	Success *chat.DouyinSendMessageResponse
 }
 
-var SendChatMessageResult_Success_DEFAULT *chat.DouyinMessageChatResponse
+var SendChatMessageResult_Success_DEFAULT *chat.DouyinSendMessageResponse
 
 func (p *SendChatMessageResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(chat.DouyinMessageChatResponse)
+		p.Success = new(chat.DouyinSendMessageResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -161,7 +161,7 @@ func (p *SendChatMessageResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *SendChatMessageResult) Unmarshal(in []byte) error {
-	msg := new(chat.DouyinMessageChatResponse)
+	msg := new(chat.DouyinSendMessageResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (p *SendChatMessageResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *SendChatMessageResult) GetSuccess() *chat.DouyinMessageChatResponse {
+func (p *SendChatMessageResult) GetSuccess() *chat.DouyinSendMessageResponse {
 	if !p.IsSetSuccess() {
 		return SendChatMessageResult_Success_DEFAULT
 	}
@@ -177,7 +177,7 @@ func (p *SendChatMessageResult) GetSuccess() *chat.DouyinMessageChatResponse {
 }
 
 func (p *SendChatMessageResult) SetSuccess(x interface{}) {
-	p.Success = x.(*chat.DouyinMessageChatResponse)
+	p.Success = x.(*chat.DouyinSendMessageResponse)
 }
 
 func (p *SendChatMessageResult) IsSetSuccess() bool {
@@ -188,7 +188,7 @@ func acceptChatMessageHandler(ctx context.Context, handler interface{}, arg, res
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(chat.Message)
+		req := new(chat.DouyinReceiveMessageRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -218,12 +218,12 @@ func newAcceptChatMessageResult() interface{} {
 }
 
 type AcceptChatMessageArgs struct {
-	Req *chat.Message
+	Req *chat.DouyinReceiveMessageRequest
 }
 
 func (p *AcceptChatMessageArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(chat.Message)
+		p.Req = new(chat.DouyinReceiveMessageRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -250,7 +250,7 @@ func (p *AcceptChatMessageArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *AcceptChatMessageArgs) Unmarshal(in []byte) error {
-	msg := new(chat.Message)
+	msg := new(chat.DouyinReceiveMessageRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -258,9 +258,9 @@ func (p *AcceptChatMessageArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var AcceptChatMessageArgs_Req_DEFAULT *chat.Message
+var AcceptChatMessageArgs_Req_DEFAULT *chat.DouyinReceiveMessageRequest
 
-func (p *AcceptChatMessageArgs) GetReq() *chat.Message {
+func (p *AcceptChatMessageArgs) GetReq() *chat.DouyinReceiveMessageRequest {
 	if !p.IsSetReq() {
 		return AcceptChatMessageArgs_Req_DEFAULT
 	}
@@ -272,14 +272,14 @@ func (p *AcceptChatMessageArgs) IsSetReq() bool {
 }
 
 type AcceptChatMessageResult struct {
-	Success *chat.DouyinMessageChatResponse
+	Success *chat.DouyinReceiveMessageResponse
 }
 
-var AcceptChatMessageResult_Success_DEFAULT *chat.DouyinMessageChatResponse
+var AcceptChatMessageResult_Success_DEFAULT *chat.DouyinReceiveMessageResponse
 
 func (p *AcceptChatMessageResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(chat.DouyinMessageChatResponse)
+		p.Success = new(chat.DouyinReceiveMessageResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -306,7 +306,7 @@ func (p *AcceptChatMessageResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *AcceptChatMessageResult) Unmarshal(in []byte) error {
-	msg := new(chat.DouyinMessageChatResponse)
+	msg := new(chat.DouyinReceiveMessageResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -314,7 +314,7 @@ func (p *AcceptChatMessageResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *AcceptChatMessageResult) GetSuccess() *chat.DouyinMessageChatResponse {
+func (p *AcceptChatMessageResult) GetSuccess() *chat.DouyinReceiveMessageResponse {
 	if !p.IsSetSuccess() {
 		return AcceptChatMessageResult_Success_DEFAULT
 	}
@@ -322,7 +322,7 @@ func (p *AcceptChatMessageResult) GetSuccess() *chat.DouyinMessageChatResponse {
 }
 
 func (p *AcceptChatMessageResult) SetSuccess(x interface{}) {
-	p.Success = x.(*chat.DouyinMessageChatResponse)
+	p.Success = x.(*chat.DouyinReceiveMessageResponse)
 }
 
 func (p *AcceptChatMessageResult) IsSetSuccess() bool {
@@ -339,7 +339,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) SendChatMessage(ctx context.Context, Req *chat.DouyinMessageChatRequest) (r *chat.DouyinMessageChatResponse, err error) {
+func (p *kClient) SendChatMessage(ctx context.Context, Req *chat.DouyinSendMessageRequest) (r *chat.DouyinSendMessageResponse, err error) {
 	var _args SendChatMessageArgs
 	_args.Req = Req
 	var _result SendChatMessageResult
@@ -349,7 +349,7 @@ func (p *kClient) SendChatMessage(ctx context.Context, Req *chat.DouyinMessageCh
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) AcceptChatMessage(ctx context.Context, Req *chat.Message) (r *chat.DouyinMessageChatResponse, err error) {
+func (p *kClient) AcceptChatMessage(ctx context.Context, Req *chat.DouyinReceiveMessageRequest) (r *chat.DouyinReceiveMessageResponse, err error) {
 	var _args AcceptChatMessageArgs
 	_args.Req = Req
 	var _result AcceptChatMessageResult
