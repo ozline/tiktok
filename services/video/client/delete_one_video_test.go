@@ -13,7 +13,7 @@ import (
 func main() {
 	fmt.Println("----- getOneVideoInfoTest -----")
 
-	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8888"))
+	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8892"))
 	if err != nil {
 		log.Fatal(err)
 	}
