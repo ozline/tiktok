@@ -13,22 +13,22 @@ run_client:
 
 .PHONY: run_server
 run_server:
-	go run main.go handler.go mysqlHandler.go snowFlake.go storageHandler.go
+	go run main.go handler.go mysql_handler.go storage_handler.go
 
 test_upMultiVideo:
-	go run ./client/upMultiVideoTest.go
+	go run ./client/up_multi_video.go
 
 test_downMultiVideo:
-	go run ./client/downMultiVideoTest.go
+	go run ./client/down_multi_video.go
 
 test_downOneVideo:
-	go run ./client/downOneVideoTest.go
+	go run ./client/down_one_video.go
 
 test_getOneVideoInfo:
-	go run ./client/getOneVideoInfoTest.go
+	go run ./client/get_one_video_info.go
 
 test_deleteOneVideo:
-	go run ./client/deleteOneVideoTest.go
+	go run ./client/delete_one_video.go
 # Service: video
 # Path: services/video
 # Optional: -use "github.com/ozline/tiktok/kitex_gen"

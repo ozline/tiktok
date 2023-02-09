@@ -30,7 +30,7 @@ func main() {
 		DB:       0,  // use default DB
 	})
 
-	go PerioUpdateVideoCache(10)
+	//go PerioUpdateVideoCache(10)
 	err = svr.Run()
 
 	if err != nil {
