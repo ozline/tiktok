@@ -1,24 +1,25 @@
 package main
 
 import (
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
-
-	"github.com/gorilla/websocket"
 )
 
 type Server struct {
-	onlineUserMap map[string]*User
+	onlineUserMap map[int64]*User
 	userMapLock   sync.RWMutex
+	sqlLayer      *websocket.Conn
 }
 type WebClient struct {
-	UserName string
-	conn     *websocket.Conn
+	UserId int64
+	conn   *websocket.Conn
 }
 
 var server = Server{
-	onlineUserMap: make(map[string]*User),
+	onlineUserMap: make(map[int64]*User),
 }
 
 var upgrader = websocket.Upgrader{ // 用于将http请求升级i为长连接的websocket
@@ -32,9 +33,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	userInfo := make(map[string][]string)
 	wsConn, err := upgrader.Upgrade(w, r, userInfo) //将 http 升级到 WebSocket 协议
 	//fmt.Println("--- Server ---", r.Header.Get("UserName"))
+	userid, _ := strconv.ParseInt(r.Header.Get("UserId"), 10, 64)
 	clientInfo := WebClient{
-		UserName: r.Header.Get("UserName"),
-		conn:     wsConn,
+		UserId: userid,
+		conn:   wsConn,
 	}
 	if err != nil {
 		log.Println(err)
@@ -50,12 +52,12 @@ func (server *Server) Start() {
 
 func (server *Server) addOnlineUserMap(user *User) {
 	server.userMapLock.Lock()
-	server.onlineUserMap[user.userName] = user
+	server.onlineUserMap[user.userId] = user
 	server.userMapLock.Unlock()
 }
 
 func (server *Server) deleteOnlineUserMap(user *User) {
 	server.userMapLock.Lock()
-	delete(server.onlineUserMap, user.addr)
+	delete(server.onlineUserMap, user.userId)
 	server.userMapLock.Unlock()
 }

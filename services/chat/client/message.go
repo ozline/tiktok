@@ -1,8 +1,8 @@
 package main
 
 type WebMessage struct {
-	FromUser   string
-	ToUser     string
+	FromUserId int64
+	ToUserId   int64
 	Content    string
-	CreateTime int64
+	CreateTime string
 }

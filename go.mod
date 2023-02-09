@@ -18,7 +18,7 @@ require (
 	gorm.io/gorm v1.24.3
 )
 
-require github.com/gorilla/websocket v1.5.0 // indirect
+require github.com/gorilla/websocket v1.5.0
 
 require (
 	github.com/apache/thrift v0.13.0 // indirect

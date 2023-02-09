@@ -15,13 +15,14 @@ message douyin_send_message_request {
   int64 from_user_id = 2;
   int64 to_user_id = 3; // 对方用户id
   string content = 4;
+  int64 create_time = 5;
 }
 
 message douyin_send_message_response {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
   int64 from_user_id = 3;
-  int64 to_user_id = 4;
+  string to_user_name = 4;
   string content = 5;
 }
 
@@ -37,5 +38,6 @@ message douyin_receive_message_response {
   repeated int64 from_user_ids = 3;
   repeated int64 to_user_ids = 4;
   repeated string contents = 5;
+  repeated int64 create_time = 6;
 }
 
