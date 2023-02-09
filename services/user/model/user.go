@@ -1,11 +1,10 @@
 package model
 
 import (
-	"gorm.io/gorm"
+	"fmt"
+	"github.com/ozline/tiktok/services/user/configs"
 	"time"
 )
-
-var db *gorm.DB
 
 type User struct {
 	UserId        int64
@@ -19,7 +18,7 @@ type User struct {
 // 注册检查
 func CheckUser(username string) int {
 	var user User
-	db.Where("username = ?", username).First(&user)
+	configs.Db.Where("username = ?", username).First(&user)
 	if user.UserId > 0 {
 		return 1 //1代表用户已存在
 	}
@@ -28,7 +27,8 @@ func CheckUser(username string) int {
 
 // 注册用户
 func AddUser(data *User) int {
-	err := db.Create(&data).Error
+	err := configs.Db.Create(&data).Error
+	fmt.Println(err)
 	if err != nil {
 		return 1
 	}
@@ -38,13 +38,13 @@ func AddUser(data *User) int {
 // 查询注册用户id
 func SelecUser(username string) int64 {
 	var user User
-	db.Where("username = ?", username).First(&user)
+	configs.Db.Where("username = ?", username).First(&user)
 	return user.UserId
 }
 
 // 登录检查
 func LoginCheck(data *User, username string) int {
-	db.Where("username = ?", username).First(&data)
+	configs.Db.Where("username = ?", username).First(&data)
 	if data.UserId <= 0 {
 		return 1 //1代表用户不存在
 	}
@@ -54,6 +54,6 @@ func LoginCheck(data *User, username string) int {
 // 通过id查询用户信息
 func GetUserById(userid int64) User {
 	var user User
-	db.Where("user_id = ?", userid).First(&user)
+	configs.Db.Where("user_id = ?", userid).First(&user)
 	return user
 }

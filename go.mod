@@ -9,7 +9,6 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/glog v1.0.0
-	github.com/google/uuid v1.3.0
 	github.com/qiniu/go-sdk/v7 v7.14.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	google.golang.org/protobuf v1.28.1
@@ -18,7 +17,10 @@ require (
 	gorm.io/gorm v1.24.3
 )
 
-require github.com/gorilla/websocket v1.5.0
+require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gorilla/websocket v1.5.0
+)
 
 require (
 	github.com/apache/thrift v0.13.0 // indirect
