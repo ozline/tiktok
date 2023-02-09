@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/golang/glog"
+	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
 	"strconv"
 	"time"
@@ -26,12 +28,12 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 	}
 
 	// 雪花算法
-	snow := Snowflake{
-		timestamp:    time.Now().UnixNano() / 1000000,
-		workerid:     1,
-		datacenterid: 1,
-		sequence:     0,
+	snow, err := snowflake.NewSnowflake(int64(1), int64(1))
+	if err != nil {
+		glog.Error(err)
+		return
 	}
+
 	videoID := snow.NextVal()
 	videoInfo.M.Lock()
 	videoInfo.ID = videoID

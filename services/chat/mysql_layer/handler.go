@@ -8,7 +8,6 @@ import (
 	chat "github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"time"
 )
 
 // TiktokChatServiceImpl implements the last service interface defined in the IDL.
@@ -19,7 +18,7 @@ type Message struct {
 	To_user_id   int64  // 该消息接收者的id
 	From_user_id int64  // 该消息发送者的id
 	Content      string // 消息内容
-	Create_time  string // 消息创建时间
+	Create_time  int64  // 消息创建时间
 }
 
 // SendChatMessage implements the TiktokChatServiceImpl interface.
@@ -35,7 +34,7 @@ func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.D
 		From_user_id: req.FromUserId,
 		To_user_id:   req.ToUserId,
 		Content:      req.Content,
-		Create_time:  time.Now().Format("2006-01-02 15:04:05"),
+		Create_time:  req.CreateTime,
 	}
 	s.send_message_mysql_handler(message)
 	s.receive_message_mysql_handler(message)
@@ -44,8 +43,8 @@ func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.D
 		StatusCode: 1,
 		StatusMsg:  "Success message",
 		FromUserId: req.FromUserId,
-		ToUserId:   req.ToUserId,
-		Content:    req.Content,
+		//ToUserId:   req.ToUserId,
+		Content: req.Content,
 	}
 	return &response, nil
 }
@@ -59,23 +58,39 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 	}
 
 	var messages []Message
-	db.Where("To_user_id <> ?", req.ToUserId).Find(&messages)
-	fromuserids := make([]int64, len(messages))
-	touserids := make([]int64, len(messages))
-	contents := make([]string, len(messages))
-	for index, message := range messages {
-		fromuserids[index] = message.From_user_id
-		touserids[index] = message.To_user_id
-		contents[index] = message.Content
+	//fmt.Println("ToUserId=", req.ToUserId)
+	db.Where("To_user_id == ?", req.ToUserId).Find(&messages)
+	//fmt.Println("len(messages)=", len(messages))
+	if len(messages) > 0 {
+		for index, _ := range messages {
+			db.Delete(&messages[index], messages[index].ID)
+		}
+		fromuserids := make([]int64, len(messages))
+		touserids := make([]int64, len(messages))
+		contents := make([]string, len(messages))
+		createTimes := make([]int64, len(messages))
+		for index, message := range messages {
+			fromuserids[index] = message.From_user_id
+			touserids[index] = message.To_user_id
+			contents[index] = message.Content
+			createTimes[index] = message.Create_time
+		}
 
+		response := chat.DouyinReceiveMessageResponse{
+			StatusCode:  1,
+			StatusMsg:   "Success Receive",
+			FromUserIds: fromuserids,
+			ToUserIds:   touserids,
+			Contents:    contents,
+			CreateTime:  createTimes,
+		}
+		return &response, nil
+	} else {
+		response := chat.DouyinReceiveMessageResponse{
+			StatusCode: 2,
+			StatusMsg:  "Don't Have Any Videos",
+		}
+		return &response, nil
 	}
 
-	response := chat.DouyinReceiveMessageResponse{
-		StatusCode:  1,
-		StatusMsg:   "Success Receive",
-		FromUserIds: fromuserids,
-		ToUserIds:   touserids,
-		Contents:    contents,
-	}
-	return &response, nil
 }

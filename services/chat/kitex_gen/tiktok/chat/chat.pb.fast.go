@@ -34,6 +34,11 @@ func (x *DouyinSendMessageRequest) FastRead(buf []byte, _type int8, number int32
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 5:
+		offset, err = x.fastReadField5(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -64,6 +69,11 @@ func (x *DouyinSendMessageRequest) fastReadField3(buf []byte, _type int8) (offse
 
 func (x *DouyinSendMessageRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.Content, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *DouyinSendMessageRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
+	x.CreateTime, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -123,7 +133,7 @@ func (x *DouyinSendMessageResponse) fastReadField3(buf []byte, _type int8) (offs
 }
 
 func (x *DouyinSendMessageResponse) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.ToUserId, offset, err = fastpb.ReadInt64(buf, _type)
+	x.ToUserName, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -204,6 +214,11 @@ func (x *DouyinReceiveMessageResponse) FastRead(buf []byte, _type int8, number i
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 6:
+		offset, err = x.fastReadField6(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -265,6 +280,20 @@ func (x *DouyinReceiveMessageResponse) fastReadField5(buf []byte, _type int8) (o
 	return offset, err
 }
 
+func (x *DouyinReceiveMessageResponse) fastReadField6(buf []byte, _type int8) (offset int, err error) {
+	offset, err = fastpb.ReadList(buf, _type,
+		func(buf []byte, _type int8) (n int, err error) {
+			var v int64
+			v, offset, err = fastpb.ReadInt64(buf, _type)
+			if err != nil {
+				return offset, err
+			}
+			x.CreateTime = append(x.CreateTime, v)
+			return offset, err
+		})
+	return offset, err
+}
+
 func (x *DouyinSendMessageRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -273,6 +302,7 @@ func (x *DouyinSendMessageRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
+	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -305,6 +335,14 @@ func (x *DouyinSendMessageRequest) fastWriteField4(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteString(buf[offset:], 4, x.Content)
+	return offset
+}
+
+func (x *DouyinSendMessageRequest) fastWriteField5(buf []byte) (offset int) {
+	if x.CreateTime == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 5, x.CreateTime)
 	return offset
 }
 
@@ -345,10 +383,10 @@ func (x *DouyinSendMessageResponse) fastWriteField3(buf []byte) (offset int) {
 }
 
 func (x *DouyinSendMessageResponse) fastWriteField4(buf []byte) (offset int) {
-	if x.ToUserId == 0 {
+	if x.ToUserName == "" {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 4, x.ToUserId)
+	offset += fastpb.WriteString(buf[offset:], 4, x.ToUserName)
 	return offset
 }
 
@@ -403,6 +441,7 @@ func (x *DouyinReceiveMessageResponse) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
 	offset += x.fastWriteField5(buf[offset:])
+	offset += x.fastWriteField6(buf[offset:])
 	return offset
 }
 
@@ -458,6 +497,19 @@ func (x *DouyinReceiveMessageResponse) fastWriteField5(buf []byte) (offset int) 
 	return offset
 }
 
+func (x *DouyinReceiveMessageResponse) fastWriteField6(buf []byte) (offset int) {
+	if len(x.CreateTime) == 0 {
+		return offset
+	}
+	offset += fastpb.WriteListPacked(buf[offset:], 6, len(x.CreateTime),
+		func(buf []byte, numTagOrKey, numIdxOrVal int32) int {
+			offset := 0
+			offset += fastpb.WriteInt64(buf[offset:], numTagOrKey, x.CreateTime[numIdxOrVal])
+			return offset
+		})
+	return offset
+}
+
 func (x *DouyinSendMessageRequest) Size() (n int) {
 	if x == nil {
 		return n
@@ -466,6 +518,7 @@ func (x *DouyinSendMessageRequest) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
+	n += x.sizeField5()
 	return n
 }
 
@@ -498,6 +551,14 @@ func (x *DouyinSendMessageRequest) sizeField4() (n int) {
 		return n
 	}
 	n += fastpb.SizeString(4, x.Content)
+	return n
+}
+
+func (x *DouyinSendMessageRequest) sizeField5() (n int) {
+	if x.CreateTime == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(5, x.CreateTime)
 	return n
 }
 
@@ -538,10 +599,10 @@ func (x *DouyinSendMessageResponse) sizeField3() (n int) {
 }
 
 func (x *DouyinSendMessageResponse) sizeField4() (n int) {
-	if x.ToUserId == 0 {
+	if x.ToUserName == "" {
 		return n
 	}
-	n += fastpb.SizeInt64(4, x.ToUserId)
+	n += fastpb.SizeString(4, x.ToUserName)
 	return n
 }
 
@@ -596,6 +657,7 @@ func (x *DouyinReceiveMessageResponse) Size() (n int) {
 	n += x.sizeField3()
 	n += x.sizeField4()
 	n += x.sizeField5()
+	n += x.sizeField6()
 	return n
 }
 
@@ -651,18 +713,32 @@ func (x *DouyinReceiveMessageResponse) sizeField5() (n int) {
 	return n
 }
 
+func (x *DouyinReceiveMessageResponse) sizeField6() (n int) {
+	if len(x.CreateTime) == 0 {
+		return n
+	}
+	n += fastpb.SizeListPacked(6, len(x.CreateTime),
+		func(numTagOrKey, numIdxOrVal int32) int {
+			n := 0
+			n += fastpb.SizeInt64(numTagOrKey, x.CreateTime[numIdxOrVal])
+			return n
+		})
+	return n
+}
+
 var fieldIDToName_DouyinSendMessageRequest = map[int32]string{
 	1: "Token",
 	2: "FromUserId",
 	3: "ToUserId",
 	4: "Content",
+	5: "CreateTime",
 }
 
 var fieldIDToName_DouyinSendMessageResponse = map[int32]string{
 	1: "StatusCode",
 	2: "StatusMsg",
 	3: "FromUserId",
-	4: "ToUserId",
+	4: "ToUserName",
 	5: "Content",
 }
 
@@ -678,4 +754,5 @@ var fieldIDToName_DouyinReceiveMessageResponse = map[int32]string{
 	3: "FromUserIds",
 	4: "ToUserIds",
 	5: "Contents",
+	6: "CreateTime",
 }
