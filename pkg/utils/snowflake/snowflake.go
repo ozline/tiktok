@@ -25,10 +25,10 @@ const (
 
 type Snowflake struct {
 	sync.Mutex
-	timestamp    int64
-	workerid     int64
-	datacenterid int64
-	sequence     int64
+	Timestamp    int64
+	Workerid     int64
+	Datacenterid int64
+	Sequence     int64
 }
 
 func NewSnowflake(datacenterid, workerid int64) (*Snowflake, error) {
@@ -39,29 +39,29 @@ func NewSnowflake(datacenterid, workerid int64) (*Snowflake, error) {
 		return nil, fmt.Errorf("workerid must be between 0 and %d", workeridMax-1)
 	}
 	return &Snowflake{
-		timestamp:    0,
-		datacenterid: datacenterid,
-		workerid:     workerid,
-		sequence:     0,
+		Timestamp:    0,
+		Datacenterid: datacenterid,
+		Workerid:     workerid,
+		Sequence:     0,
 	}, nil
 }
 
 func (s *Snowflake) NextVal() int64 {
 	s.Lock()
 	now := time.Now().UnixNano() / 1000000 // 转毫秒
-	if s.timestamp == now {
+	if s.Timestamp == now {
 		// 当同一时间戳（精度：毫秒）下多次生成id会增加序列号
-		s.sequence = (s.sequence + 1) & sequenceMask
-		if s.sequence == 0 {
+		s.Sequence = (s.Sequence + 1) & sequenceMask
+		if s.Sequence == 0 {
 			// 如果当前序列超出12bit长度，则需要等待下一毫秒
 			// 下一毫秒将使用sequence:0
-			for now <= s.timestamp {
+			for now <= s.Timestamp {
 				now = time.Now().UnixNano() / 1000000
 			}
 		}
 	} else {
 		// 不同时间戳（精度：毫秒）下直接使用序列号：0
-		s.sequence = 0
+		s.Sequence = 0
 	}
 	t := now - epoch
 	if t > timestampMax {
@@ -69,8 +69,8 @@ func (s *Snowflake) NextVal() int64 {
 		glog.Errorf("epoch must be between 0 and %d", timestampMax-1)
 		return 0
 	}
-	s.timestamp = now
-	r := int64((t)<<timestampShift | (s.datacenterid << datacenteridShift) | (s.workerid << workeridShift) | (s.sequence))
+	s.Timestamp = now
+	r := int64((t)<<timestampShift | (s.Datacenterid << datacenteridShift) | (s.Workerid << workeridShift) | (s.Sequence))
 	s.Unlock()
 	return r
 }

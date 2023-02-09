@@ -3,16 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // TiktokUserServiceImpl implements the last service interface defined in the IDL.
-type TiktokUserServiceImpl struct{}
+type TiktokUserServiceImpl struct {
+}
 
 // 登录
 func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
@@ -61,13 +62,18 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	}
 	encodePWD := string(hash)
 	//3.用户数据赋值
-	uuserId := uuid.New()
-	user.UserId = int64(uuserId.ID())
+	snow := snowflake.Snowflake{
+		Timestamp:    time.Now().UnixNano() / 1000000,
+		Workerid:     1,
+		Datacenterid: 1,
+		Sequence:     0,
+	}
+	id := snow.NextVal()
+	user.UserId = id
 	user.Username = username
 	user.Password = encodePWD
 	user.FollowCount = 0
 	user.FollowerCount = 0
-	user.CreateDate = time.Now()
 	//4.用户数据插入数据库
 	if ok := model.AddUser(&user); ok == 1 {
 		resp.StatusCode = 1
@@ -75,9 +81,9 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 		return resp, nil
 	}
 	//5.查询注册用户的id
-	id := model.SelecUser(username)
-	user.UserId = id
-	fmt.Println(id)
+	userid := model.SelecUser(username)
+	user.UserId = userid
+	fmt.Println(userid)
 	//6.注册成功
 	resp.StatusCode = 0
 	resp.StatusMsg = "注册成功!"
