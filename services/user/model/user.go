@@ -3,23 +3,33 @@ package model
 import (
 	"fmt"
 	"github.com/ozline/tiktok/services/user/configs"
+	"gorm.io/gorm"
 	"time"
 )
 
-type User struct {
-	UserId        int64
+type Model struct {
+	Id            int64 `gorm:"primarykey"`
 	Username      string
 	Password      string
 	FollowCount   int64
 	FollowerCount int64
-	CreateDate    time.Time
+	CreateAt      time.Time
+	updateAt      time.Time
+	deleteAt      time.Time `gorm:"index"`
+}
+type User struct {
+	Username      string
+	Password      string
+	FollowCount   int64
+	FollowerCount int64
+	gorm.Model
 }
 
 // 注册检查
 func CheckUser(username string) int {
 	var user User
 	configs.Db.Where("username = ?", username).First(&user)
-	if user.UserId > 0 {
+	if user.ID > 0 {
 		return 1 //1代表用户已存在
 	}
 	return 0 //0代表用户不存在
@@ -39,13 +49,13 @@ func AddUser(data *User) int {
 func SelecUser(username string) int64 {
 	var user User
 	configs.Db.Where("username = ?", username).First(&user)
-	return user.UserId
+	return int64(user.ID)
 }
 
 // 登录检查
 func LoginCheck(data *User, username string) int {
 	configs.Db.Where("username = ?", username).First(&data)
-	if data.UserId <= 0 {
+	if data.ID <= 0 {
 		return 1 //1代表用户不存在
 	}
 	return 0

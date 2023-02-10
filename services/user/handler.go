@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/golang/glog"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
-	"github.com/ozline/tiktok/services/user/utils"
-	"time"
-
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
+	"github.com/ozline/tiktok/services/user/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,13 +18,13 @@ type TiktokUserServiceImpl struct {
 
 // 登录
 func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
+	//0.创建返回对象
 	resp = new(user.DouyinUserLoginResponse)
 	var user model.User
 	username := req.Username
 	password := req.Password
 	//1.检查用户是否存在
 	if exist := model.LoginCheck(&user, username); exist == 1 {
-		fmt.Println("该用户不存在！")
 		resp.StatusCode = 1
 		resp.StatusMsg = "该用户不存在!"
 		return resp, nil
@@ -38,7 +38,7 @@ func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserL
 		return resp, nil
 	}
 	//3.登陆验证通过，生成token
-	token, err := utils.CreateToken(user.UserId)
+	token, err := utils.CreateToken(int64(user.ID))
 	if err != nil {
 		resp.StatusCode = 1
 		resp.StatusMsg = "Token Create failed"
@@ -47,13 +47,14 @@ func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserL
 	//4.返回
 	resp.StatusCode = 0 //0代表成功其他代表失败
 	resp.StatusMsg = "登录成功！"
-	resp.UserId = user.UserId
+	resp.UserId = int64(user.ID)
 	resp.Token = token
 	return resp, err
 }
 
 // 注册
 func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
+	//0.创建返回对象
 	resp = new(user.DouyinUserRegisterResponse)
 	var user model.User
 	username := req.Username
@@ -71,17 +72,15 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	}
 	encodePWD := string(hash)
 	//3.用户数据赋值
-	snow := snowflake.Snowflake{
-		Timestamp:    time.Now().UnixNano() / 1000000,
-		Workerid:     1,
-		Datacenterid: 1,
-		Sequence:     0,
+	sf, err := snowflake.NewSnowflake(constants.SnowflakeWorkerID, constants.SnowflakeDatacenterID)
+	if err != nil {
+		glog.Error(err)
+		return
 	}
-	id := snow.NextVal()
-	user.UserId = id
+	id := sf.NextVal()
+	user.ID = uint(id)
 	user.Username = username
 	user.Password = encodePWD
-	user.CreateDate = time.Now()
 	//4.用户数据插入数据库
 	if ok := model.AddUser(&user); ok == 1 {
 		resp.StatusCode = 1
@@ -107,6 +106,7 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 
 // 用户信息
 func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
+	//0.创建返回对象
 	resp = new(user.DouyinUserResponse)
 	//1.获取id
 	id := req.UserId
@@ -114,7 +114,7 @@ func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRe
 	user_info := model.GetUserById(id)
 	//3.数据绑定
 	resp.User = &user.User{
-		Id:            user_info.UserId,
+		Id:            int64(user_info.ID),
 		Name:          user_info.Username,
 		FollowCount:   user_info.FollowCount,
 		FollowerCount: user_info.FollowerCount,

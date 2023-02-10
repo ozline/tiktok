@@ -25,7 +25,7 @@ func main() {
 	//log.Println("PingPong Func Response", resp)
 	//--------------------注册测试-------------------------
 	//registerRequest := &user.DouyinUserRegisterRequest{
-	//	Username: "test1",
+	//	Username: "test",
 	//	Password: "123456",
 	//}
 	//registerResponse, err := client.Register(context.Background(), registerRequest)
@@ -45,7 +45,7 @@ func main() {
 	//log.Println(loginResponse)
 	//--------------------获取用户信息测试-------------------------
 	userRequest := &user.DouyinUserRequest{
-		UserId: 411697972758319105,
+		UserId: 411828220120268800,
 		Token:  "",
 	}
 	userResponse, err := client.Info(context.Background(), userRequest)
