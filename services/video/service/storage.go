@@ -15,13 +15,14 @@ type MyPutRet struct {
 	Bucket string
 	Name   string
 }
+type StorageService struct{}
 
 var accessKey = "m5KRX39z1fu9ssut0SFgCWwLxxRiWHB-I2jPalWV"
 var secretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
 var mac = qbox.NewMac(accessKey, secretKey)
 
 // 上传文件 bucket="titok"
-func (s *TiktokVideoServiceImpl) StoragPutVideo(localFileName string, storageFileName int64, bucketName string) error {
+func (s *StorageService) StoragPutVideo(localFileName string, storageFileName int64, bucketName string) error {
 	bucket := bucketName
 	key := strconv.FormatInt(storageFileName, 10)
 	localFile := localFileName
@@ -49,7 +50,7 @@ func (s *TiktokVideoServiceImpl) StoragPutVideo(localFileName string, storageFil
 
 	return err
 }
-func StorageDownloadOneVideo(videoID int64, bucketName string) string {
+func (s *StorageService) StorageDownloadOneVideo(videoID int64, bucketName string) string {
 	domain := "rp9zcsyip.hb-bkt.clouddn.com"
 	key := strconv.FormatInt(videoID, 10)
 	publicAccessURL := storage.MakePublicURL(domain, key)
@@ -57,7 +58,7 @@ func StorageDownloadOneVideo(videoID int64, bucketName string) string {
 }
 
 // 删除文件
-func (s *TiktokVideoServiceImpl) StorageDeleteVideo(videoID int64, bucketName string) bool {
+func (s *StorageService) StorageDeleteVideo(videoID int64, bucketName string) bool {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -79,7 +80,7 @@ func (s *TiktokVideoServiceImpl) StorageDeleteVideo(videoID int64, bucketName st
 }
 
 // 获取文件信息 FileHash,FileSize,FileMimeType
-func (s *TiktokVideoServiceImpl) StorageGetVideoInfo(videoID int64, bucketName string) (string, int64, string) {
+func (s *StorageService) StorageGetVideoInfo(videoID int64, bucketName string) (string, int64, string) {
 	bucket := bucketName
 	key := strconv.FormatInt(videoID, 10)
 
@@ -98,7 +99,7 @@ func (s *TiktokVideoServiceImpl) StorageGetVideoInfo(videoID int64, bucketName s
 }
 
 // 移动文件
-func (s *TiktokVideoServiceImpl) StorageMoveVideo(srcBucketName string, srcVideoID int64, destBucketName string, destFileName string) {
+func (s *StorageService) StorageMoveVideo(srcBucketName string, srcVideoID int64, destBucketName string, destFileName string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -121,7 +122,7 @@ func (s *TiktokVideoServiceImpl) StorageMoveVideo(srcBucketName string, srcVideo
 }
 
 // 复制文件
-func (s *TiktokVideoServiceImpl) StorageCopyVideo(srcBucketName string, srcVideoID int64, destBucketName string, destFileName string) {
+func (s *StorageService) StorageCopyVideo(srcBucketName string, srcVideoID int64, destBucketName string, destFileName string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -144,7 +145,7 @@ func (s *TiktokVideoServiceImpl) StorageCopyVideo(srcBucketName string, srcVideo
 }
 
 // 获取指定前缀的文件列表
-func (s *TiktokVideoServiceImpl) StorageGetVideoList(bucketName string, prefix string) {
+func (s *StorageService) StorageGetVideoList(bucketName string, prefix string) {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -175,7 +176,7 @@ func (s *TiktokVideoServiceImpl) StorageGetVideoList(bucketName string, prefix s
 }
 
 // 批量获取文件信息
-func (s *TiktokVideoServiceImpl) StorageBatchGetVideoInfo() {
+func (s *StorageService) StorageBatchGetVideoInfo() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -223,7 +224,7 @@ func (s *TiktokVideoServiceImpl) StorageBatchGetVideoInfo() {
 }
 
 // 批量删除文件
-func (s *TiktokVideoServiceImpl) StorageBatchDeleteVideos() {
+func (s *StorageService) StorageBatchDeleteVideos() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -267,7 +268,7 @@ func (s *TiktokVideoServiceImpl) StorageBatchDeleteVideos() {
 }
 
 // 批量复制文件
-func (s *TiktokVideoServiceImpl) StorageBatchCopyVideos() {
+func (s *StorageService) StorageBatchCopyVideos() {
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
@@ -313,11 +314,11 @@ func (s *TiktokVideoServiceImpl) StorageBatchCopyVideos() {
 	}
 }
 
-func GetNUrlByVideoID(videos []VideoStorageInfo) []string {
+func (s *StorageService) GetNUrlByVideoID(videos []VideoStorageInfo) []string {
 	number := len(videos)
 	urls := make([]string, number)
 	for index, video := range videos {
-		urls[index] = StorageDownloadOneVideo(video.VideoID, "titok")
+		urls[index] = s.StorageDownloadOneVideo(video.VideoID, "titok")
 	}
 
 	return urls

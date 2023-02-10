@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/golang/glog"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
 	"github.com/ozline/tiktok/services/video/service"
@@ -19,7 +20,7 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 		Name: req.GetOwnerName(),
 	}
 
-	videoInfo := service.Video{
+	videoInfo := service.DataBaseService.Video{
 		PlayUrl:  req.GetPlayUrl(),
 		CoverUrl: req.GetCoverUrl(),
 		Title:    req.GetTitle(),
@@ -27,7 +28,7 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 	}
 
 	// 雪花算法
-	snow, err := snowflake.NewSnowflake(int64(1), int64(1))
+	snow, err := snowflake.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
 	if err != nil {
 		glog.Error(err)
 		return
@@ -38,8 +39,8 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 	videoInfo.ID = videoID
 	videoInfo.M.Unlock()
 
-	s.DataBasePutVideo(videoInfo, videoInfo.ID)
-	s.StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
+	service.DataBaseService.DataBasePutVideo(videoInfo, videoInfo.ID)
+	service.StorageService.StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
 
 	response := video.PutVideoResponse{
 		State:     true,
@@ -52,7 +53,6 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 
 // DeleteVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.DeleteVideoRequest) (resp *video.DeleteVideoResponse, err error) {
-	//fmt.Println("----- DeleteVideo -----")
 	videoTitle := req.GetTitle()
 	deletorName := req.DeletorName
 	videoInfo, dataBaseResult := s.DataBaseDeleteVideo(videoTitle, deletorName)
