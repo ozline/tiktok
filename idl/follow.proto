@@ -29,7 +29,7 @@ message User {
 }
 
 message RelationActionReq {
-  string token = 1; // ⽤户鉴权token
+  int64 user_id = 1; // 用户id
   int64 to_user_id = 2; // 对⽅⽤户id
   int32 action_type = 3; // 1-关注，2-取消关注
 }
