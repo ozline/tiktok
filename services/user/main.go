@@ -1,17 +1,20 @@
 package main
 
 import (
-	"github.com/ozline/tiktok/services/user/model"
+	"github.com/cloudwego/kitex/server"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/services/user/configs"
+	user "github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
 	"log"
-
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
+	"net"
 )
 
 func main() {
 	//初始化数据库
-	model.InitDB()
+	configs.InitDB()
 
-	svr := tiktokuserservice.NewServer(new(TiktokUserServiceImpl))
+	addr, _ := net.ResolveTCPAddr("tcp", constants.UserServiceListenAddress)
+	svr := user.NewServer(new(TiktokUserServiceImpl), server.WithServiceAddr(addr))
 
 	err := svr.Run()
 

@@ -22,10 +22,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "tiktokUserService"
 	handlerType := (*user.TiktokUserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"PingPong": kitex.NewMethodInfo(pingPongHandler, newPingPongArgs, newPingPongResult, false),
-		"Login":    kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
-		"Register": kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
-		"Info":     kitex.NewMethodInfo(infoHandler, newInfoArgs, newInfoResult, false),
+		"PingPong":   kitex.NewMethodInfo(pingPongHandler, newPingPongArgs, newPingPongResult, false),
+		"Login":      kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
+		"Register":   kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
+		"Info":       kitex.NewMethodInfo(infoHandler, newInfoArgs, newInfoResult, false),
+		"GetToken":   kitex.NewMethodInfo(getTokenHandler, newGetTokenArgs, newGetTokenResult, false),
+		"CheckToken": kitex.NewMethodInfo(checkTokenHandler, newCheckTokenArgs, newCheckTokenResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -621,6 +623,296 @@ func (p *InfoResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func getTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.GetTokenRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.TiktokUserService).GetToken(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetTokenArgs:
+		success, err := handler.(user.TiktokUserService).GetToken(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetTokenResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetTokenArgs() interface{} {
+	return &GetTokenArgs{}
+}
+
+func newGetTokenResult() interface{} {
+	return &GetTokenResult{}
+}
+
+type GetTokenArgs struct {
+	Req *user.GetTokenRequest
+}
+
+func (p *GetTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.GetTokenRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetTokenArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetTokenArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetTokenArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetTokenArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetTokenArgs) Unmarshal(in []byte) error {
+	msg := new(user.GetTokenRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetTokenArgs_Req_DEFAULT *user.GetTokenRequest
+
+func (p *GetTokenArgs) GetReq() *user.GetTokenRequest {
+	if !p.IsSetReq() {
+		return GetTokenArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetTokenArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type GetTokenResult struct {
+	Success *user.GetTokenResponse
+}
+
+var GetTokenResult_Success_DEFAULT *user.GetTokenResponse
+
+func (p *GetTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.GetTokenResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetTokenResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetTokenResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetTokenResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetTokenResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetTokenResult) Unmarshal(in []byte) error {
+	msg := new(user.GetTokenResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetTokenResult) GetSuccess() *user.GetTokenResponse {
+	if !p.IsSetSuccess() {
+		return GetTokenResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetTokenResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.GetTokenResponse)
+}
+
+func (p *GetTokenResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func checkTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(user.CheckTokenRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(user.TiktokUserService).CheckToken(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *CheckTokenArgs:
+		success, err := handler.(user.TiktokUserService).CheckToken(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*CheckTokenResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newCheckTokenArgs() interface{} {
+	return &CheckTokenArgs{}
+}
+
+func newCheckTokenResult() interface{} {
+	return &CheckTokenResult{}
+}
+
+type CheckTokenArgs struct {
+	Req *user.CheckTokenRequest
+}
+
+func (p *CheckTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(user.CheckTokenRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *CheckTokenArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *CheckTokenArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *CheckTokenArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in CheckTokenArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *CheckTokenArgs) Unmarshal(in []byte) error {
+	msg := new(user.CheckTokenRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var CheckTokenArgs_Req_DEFAULT *user.CheckTokenRequest
+
+func (p *CheckTokenArgs) GetReq() *user.CheckTokenRequest {
+	if !p.IsSetReq() {
+		return CheckTokenArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *CheckTokenArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type CheckTokenResult struct {
+	Success *user.CheckTokenResponse
+}
+
+var CheckTokenResult_Success_DEFAULT *user.CheckTokenResponse
+
+func (p *CheckTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(user.CheckTokenResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *CheckTokenResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *CheckTokenResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *CheckTokenResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in CheckTokenResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *CheckTokenResult) Unmarshal(in []byte) error {
+	msg := new(user.CheckTokenResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *CheckTokenResult) GetSuccess() *user.CheckTokenResponse {
+	if !p.IsSetSuccess() {
+		return CheckTokenResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *CheckTokenResult) SetSuccess(x interface{}) {
+	p.Success = x.(*user.CheckTokenResponse)
+}
+
+func (p *CheckTokenResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -666,6 +958,26 @@ func (p *kClient) Info(ctx context.Context, Req *user.DouyinUserRequest) (r *use
 	_args.Req = Req
 	var _result InfoResult
 	if err = p.c.Call(ctx, "Info", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetToken(ctx context.Context, Req *user.GetTokenRequest) (r *user.GetTokenResponse, err error) {
+	var _args GetTokenArgs
+	_args.Req = Req
+	var _result GetTokenResult
+	if err = p.c.Call(ctx, "GetToken", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CheckToken(ctx context.Context, Req *user.CheckTokenRequest) (r *user.CheckTokenResponse, err error) {
+	var _args CheckTokenArgs
+	_args.Req = Req
+	var _result CheckTokenResult
+	if err = p.c.Call(ctx, "CheckToken", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -15,6 +15,8 @@ type Client interface {
 	Login(ctx context.Context, Req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error)
 	Register(ctx context.Context, Req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error)
 	Info(ctx context.Context, Req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
+	GetToken(ctx context.Context, Req *user.GetTokenRequest, callOptions ...callopt.Option) (r *user.GetTokenResponse, err error)
+	CheckToken(ctx context.Context, Req *user.CheckTokenRequest, callOptions ...callopt.Option) (r *user.CheckTokenResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +66,14 @@ func (p *kTiktokUserServiceClient) Register(ctx context.Context, Req *user.Douyi
 func (p *kTiktokUserServiceClient) Info(ctx context.Context, Req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Info(ctx, Req)
+}
+
+func (p *kTiktokUserServiceClient) GetToken(ctx context.Context, Req *user.GetTokenRequest, callOptions ...callopt.Option) (r *user.GetTokenResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetToken(ctx, Req)
+}
+
+func (p *kTiktokUserServiceClient) CheckToken(ctx context.Context, Req *user.CheckTokenRequest, callOptions ...callopt.Option) (r *user.CheckTokenResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CheckToken(ctx, Req)
 }

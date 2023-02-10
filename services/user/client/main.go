@@ -25,7 +25,7 @@ func main() {
 	//log.Println("PingPong Func Response", resp)
 	//--------------------注册测试-------------------------
 	//registerRequest := &user.DouyinUserRegisterRequest{
-	//	Username: "test",
+	//	Username: "test1",
 	//	Password: "123456",
 	//}
 	//registerResponse, err := client.Register(context.Background(), registerRequest)
@@ -34,23 +34,23 @@ func main() {
 	//}
 	//log.Println(registerResponse)
 	//--------------------登录测试-------------------------
-	//loginRequest := &user.DouyinUserLoginRequest{
-	//	Username: "test",
-	//	Password: "123456",
-	//}
-	//loginResponse, err := client.Login(context.Background(), loginRequest)
-	//if err != nil {
-	//	log.Fatal(err.Error())
-	//}
-	//log.Println(loginResponse)
-	//--------------------获取用户信息测试-------------------------
-	userRequest := &user.DouyinUserRequest{
-		UserId: 3974384737,
-		Token:  "",
+	loginRequest := &user.DouyinUserLoginRequest{
+		Username: "test",
+		Password: "123456",
 	}
-	userResponse, err := client.Info(context.Background(), userRequest)
+	loginResponse, err := client.Login(context.Background(), loginRequest)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	log.Println(userResponse)
+	log.Println(loginResponse)
+	//--------------------获取用户信息测试-------------------------
+	//userRequest := &user.DouyinUserRequest{
+	//	UserId: 411831281047830528,
+	//	Token:  "",
+	//}
+	//userResponse, err := client.Info(context.Background(), userRequest)
+	//if err != nil {
+	//	log.Fatal(err.Error())
+	//}
+	//log.Println(userResponse)
 }
