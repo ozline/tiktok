@@ -111,16 +111,17 @@ func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRe
 	//1.获取id
 	id := req.UserId
 	//2.通过用户id查询对应用户
-	user_info := model.GetUserById(id)
-	//3.数据绑定
+	userInfo := model.GetUserById(id)
+	fmt.Println(userInfo)
+	//3.返回结果
 	resp.User = &user.User{
-		Id:            int64(user_info.ID),
-		Name:          user_info.Username,
-		FollowCount:   user_info.FollowCount,
-		FollowerCount: user_info.FollowerCount,
+		Id:            int64(userInfo.ID),
+		Name:          userInfo.Username,
+		FollowCount:   userInfo.FollowCount,
+		FollowerCount: userInfo.FollowerCount,
 		IsFollow:      true,
 	}
-	//4.返回结果
+	fmt.Println(resp.User)
 	resp.StatusCode = 0
 	resp.StatusMsg = "成功获取用户信息！"
 	return resp, nil

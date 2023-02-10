@@ -8,14 +8,10 @@ import (
 )
 
 type Model struct {
-	Id            int64 `gorm:"primarykey"`
-	Username      string
-	Password      string
-	FollowCount   int64
-	FollowerCount int64
-	CreateAt      time.Time
-	updateAt      time.Time
-	deleteAt      time.Time `gorm:"index"`
+	ID       uint `gorm:"primarykey"`
+	CreateAt time.Time
+	updateAt time.Time
+	deleteAt time.Time `gorm:"index"`
 }
 type User struct {
 	Username      string
@@ -64,6 +60,6 @@ func LoginCheck(data *User, username string) int {
 // 通过id查询用户信息
 func GetUserById(userid int64) User {
 	var user User
-	configs.Db.Where("user_id = ?", userid).First(&user)
+	configs.Db.Where("id = ?", userid).First(&user)
 	return user
 }
