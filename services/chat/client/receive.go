@@ -60,7 +60,7 @@ func receiveMsgFromMySQL(userId int64) chan bool {
 				}
 				response, _ := client.AcceptChatMessage(context.Background(), request)
 				if response.StatusCode == 1 {
-					fmt.Println("----- User ", userId, "Receive ", len(response.ToUserIds), " Messages -----")
+					//fmt.Println("----- User ", userId, "Receive ", len(response.ToUserIds), " Messages -----")
 					for index, _ := range response.ToUserIds {
 						wasteTime, _ := strconv.ParseFloat(fmt.Sprintf("%.5f", float64(time.Now().UnixMicro()-response.CreateTime[index])/float64(1000)), 64) // 保留5位小
 						fmt.Println("Message", index+1, ":", response.FromUserIds[index], "->", response.ToUserIds[index], "——", response.Contents[index], wasteTime, "ms")

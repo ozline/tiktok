@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"gorm.io/driver/sqlite"
@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+type TiktokVideoServiceImpl struct{}
 type User struct {
 	Id            int64  // 用户id
 	Name          string // 用户名称

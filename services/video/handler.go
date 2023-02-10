@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/golang/glog"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
+	"github.com/ozline/tiktok/services/video/service"
 	"strconv"
 	"time"
 )
@@ -15,12 +15,11 @@ type TiktokVideoServiceImpl struct{}
 
 // PutVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
-	fmt.Println("----- PutVideo -----")
-	user := User{
+	user := service.User{
 		Name: req.GetOwnerName(),
 	}
 
-	videoInfo := Video{
+	videoInfo := service.Video{
 		PlayUrl:  req.GetPlayUrl(),
 		CoverUrl: req.GetCoverUrl(),
 		Title:    req.GetTitle(),
@@ -53,7 +52,7 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 
 // DeleteVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.DeleteVideoRequest) (resp *video.DeleteVideoResponse, err error) {
-	fmt.Println("----- DeleteVideo -----")
+	//fmt.Println("----- DeleteVideo -----")
 	videoTitle := req.GetTitle()
 	deletorName := req.DeletorName
 	videoInfo, dataBaseResult := s.DataBaseDeleteVideo(videoTitle, deletorName)
@@ -85,7 +84,7 @@ func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.Del
 
 // GetOneVideoInfo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) GetOneVideoInfo(ctx context.Context, req *video.GetOneVideoInfoRequest) (resp *video.GetOneVideoInfoResponse, err error) {
-	fmt.Println("----- GetVideoInfo -----")
+	//fmt.Println("----- GetVideoInfo -----")
 	videoTitle := req.GetVideoName()
 	//userId := req.GetUserId()
 	videoInfo, findState := s.DataBaseFindVideoIDByTitle(videoTitle)
@@ -112,14 +111,14 @@ func (s *TiktokVideoServiceImpl) GetOneVideoInfo(ctx context.Context, req *video
 
 // DownloadOneVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) DownloadOneVideo(ctx context.Context, req *video.DownloadOneVideoRequest) (resp *video.DownloadOneVideoResponse, err error) {
-	fmt.Println("----- DownloadOneVideo -----")
+	//fmt.Println("----- DownloadOneVideo -----")
 	videoTitle := req.GetVideoName()
 	videoInfo, dataBaseResult := s.DataBaseFindVideoIDByTitle(videoTitle)
 	response := video.DownloadOneVideoResponse{
 		State: false,
 	}
 	if dataBaseResult == true {
-		accessURL := StorageDownloadOneVideo(videoInfo.VideoID, "titok")
+		accessURL := service.StorageDownloadOneVideo(videoInfo.VideoID, "titok")
 		response = video.DownloadOneVideoResponse{
 			State:      true,
 			VideoTitle: videoInfo.VideoTitle,
@@ -136,12 +135,12 @@ func (s *TiktokVideoServiceImpl) DownloadMultiVideo(ctx context.Context, req *vi
 	number := int(req.GetVideoNumber())
 	keys, err := RDB.Keys("*").Result()
 
-	videos := RandGetNVideo(number)
+	videos := service.RandGetNVideo(number)
 	videourls := make([]string, number)
-	fmt.Println("len(keys)=", len(keys))
-	fmt.Println("Number=", number)
+	//fmt.Println("len(keys)=", len(keys))
+	//fmt.Println("Number=", number)
 	if len(keys) >= int(number) {
-		fmt.Println("----- Redis Cache Has Enough Videos -----")
+		//fmt.Println("----- Redis Cache Has Enough Videos -----")
 		for i := 0; i < number; i++ {
 			videourls[i], err = RDB.Get(keys[i]).Result()
 		}
@@ -149,8 +148,8 @@ func (s *TiktokVideoServiceImpl) DownloadMultiVideo(ctx context.Context, req *vi
 		//	videourls[index], err = RDB.Get(videoid).Result()
 		//}
 	} else {
-		fmt.Println("----- Redic Cache Don't Have Enough Videos -----")
-		videourls = GetNUrlByVideoID(videos)
+		//fmt.Println("----- Redic Cache Don't Have Enough Videos -----")
+		videourls = service.GetNUrlByVideoID(videos)
 	}
 
 	response := video.DownloadMultiVideoResponse{
@@ -174,8 +173,8 @@ func PerioUpdateVideoCache(number int) {
 
 	for range ticker.C {
 		RDB.FlushDB().Result()
-		videos := RandGetNVideo(number)
-		videourls := GetNUrlByVideoID(videos)
+		videos := service.RandGetNVideo(number)
+		videourls := service.GetNUrlByVideoID(videos)
 		for index, videoInfo := range videos {
 
 			RDB.Set(strconv.FormatInt(videoInfo.VideoID, 10), videourls[index], 0).Result()
