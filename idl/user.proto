@@ -9,6 +9,8 @@ service tiktokUserService {
   rpc Login(douyin_user_login_request)returns(douyin_user_login_response);
   rpc Register(douyin_user_register_request)returns(douyin_user_register_response);
   rpc Info(douyin_user_request)returns(douyin_user_response);
+  rpc GetToken(GetTokenRequest) returns (GetTokenResponse){};
+  rpc CheckToken(CheckTokenRequest) returns (CheckTokenResponse){};
 }
 
 //测试请求
@@ -69,4 +71,37 @@ message User {
   int64 follow_count = 3; // 关注总数
   int64 follower_count = 4; // 粉丝总数
   bool is_follow = 5; // true-已关注，false-未关注
+}
+
+//获取token请求
+message GetTokenRequest {
+  int64 user_id = 1;// 用户id
+  string username = 2;// 用户名称
+}
+
+//获取token响应
+message GetTokenResponse {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  string token = 3;// 用户鉴权token
+}
+
+//检查token请求
+message CheckTokenRequest {
+  string token = 1;// 用户鉴权token
+}
+
+//检查token响应
+message CheckTokenResponse {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  Auth info = 3;// 鉴权对象
+}
+
+//鉴权对象
+message Auth {
+  int64 user_id = 1;// 用户id
+  string username = 2;// 用户名称
+  int64 not_before = 3;// token生效时间
+  int64 expires_at = 4;// token失效时间
 }
