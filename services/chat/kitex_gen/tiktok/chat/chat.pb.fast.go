@@ -133,7 +133,7 @@ func (x *DouyinSendMessageResponse) fastReadField3(buf []byte, _type int8) (offs
 }
 
 func (x *DouyinSendMessageResponse) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.ToUserName, offset, err = fastpb.ReadString(buf, _type)
+	x.ToUserId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -383,10 +383,10 @@ func (x *DouyinSendMessageResponse) fastWriteField3(buf []byte) (offset int) {
 }
 
 func (x *DouyinSendMessageResponse) fastWriteField4(buf []byte) (offset int) {
-	if x.ToUserName == "" {
+	if x.ToUserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.ToUserName)
+	offset += fastpb.WriteInt64(buf[offset:], 4, x.ToUserId)
 	return offset
 }
 
@@ -599,10 +599,10 @@ func (x *DouyinSendMessageResponse) sizeField3() (n int) {
 }
 
 func (x *DouyinSendMessageResponse) sizeField4() (n int) {
-	if x.ToUserName == "" {
+	if x.ToUserId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(4, x.ToUserName)
+	n += fastpb.SizeInt64(4, x.ToUserId)
 	return n
 }
 
@@ -738,7 +738,7 @@ var fieldIDToName_DouyinSendMessageResponse = map[int32]string{
 	1: "StatusCode",
 	2: "StatusMsg",
 	3: "FromUserId",
-	4: "ToUserName",
+	4: "ToUserId",
 	5: "Content",
 }
 

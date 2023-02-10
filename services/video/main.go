@@ -5,7 +5,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/ozline/tiktok/pkg/constants"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video/tiktokvideoservice"
-	"github.com/ozline/tiktok/services/video/service"
+	"github.com/ozline/tiktok/services/video/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
@@ -23,7 +23,7 @@ func main() {
 		panic("failed to connect database")
 	}
 	// 迁移 schema
-	db.AutoMigrate(&service.VideoStorageInfo{})
+	db.AutoMigrate(&model.VideoStorageInfo{})
 
 	RDB = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
@@ -31,7 +31,6 @@ func main() {
 		DB:       0,  // use default DB
 	})
 
-	//go PerioUpdateVideoCache(10)
 	err = svr.Run()
 
 	if err != nil {

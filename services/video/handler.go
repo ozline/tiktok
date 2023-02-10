@@ -2,10 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/golang/glog"
-	"github.com/ozline/tiktok/pkg/constants"
-	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
+	"github.com/ozline/tiktok/services/video/model"
 	"github.com/ozline/tiktok/services/video/service"
 	"strconv"
 	"time"
@@ -16,38 +14,30 @@ type TiktokVideoServiceImpl struct{}
 
 // PutVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
-	user := service.User{
+	user := model.User{
 		Name: req.GetOwnerName(),
 	}
 
-	videoInfo := service.DataBaseService.Video{
+	videoInfo := model.Video{
 		PlayUrl:  req.GetPlayUrl(),
 		CoverUrl: req.GetCoverUrl(),
 		Title:    req.GetTitle(),
 		Author:   &user,
 	}
-
-	// 雪花算法
-	snow, err := snowflake.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
-	if err != nil {
-		glog.Error(err)
-		return
-	}
-
-	videoID := snow.NextVal()
+	dataSerivce := service.NewDataBaseService(ctx)
+	videoID := dataSerivce.S.NextVal()
 	videoInfo.M.Lock()
 	videoInfo.ID = videoID
 	videoInfo.M.Unlock()
 
-	service.DataBaseService.DataBasePutVideo(videoInfo, videoInfo.ID)
-	service.StorageService.StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
+	go dataSerivce.DataBasePutVideo(videoInfo, videoInfo.ID)
+	go service.NewStorageService(ctx).StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
 
 	response := video.PutVideoResponse{
 		State:     true,
 		Title:     videoInfo.Title,
 		OwnerName: videoInfo.Author.Name,
 	}
-
 	return &response, nil
 }
 
@@ -55,11 +45,11 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.DeleteVideoRequest) (resp *video.DeleteVideoResponse, err error) {
 	videoTitle := req.GetTitle()
 	deletorName := req.DeletorName
-	videoInfo, dataBaseResult := s.DataBaseDeleteVideo(videoTitle, deletorName)
+	videoInfo, dataBaseResult := service.NewDataBaseService(ctx).DataBaseDeleteVideo(videoTitle, deletorName)
 
 	storageResult := false
 	if dataBaseResult == true {
-		storageResult = s.StorageDeleteVideo(videoInfo.VideoID, "titok")
+		storageResult = service.NewStorageService(ctx).StorageDeleteVideo(videoInfo.VideoID, "titok")
 	}
 
 	response := video.DeleteVideoResponse{
@@ -87,12 +77,12 @@ func (s *TiktokVideoServiceImpl) GetOneVideoInfo(ctx context.Context, req *video
 	//fmt.Println("----- GetVideoInfo -----")
 	videoTitle := req.GetVideoName()
 	//userId := req.GetUserId()
-	videoInfo, findState := s.DataBaseFindVideoIDByTitle(videoTitle)
+	videoInfo, findState := service.NewDataBaseService(ctx).DataBaseFindVideoIDByTitle(videoTitle)
 	response := video.GetOneVideoInfoResponse{
 		State: false,
 	}
 	if findState == true {
-		_, videoSize, videoMimeType := s.StorageGetVideoInfo(videoInfo.VideoID, "titok")
+		_, videoSize, videoMimeType := service.NewStorageService(ctx).StorageGetVideoInfo(videoInfo.VideoID, "titok")
 		response = video.GetOneVideoInfoResponse{
 			State:         true,
 			VideoId:       videoInfo.VideoID,
@@ -113,12 +103,12 @@ func (s *TiktokVideoServiceImpl) GetOneVideoInfo(ctx context.Context, req *video
 func (s *TiktokVideoServiceImpl) DownloadOneVideo(ctx context.Context, req *video.DownloadOneVideoRequest) (resp *video.DownloadOneVideoResponse, err error) {
 	//fmt.Println("----- DownloadOneVideo -----")
 	videoTitle := req.GetVideoName()
-	videoInfo, dataBaseResult := s.DataBaseFindVideoIDByTitle(videoTitle)
+	videoInfo, dataBaseResult := service.NewDataBaseService(ctx).DataBaseFindVideoIDByTitle(videoTitle)
 	response := video.DownloadOneVideoResponse{
 		State: false,
 	}
 	if dataBaseResult == true {
-		accessURL := service.StorageDownloadOneVideo(videoInfo.VideoID, "titok")
+		accessURL := service.NewStorageService(ctx).StorageDownloadOneVideo(videoInfo.VideoID, "titok")
 		response = video.DownloadOneVideoResponse{
 			State:      true,
 			VideoTitle: videoInfo.VideoTitle,
@@ -149,7 +139,7 @@ func (s *TiktokVideoServiceImpl) DownloadMultiVideo(ctx context.Context, req *vi
 		//}
 	} else {
 		//fmt.Println("----- Redic Cache Don't Have Enough Videos -----")
-		videourls = service.GetNUrlByVideoID(videos)
+		videourls = service.NewStorageService(ctx).GetNUrlByVideoID(videos)
 	}
 
 	response := video.DownloadMultiVideoResponse{
@@ -167,14 +157,14 @@ func (s *TiktokVideoServiceImpl) DownloadMultiVideo(ctx context.Context, req *vi
 	return &response, nil
 }
 
-func PerioUpdateVideoCache(number int) {
+func (s *TiktokVideoServiceImpl) PerioUpdateVideoCache(ctx context.Context, number int) {
 	ticker := time.NewTicker(10 * time.Millisecond)
 	defer ticker.Stop()
 
 	for range ticker.C {
 		RDB.FlushDB().Result()
 		videos := service.RandGetNVideo(number)
-		videourls := service.GetNUrlByVideoID(videos)
+		videourls := service.NewStorageService(ctx).GetNUrlByVideoID(videos)
 		for index, videoInfo := range videos {
 
 			RDB.Set(strconv.FormatInt(videoInfo.VideoID, 10), videourls[index], 0).Result()

@@ -32,8 +32,8 @@ func (a *AuthService) GetToken(req *auth.GetTokenRequest) (resp string, err erro
 		UserId:   req.UserId,
 		Username: req.Username,
 		StandardClaims: jwt.StandardClaims{
-			NotBefore: int64(time.Now().Unix()),
-			ExpiresAt: int64(time.Now().Unix() + 3600),
+			NotBefore: time.Now().Unix(),
+			ExpiresAt: time.Now().Unix() + 3600,
 		},
 	}
 

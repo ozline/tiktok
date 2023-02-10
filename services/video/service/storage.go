@@ -3,19 +3,26 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/utils/snowflake"
+	"github.com/ozline/tiktok/services/video/model"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
 	"strconv"
 )
 
-type MyPutRet struct {
-	Key    string
-	Hash   string
-	Fsize  int
-	Bucket string
-	Name   string
+type StorageService struct {
+	ctx context.Context
+	s   *snowflake.Snowflake
 }
-type StorageService struct{}
+
+func NewStorageService(ctx context.Context) *StorageService {
+	sf, _ := snowflake.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
+	return &StorageService{
+		ctx: ctx,
+		s:   sf,
+	}
+}
 
 var accessKey = "m5KRX39z1fu9ssut0SFgCWwLxxRiWHB-I2jPalWV"
 var secretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
@@ -35,7 +42,7 @@ func (s *StorageService) StoragPutVideo(localFileName string, storageFileName in
 
 	cfg := storage.Config{}
 	formUploader := storage.NewFormUploader(&cfg)
-	ret := MyPutRet{}
+	ret := model.MyPutRet{}
 	putExtra := storage.PutExtra{
 		Params: map[string]string{
 			"x:name": "github logo",
@@ -314,7 +321,7 @@ func (s *StorageService) StorageBatchCopyVideos() {
 	}
 }
 
-func (s *StorageService) GetNUrlByVideoID(videos []VideoStorageInfo) []string {
+func (s *StorageService) GetNUrlByVideoID(videos []model.VideoStorageInfo) []string {
 	number := len(videos)
 	urls := make([]string, number)
 	for index, video := range videos {

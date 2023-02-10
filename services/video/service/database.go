@@ -1,30 +1,44 @@
 package service
 
 import (
+	"context"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	"github.com/ozline/tiktok/services/video/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"math/rand"
 	"time"
 )
 
 type DataBaseService struct {
+	Ctx context.Context
+	S   *snowflake.Snowflake
 }
 
-func CreateDataBaseTable(dataBaseName string) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func NewDataBaseService(ctx context.Context) *DataBaseService {
+	sf, _ := snowflake.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
+	return &DataBaseService{
+		Ctx: ctx,
+		S:   sf,
+	}
+}
+
+func (d *DataBaseService) CreateDataBaseTable(dataBaseName string) {
+	db, err := gorm.Open(sqlite.Open(dataBaseName), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 	// 迁移 schema
-	db.AutoMigrate(&VideoStorageInfo{})
+	db.AutoMigrate(&model.VideoStorageInfo{})
 }
 
-func (d *DataBaseService) DataBasePutVideo(video Video, videoID int64) {
+func (d *DataBaseService) DataBasePutVideo(video model.Video, videoID int64) {
 	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-	var videostorageInfo = VideoStorageInfo{
+	var videostorageInfo = model.VideoStorageInfo{
 		VideoID:         videoID,
 		VideoPlayUrl:    video.PlayUrl,
 		VideoCoverUrl:   video.CoverUrl,
@@ -36,7 +50,7 @@ func (d *DataBaseService) DataBasePutVideo(video Video, videoID int64) {
 	db.Create(&videostorageInfo)
 }
 
-func (d *DataBaseService) DataBaseDeleteVideo(videoTitle string, userName string) (VideoStorageInfo, bool) {
+func (d *DataBaseService) DataBaseDeleteVideo(videoTitle string, userName string) (model.VideoStorageInfo, bool) {
 	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
@@ -59,13 +73,13 @@ func (d *DataBaseService) DataBaseDeleteVideo(videoTitle string, userName string
 	return videoInfo, deleteState
 }
 
-func (d *DataBaseService) DataBaseFindVideoIDByTitle(videoTitle string) (VideoStorageInfo, bool) {
+func (d *DataBaseService) DataBaseFindVideoIDByTitle(videoTitle string) (model.VideoStorageInfo, bool) {
 	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	var videoStorage = VideoStorageInfo{
+	var videoStorage = model.VideoStorageInfo{
 		VideoID: -1,
 	}
 	db.First(&videoStorage, "video_title=?", videoTitle)
@@ -75,9 +89,9 @@ func (d *DataBaseService) DataBaseFindVideoIDByTitle(videoTitle string) (VideoSt
 	return videoStorage, true
 }
 
-func RandGetNVideo(number int) []VideoStorageInfo {
+func RandGetNVideo(number int) []model.VideoStorageInfo {
 	rand.Seed(time.Now().Unix())
-	videos := make([]VideoStorageInfo, number)
+	videos := make([]model.VideoStorageInfo, number)
 
 	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
@@ -85,9 +99,9 @@ func RandGetNVideo(number int) []VideoStorageInfo {
 	}
 
 	var rowsNumber int64
-	db.Model(&VideoStorageInfo{}).Count(&rowsNumber)
+	db.Model(&model.VideoStorageInfo{}).Count(&rowsNumber)
 
-	var videoStorage VideoStorageInfo
+	var videoStorage model.VideoStorageInfo
 	for i := 0; i < number; i++ {
 		index := rand.Intn(int(rowsNumber))
 		db.Offset(index).Take(&videoStorage)

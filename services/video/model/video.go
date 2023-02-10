@@ -29,3 +29,11 @@ type User struct {
 	FollowerCount int64  // 粉丝总数
 	IsFollow      bool   // true-已关注，false-未关注
 }
+
+type MyPutRet struct {
+	Key    string
+	Hash   string
+	Fsize  int
+	Bucket string
+	Name   string
+}
