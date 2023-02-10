@@ -133,3 +133,15 @@ func (s *TiktokUserServiceImpl) PingPong(ctx context.Context, req *user.Request1
 	resp.Message = req.Message
 	return
 }
+
+// GetToken implements the TiktokUserServiceImpl interface.
+func (s *TiktokUserServiceImpl) GetToken(ctx context.Context, req *user.GetTokenRequest) (resp *user.GetTokenResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// CheckToken implements the TiktokUserServiceImpl interface.
+func (s *TiktokUserServiceImpl) CheckToken(ctx context.Context, req *user.CheckTokenRequest) (resp *user.CheckTokenResponse, err error) {
+	// TODO: Your code here...
+	return
+}
