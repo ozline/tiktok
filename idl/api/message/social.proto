@@ -4,7 +4,7 @@ package api;
 
 option go_package = "/message/social";
 
-import "idl/api/models.proto";
+import "idl/api/model.proto";
 
 // Social API
 message RelationActionRequest {

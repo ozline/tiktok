@@ -40,6 +40,8 @@ service Basic {
     rpc VideoPublishList (PublishListRequest) returns (PublishListResponse) {
         option (api.get) = "/douyin/publish/list";
     }
+
+    // 获取Token
 }
 
 // 交互接口

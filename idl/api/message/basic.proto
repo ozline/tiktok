@@ -4,7 +4,7 @@ package api;
 
 option go_package = "/message/basic";
 
-import "idl/api/models.proto";
+import "idl/api/model.proto";
 
 // Basic API
 message FeedRequest {
@@ -74,4 +74,25 @@ message PublishListResponse {
   int64 status_code = 1;          // 状态码 0-成功 其他值-失败
   string status_msg = 2;          // 返回状态描述
   repeated Video video_list = 3;  // 用户发布的视频列表
+}
+
+// Test
+
+message GetTokenRequest {
+  string username = 1;
+  int64 user_id = 2;
+}
+
+message GetTokenResponse {
+  BaseResp base = 1;
+  string token = 2;
+}
+
+message CheckTokenRequest {
+  string token = 1;
+}
+
+message CheckTokenResponse {
+  BaseResp base = 1;
+  optional Auth info = 2;
 }

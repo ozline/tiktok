@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/ozline/tiktok/pkg/errno"
-	"github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth"
+	auth "github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth"
 )
 
 func BuildBaseResp(err error) *auth.BaseResp {
