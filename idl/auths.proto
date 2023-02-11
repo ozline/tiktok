@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "tiktok/auth";
+
+service tiktokAuthService {
+    // 检查连通性
+    rpc Ping(PingRequest) returns (PingResponse){};
+    rpc GetToken(GetTokenRequest) returns (GetTokenResponse){};
+    rpc CheckToken(CheckTokenRequest) returns (CheckTokenResponse){};
+}
+
+message BaseResp {
+    int64 code = 1;
+    string msg = 2;
+}
+
+message Auth {
+    int64 user_id = 1;
+    string username = 2;
+    int64 not_before = 3;
+    int64 expires_at = 4;
+}
+
+message GetTokenRequest {
+    string username = 1;
+    int64 user_id = 2;
+}
+
+message GetTokenResponse {
+    BaseResp base = 1;
+    string token = 2;
+}
+
+message CheckTokenRequest {
+    string token = 1;
+}
+
+message CheckTokenResponse {
+    BaseResp base = 1;
+    optional Auth info = 2;
+}
+
+message PingRequest{
+    string message = 1;
+}
+
+message PingResponse{
+    string message = 1;
+}

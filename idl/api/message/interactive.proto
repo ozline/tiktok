@@ -4,7 +4,7 @@ package api;
 
 option go_package = "/message/interactive";
 
-import "idl/api/models.proto";
+import "idl/api/model.proto";
 
 // Interactive API
 message FavoriteActionRequest {

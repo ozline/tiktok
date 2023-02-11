@@ -4,7 +4,7 @@ generate:
 	-service "tiktok-auth" \
 	-module "github.com/ozline/tiktok" \
 	-type protobuf \
-	-I ./../../idl/ auth.proto
+	-I ./../../idl/ auths.proto
 
 .PHONY: run_client
 run_client:

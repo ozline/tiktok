@@ -8,6 +8,8 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	basic "github.com/ozline/tiktok/api-gateway/biz/model/message/basic"
+	"github.com/ozline/tiktok/api-gateway/rpc"
+	"github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth"
 )
 
 // UserRegister .
@@ -21,7 +23,18 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	token, err := rpc.GetToken(context.Background(), &auth.GetTokenRequest{
+		Username: req.Username,
+		UserId:   123455,
+	})
+
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+	}
+
 	resp := new(basic.UserRegisterResponse)
+
+	resp.Token = token
 
 	c.JSON(consts.StatusOK, resp)
 }
