@@ -5,63 +5,55 @@ package user;
 option go_package = "tiktok/user";
 
 service tiktokUserService {
-  rpc PingPong(Request1) returns (Response1){};
-  rpc Login(douyin_user_login_request)returns(douyin_user_login_response);
-  rpc Register(douyin_user_register_request)returns(douyin_user_register_response);
-  rpc Info(douyin_user_request)returns(douyin_user_response);
+  rpc Login(UserLoginRequest)returns(UserLoginResponse);
+  rpc Register(UserRegisterRequest)returns(UserRegisterResponse);
+  rpc Info(UserRequest)returns(UserResponse);
   rpc GetToken(GetTokenRequest) returns (GetTokenResponse){};
   rpc CheckToken(CheckTokenRequest) returns (CheckTokenResponse){};
 }
 
-//测试请求
-message Request1{
-  string message = 1;
-}
-
-//测试响应
-message Response1{
-  string message = 1;
+// 返回
+message BaseResp {
+  int64 code = 1; // 状态码
+  string msg = 2; // 返回状态描述
 }
 
 //用户注册请求
-message douyin_user_register_request {
+message UserRegisterRequest {
   string username = 1; // 注册用户名，最长32个字符
   string password = 2; // 密码，最长32个字符
 }
 
 //用户注册响应
-message douyin_user_register_response {
-  int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; // 返回状态描述
-  int64 user_id = 3; // 用户id
-  string token = 4; // 用户鉴权token
+message UserRegisterResponse {
+  BaseResp base = 1; // 返回状态
+  int64 user_id = 2; // 用户id
+  string token = 3; // 用户鉴权token
 }
 
 //用户登录请求
-message douyin_user_login_request {
+message UserLoginRequest {
   string username = 1; // 登录用户名
   string password = 2; // 登录密码
 }
 
 //用户登录响应
-message douyin_user_login_response {
-  int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; // 返回状态描述
-  int64 user_id = 3; // 用户id
-  string token = 4; // 用户鉴权token
+message UserLoginResponse {
+  BaseResp base = 1; // 返回状态
+  int64 user_id = 2; // 用户id
+  string token = 3; // 用户鉴权token
 }
 
 //用户信息请求
-message douyin_user_request {
+message UserRequest {
   int64 user_id = 1; // 用户id
   string token = 2; // 用户鉴权token
 }
 
 //用户信息响应
-message douyin_user_response {
-  int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; // 返回状态描述
-  User user = 3; // 用户信息
+message UserResponse {
+  BaseResp base = 1; // 返回状态
+  User user = 2; // 用户信息
 }
 
 //用户信息
@@ -81,9 +73,8 @@ message GetTokenRequest {
 
 //获取token响应
 message GetTokenResponse {
-  int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; // 返回状态描述
-  string token = 3;// 用户鉴权token
+  BaseResp base = 1; // 返回状态
+  string token = 2;// 用户鉴权token
 }
 
 //检查token请求
@@ -93,9 +84,8 @@ message CheckTokenRequest {
 
 //检查token响应
 message CheckTokenResponse {
-  int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; // 返回状态描述
-  Auth info = 3;// 鉴权对象
+  BaseResp base = 1; // 返回状态
+  Auth info = 2;// 鉴权对象
 }
 
 //鉴权对象

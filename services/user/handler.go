@@ -112,7 +112,6 @@ func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRe
 	id := req.UserId
 	//2.通过用户id查询对应用户
 	userInfo := model.GetUserById(id)
-	fmt.Println(userInfo)
 	//3.返回结果
 	resp.User = &user.User{
 		Id:            int64(userInfo.ID),
@@ -121,7 +120,6 @@ func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRe
 		FollowerCount: userInfo.FollowerCount,
 		IsFollow:      true,
 	}
-	fmt.Println(resp.User)
 	resp.StatusCode = 0
 	resp.StatusMsg = "成功获取用户信息！"
 	return resp, nil
@@ -134,14 +132,12 @@ func (s *TiktokUserServiceImpl) PingPong(ctx context.Context, req *user.Request1
 	return
 }
 
-// GetToken implements the TiktokUserServiceImpl interface.
+// 获取Token
 func (s *TiktokUserServiceImpl) GetToken(ctx context.Context, req *user.GetTokenRequest) (resp *user.GetTokenResponse, err error) {
-	// TODO: Your code here...
 	return
 }
 
-// CheckToken implements the TiktokUserServiceImpl interface.
+// 检查Token
 func (s *TiktokUserServiceImpl) CheckToken(ctx context.Context, req *user.CheckTokenRequest) (resp *user.CheckTokenResponse, err error) {
-	// TODO: Your code here...
 	return
 }
