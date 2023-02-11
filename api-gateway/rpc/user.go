@@ -3,36 +3,10 @@ package rpc
 import (
 	"context"
 
-	"github.com/cloudwego/kitex/client"
-	etcd "github.com/kitex-contrib/registry-etcd"
 	"github.com/ozline/tiktok/api-gateway/biz/model/model"
-	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
 )
-
-func initUserRPC() {
-	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
-
-	if err != nil {
-		panic(err)
-	}
-
-	c, err := tiktokuserservice.NewClient(
-		constants.UserServiceName,
-		client.WithMuxConnection(constants.MuxConnection),
-		client.WithRPCTimeout(constants.RPCTimeout),
-		client.WithConnectTimeout(constants.ConnectTimeout),
-		client.WithResolver(r),
-	)
-
-	if err != nil {
-		panic(err)
-	}
-
-	userClient = c
-}
 
 // Login returns token
 func UserLogin(ctx context.Context, req *user.DouyinUserLoginRequest) (string, error) {
