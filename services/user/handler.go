@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/golang/glog"
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
+	"github.com/ozline/tiktok/services/user/pack"
+	"github.com/ozline/tiktok/services/user/service"
 	"github.com/ozline/tiktok/services/user/utils"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,65 +18,60 @@ type TiktokUserServiceImpl struct {
 }
 
 // 登录
-func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.DouyinUserLoginRequest) (resp *user.DouyinUserLoginResponse, err error) {
+func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.UserLoginRequest) (resp *user.UserLoginResponse, err error) {
 	//0.创建返回对象
-	resp = new(user.DouyinUserLoginResponse)
+	resp = new(user.UserLoginResponse)
 	var user model.User
 	username := req.Username
 	password := req.Password
 	//1.检查用户是否存在
 	if exist := model.LoginCheck(&user, username); exist == 1 {
-		resp.StatusCode = 1
-		resp.StatusMsg = "该用户不存在!"
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
 	//2.用户名存在则校验密码
 	result := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if result != nil {
-		fmt.Println("密码错误！")
-		resp.StatusCode = 1
-		resp.StatusMsg = "密码错误！"
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
 	//3.登陆验证通过，生成token
 	token, err := utils.CreateToken(int64(user.ID))
 	if err != nil {
-		resp.StatusCode = 1
-		resp.StatusMsg = "Token Create failed"
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
 	//4.返回
-	resp.StatusCode = 0 //0代表成功其他代表失败
-	resp.StatusMsg = "登录成功！"
+	resp.Base = pack.BuildBaseResp(errno.Success)
 	resp.UserId = int64(user.ID)
 	resp.Token = token
-	return resp, err
+	return resp, nil
 }
 
 // 注册
-func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUserRegisterRequest) (resp *user.DouyinUserRegisterResponse, err error) {
+func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.UserRegisterRequest) (resp *user.UserRegisterResponse, err error) {
 	//0.创建返回对象
-	resp = new(user.DouyinUserRegisterResponse)
+	resp = new(user.UserRegisterResponse)
 	var user model.User
 	username := req.Username
 	password := req.Password
 	//1.首先检查用户名是否已存在
 	if exist := model.CheckUser(username); exist == 1 {
-		resp.StatusCode = 1
-		resp.StatusMsg = "该用户名已存在！"
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
 	//2.密码非对称加密
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		fmt.Println("加密失败:", err)
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
 	}
 	encodePWD := string(hash)
 	//3.用户数据赋值
 	sf, err := snowflake.NewSnowflake(constants.SnowflakeWorkerID, constants.SnowflakeDatacenterID)
 	if err != nil {
-		glog.Error(err)
-		return
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
 	}
 	id := sf.NextVal()
 	user.ID = uint(id)
@@ -83,8 +79,7 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	user.Password = encodePWD
 	//4.用户数据插入数据库
 	if ok := model.AddUser(&user); ok == 1 {
-		resp.StatusCode = 1
-		resp.StatusMsg = "用户注册失败!"
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
 	//5.查询注册用户的id
@@ -92,22 +87,20 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.DouyinUs
 	//6.生成token
 	token, err := utils.CreateToken(userid)
 	if err != nil {
-		resp.StatusCode = 1
-		resp.StatusMsg = "Token创建失败！"
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
 	//7.注册成功
-	resp.StatusCode = 0
-	resp.StatusMsg = "注册成功!"
+	resp.Base = pack.BuildBaseResp(errno.Success)
 	resp.UserId = id
 	resp.Token = token
 	return resp, nil
 }
 
 // 用户信息
-func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRequest) (resp *user.DouyinUserResponse, err error) {
+func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.UserRequest) (resp *user.UserResponse, err error) {
 	//0.创建返回对象
-	resp = new(user.DouyinUserResponse)
+	resp = new(user.UserResponse)
 	//1.获取id
 	id := req.UserId
 	//2.通过用户id查询对应用户
@@ -120,24 +113,53 @@ func (s *TiktokUserServiceImpl) Info(ctx context.Context, req *user.DouyinUserRe
 		FollowerCount: userInfo.FollowerCount,
 		IsFollow:      true,
 	}
-	resp.StatusCode = 0
-	resp.StatusMsg = "成功获取用户信息！"
+	resp.Base = pack.BuildBaseResp(errno.Success)
 	return resp, nil
-}
-
-// 框架运行测试
-func (s *TiktokUserServiceImpl) PingPong(ctx context.Context, req *user.Request1) (resp *user.Response1, err error) {
-	resp = &user.Response1{}
-	resp.Message = req.Message
-	return
 }
 
 // 获取Token
 func (s *TiktokUserServiceImpl) GetToken(ctx context.Context, req *user.GetTokenRequest) (resp *user.GetTokenResponse, err error) {
-	return
+	//0.创建返回对象
+	resp = new(user.GetTokenResponse)
+	//1.判断用户是否登录
+	if len(req.Username) == 0 || req.UserId == 0 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+	//2.登录则生成token
+	token, err := service.NewAuthService(ctx).GetToken(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	//3.返回结果
+	resp.Base = pack.BuildBaseResp(errno.Success)
+	resp.Token = token
+	return resp, nil
 }
 
 // 检查Token
 func (s *TiktokUserServiceImpl) CheckToken(ctx context.Context, req *user.CheckTokenRequest) (resp *user.CheckTokenResponse, err error) {
-	return
+	//0.创建返回对象
+	resp = new(user.CheckTokenResponse)
+	//1.判断token是否存在
+	if len(req.Token) == 0 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+	//2.token存在则鉴权
+	claims, err := service.NewAuthService(ctx).CheckToken(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+	//3.返回结果
+	resp.Info = &user.Auth{
+		UserId:    claims.UserId,
+		Username:  claims.Username,
+		NotBefore: claims.ExpiresAt,
+		ExpiresAt: claims.NotBefore,
+	}
+	resp.Base = pack.BuildBaseResp(errno.Success)
+	return resp, nil
 }
