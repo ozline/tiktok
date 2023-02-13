@@ -22,7 +22,7 @@ message douyin_send_message_response {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
   int64 from_user_id = 3;
-  string to_user_name = 4;
+  int64 to_user_id = 4;
   string content = 5;
 }
 

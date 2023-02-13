@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/gorilla/websocket"
 	"github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
@@ -26,7 +25,7 @@ func NewUser(clientInfo WebClient) {
 		wsConn:   clientInfo.conn,
 		sendChan: make(chan []byte),
 	}
-	fmt.Println("----- New Client,UserId=", user.userId, ",UserAddr=", user.addr, " -----")
+	//fmt.Println("----- New Client,UserId=", user.userId, ",UserAddr=", user.addr, " -----")
 	user.online()
 	go user.recvMessage()
 	go user.sendMessage()
@@ -49,9 +48,9 @@ func (user *User) recvMessage() {
 
 			sendUser := server.onlineUserMap[message.ToUserId]
 			sendUser.sendChan <- p
-			fmt.Println("----- User ", message.ToUserId, " is Online -----")
+			//fmt.Println("----- User ", message.ToUserId, " is Online -----")
 		} else {
-			fmt.Println("----- We Need to Connect to DataBase -----")
+			//fmt.Println("----- We Need to Connect to DataBase -----")
 			user.sendMsgToSqlLayer(message)
 
 		}

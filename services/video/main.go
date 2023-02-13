@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"github.com/cloudwego/kitex/server"
 	"github.com/go-redis/redis"
 	"github.com/ozline/tiktok/pkg/constants"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video/tiktokvideoservice"
+	"github.com/ozline/tiktok/services/video/model"
+	"github.com/ozline/tiktok/services/video/service"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
@@ -22,15 +25,15 @@ func main() {
 		panic("failed to connect database")
 	}
 	// 迁移 schema
-	db.AutoMigrate(&VideoStorageInfo{})
+	db.AutoMigrate(&model.VideoStorageInfo{})
 
+	service.NewTokenService(context.Background()).TokenLimits()
 	RDB = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 
-	//go PerioUpdateVideoCache(10)
 	err = svr.Run()
 
 	if err != nil {

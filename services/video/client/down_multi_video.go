@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/cloudwego/kitex/client"
 	"github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
 	"github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video/tiktokvideoservice"
@@ -38,10 +37,10 @@ func main() {
 	//fmt.Println("Url", i, "=", response.VideoUrls[i-1])
 	//fmt.Println("Owner", i, "=", response.OwnerNames[i-1])
 	//}
-	if response.State == true {
-		fmt.Println("----- DownMultiVideoTest=", (endTime-startTime)/20, "ns -----")
-	} else {
-		fmt.Println("----- DownMultiVideoTest Failed -----")
-	}
+	//if response.State == true {
+	//	fmt.Println("----- DownMultiVideoTest=", (endTime-startTime)/20, "ns -----")
+	//} else {
+	//	fmt.Println("----- DownMultiVideoTest Failed -----")
+	//}
 
 }

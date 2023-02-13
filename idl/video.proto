@@ -10,6 +10,7 @@ service tiktokVideoService {
   rpc getOneVideoInfo(getOneVideoInfoRequest) returns (getOneVideoInfoResponse){};
   rpc downloadOneVideo(downloadOneVideoRequest) returns (downloadOneVideoResponse){};
   rpc downloadMultiVideo(downloadMultiVideoRequest) returns (downloadMultiVideoResponse){};
+  rpc
 }
 
 message putVideoRequest{
