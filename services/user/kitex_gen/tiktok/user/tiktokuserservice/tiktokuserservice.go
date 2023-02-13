@@ -22,7 +22,6 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "tiktokUserService"
 	handlerType := (*user.TiktokUserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"PingPong":   kitex.NewMethodInfo(pingPongHandler, newPingPongArgs, newPingPongResult, false),
 		"Login":      kitex.NewMethodInfo(loginHandler, newLoginArgs, newLoginResult, false),
 		"Register":   kitex.NewMethodInfo(registerHandler, newRegisterArgs, newRegisterResult, false),
 		"Info":       kitex.NewMethodInfo(infoHandler, newInfoArgs, newInfoResult, false),
@@ -43,156 +42,11 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	return svcInfo
 }
 
-func pingPongHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	switch s := arg.(type) {
-	case *streaming.Args:
-		st := s.Stream
-		req := new(user.Request1)
-		if err := st.RecvMsg(req); err != nil {
-			return err
-		}
-		resp, err := handler.(user.TiktokUserService).PingPong(ctx, req)
-		if err != nil {
-			return err
-		}
-		if err := st.SendMsg(resp); err != nil {
-			return err
-		}
-	case *PingPongArgs:
-		success, err := handler.(user.TiktokUserService).PingPong(ctx, s.Req)
-		if err != nil {
-			return err
-		}
-		realResult := result.(*PingPongResult)
-		realResult.Success = success
-	}
-	return nil
-}
-func newPingPongArgs() interface{} {
-	return &PingPongArgs{}
-}
-
-func newPingPongResult() interface{} {
-	return &PingPongResult{}
-}
-
-type PingPongArgs struct {
-	Req *user.Request1
-}
-
-func (p *PingPongArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
-	if !p.IsSetReq() {
-		p.Req = new(user.Request1)
-	}
-	return p.Req.FastRead(buf, _type, number)
-}
-
-func (p *PingPongArgs) FastWrite(buf []byte) (n int) {
-	if !p.IsSetReq() {
-		return 0
-	}
-	return p.Req.FastWrite(buf)
-}
-
-func (p *PingPongArgs) Size() (n int) {
-	if !p.IsSetReq() {
-		return 0
-	}
-	return p.Req.Size()
-}
-
-func (p *PingPongArgs) Marshal(out []byte) ([]byte, error) {
-	if !p.IsSetReq() {
-		return out, fmt.Errorf("No req in PingPongArgs")
-	}
-	return proto.Marshal(p.Req)
-}
-
-func (p *PingPongArgs) Unmarshal(in []byte) error {
-	msg := new(user.Request1)
-	if err := proto.Unmarshal(in, msg); err != nil {
-		return err
-	}
-	p.Req = msg
-	return nil
-}
-
-var PingPongArgs_Req_DEFAULT *user.Request1
-
-func (p *PingPongArgs) GetReq() *user.Request1 {
-	if !p.IsSetReq() {
-		return PingPongArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-
-func (p *PingPongArgs) IsSetReq() bool {
-	return p.Req != nil
-}
-
-type PingPongResult struct {
-	Success *user.Response1
-}
-
-var PingPongResult_Success_DEFAULT *user.Response1
-
-func (p *PingPongResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
-	if !p.IsSetSuccess() {
-		p.Success = new(user.Response1)
-	}
-	return p.Success.FastRead(buf, _type, number)
-}
-
-func (p *PingPongResult) FastWrite(buf []byte) (n int) {
-	if !p.IsSetSuccess() {
-		return 0
-	}
-	return p.Success.FastWrite(buf)
-}
-
-func (p *PingPongResult) Size() (n int) {
-	if !p.IsSetSuccess() {
-		return 0
-	}
-	return p.Success.Size()
-}
-
-func (p *PingPongResult) Marshal(out []byte) ([]byte, error) {
-	if !p.IsSetSuccess() {
-		return out, fmt.Errorf("No req in PingPongResult")
-	}
-	return proto.Marshal(p.Success)
-}
-
-func (p *PingPongResult) Unmarshal(in []byte) error {
-	msg := new(user.Response1)
-	if err := proto.Unmarshal(in, msg); err != nil {
-		return err
-	}
-	p.Success = msg
-	return nil
-}
-
-func (p *PingPongResult) GetSuccess() *user.Response1 {
-	if !p.IsSetSuccess() {
-		return PingPongResult_Success_DEFAULT
-	}
-	return p.Success
-}
-
-func (p *PingPongResult) SetSuccess(x interface{}) {
-	p.Success = x.(*user.Response1)
-}
-
-func (p *PingPongResult) IsSetSuccess() bool {
-	return p.Success != nil
-}
-
 func loginHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(user.DouyinUserLoginRequest)
+		req := new(user.UserLoginRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -222,12 +76,12 @@ func newLoginResult() interface{} {
 }
 
 type LoginArgs struct {
-	Req *user.DouyinUserLoginRequest
+	Req *user.UserLoginRequest
 }
 
 func (p *LoginArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(user.DouyinUserLoginRequest)
+		p.Req = new(user.UserLoginRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -254,7 +108,7 @@ func (p *LoginArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *LoginArgs) Unmarshal(in []byte) error {
-	msg := new(user.DouyinUserLoginRequest)
+	msg := new(user.UserLoginRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -262,9 +116,9 @@ func (p *LoginArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var LoginArgs_Req_DEFAULT *user.DouyinUserLoginRequest
+var LoginArgs_Req_DEFAULT *user.UserLoginRequest
 
-func (p *LoginArgs) GetReq() *user.DouyinUserLoginRequest {
+func (p *LoginArgs) GetReq() *user.UserLoginRequest {
 	if !p.IsSetReq() {
 		return LoginArgs_Req_DEFAULT
 	}
@@ -276,14 +130,14 @@ func (p *LoginArgs) IsSetReq() bool {
 }
 
 type LoginResult struct {
-	Success *user.DouyinUserLoginResponse
+	Success *user.UserLoginResponse
 }
 
-var LoginResult_Success_DEFAULT *user.DouyinUserLoginResponse
+var LoginResult_Success_DEFAULT *user.UserLoginResponse
 
 func (p *LoginResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(user.DouyinUserLoginResponse)
+		p.Success = new(user.UserLoginResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -310,7 +164,7 @@ func (p *LoginResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *LoginResult) Unmarshal(in []byte) error {
-	msg := new(user.DouyinUserLoginResponse)
+	msg := new(user.UserLoginResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -318,7 +172,7 @@ func (p *LoginResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *LoginResult) GetSuccess() *user.DouyinUserLoginResponse {
+func (p *LoginResult) GetSuccess() *user.UserLoginResponse {
 	if !p.IsSetSuccess() {
 		return LoginResult_Success_DEFAULT
 	}
@@ -326,7 +180,7 @@ func (p *LoginResult) GetSuccess() *user.DouyinUserLoginResponse {
 }
 
 func (p *LoginResult) SetSuccess(x interface{}) {
-	p.Success = x.(*user.DouyinUserLoginResponse)
+	p.Success = x.(*user.UserLoginResponse)
 }
 
 func (p *LoginResult) IsSetSuccess() bool {
@@ -337,7 +191,7 @@ func registerHandler(ctx context.Context, handler interface{}, arg, result inter
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(user.DouyinUserRegisterRequest)
+		req := new(user.UserRegisterRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -367,12 +221,12 @@ func newRegisterResult() interface{} {
 }
 
 type RegisterArgs struct {
-	Req *user.DouyinUserRegisterRequest
+	Req *user.UserRegisterRequest
 }
 
 func (p *RegisterArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(user.DouyinUserRegisterRequest)
+		p.Req = new(user.UserRegisterRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -399,7 +253,7 @@ func (p *RegisterArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *RegisterArgs) Unmarshal(in []byte) error {
-	msg := new(user.DouyinUserRegisterRequest)
+	msg := new(user.UserRegisterRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -407,9 +261,9 @@ func (p *RegisterArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var RegisterArgs_Req_DEFAULT *user.DouyinUserRegisterRequest
+var RegisterArgs_Req_DEFAULT *user.UserRegisterRequest
 
-func (p *RegisterArgs) GetReq() *user.DouyinUserRegisterRequest {
+func (p *RegisterArgs) GetReq() *user.UserRegisterRequest {
 	if !p.IsSetReq() {
 		return RegisterArgs_Req_DEFAULT
 	}
@@ -421,14 +275,14 @@ func (p *RegisterArgs) IsSetReq() bool {
 }
 
 type RegisterResult struct {
-	Success *user.DouyinUserRegisterResponse
+	Success *user.UserRegisterResponse
 }
 
-var RegisterResult_Success_DEFAULT *user.DouyinUserRegisterResponse
+var RegisterResult_Success_DEFAULT *user.UserRegisterResponse
 
 func (p *RegisterResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(user.DouyinUserRegisterResponse)
+		p.Success = new(user.UserRegisterResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -455,7 +309,7 @@ func (p *RegisterResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *RegisterResult) Unmarshal(in []byte) error {
-	msg := new(user.DouyinUserRegisterResponse)
+	msg := new(user.UserRegisterResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -463,7 +317,7 @@ func (p *RegisterResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *RegisterResult) GetSuccess() *user.DouyinUserRegisterResponse {
+func (p *RegisterResult) GetSuccess() *user.UserRegisterResponse {
 	if !p.IsSetSuccess() {
 		return RegisterResult_Success_DEFAULT
 	}
@@ -471,7 +325,7 @@ func (p *RegisterResult) GetSuccess() *user.DouyinUserRegisterResponse {
 }
 
 func (p *RegisterResult) SetSuccess(x interface{}) {
-	p.Success = x.(*user.DouyinUserRegisterResponse)
+	p.Success = x.(*user.UserRegisterResponse)
 }
 
 func (p *RegisterResult) IsSetSuccess() bool {
@@ -482,7 +336,7 @@ func infoHandler(ctx context.Context, handler interface{}, arg, result interface
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(user.DouyinUserRequest)
+		req := new(user.UserRequest)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -512,12 +366,12 @@ func newInfoResult() interface{} {
 }
 
 type InfoArgs struct {
-	Req *user.DouyinUserRequest
+	Req *user.UserRequest
 }
 
 func (p *InfoArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(user.DouyinUserRequest)
+		p.Req = new(user.UserRequest)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -544,7 +398,7 @@ func (p *InfoArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *InfoArgs) Unmarshal(in []byte) error {
-	msg := new(user.DouyinUserRequest)
+	msg := new(user.UserRequest)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -552,9 +406,9 @@ func (p *InfoArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var InfoArgs_Req_DEFAULT *user.DouyinUserRequest
+var InfoArgs_Req_DEFAULT *user.UserRequest
 
-func (p *InfoArgs) GetReq() *user.DouyinUserRequest {
+func (p *InfoArgs) GetReq() *user.UserRequest {
 	if !p.IsSetReq() {
 		return InfoArgs_Req_DEFAULT
 	}
@@ -566,14 +420,14 @@ func (p *InfoArgs) IsSetReq() bool {
 }
 
 type InfoResult struct {
-	Success *user.DouyinUserResponse
+	Success *user.UserResponse
 }
 
-var InfoResult_Success_DEFAULT *user.DouyinUserResponse
+var InfoResult_Success_DEFAULT *user.UserResponse
 
 func (p *InfoResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(user.DouyinUserResponse)
+		p.Success = new(user.UserResponse)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -600,7 +454,7 @@ func (p *InfoResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *InfoResult) Unmarshal(in []byte) error {
-	msg := new(user.DouyinUserResponse)
+	msg := new(user.UserResponse)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -608,7 +462,7 @@ func (p *InfoResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *InfoResult) GetSuccess() *user.DouyinUserResponse {
+func (p *InfoResult) GetSuccess() *user.UserResponse {
 	if !p.IsSetSuccess() {
 		return InfoResult_Success_DEFAULT
 	}
@@ -616,7 +470,7 @@ func (p *InfoResult) GetSuccess() *user.DouyinUserResponse {
 }
 
 func (p *InfoResult) SetSuccess(x interface{}) {
-	p.Success = x.(*user.DouyinUserResponse)
+	p.Success = x.(*user.UserResponse)
 }
 
 func (p *InfoResult) IsSetSuccess() bool {
@@ -923,17 +777,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) PingPong(ctx context.Context, Req *user.Request1) (r *user.Response1, err error) {
-	var _args PingPongArgs
-	_args.Req = Req
-	var _result PingPongResult
-	if err = p.c.Call(ctx, "PingPong", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) Login(ctx context.Context, Req *user.DouyinUserLoginRequest) (r *user.DouyinUserLoginResponse, err error) {
+func (p *kClient) Login(ctx context.Context, Req *user.UserLoginRequest) (r *user.UserLoginResponse, err error) {
 	var _args LoginArgs
 	_args.Req = Req
 	var _result LoginResult
@@ -943,7 +787,7 @@ func (p *kClient) Login(ctx context.Context, Req *user.DouyinUserLoginRequest) (
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Register(ctx context.Context, Req *user.DouyinUserRegisterRequest) (r *user.DouyinUserRegisterResponse, err error) {
+func (p *kClient) Register(ctx context.Context, Req *user.UserRegisterRequest) (r *user.UserRegisterResponse, err error) {
 	var _args RegisterArgs
 	_args.Req = Req
 	var _result RegisterResult
@@ -953,7 +797,7 @@ func (p *kClient) Register(ctx context.Context, Req *user.DouyinUserRegisterRequ
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Info(ctx context.Context, Req *user.DouyinUserRequest) (r *user.DouyinUserResponse, err error) {
+func (p *kClient) Info(ctx context.Context, Req *user.UserRequest) (r *user.UserResponse, err error) {
 	var _args InfoArgs
 	_args.Req = Req
 	var _result InfoResult
