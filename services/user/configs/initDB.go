@@ -2,13 +2,14 @@ package configs
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/ozline/tiktok/pkg/constants"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"os"
-	"time"
 )
 
 var Db *gorm.DB
@@ -31,7 +32,7 @@ func InitDB() {
 		},
 	})
 
-	Db.Table(constants.UserTableName)
+	Db = Db.Table(constants.UserTableName)
 	if err != nil {
 		fmt.Println("连接数据库失败，请检查参数：", err)
 		os.Exit(1)

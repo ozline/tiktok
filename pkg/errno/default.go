@@ -3,8 +3,14 @@
 package errno
 
 var (
-	Success                  = NewErrNo(SuccessCode, "Success")
+	// Success
+	Success = NewErrNo(SuccessCode, "Success")
+
 	ServiceError             = NewErrNo(ServiceErrorCode, "Service is unable to start successfully")
+	ServiceInternalError     = NewErrNo(ServiceErrorCode, "Service Internal Error")
 	ParamError               = NewErrNo(ParamErrorCode, "Parameter error")
 	AuthorizationFailedError = NewErrNo(AuthorizationFailedErrCode, "Authorization failed")
+
+	// User
+	UserExistedError = NewErrNo(ParamErrorCode, "User existed")
 )

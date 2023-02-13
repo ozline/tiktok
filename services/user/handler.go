@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
@@ -53,41 +55,38 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.UserRegi
 	//0.创建返回对象
 	resp = new(user.UserRegisterResponse)
 	var user model.User
-	username := req.Username
-	password := req.Password
 	//1.首先检查用户名是否已存在
-	if exist := model.CheckUser(username); exist == 1 {
-		resp.Base = pack.BuildBaseResp(errno.ParamError)
+	if exist := model.CheckUser(req.Username); exist {
+		resp.Base = pack.BuildBaseResp(errno.UserExistedError)
 		return resp, nil
 	}
 	//2.密码非对称加密
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		resp.Base = pack.BuildBaseResp(errno.ServiceInternalError)
 		return resp, nil
 	}
 	encodePWD := string(hash)
 	//3.用户数据赋值
 	sf, err := snowflake.NewSnowflake(constants.SnowflakeWorkerID, constants.SnowflakeDatacenterID)
 	if err != nil {
-		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		resp.Base = pack.BuildBaseResp(errno.ServiceInternalError)
 		return resp, nil
 	}
 	id := sf.NextVal()
-	user.ID = uint(id)
-	user.Username = username
+	user.ID = id
+	user.Username = req.Username
 	user.Password = encodePWD
 	//4.用户数据插入数据库
 	if ok := model.AddUser(&user); ok == 1 {
-		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		resp.Base = pack.BuildBaseResp(errno.ServiceInternalError)
 		return resp, nil
 	}
-	//5.查询注册用户的id
-	userid := model.SelecUser(username)
 	//6.生成token
-	token, err := utils.CreateToken(userid)
+	token, err := utils.CreateToken(id)
 	if err != nil {
-		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		klog.Info("Token ERROR")
+		resp.Base = pack.BuildBaseResp(errno.ServiceInternalError)
 		return resp, nil
 	}
 	//7.注册成功

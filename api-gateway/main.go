@@ -3,12 +3,52 @@
 package main
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	hertzlogrus "github.com/hertz-contrib/obs-opentelemetry/logging/logrus"
+	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/tracer"
+
+	"github.com/hertz-contrib/pprof"
 )
 
 func main() {
-	h := server.Default()
+	rpc.Init()
+	tracer.InitJaeger(constants.GatewayServiceName)
+
+	// tracer, cfg := tracing.NewServerTracer()
+
+	hlog.SetLogger(hertzlogrus.NewLogger())
+	hlog.SetLevel(hlog.LevelInfo)
+
+	h := server.New(
+		server.WithHostPorts(constants.GatewayListenAddress),
+		server.WithHandleMethodNotAllowed(true),
+		// tracer,
+	)
+
+	h.Use(recovery.Recovery(recovery.WithRecoveryHandler(recoveryHandler))) // Recovery
+
+	pprof.Register(h)
+	// h.Use(tracing.ServerMiddleware(cfg))
 
 	register(h)
 	h.Spin()
+}
+
+func recoveryHandler(ctx context.Context, c *app.RequestContext, err interface{}, stack []byte) {
+	hlog.SystemLogger().CtxErrorf(ctx, "[Recovery] err=%v\nstack=%s", err, stack)
+
+	c.JSON(consts.StatusInternalServerError, map[string]interface{}{
+		"code":    errno.ServiceErrorCode,
+		"message": fmt.Sprintf("[Recovery] err=%v\nstack=%s", err, stack),
+	})
 }
