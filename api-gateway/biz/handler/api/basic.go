@@ -8,8 +8,9 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	basic "github.com/ozline/tiktok/api-gateway/biz/model/message/basic"
-	"github.com/ozline/tiktok/api-gateway/rpc"
-	"github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth"
+	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 )
 
 // UserRegister .
@@ -19,24 +20,26 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req basic.UserRegisterRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	token, err := rpc.GetToken(context.Background(), &auth.GetTokenRequest{
+	userId, token, err := rpc.UserRegister(context.Background(), &user.UserRegisterRequest{
 		Username: req.Username,
-		UserId:   123455,
+		Password: req.Password,
 	})
 
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, err)
+		return
 	}
 
-	resp := new(basic.UserRegisterResponse)
-
-	resp.Token = token
-
-	c.JSON(consts.StatusOK, resp)
+	SendCommonResponse(c, &basic.UserRegisterResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+		Token:      token,
+		UserId:     userId,
+	})
 }
 
 // UserLogin .
@@ -46,13 +49,25 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var req basic.UserLoginRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(basic.UserLoginResponse)
+	userId, token, err := rpc.UserLogin(context.Background(), &user.UserLoginRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+	}
+
+	SendCommonResponse(c, &basic.UserLoginResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMag:  errno.SuccessMsg,
+		UserId:     userId,
+		Token:      token,
+	})
 }
 
 // UserGetInfo .
@@ -62,13 +77,28 @@ func UserGetInfo(ctx context.Context, c *app.RequestContext) {
 	var req basic.UserRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(basic.UserResponse)
+	res, err := rpc.UserGetInfo(context.Background(), &user.UserRequest{
+		UserId: req.UserId,
+		Token:  req.Token,
+	})
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+	}
+
+	//TODO: get follow relationship
+
+	res.IsFollow = false // 这部分需要再rpc一下relation服务
+
+	SendCommonResponse(c, &basic.UserResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+		User:       res,
+	})
 }
 
 // VideoGetFeeds .
@@ -78,7 +108,7 @@ func VideoGetFeeds(ctx context.Context, c *app.RequestContext) {
 	var req basic.FeedRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
@@ -94,7 +124,7 @@ func VideoPublishAction(ctx context.Context, c *app.RequestContext) {
 	var req basic.PublishActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
@@ -110,7 +140,7 @@ func VideoPublishList(ctx context.Context, c *app.RequestContext) {
 	var req basic.PublishListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 

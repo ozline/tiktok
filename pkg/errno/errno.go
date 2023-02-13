@@ -29,6 +29,7 @@ func (e ErrNo) WithMessage(msg string) ErrNo {
 }
 
 // ConvertErr convert error to ErrNo
+// in Default user ServiceErrorCode
 func ConvertErr(err error) ErrNo {
 	errno := ErrNo{}
 	if errors.As(err, &errno) {

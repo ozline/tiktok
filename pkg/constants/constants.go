@@ -13,6 +13,7 @@ const (
 	ConnectTimeout = 50 * time.Millisecond
 
 	// 服务名
+	GatewayServiceName = "tiktok-gateway"
 	UserServiceName    = "tiktok-user"
 	CommentServiceName = "tiktok-comment"
 	FollowServiceName  = "tiktok-follow"
