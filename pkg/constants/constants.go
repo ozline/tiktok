@@ -1,9 +1,16 @@
 package constants
 
+import "time"
+
 const (
 	MySQLDefaultDSN = "tiktok:tiktok@tcp(127.0.0.1:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
 
 	JwtSecret = "MTAxNTkwMTg1Mw=="
+
+	// RPC
+	MuxConnection  = 1
+	RPCTimeout     = 3 * time.Second
+	ConnectTimeout = 50 * time.Millisecond
 
 	// 服务名
 	UserServiceName    = "tiktok-user"
@@ -11,6 +18,8 @@ const (
 	FollowServiceName  = "tiktok-follow"
 	ChatServiceName    = "tiktok-chat"
 	VideoServiceName   = "tiktok-video"
+
+	AuthServiceName = "tiktok-auth"
 
 	// 服务端口
 	GatewayListenAddress        = "127.0.0.1:8080"

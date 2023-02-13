@@ -11,10 +11,9 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	PingPong(ctx context.Context, Req *user.Request1, callOptions ...callopt.Option) (r *user.Response1, err error)
-	Login(ctx context.Context, Req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error)
-	Register(ctx context.Context, Req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error)
-	Info(ctx context.Context, Req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error)
+	Login(ctx context.Context, Req *user.UserLoginRequest, callOptions ...callopt.Option) (r *user.UserLoginResponse, err error)
+	Register(ctx context.Context, Req *user.UserRegisterRequest, callOptions ...callopt.Option) (r *user.UserRegisterResponse, err error)
+	Info(ctx context.Context, Req *user.UserRequest, callOptions ...callopt.Option) (r *user.UserResponse, err error)
 	GetToken(ctx context.Context, Req *user.GetTokenRequest, callOptions ...callopt.Option) (r *user.GetTokenResponse, err error)
 	CheckToken(ctx context.Context, Req *user.CheckTokenRequest, callOptions ...callopt.Option) (r *user.CheckTokenResponse, err error)
 }
@@ -48,22 +47,17 @@ type kTiktokUserServiceClient struct {
 	*kClient
 }
 
-func (p *kTiktokUserServiceClient) PingPong(ctx context.Context, Req *user.Request1, callOptions ...callopt.Option) (r *user.Response1, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.PingPong(ctx, Req)
-}
-
-func (p *kTiktokUserServiceClient) Login(ctx context.Context, Req *user.DouyinUserLoginRequest, callOptions ...callopt.Option) (r *user.DouyinUserLoginResponse, err error) {
+func (p *kTiktokUserServiceClient) Login(ctx context.Context, Req *user.UserLoginRequest, callOptions ...callopt.Option) (r *user.UserLoginResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Login(ctx, Req)
 }
 
-func (p *kTiktokUserServiceClient) Register(ctx context.Context, Req *user.DouyinUserRegisterRequest, callOptions ...callopt.Option) (r *user.DouyinUserRegisterResponse, err error) {
+func (p *kTiktokUserServiceClient) Register(ctx context.Context, Req *user.UserRegisterRequest, callOptions ...callopt.Option) (r *user.UserRegisterResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Register(ctx, Req)
 }
 
-func (p *kTiktokUserServiceClient) Info(ctx context.Context, Req *user.DouyinUserRequest, callOptions ...callopt.Option) (r *user.DouyinUserResponse, err error) {
+func (p *kTiktokUserServiceClient) Info(ctx context.Context, Req *user.UserRequest, callOptions ...callopt.Option) (r *user.UserResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Info(ctx, Req)
 }

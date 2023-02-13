@@ -1,22 +1,10 @@
+// DO NOT EDIT
+
 package errno
 
 import (
 	"errors"
 	"fmt"
-)
-
-const (
-	SuccessCode                = 1000020
-	ServiceErrorCode           = 10001
-	ParamErrorCode             = 10002
-	AuthorizationFailedErrCode = 10003
-)
-
-var (
-	Success                  = NewErrNo(SuccessCode, "Success")
-	ServiceError             = NewErrNo(ServiceErrorCode, "Service is unable to start successfully")
-	ParamError               = NewErrNo(ParamErrorCode, "Parameter error")
-	AuthorizationFailedError = NewErrNo(AuthorizationFailedErrCode, "Authorization failed")
 )
 
 type ErrNo struct {
@@ -29,7 +17,10 @@ func (e ErrNo) Error() string {
 }
 
 func NewErrNo(code int64, msg string) ErrNo {
-	return ErrNo{code, msg}
+	return ErrNo{
+		ErrorCode: code,
+		ErrorMsg: msg,
+	}
 }
 
 func (e ErrNo) WithMessage(msg string) ErrNo {
