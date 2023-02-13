@@ -19,8 +19,7 @@ const (
 	FollowServiceListenAddress  = "127.0.0.1:8890"
 	ChatServiceListenAddress    = "127.0.0.1:8891"
 	VideoServiceListenAddress   = "127.0.0.1:8892"
-
-	AuthServiceListenAddress = "127.0.0.1:8893"
+	AuthServiceListenAddress    = "127.0.0.1:8893"
 
 	// 表格名
 	UserTableName    = "user"
@@ -39,4 +38,9 @@ const (
 	// Limit
 	MaxConnections = 1000
 	MaxQPS         = 100
+	MaxVideoSize   = 300000
+
+	// 七牛云仓库访问密钥
+	AccessKey = "m5KRX39z1fu9ssut0SFgCWwLxxRiWHB-I2jPalWV"
+	SecretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
 )

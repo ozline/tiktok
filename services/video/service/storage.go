@@ -16,6 +16,8 @@ type StorageService struct {
 	s   *snowflake.Snowflake
 }
 
+var mac = qbox.NewMac(constants.AccessKey, constants.SecretKey)
+
 func NewStorageService(ctx context.Context) *StorageService {
 	sf, _ := snowflake.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
 	return &StorageService{
@@ -23,10 +25,6 @@ func NewStorageService(ctx context.Context) *StorageService {
 		s:   sf,
 	}
 }
-
-var accessKey = "m5KRX39z1fu9ssut0SFgCWwLxxRiWHB-I2jPalWV"
-var secretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
-var mac = qbox.NewMac(accessKey, secretKey)
 
 // 上传文件 bucket="titok"
 func (s *StorageService) StoragPutVideo(localFileName string, storageFileName int64, bucketName string) error {

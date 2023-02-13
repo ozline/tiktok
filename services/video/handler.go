@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"github.com/ozline/tiktok/pkg/constants"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
 	"github.com/ozline/tiktok/services/video/model"
 	"github.com/ozline/tiktok/services/video/service"
+	"os"
 	"strconv"
 	"time"
 )
@@ -24,21 +26,32 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 		Title:    req.GetTitle(),
 		Author:   &user,
 	}
-	dataSerivce := service.NewDataBaseService(ctx)
-	videoID := dataSerivce.S.NextVal()
-	videoInfo.M.Lock()
-	videoInfo.ID = videoID
-	videoInfo.M.Unlock()
+	videoDetail, err := os.Stat(videoInfo.PlayUrl)
+	if videoDetail.Size() > constants.MaxVideoSize {
+		response := video.PutVideoResponse{
+			State:     false,
+			Title:     videoInfo.Title,
+			OwnerName: videoInfo.Author.Name,
+		}
+		return &response, nil
+	} else {
+		dataSerivce := service.NewDataBaseService(ctx)
+		videoID := dataSerivce.S.NextVal()
+		videoInfo.M.Lock()
+		videoInfo.ID = videoID
+		videoInfo.M.Unlock()
 
-	go dataSerivce.DataBasePutVideo(videoInfo, videoInfo.ID)
-	go service.NewStorageService(ctx).StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
+		go dataSerivce.DataBasePutVideo(videoInfo, videoInfo.ID)
+		go service.NewStorageService(ctx).StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
 
-	response := video.PutVideoResponse{
-		State:     true,
-		Title:     videoInfo.Title,
-		OwnerName: videoInfo.Author.Name,
+		response := video.PutVideoResponse{
+			State:     true,
+			Title:     videoInfo.Title,
+			OwnerName: videoInfo.Author.Name,
+		}
+		return &response, nil
 	}
-	return &response, nil
+
 }
 
 // DeleteVideo implements the TiktokVideoServiceImpl interface.

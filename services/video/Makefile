@@ -13,7 +13,7 @@ run_client:
 
 .PHONY: run_server
 run_server:
-	go run main.go handler.go mysql_handler.go storage_handler.go
+	go run main.go handler.go
 
 test_upMultiVideo:
 	go run ./client/up_multi_video.go
