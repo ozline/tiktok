@@ -5,13 +5,70 @@ package comment;
 option go_package = "tiktok/comment";
 
 service tiktokCommentService {
-  rpc PingPong(Request1) returns (Response){};
+  /**
+  * type: 
+  *   comment: find by uid   (need uid)
+  *   like:    find by like  (need uid)
+  *   video:   find by vodeo (need vid)
+  */
+  rpc List   (ListReq) returns (ListResp){};
+  rpc Post   (PostReq) returns (PostResp){};
+  rpc SetLike(LikeReq) returns (LikeResp){};
+  rpc GetLike(LikeReq) returns (LikeResp){};
 }
 
-message Response{
-    string message = 1;
+message Comment {
+  int64   id              = 1;
+  int64   uid             = 2;
+  int64   vid             = 3;
+  string  ctime           = 4;
+  string  content         = 5;
+  int32   like_count      = 6;
+  bool    is_uploder_like = 7;
 }
 
-message Request1{
-        string message = 1;
+enum ListType {
+  like    = 0;
+  video   = 1;
+  comment = 2;
+}
+
+message ListReq {
+  int64    uid         = 1;
+  int64    vid         = 2;
+  ListType type        = 3;
+  int32    page_size   = 4;
+  int32    page_number = 5;
+}
+
+message ListResp {
+  BaseInfo         info     = 1;
+  int64            count    = 2;
+  repeated Comment comments = 3;
+}
+
+message PostReq {
+  int64  uid     = 1;
+  int64  vid     = 2;
+  string content = 3;
+}
+
+message PostResp {
+  BaseInfo info = 1;
+}
+
+message LikeReq {
+  int64 uid        = 1;
+  bool  is_like    = 2;
+  int64 comment_id = 3;
+}
+
+message LikeResp {
+  BaseInfo info    = 1;
+  bool     is_like = 2;
+}
+
+message BaseInfo {
+  string msg  = 1;
+  int64  code = 2;
 }
