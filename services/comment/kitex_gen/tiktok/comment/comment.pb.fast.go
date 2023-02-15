@@ -274,6 +274,11 @@ func (x *PostResp) FastRead(buf []byte, _type int8, number int32) (offset int, e
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -295,6 +300,11 @@ func (x *PostResp) fastReadField1(buf []byte, _type int8) (offset int, err error
 	}
 	x.Info = &v
 	return offset, nil
+}
+
+func (x *PostResp) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.ContendId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
 }
 
 func (x *LikeReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
@@ -614,6 +624,7 @@ func (x *PostResp) FastWrite(buf []byte) (offset int) {
 		return offset
 	}
 	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
 	return offset
 }
 
@@ -622,6 +633,14 @@ func (x *PostResp) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteMessage(buf[offset:], 1, x.Info)
+	return offset
+}
+
+func (x *PostResp) fastWriteField2(buf []byte) (offset int) {
+	if x.ContendId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.ContendId)
 	return offset
 }
 
@@ -906,6 +925,7 @@ func (x *PostResp) Size() (n int) {
 		return n
 	}
 	n += x.sizeField1()
+	n += x.sizeField2()
 	return n
 }
 
@@ -914,6 +934,14 @@ func (x *PostResp) sizeField1() (n int) {
 		return n
 	}
 	n += fastpb.SizeMessage(1, x.Info)
+	return n
+}
+
+func (x *PostResp) sizeField2() (n int) {
+	if x.ContendId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.ContendId)
 	return n
 }
 
@@ -1033,6 +1061,7 @@ var fieldIDToName_PostReq = map[int32]string{
 
 var fieldIDToName_PostResp = map[int32]string{
 	1: "Info",
+	2: "ContendId",
 }
 
 var fieldIDToName_LikeReq = map[int32]string{

@@ -7,7 +7,6 @@ import (
 	"github.com/ozline/tiktok/pkg/constants"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
@@ -17,7 +16,7 @@ func init() {
 	var err error
 	db, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN), &gorm.Config{
 		// gorm日志模式：silent
-		Logger: logger.Default.LogMode(logger.Silent),
+		// Logger: logger.Default.LogMode(logger.Silent),
 		// 外键约束
 		DisableForeignKeyConstraintWhenMigrating: true,
 		// 禁用默认事务（提高运行速度）
@@ -42,6 +41,8 @@ func init() {
 
 	// SetConnMaxLifetiment 设置连接的最大可复用时间。
 	sqlDB.SetConnMaxLifetime(10 * time.Second)
+
+	db.AutoMigrate(&Comment{}, &CommentLike{})
 }
 
 func DB() *gorm.DB {

@@ -9,7 +9,7 @@ service tiktokCommentService {
   * type: 
   *   comment: find by uid   (need uid)
   *   like:    find by like  (need uid)
-  *   video:   find by vodeo (need vid)
+  *   video:   find by vodeo (need vid) // not implement
   */
   rpc List   (ListReq) returns (ListResp){};
   rpc Post   (PostReq) returns (PostResp){};
@@ -54,7 +54,8 @@ message PostReq {
 }
 
 message PostResp {
-  BaseInfo info = 1;
+  BaseInfo info       = 1;
+  int64    contend_id = 2;
 }
 
 message LikeReq {
