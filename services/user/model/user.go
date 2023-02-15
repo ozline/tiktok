@@ -2,18 +2,14 @@ package model
 
 import (
 	"fmt"
+
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/services/user/configs"
 	"gorm.io/gorm"
-	"time"
 )
 
-type Model struct {
-	ID       uint `gorm:"primarykey"`
-	CreateAt time.Time
-	updateAt time.Time
-	deleteAt time.Time `gorm:"index"`
-}
 type User struct {
+	ID            int64
 	Username      string
 	Password      string
 	FollowCount   int64
@@ -22,13 +18,13 @@ type User struct {
 }
 
 // 注册检查
-func CheckUser(username string) int {
-	var user User
-	configs.Db.Where("username = ?", username).First(&user)
-	if user.ID > 0 {
-		return 1 //1代表用户已存在
-	}
-	return 0 //0代表用户不存在
+func CheckUser(username string) bool {
+	var count int64
+	configs.Db.Where("username = ?", username).Count(&count)
+
+	klog.Info("Check User cnt:", count)
+
+	return count > 0 // 存在数目则表示已经注册
 }
 
 // 注册用户
@@ -45,7 +41,7 @@ func AddUser(data *User) int {
 func SelecUser(username string) int64 {
 	var user User
 	configs.Db.Where("username = ?", username).First(&user)
-	return int64(user.ID)
+	return user.ID
 }
 
 // 登录检查
