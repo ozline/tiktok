@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/ozline/tiktok/pkg/constants"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
 	"github.com/ozline/tiktok/services/video/model"
@@ -187,37 +188,26 @@ func (s *TiktokVideoServiceImpl) PerioUpdateVideoCache(ctx context.Context, numb
 
 // DownloadMaxVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) DownloadMaxVideo(ctx context.Context, req *video.DownloadMaxVideoRequest) (resp *video.DownloadMaxVideoResponse, err error) {
-	number := constants.MaxList
-	keys, err := RDB.Keys("*").Result()
-
+	number := constants.MaxListLength
 	videos := service.RandGetNVideo(number)
-	videourls := make([]string, number)
-	//fmt.Println("len(keys)=", len(keys))
-	//fmt.Println("Number=", number)
-	if len(keys) >= int(number) {
-		//fmt.Println("----- Redis Cache Has Enough Videos -----")
-		for i := 0; i < number; i++ {
-			videourls[i], err = RDB.Get(keys[i]).Result()
-		}
-		//for index, videoid := range keys {
-		//	videourls[index], err = RDB.Get(videoid).Result()
-		//}
-	} else {
-		//fmt.Println("----- Redic Cache Don't Have Enough Videos -----")
-		videourls = service.NewStorageService(ctx).GetNUrlByVideoID(videos)
+	videourls := service.NewStorageService(ctx).GetNUrlByVideoID(videos)
+	videoInfos := make([]model.GetOneVideoInfo, number)
+	for index, _ := range videoInfos {
+		videoInfos[index].Id = videos[index].VideoID
+		videoInfos[index].Title = videos[index].VideoTitle
+		videoInfos[index].Content = videourls[index]
+		time, _ := strconv.ParseInt(videos[index].VideoCreateTime, 10, 64)
+		videoInfos[index].Created_at = time
 	}
 
-	response := video.DownloadMultiVideoResponse{
-		VideoNumber: int64(len(videourls)),
-		VideoUrls:   videourls,
+	nvideoInfos := model.GetNVideoInfos{
+		VideoInfos: videoInfos,
+		Total:      int64(number),
 	}
-
-	if response.VideoNumber == req.GetVideoNumber() {
-		response.State = true
-	} else {
-		response.State = false
-		response.ErrState = "Dont't Have Enough Videos"
+	VideoInfoStr, _ := json.Marshal(&nvideoInfos)
+	response := &video.DownloadMaxVideoResponse{
+		State:     true,
+		VideoINfo: string(VideoInfoStr),
 	}
-
-	return &response, nil
+	return response, nil
 }

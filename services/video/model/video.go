@@ -37,3 +37,19 @@ type MyPutRet struct {
 	Bucket string
 	Name   string
 }
+
+type GetOneVideoInfo struct {
+	Id         int64
+	Title      string
+	Content    string
+	View       int64
+	Status     int64
+	Created_at int64
+	Start_time int64
+	End_time   int64
+}
+
+type GetNVideoInfos struct {
+	VideoInfos []GetOneVideoInfo
+	Total      int64
+}

@@ -49,6 +49,7 @@ const (
 	MaxConnections = 1000
 	MaxQPS         = 100
 	MaxVideoSize   = 300000
+	MaxListLength  = 100
 
 	// 七牛云仓库访问密钥
 	AccessKey = "m5KRX39z1fu9ssut0SFgCWwLxxRiWHB-I2jPalWV"
