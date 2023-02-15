@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/golang/glog"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	chat "github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
@@ -18,7 +17,7 @@ type TiktokChatServiceImpl struct{}
 
 // SendChatMessage implements the TiktokChatServiceImpl interface.
 func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.DouyinSendMessageRequest) (resp *chat.DouyinSendMessageResponse, err error) {
-	fmt.Println("----- SendChatMessage -----")
+	//fmt.Println("----- SendChatMessage -----")
 	snow, err := snowflake.NewSnowflake(int64(0), int64(0))
 	if err != nil {
 		glog.Error(err)
@@ -62,7 +61,6 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 		fromuserids[index] = message.From_user_id
 		touserids[index] = message.To_user_id
 		contents[index] = message.Content
-
 	}
 
 	response := chat.DouyinReceiveMessageResponse{
