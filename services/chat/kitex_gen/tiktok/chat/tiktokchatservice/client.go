@@ -11,8 +11,8 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	SendChatMessage(ctx context.Context, Req *chat.DouyinSendMessageRequest, callOptions ...callopt.Option) (r *chat.DouyinSendMessageResponse, err error)
-	AcceptChatMessage(ctx context.Context, Req *chat.DouyinReceiveMessageRequest, callOptions ...callopt.Option) (r *chat.DouyinReceiveMessageResponse, err error)
+	SendChatMessage(ctx context.Context, Req *chat.SendMessageRequest, callOptions ...callopt.Option) (r *chat.SendMessageResponse, err error)
+	AcceptChatMessage(ctx context.Context, Req *chat.ReceiveMessageRequest, callOptions ...callopt.Option) (r *chat.ReceiveMessageResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -44,12 +44,12 @@ type kTiktokChatServiceClient struct {
 	*kClient
 }
 
-func (p *kTiktokChatServiceClient) SendChatMessage(ctx context.Context, Req *chat.DouyinSendMessageRequest, callOptions ...callopt.Option) (r *chat.DouyinSendMessageResponse, err error) {
+func (p *kTiktokChatServiceClient) SendChatMessage(ctx context.Context, Req *chat.SendMessageRequest, callOptions ...callopt.Option) (r *chat.SendMessageResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.SendChatMessage(ctx, Req)
 }
 
-func (p *kTiktokChatServiceClient) AcceptChatMessage(ctx context.Context, Req *chat.DouyinReceiveMessageRequest, callOptions ...callopt.Option) (r *chat.DouyinReceiveMessageResponse, err error) {
+func (p *kTiktokChatServiceClient) AcceptChatMessage(ctx context.Context, Req *chat.ReceiveMessageRequest, callOptions ...callopt.Option) (r *chat.ReceiveMessageResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.AcceptChatMessage(ctx, Req)
 }
