@@ -19,7 +19,7 @@ type VideoStorageInfo struct {
 	VideoCoverUrl   string
 	VideoTitle      string
 	VideoCreateTime string // 视频创建时间
-	UserName        string // 用户名称
+	UserId          int64  // 用户名称
 }
 
 type User struct {

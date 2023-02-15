@@ -17,7 +17,7 @@ type TiktokVideoServiceImpl struct{}
 // PutVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
 	user := model.User{
-		Name: req.GetOwnerName(),
+		Id: req.GetOwnerId(),
 	}
 
 	videoInfo := model.Video{
@@ -29,9 +29,9 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 	videoDetail, err := os.Stat(videoInfo.PlayUrl)
 	if videoDetail.Size() > constants.MaxVideoSize {
 		response := video.PutVideoResponse{
-			State:     false,
-			Title:     videoInfo.Title,
-			OwnerName: videoInfo.Author.Name,
+			State:   false,
+			Title:   videoInfo.Title,
+			OwnerId: videoInfo.Author.Id,
 		}
 		return &response, nil
 	} else {
@@ -45,9 +45,9 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 		go service.NewStorageService(ctx).StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
 
 		response := video.PutVideoResponse{
-			State:     true,
-			Title:     videoInfo.Title,
-			OwnerName: videoInfo.Author.Name,
+			State:   true,
+			Title:   videoInfo.Title,
+			OwnerId: videoInfo.Author.Id,
 		}
 		return &response, nil
 	}
@@ -57,8 +57,8 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 // DeleteVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.DeleteVideoRequest) (resp *video.DeleteVideoResponse, err error) {
 	videoTitle := req.GetTitle()
-	deletorName := req.DeletorName
-	videoInfo, dataBaseResult := service.NewDataBaseService(ctx).DataBaseDeleteVideo(videoTitle, deletorName)
+	deletorId := req.GetDeletorId()
+	videoInfo, dataBaseResult := service.NewDataBaseService(ctx).DataBaseDeleteVideo(videoTitle, deletorId)
 
 	storageResult := false
 	if dataBaseResult == true {
@@ -72,8 +72,8 @@ func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.Del
 		response = video.DeleteVideoResponse{
 			State:           true,
 			DeleteVideoName: videoInfo.VideoTitle,
-			DeletorName:     videoInfo.UserName,
-			VideoOwnerName:  videoInfo.UserName,
+			DeletorId:       videoInfo.UserId,
+			VideoOwnerId:    videoInfo.UserId,
 		}
 	} else {
 		if dataBaseResult == false {
@@ -104,7 +104,7 @@ func (s *TiktokVideoServiceImpl) GetOneVideoInfo(ctx context.Context, req *video
 			VideoTitle:    videoInfo.VideoTitle,
 			VideoSize:     videoSize,
 			VideoMimeType: videoMimeType,
-			OwnerName:     videoInfo.UserName,
+			OwnerId:       videoInfo.UserId,
 		}
 	} else {
 		response.ErrState = "----- Don't Find the Video -----"
@@ -126,7 +126,7 @@ func (s *TiktokVideoServiceImpl) DownloadOneVideo(ctx context.Context, req *vide
 			State:      true,
 			VideoTitle: videoInfo.VideoTitle,
 			VideoUrl:   accessURL,
-			OwnerName:  videoInfo.UserName,
+			OwnerId:    videoInfo.UserId,
 		}
 	}
 
@@ -183,4 +183,41 @@ func (s *TiktokVideoServiceImpl) PerioUpdateVideoCache(ctx context.Context, numb
 			RDB.Set(strconv.FormatInt(videoInfo.VideoID, 10), videourls[index], 0).Result()
 		}
 	}
+}
+
+// DownloadMaxVideo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) DownloadMaxVideo(ctx context.Context, req *video.DownloadMaxVideoRequest) (resp *video.DownloadMaxVideoResponse, err error) {
+	number := constants.MaxList
+	keys, err := RDB.Keys("*").Result()
+
+	videos := service.RandGetNVideo(number)
+	videourls := make([]string, number)
+	//fmt.Println("len(keys)=", len(keys))
+	//fmt.Println("Number=", number)
+	if len(keys) >= int(number) {
+		//fmt.Println("----- Redis Cache Has Enough Videos -----")
+		for i := 0; i < number; i++ {
+			videourls[i], err = RDB.Get(keys[i]).Result()
+		}
+		//for index, videoid := range keys {
+		//	videourls[index], err = RDB.Get(videoid).Result()
+		//}
+	} else {
+		//fmt.Println("----- Redic Cache Don't Have Enough Videos -----")
+		videourls = service.NewStorageService(ctx).GetNUrlByVideoID(videos)
+	}
+
+	response := video.DownloadMultiVideoResponse{
+		VideoNumber: int64(len(videourls)),
+		VideoUrls:   videourls,
+	}
+
+	if response.VideoNumber == req.GetVideoNumber() {
+		response.State = true
+	} else {
+		response.State = false
+		response.ErrState = "Dont't Have Enough Videos"
+	}
+
+	return &response, nil
 }
