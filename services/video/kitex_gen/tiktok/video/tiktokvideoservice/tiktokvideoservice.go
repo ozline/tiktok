@@ -27,6 +27,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"getOneVideoInfo":    kitex.NewMethodInfo(getOneVideoInfoHandler, newGetOneVideoInfoArgs, newGetOneVideoInfoResult, false),
 		"downloadOneVideo":   kitex.NewMethodInfo(downloadOneVideoHandler, newDownloadOneVideoArgs, newDownloadOneVideoResult, false),
 		"downloadMultiVideo": kitex.NewMethodInfo(downloadMultiVideoHandler, newDownloadMultiVideoArgs, newDownloadMultiVideoResult, false),
+		"downloadMaxVideo":   kitex.NewMethodInfo(downloadMaxVideoHandler, newDownloadMaxVideoArgs, newDownloadMaxVideoResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -767,6 +768,151 @@ func (p *DownloadMultiVideoResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func downloadMaxVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(video.DownloadMaxVideoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(video.TiktokVideoService).DownloadMaxVideo(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *DownloadMaxVideoArgs:
+		success, err := handler.(video.TiktokVideoService).DownloadMaxVideo(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*DownloadMaxVideoResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newDownloadMaxVideoArgs() interface{} {
+	return &DownloadMaxVideoArgs{}
+}
+
+func newDownloadMaxVideoResult() interface{} {
+	return &DownloadMaxVideoResult{}
+}
+
+type DownloadMaxVideoArgs struct {
+	Req *video.DownloadMaxVideoRequest
+}
+
+func (p *DownloadMaxVideoArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(video.DownloadMaxVideoRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *DownloadMaxVideoArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *DownloadMaxVideoArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *DownloadMaxVideoArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in DownloadMaxVideoArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *DownloadMaxVideoArgs) Unmarshal(in []byte) error {
+	msg := new(video.DownloadMaxVideoRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var DownloadMaxVideoArgs_Req_DEFAULT *video.DownloadMaxVideoRequest
+
+func (p *DownloadMaxVideoArgs) GetReq() *video.DownloadMaxVideoRequest {
+	if !p.IsSetReq() {
+		return DownloadMaxVideoArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *DownloadMaxVideoArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type DownloadMaxVideoResult struct {
+	Success *video.DownloadMaxVideoResponse
+}
+
+var DownloadMaxVideoResult_Success_DEFAULT *video.DownloadMaxVideoResponse
+
+func (p *DownloadMaxVideoResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(video.DownloadMaxVideoResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *DownloadMaxVideoResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *DownloadMaxVideoResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *DownloadMaxVideoResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in DownloadMaxVideoResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *DownloadMaxVideoResult) Unmarshal(in []byte) error {
+	msg := new(video.DownloadMaxVideoResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *DownloadMaxVideoResult) GetSuccess() *video.DownloadMaxVideoResponse {
+	if !p.IsSetSuccess() {
+		return DownloadMaxVideoResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *DownloadMaxVideoResult) SetSuccess(x interface{}) {
+	p.Success = x.(*video.DownloadMaxVideoResponse)
+}
+
+func (p *DownloadMaxVideoResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -822,6 +968,16 @@ func (p *kClient) DownloadMultiVideo(ctx context.Context, Req *video.DownloadMul
 	_args.Req = Req
 	var _result DownloadMultiVideoResult
 	if err = p.c.Call(ctx, "downloadMultiVideo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DownloadMaxVideo(ctx context.Context, Req *video.DownloadMaxVideoRequest) (r *video.DownloadMaxVideoResponse, err error) {
+	var _args DownloadMaxVideoArgs
+	_args.Req = Req
+	var _result DownloadMaxVideoResult
+	if err = p.c.Call(ctx, "downloadMaxVideo", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

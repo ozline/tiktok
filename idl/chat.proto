@@ -5,12 +5,16 @@ package chat;
 option go_package = "tiktok/chat";
 
 service tiktokChatService {
-  rpc SendChatMessage( douyin_send_message_request  ) returns (douyin_send_message_response){};
-  rpc AcceptChatMessage( douyin_receive_message_request  ) returns (douyin_receive_message_response){};
+  rpc SendChatMessage( SendMessageRequest  ) returns (SendMessageResponse){};
+  rpc AcceptChatMessage( ReceiveMessageRequest  ) returns (ReceiveMessageResponse){};
 }
 
+message BaseResp {
+  int64 code = 1;
+  string msg = 2;
+}
 
-message douyin_send_message_request {
+message SendMessageRequest {
   string token = 1; // 用户鉴权token
   int64 from_user_id = 2;
   int64 to_user_id = 3; // 对方用户id
@@ -18,21 +22,19 @@ message douyin_send_message_request {
   int64 create_time = 5;
 }
 
-message douyin_send_message_response {
-  int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; // 返回状态描述
-  int64 from_user_id = 3;
-  int64 to_user_id = 4;
-  string content = 5;
+message SendMessageResponse {
+  BaseResp base = 1;
+  int64 from_user_id = 2;
+  int64 to_user_id = 3;
+  string content = 4;
 }
 
-message douyin_receive_message_request {
-  string token = 1; // 用户鉴权token
-  int64 to_user_id = 2; // 对方用户id
-  int64 seq_id = 3;
+message ReceiveMessageRequest {
+  int64 to_user_id = 1; // 对方用户id
+  int64 seq_id = 2;
 }
 
-message douyin_receive_message_response {
+message ReceiveMessageResponse {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
   repeated int64 from_user_ids = 3;

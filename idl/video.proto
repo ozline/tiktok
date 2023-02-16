@@ -10,38 +10,38 @@ service tiktokVideoService {
   rpc getOneVideoInfo(getOneVideoInfoRequest) returns (getOneVideoInfoResponse){};
   rpc downloadOneVideo(downloadOneVideoRequest) returns (downloadOneVideoResponse){};
   rpc downloadMultiVideo(downloadMultiVideoRequest) returns (downloadMultiVideoResponse){};
-  rpc
+  rpc downloadMaxVideo(downloadMaxVideoRequest) returns (downloadMaxVideoResponse){};
 }
 
 message putVideoRequest{
   string play_url = 1;
   string cover_url = 2;
   string title = 3;
-  string owner_name = 5;
+  int64 owner_id = 4;
 }
 
 message putVideoResponse{
   bool state = 1;
   string title = 2;
-  string owner_name = 3;
-  string errState = 4;
+  int64 owner_id = 3;
+  string err_state = 4;
 }
 
 message deleteVideoRequest {
   string title = 1;
-  string deletor_name = 2;
+  int64 deletor_id = 2;
 }
 
 message deleteVideoResponse {
   bool state = 1;
-  string deleteVideoName = 2;
-  string deletorName = 3;
-  string videoOwnerName = 4;
-  string errState = 5;
+  string delete_video_name = 2;
+  int64 deletor_id = 3;
+  int64 video_owner_id = 4;
+  string err_state = 5;
 }
 
 message getOneVideoInfoRequest {
-  string videoName = 1;
+  string video_name = 1;
 }
 
 message getOneVideoInfoResponse {
@@ -52,29 +52,38 @@ message getOneVideoInfoResponse {
   string video_title = 5; // 标题
   int64 video_size = 6;
   string video_mime_type = 7;
-  string owner_name = 8; // 用户名称
-  string errState = 9;
+  int64 owner_id = 8; // 用户名称
+  string err_state = 9;
 }
 message downloadOneVideoRequest {
-  string videoName = 1;
+  string video_name = 1;
 }
 
 message downloadOneVideoResponse {
   bool state = 1;
   string video_title = 2;
   string video_url = 3;
-  string owner_name = 4;
+  int64 owner_id = 4;
 }
 
 message downloadMultiVideoRequest {
   int64 video_number = 1;
-  string downloador_Name = 2;
+  int64 downloador_id = 2;
 }
 
 message downloadMultiVideoResponse {
   bool state = 1;
-  int64 videoNumber = 2;
+  int64 video_number = 2;
   repeated string video_urls = 3;
-  string errState = 4;
+  string err_state = 4;
 }
 
+message downloadMaxVideoRequest {
+  int64 downloador_id = 1;
+}
+
+message downloadMaxVideoResponse {
+  bool state = 1;
+  string video_info = 2;
+  string err_state = 3;
+}

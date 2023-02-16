@@ -44,13 +44,13 @@ func (d *DataBaseService) DataBasePutVideo(video model.Video, videoID int64) {
 		VideoCoverUrl:   video.CoverUrl,
 		VideoTitle:      video.Title,
 		VideoCreateTime: time.Now().Format("2006-01-02 15:04:05"), //当前时间的字符串
-		UserName:        video.Author.Name,
+		UserId:          video.Author.Id,
 	}
 
 	db.Create(&videostorageInfo)
 }
 
-func (d *DataBaseService) DataBaseDeleteVideo(videoTitle string, userName string) (model.VideoStorageInfo, bool) {
+func (d *DataBaseService) DataBaseDeleteVideo(videoTitle string, userId int64) (model.VideoStorageInfo, bool) {
 	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
@@ -63,7 +63,7 @@ func (d *DataBaseService) DataBaseDeleteVideo(videoTitle string, userName string
 
 	var deleteState bool
 
-	if videoInfo.UserName == userName {
+	if videoInfo.VideoID == userId {
 		db.Delete(&videoInfo, videoInfo.VideoID)
 		deleteState = true
 	} else {

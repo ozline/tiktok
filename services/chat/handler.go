@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/golang/glog"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	chat "github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
@@ -17,8 +16,8 @@ import (
 type TiktokChatServiceImpl struct{}
 
 // SendChatMessage implements the TiktokChatServiceImpl interface.
-func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.DouyinSendMessageRequest) (resp *chat.DouyinSendMessageResponse, err error) {
-	fmt.Println("----- SendChatMessage -----")
+func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.SendMessageRequest) (resp *chat.SendMessageResponse, err error) {
+	//fmt.Println("----- SendChatMessage -----")
 	snow, err := snowflake.NewSnowflake(int64(0), int64(0))
 	if err != nil {
 		glog.Error(err)
@@ -35,9 +34,11 @@ func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.D
 	dataServer.SendMessageMysqlHandler(message)
 	dataServer.ReceiveMessageMysqlHandler(message)
 
-	response := chat.DouyinSendMessageResponse{
-		StatusCode: 1,
-		StatusMsg:  "Success message",
+	response := chat.SendMessageResponse{
+		Base: &chat.BaseResp{
+			Code: 1,
+			Msg:  "Success message",
+		},
 		FromUserId: req.FromUserId,
 		ToUserId:   req.ToUserId,
 		Content:    req.Content,
@@ -46,7 +47,7 @@ func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.D
 }
 
 // AcceptChatMessage implements the TiktokChatServiceImpl interface.
-func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat.DouyinReceiveMessageRequest) (resp *chat.DouyinReceiveMessageResponse, err error) {
+func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat.ReceiveMessageRequest) (resp *chat.ReceiveMessageResponse, err error) {
 	//fmt.Println("----- AcceptChatMessage -----")
 	db, err := gorm.Open(sqlite.Open("receiveMessage.db"), &gorm.Config{})
 	if err != nil {
@@ -62,10 +63,9 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 		fromuserids[index] = message.From_user_id
 		touserids[index] = message.To_user_id
 		contents[index] = message.Content
-
 	}
 
-	response := chat.DouyinReceiveMessageResponse{
+	response := chat.ReceiveMessageResponse{
 		StatusCode:  1,
 		StatusMsg:   "Success Receive",
 		FromUserIds: fromuserids,

@@ -29,8 +29,8 @@ func (x *PutVideoRequest) FastRead(buf []byte, _type int8, number int32) (offset
 		if err != nil {
 			goto ReadFieldError
 		}
-	case 5:
-		offset, err = x.fastReadField5(buf, _type)
+	case 4:
+		offset, err = x.fastReadField4(buf, _type)
 		if err != nil {
 			goto ReadFieldError
 		}
@@ -62,8 +62,8 @@ func (x *PutVideoRequest) fastReadField3(buf []byte, _type int8) (offset int, er
 	return offset, err
 }
 
-func (x *PutVideoRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.OwnerName, offset, err = fastpb.ReadString(buf, _type)
+func (x *PutVideoRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
+	x.OwnerId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -113,7 +113,7 @@ func (x *PutVideoResponse) fastReadField2(buf []byte, _type int8) (offset int, e
 }
 
 func (x *PutVideoResponse) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.OwnerName, offset, err = fastpb.ReadString(buf, _type)
+	x.OwnerId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -153,7 +153,7 @@ func (x *DeleteVideoRequest) fastReadField1(buf []byte, _type int8) (offset int,
 }
 
 func (x *DeleteVideoRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.DeletorName, offset, err = fastpb.ReadString(buf, _type)
+	x.DeletorId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -208,12 +208,12 @@ func (x *DeleteVideoResponse) fastReadField2(buf []byte, _type int8) (offset int
 }
 
 func (x *DeleteVideoResponse) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.DeletorName, offset, err = fastpb.ReadString(buf, _type)
+	x.DeletorId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
 func (x *DeleteVideoResponse) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.VideoOwnerName, offset, err = fastpb.ReadString(buf, _type)
+	x.VideoOwnerId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -343,7 +343,7 @@ func (x *GetOneVideoInfoResponse) fastReadField7(buf []byte, _type int8) (offset
 }
 
 func (x *GetOneVideoInfoResponse) fastReadField8(buf []byte, _type int8) (offset int, err error) {
-	x.OwnerName, offset, err = fastpb.ReadString(buf, _type)
+	x.OwnerId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -428,7 +428,7 @@ func (x *DownloadOneVideoResponse) fastReadField3(buf []byte, _type int8) (offse
 }
 
 func (x *DownloadOneVideoResponse) fastReadField4(buf []byte, _type int8) (offset int, err error) {
-	x.OwnerName, offset, err = fastpb.ReadString(buf, _type)
+	x.OwnerId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -463,7 +463,7 @@ func (x *DownloadMultiVideoRequest) fastReadField1(buf []byte, _type int8) (offs
 }
 
 func (x *DownloadMultiVideoRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Downloador_Name, offset, err = fastpb.ReadString(buf, _type)
+	x.DownloadorId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -527,6 +527,76 @@ func (x *DownloadMultiVideoResponse) fastReadField4(buf []byte, _type int8) (off
 	return offset, err
 }
 
+func (x *DownloadMaxVideoRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_DownloadMaxVideoRequest[number], err)
+}
+
+func (x *DownloadMaxVideoRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.DownloadorId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *DownloadMaxVideoResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_DownloadMaxVideoResponse[number], err)
+}
+
+func (x *DownloadMaxVideoResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.State, offset, err = fastpb.ReadBool(buf, _type)
+	return offset, err
+}
+
+func (x *DownloadMaxVideoResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.VideoINfo, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *DownloadMaxVideoResponse) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+	x.ErrState, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
 func (x *PutVideoRequest) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -534,7 +604,7 @@ func (x *PutVideoRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField1(buf[offset:])
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
-	offset += x.fastWriteField5(buf[offset:])
+	offset += x.fastWriteField4(buf[offset:])
 	return offset
 }
 
@@ -562,11 +632,11 @@ func (x *PutVideoRequest) fastWriteField3(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *PutVideoRequest) fastWriteField5(buf []byte) (offset int) {
-	if x.OwnerName == "" {
+func (x *PutVideoRequest) fastWriteField4(buf []byte) (offset int) {
+	if x.OwnerId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.OwnerName)
+	offset += fastpb.WriteInt64(buf[offset:], 4, x.OwnerId)
 	return offset
 }
 
@@ -598,10 +668,10 @@ func (x *PutVideoResponse) fastWriteField2(buf []byte) (offset int) {
 }
 
 func (x *PutVideoResponse) fastWriteField3(buf []byte) (offset int) {
-	if x.OwnerName == "" {
+	if x.OwnerId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.OwnerName)
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.OwnerId)
 	return offset
 }
 
@@ -631,10 +701,10 @@ func (x *DeleteVideoRequest) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *DeleteVideoRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.DeletorName == "" {
+	if x.DeletorId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.DeletorName)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.DeletorId)
 	return offset
 }
 
@@ -667,18 +737,18 @@ func (x *DeleteVideoResponse) fastWriteField2(buf []byte) (offset int) {
 }
 
 func (x *DeleteVideoResponse) fastWriteField3(buf []byte) (offset int) {
-	if x.DeletorName == "" {
+	if x.DeletorId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 3, x.DeletorName)
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.DeletorId)
 	return offset
 }
 
 func (x *DeleteVideoResponse) fastWriteField4(buf []byte) (offset int) {
-	if x.VideoOwnerName == "" {
+	if x.VideoOwnerId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.VideoOwnerName)
+	offset += fastpb.WriteInt64(buf[offset:], 4, x.VideoOwnerId)
 	return offset
 }
 
@@ -779,10 +849,10 @@ func (x *GetOneVideoInfoResponse) fastWriteField7(buf []byte) (offset int) {
 }
 
 func (x *GetOneVideoInfoResponse) fastWriteField8(buf []byte) (offset int) {
-	if x.OwnerName == "" {
+	if x.OwnerId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 8, x.OwnerName)
+	offset += fastpb.WriteInt64(buf[offset:], 8, x.OwnerId)
 	return offset
 }
 
@@ -846,10 +916,10 @@ func (x *DownloadOneVideoResponse) fastWriteField3(buf []byte) (offset int) {
 }
 
 func (x *DownloadOneVideoResponse) fastWriteField4(buf []byte) (offset int) {
-	if x.OwnerName == "" {
+	if x.OwnerId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 4, x.OwnerName)
+	offset += fastpb.WriteInt64(buf[offset:], 4, x.OwnerId)
 	return offset
 }
 
@@ -871,10 +941,10 @@ func (x *DownloadMultiVideoRequest) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *DownloadMultiVideoRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.Downloador_Name == "" {
+	if x.DownloadorId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.Downloador_Name)
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.DownloadorId)
 	return offset
 }
 
@@ -923,6 +993,56 @@ func (x *DownloadMultiVideoResponse) fastWriteField4(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *DownloadMaxVideoRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *DownloadMaxVideoRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.DownloadorId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.DownloadorId)
+	return offset
+}
+
+func (x *DownloadMaxVideoResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
+	return offset
+}
+
+func (x *DownloadMaxVideoResponse) fastWriteField1(buf []byte) (offset int) {
+	if !x.State {
+		return offset
+	}
+	offset += fastpb.WriteBool(buf[offset:], 1, x.State)
+	return offset
+}
+
+func (x *DownloadMaxVideoResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.VideoINfo == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 2, x.VideoINfo)
+	return offset
+}
+
+func (x *DownloadMaxVideoResponse) fastWriteField3(buf []byte) (offset int) {
+	if x.ErrState == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 3, x.ErrState)
+	return offset
+}
+
 func (x *PutVideoRequest) Size() (n int) {
 	if x == nil {
 		return n
@@ -930,7 +1050,7 @@ func (x *PutVideoRequest) Size() (n int) {
 	n += x.sizeField1()
 	n += x.sizeField2()
 	n += x.sizeField3()
-	n += x.sizeField5()
+	n += x.sizeField4()
 	return n
 }
 
@@ -958,11 +1078,11 @@ func (x *PutVideoRequest) sizeField3() (n int) {
 	return n
 }
 
-func (x *PutVideoRequest) sizeField5() (n int) {
-	if x.OwnerName == "" {
+func (x *PutVideoRequest) sizeField4() (n int) {
+	if x.OwnerId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(5, x.OwnerName)
+	n += fastpb.SizeInt64(4, x.OwnerId)
 	return n
 }
 
@@ -994,10 +1114,10 @@ func (x *PutVideoResponse) sizeField2() (n int) {
 }
 
 func (x *PutVideoResponse) sizeField3() (n int) {
-	if x.OwnerName == "" {
+	if x.OwnerId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(3, x.OwnerName)
+	n += fastpb.SizeInt64(3, x.OwnerId)
 	return n
 }
 
@@ -1027,10 +1147,10 @@ func (x *DeleteVideoRequest) sizeField1() (n int) {
 }
 
 func (x *DeleteVideoRequest) sizeField2() (n int) {
-	if x.DeletorName == "" {
+	if x.DeletorId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(2, x.DeletorName)
+	n += fastpb.SizeInt64(2, x.DeletorId)
 	return n
 }
 
@@ -1063,18 +1183,18 @@ func (x *DeleteVideoResponse) sizeField2() (n int) {
 }
 
 func (x *DeleteVideoResponse) sizeField3() (n int) {
-	if x.DeletorName == "" {
+	if x.DeletorId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(3, x.DeletorName)
+	n += fastpb.SizeInt64(3, x.DeletorId)
 	return n
 }
 
 func (x *DeleteVideoResponse) sizeField4() (n int) {
-	if x.VideoOwnerName == "" {
+	if x.VideoOwnerId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(4, x.VideoOwnerName)
+	n += fastpb.SizeInt64(4, x.VideoOwnerId)
 	return n
 }
 
@@ -1175,10 +1295,10 @@ func (x *GetOneVideoInfoResponse) sizeField7() (n int) {
 }
 
 func (x *GetOneVideoInfoResponse) sizeField8() (n int) {
-	if x.OwnerName == "" {
+	if x.OwnerId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(8, x.OwnerName)
+	n += fastpb.SizeInt64(8, x.OwnerId)
 	return n
 }
 
@@ -1242,10 +1362,10 @@ func (x *DownloadOneVideoResponse) sizeField3() (n int) {
 }
 
 func (x *DownloadOneVideoResponse) sizeField4() (n int) {
-	if x.OwnerName == "" {
+	if x.OwnerId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(4, x.OwnerName)
+	n += fastpb.SizeInt64(4, x.OwnerId)
 	return n
 }
 
@@ -1267,10 +1387,10 @@ func (x *DownloadMultiVideoRequest) sizeField1() (n int) {
 }
 
 func (x *DownloadMultiVideoRequest) sizeField2() (n int) {
-	if x.Downloador_Name == "" {
+	if x.DownloadorId == 0 {
 		return n
 	}
-	n += fastpb.SizeString(2, x.Downloador_Name)
+	n += fastpb.SizeInt64(2, x.DownloadorId)
 	return n
 }
 
@@ -1319,30 +1439,80 @@ func (x *DownloadMultiVideoResponse) sizeField4() (n int) {
 	return n
 }
 
+func (x *DownloadMaxVideoRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *DownloadMaxVideoRequest) sizeField1() (n int) {
+	if x.DownloadorId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(1, x.DownloadorId)
+	return n
+}
+
+func (x *DownloadMaxVideoResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	n += x.sizeField3()
+	return n
+}
+
+func (x *DownloadMaxVideoResponse) sizeField1() (n int) {
+	if !x.State {
+		return n
+	}
+	n += fastpb.SizeBool(1, x.State)
+	return n
+}
+
+func (x *DownloadMaxVideoResponse) sizeField2() (n int) {
+	if x.VideoINfo == "" {
+		return n
+	}
+	n += fastpb.SizeString(2, x.VideoINfo)
+	return n
+}
+
+func (x *DownloadMaxVideoResponse) sizeField3() (n int) {
+	if x.ErrState == "" {
+		return n
+	}
+	n += fastpb.SizeString(3, x.ErrState)
+	return n
+}
+
 var fieldIDToName_PutVideoRequest = map[int32]string{
 	1: "PlayUrl",
 	2: "CoverUrl",
 	3: "Title",
-	5: "OwnerName",
+	4: "OwnerId",
 }
 
 var fieldIDToName_PutVideoResponse = map[int32]string{
 	1: "State",
 	2: "Title",
-	3: "OwnerName",
+	3: "OwnerId",
 	4: "ErrState",
 }
 
 var fieldIDToName_DeleteVideoRequest = map[int32]string{
 	1: "Title",
-	2: "DeletorName",
+	2: "DeletorId",
 }
 
 var fieldIDToName_DeleteVideoResponse = map[int32]string{
 	1: "State",
 	2: "DeleteVideoName",
-	3: "DeletorName",
-	4: "VideoOwnerName",
+	3: "DeletorId",
+	4: "VideoOwnerId",
 	5: "ErrState",
 }
 
@@ -1358,7 +1528,7 @@ var fieldIDToName_GetOneVideoInfoResponse = map[int32]string{
 	5: "VideoTitle",
 	6: "VideoSize",
 	7: "VideoMimeType",
-	8: "OwnerName",
+	8: "OwnerId",
 	9: "ErrState",
 }
 
@@ -1370,12 +1540,12 @@ var fieldIDToName_DownloadOneVideoResponse = map[int32]string{
 	1: "State",
 	2: "VideoTitle",
 	3: "VideoUrl",
-	4: "OwnerName",
+	4: "OwnerId",
 }
 
 var fieldIDToName_DownloadMultiVideoRequest = map[int32]string{
 	1: "VideoNumber",
-	2: "Downloador_Name",
+	2: "DownloadorId",
 }
 
 var fieldIDToName_DownloadMultiVideoResponse = map[int32]string{
@@ -1383,4 +1553,14 @@ var fieldIDToName_DownloadMultiVideoResponse = map[int32]string{
 	2: "VideoNumber",
 	3: "VideoUrls",
 	4: "ErrState",
+}
+
+var fieldIDToName_DownloadMaxVideoRequest = map[int32]string{
+	1: "DownloadorId",
+}
+
+var fieldIDToName_DownloadMaxVideoResponse = map[int32]string{
+	1: "State",
+	2: "VideoINfo",
+	3: "ErrState",
 }

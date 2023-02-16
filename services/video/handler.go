@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/ozline/tiktok/pkg/constants"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
 	"github.com/ozline/tiktok/services/video/model"
@@ -17,7 +18,7 @@ type TiktokVideoServiceImpl struct{}
 // PutVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
 	user := model.User{
-		Name: req.GetOwnerName(),
+		Id: req.GetOwnerId(),
 	}
 
 	videoInfo := model.Video{
@@ -29,9 +30,9 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 	videoDetail, err := os.Stat(videoInfo.PlayUrl)
 	if videoDetail.Size() > constants.MaxVideoSize {
 		response := video.PutVideoResponse{
-			State:     false,
-			Title:     videoInfo.Title,
-			OwnerName: videoInfo.Author.Name,
+			State:   false,
+			Title:   videoInfo.Title,
+			OwnerId: videoInfo.Author.Id,
 		}
 		return &response, nil
 	} else {
@@ -45,9 +46,9 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 		go service.NewStorageService(ctx).StoragPutVideo(req.PlayUrl, videoInfo.ID, "titok")
 
 		response := video.PutVideoResponse{
-			State:     true,
-			Title:     videoInfo.Title,
-			OwnerName: videoInfo.Author.Name,
+			State:   true,
+			Title:   videoInfo.Title,
+			OwnerId: videoInfo.Author.Id,
 		}
 		return &response, nil
 	}
@@ -57,8 +58,8 @@ func (s *TiktokVideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVid
 // DeleteVideo implements the TiktokVideoServiceImpl interface.
 func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.DeleteVideoRequest) (resp *video.DeleteVideoResponse, err error) {
 	videoTitle := req.GetTitle()
-	deletorName := req.DeletorName
-	videoInfo, dataBaseResult := service.NewDataBaseService(ctx).DataBaseDeleteVideo(videoTitle, deletorName)
+	deletorId := req.GetDeletorId()
+	videoInfo, dataBaseResult := service.NewDataBaseService(ctx).DataBaseDeleteVideo(videoTitle, deletorId)
 
 	storageResult := false
 	if dataBaseResult == true {
@@ -72,8 +73,8 @@ func (s *TiktokVideoServiceImpl) DeleteVideo(ctx context.Context, req *video.Del
 		response = video.DeleteVideoResponse{
 			State:           true,
 			DeleteVideoName: videoInfo.VideoTitle,
-			DeletorName:     videoInfo.UserName,
-			VideoOwnerName:  videoInfo.UserName,
+			DeletorId:       videoInfo.UserId,
+			VideoOwnerId:    videoInfo.UserId,
 		}
 	} else {
 		if dataBaseResult == false {
@@ -104,7 +105,7 @@ func (s *TiktokVideoServiceImpl) GetOneVideoInfo(ctx context.Context, req *video
 			VideoTitle:    videoInfo.VideoTitle,
 			VideoSize:     videoSize,
 			VideoMimeType: videoMimeType,
-			OwnerName:     videoInfo.UserName,
+			OwnerId:       videoInfo.UserId,
 		}
 	} else {
 		response.ErrState = "----- Don't Find the Video -----"
@@ -126,7 +127,7 @@ func (s *TiktokVideoServiceImpl) DownloadOneVideo(ctx context.Context, req *vide
 			State:      true,
 			VideoTitle: videoInfo.VideoTitle,
 			VideoUrl:   accessURL,
-			OwnerName:  videoInfo.UserName,
+			OwnerId:    videoInfo.UserId,
 		}
 	}
 
@@ -183,4 +184,30 @@ func (s *TiktokVideoServiceImpl) PerioUpdateVideoCache(ctx context.Context, numb
 			RDB.Set(strconv.FormatInt(videoInfo.VideoID, 10), videourls[index], 0).Result()
 		}
 	}
+}
+
+// DownloadMaxVideo implements the TiktokVideoServiceImpl interface.
+func (s *TiktokVideoServiceImpl) DownloadMaxVideo(ctx context.Context, req *video.DownloadMaxVideoRequest) (resp *video.DownloadMaxVideoResponse, err error) {
+	number := constants.MaxListLength
+	videos := service.RandGetNVideo(number)
+	videourls := service.NewStorageService(ctx).GetNUrlByVideoID(videos)
+	videoInfos := make([]model.GetOneVideoInfo, number)
+	for index, _ := range videoInfos {
+		videoInfos[index].Id = videos[index].VideoID
+		videoInfos[index].Title = videos[index].VideoTitle
+		videoInfos[index].Content = videourls[index]
+		time, _ := strconv.ParseInt(videos[index].VideoCreateTime, 10, 64)
+		videoInfos[index].Created_at = time
+	}
+
+	nvideoInfos := model.GetNVideoInfos{
+		VideoInfos: videoInfos,
+		Total:      int64(number),
+	}
+	VideoInfoStr, _ := json.Marshal(&nvideoInfos)
+	response := &video.DownloadMaxVideoResponse{
+		State:     true,
+		VideoINfo: string(VideoInfoStr),
+	}
+	return response, nil
 }

@@ -16,6 +16,7 @@ type Client interface {
 	GetOneVideoInfo(ctx context.Context, Req *video.GetOneVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetOneVideoInfoResponse, err error)
 	DownloadOneVideo(ctx context.Context, Req *video.DownloadOneVideoRequest, callOptions ...callopt.Option) (r *video.DownloadOneVideoResponse, err error)
 	DownloadMultiVideo(ctx context.Context, Req *video.DownloadMultiVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMultiVideoResponse, err error)
+	DownloadMaxVideo(ctx context.Context, Req *video.DownloadMaxVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMaxVideoResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -70,4 +71,9 @@ func (p *kTiktokVideoServiceClient) DownloadOneVideo(ctx context.Context, Req *v
 func (p *kTiktokVideoServiceClient) DownloadMultiVideo(ctx context.Context, Req *video.DownloadMultiVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMultiVideoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DownloadMultiVideo(ctx, Req)
+}
+
+func (p *kTiktokVideoServiceClient) DownloadMaxVideo(ctx context.Context, Req *video.DownloadMaxVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMaxVideoResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DownloadMaxVideo(ctx, Req)
 }

@@ -19,7 +19,7 @@ type VideoStorageInfo struct {
 	VideoCoverUrl   string
 	VideoTitle      string
 	VideoCreateTime string // 视频创建时间
-	UserName        string // 用户名称
+	UserId          int64  // 用户名称
 }
 
 type User struct {
@@ -36,4 +36,20 @@ type MyPutRet struct {
 	Fsize  int
 	Bucket string
 	Name   string
+}
+
+type GetOneVideoInfo struct {
+	Id         int64
+	Title      string
+	Content    string
+	View       int64
+	Status     int64
+	Created_at int64
+	Start_time int64
+	End_time   int64
+}
+
+type GetNVideoInfos struct {
+	VideoInfos []GetOneVideoInfo
+	Total      int64
 }
