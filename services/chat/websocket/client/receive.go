@@ -14,6 +14,8 @@ import (
 	"log"
 )
 
+var ClientAckMap = make(map[int64]int64)
+
 func main() {
 	userId := 2
 	ch := receiveMsgFromMySQL(int64(userId))
@@ -35,6 +37,20 @@ func main() {
 		}
 
 		err = json.Unmarshal([]byte(data), &message)
+		response := ClientAckResponse{
+			Status: true,
+			UserID: int64(userId),
+		}
+		if _, ok := ClientAckMap[message.FromUserId]; !ok {
+			ClientAckMap[message.FromUserId] = 1
+		}
+
+		if message.SeqID == ClientAckMap[message.FromUserId] {
+			ClientAckMap[message.FromUserId]++
+		}
+
+		response.AckID = ClientAckMap[message.FromUserId]
+		go sendAck(response, int64(userId))
 		//fmt.Println("receive: ", string(data))
 		createtime, err := strconv.ParseInt(message.CreateTime, 10, 64)
 		wasteTime, _ := strconv.ParseFloat(fmt.Sprintf("%.5f", float64(time.Now().UnixMicro()-createtime)/float64(1000)), 64) // 保留5位小数
@@ -55,7 +71,7 @@ func receiveMsgFromMySQL(userId int64) chan bool {
 				if err != nil {
 					log.Fatal(err)
 				}
-				request := &chat.DouyinReceiveMessageRequest{
+				request := &chat.ReceiveMessageRequest{
 					ToUserId: userId,
 				}
 				response, _ := client.AcceptChatMessage(context.Background(), request)
@@ -74,4 +90,22 @@ func receiveMsgFromMySQL(userId int64) chan bool {
 		}
 	}(userId)
 	return stopChan
+}
+
+func sendAck(msg ClientAckResponse, userid int64) {
+	seqid = 1
+	url := "ws://localhost:8888/ws" //服务器地址
+	userInfo := make(map[string][]string)
+	userInfo["UserId"] = append(userInfo["UserId"], string(userid))
+	ws, _, err := websocket.DefaultDialer.Dial(url, userInfo)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	str, _ := json.Marshal(msg)
+	ws.WriteMessage(websocket.BinaryMessage, str)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
