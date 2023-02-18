@@ -46,6 +46,7 @@ func NewSnowflake(datacenterid, workerid int64) (*Snowflake, error) {
 	}, nil
 }
 
+// timestamp + 数据中心id + 工作节点id + 自旋id
 func (s *Snowflake) NextVal() int64 {
 	s.Lock()
 	now := time.Now().UnixNano() / 1000000 // 转毫秒

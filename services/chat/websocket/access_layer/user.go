@@ -4,32 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/cloudwego/kitex/client"
-	"github.com/gorilla/websocket"
+
 	"github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
 	"github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat/tiktokchatservice"
 	"log"
 	"strconv"
 )
-
-type User struct {
-	addr     string
-	userId   int64
-	wsConn   *websocket.Conn
-	sendChan chan []byte
-}
-
-func NewUser(clientInfo WebClient) {
-	var user = &User{
-		addr:     clientInfo.conn.RemoteAddr().String(),
-		userId:   clientInfo.UserId,
-		wsConn:   clientInfo.conn,
-		sendChan: make(chan []byte),
-	}
-	//fmt.Println("----- New Client,UserId=", user.userId, ",UserAddr=", user.addr, " -----")
-	user.online()
-	go user.recvMessage()
-	go user.sendMessage()
-}
 
 func (user *User) recvMessage() {
 	defer user.offline()
@@ -37,6 +17,7 @@ func (user *User) recvMessage() {
 		message := WebMessage{}
 		_, p, err := user.wsConn.ReadMessage()
 		json.Unmarshal(p, &message)
+
 		if err != nil {
 			log.Println(err)
 			return
@@ -45,14 +26,23 @@ func (user *User) recvMessage() {
 		//fmt.Println("ToUserId=", message.ToUserId, ",Map State=", ok)
 		if _, ok = server.onlineUserMap[message.ToUserId]; ok {
 			// 存在
-
 			sendUser := server.onlineUserMap[message.ToUserId]
+
 			sendUser.sendChan <- p
+
+			response := WebServerResponse{
+				Status: true,
+				AckID:  message.SeqID,
+			}
+			if message.SeqID != user.ackID {
+				response.AckID = user.ackID
+			}
+			respJson, _ := json.Marshal(&response)
+			user.sendChan <- respJson
 			//fmt.Println("----- User ", message.ToUserId, " is Online -----")
 		} else {
 			//fmt.Println("----- We Need to Connect to DataBase -----")
 			user.sendMsgToSqlLayer(message)
-
 		}
 	}
 }
@@ -91,15 +81,15 @@ func (user *User) sendMsgToSqlLayer(message WebMessage) {
 		log.Fatal(err)
 	}
 	createtime, err := strconv.ParseInt(message.CreateTime, 10, 64)
-	request := &chat.DouyinSendMessageRequest{
+	request := &chat.SendMessageRequest{
 		FromUserId: message.FromUserId,
 		ToUserId:   message.ToUserId,
 		Content:    message.Content,
 		CreateTime: createtime,
 	}
+
 	_, err = client.SendChatMessage(context.Background(), request)
 	if err != nil {
 		log.Fatal("error", err.Error())
 	}
-
 }

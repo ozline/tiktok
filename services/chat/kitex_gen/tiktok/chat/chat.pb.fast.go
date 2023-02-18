@@ -74,6 +74,11 @@ func (x *SendMessageRequest) FastRead(buf []byte, _type int8, number int32) (off
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 6:
+		offset, err = x.fastReadField6(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -112,6 +117,11 @@ func (x *SendMessageRequest) fastReadField5(buf []byte, _type int8) (offset int,
 	return offset, err
 }
 
+func (x *SendMessageRequest) fastReadField6(buf []byte, _type int8) (offset int, err error) {
+	x.SeqId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
 func (x *SendMessageResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -131,6 +141,11 @@ func (x *SendMessageResponse) FastRead(buf []byte, _type int8, number int32) (of
 		}
 	case 4:
 		offset, err = x.fastReadField4(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 5:
+		offset, err = x.fastReadField5(buf, _type)
 		if err != nil {
 			goto ReadFieldError
 		}
@@ -169,6 +184,11 @@ func (x *SendMessageResponse) fastReadField3(buf []byte, _type int8) (offset int
 
 func (x *SendMessageResponse) fastReadField4(buf []byte, _type int8) (offset int, err error) {
 	x.Content, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *SendMessageResponse) fastReadField5(buf []byte, _type int8) (offset int, err error) {
+	x.AckId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -348,6 +368,7 @@ func (x *SendMessageRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
 	offset += x.fastWriteField5(buf[offset:])
+	offset += x.fastWriteField6(buf[offset:])
 	return offset
 }
 
@@ -391,6 +412,14 @@ func (x *SendMessageRequest) fastWriteField5(buf []byte) (offset int) {
 	return offset
 }
 
+func (x *SendMessageRequest) fastWriteField6(buf []byte) (offset int) {
+	if x.SeqId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 6, x.SeqId)
+	return offset
+}
+
 func (x *SendMessageResponse) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -399,6 +428,7 @@ func (x *SendMessageResponse) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
+	offset += x.fastWriteField5(buf[offset:])
 	return offset
 }
 
@@ -431,6 +461,14 @@ func (x *SendMessageResponse) fastWriteField4(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteString(buf[offset:], 4, x.Content)
+	return offset
+}
+
+func (x *SendMessageResponse) fastWriteField5(buf []byte) (offset int) {
+	if x.AckId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 5, x.AckId)
 	return offset
 }
 
@@ -571,6 +609,7 @@ func (x *SendMessageRequest) Size() (n int) {
 	n += x.sizeField3()
 	n += x.sizeField4()
 	n += x.sizeField5()
+	n += x.sizeField6()
 	return n
 }
 
@@ -614,6 +653,14 @@ func (x *SendMessageRequest) sizeField5() (n int) {
 	return n
 }
 
+func (x *SendMessageRequest) sizeField6() (n int) {
+	if x.SeqId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(6, x.SeqId)
+	return n
+}
+
 func (x *SendMessageResponse) Size() (n int) {
 	if x == nil {
 		return n
@@ -622,6 +669,7 @@ func (x *SendMessageResponse) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
+	n += x.sizeField5()
 	return n
 }
 
@@ -654,6 +702,14 @@ func (x *SendMessageResponse) sizeField4() (n int) {
 		return n
 	}
 	n += fastpb.SizeString(4, x.Content)
+	return n
+}
+
+func (x *SendMessageResponse) sizeField5() (n int) {
+	if x.AckId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(5, x.AckId)
 	return n
 }
 
@@ -771,6 +827,7 @@ var fieldIDToName_SendMessageRequest = map[int32]string{
 	3: "ToUserId",
 	4: "Content",
 	5: "CreateTime",
+	6: "SeqId",
 }
 
 var fieldIDToName_SendMessageResponse = map[int32]string{
@@ -778,6 +835,7 @@ var fieldIDToName_SendMessageResponse = map[int32]string{
 	2: "FromUserId",
 	3: "ToUserId",
 	4: "Content",
+	5: "AckId",
 }
 
 var fieldIDToName_ReceiveMessageRequest = map[int32]string{

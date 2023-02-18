@@ -20,6 +20,7 @@ message SendMessageRequest {
   int64 to_user_id = 3; // 对方用户id
   string content = 4;
   int64 create_time = 5;
+  int64 seq_id = 6;
 }
 
 message SendMessageResponse {
@@ -27,6 +28,7 @@ message SendMessageResponse {
   int64 from_user_id = 2;
   int64 to_user_id = 3;
   string content = 4;
+  int64 ack_id = 5;
 }
 
 message ReceiveMessageRequest {

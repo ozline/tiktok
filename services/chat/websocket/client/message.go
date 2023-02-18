@@ -5,4 +5,16 @@ type WebMessage struct {
 	ToUserId   int64
 	Content    string
 	CreateTime string
+	SeqID      int64
+}
+
+type ServerAckResponse struct {
+	Status bool
+	AckID  int64
+}
+
+type ClientAckResponse struct {
+	Status bool
+	AckID  int64
+	UserID int64
 }

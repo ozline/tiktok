@@ -21,7 +21,7 @@ type Message struct {
 }
 
 // SendChatMessage implements the TiktokChatServiceImpl interface.
-func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.DouyinSendMessageRequest) (resp *chat.DouyinSendMessageResponse, err error) {
+func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.SendMessageRequest) (resp *chat.SendMessageResponse, err error) {
 	//fmt.Println("----- SendChatMessage -----")
 	snow, err := snowflake.NewSnowflake(int64(0), int64(0))
 	if err != nil {
@@ -38,9 +38,11 @@ func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.D
 	s.send_message_mysql_handler(message)
 	s.receive_message_mysql_handler(message)
 
-	response := chat.DouyinSendMessageResponse{
-		StatusCode: 1,
-		StatusMsg:  "Success message",
+	response := chat.SendMessageResponse{
+		Base: &chat.BaseResp{
+			Code: 1,
+			Msg:  "Success message",
+		},
 		FromUserId: req.FromUserId,
 		//ToUserId:   req.ToUserId,
 		Content: req.Content,
@@ -49,7 +51,7 @@ func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.D
 }
 
 // AcceptChatMessage implements the TiktokChatServiceImpl interface.
-func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat.DouyinReceiveMessageRequest) (resp *chat.DouyinReceiveMessageResponse, err error) {
+func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat.ReceiveMessageRequest) (resp *chat.ReceiveMessageResponse, err error) {
 	//fmt.Println("----- AcceptChatMessage -----")
 	db, err := gorm.Open(sqlite.Open("receiveMessage.db"), &gorm.Config{})
 	if err != nil {
@@ -75,7 +77,7 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 			createTimes[index] = message.Create_time
 		}
 
-		response := chat.DouyinReceiveMessageResponse{
+		response := chat.ReceiveMessageResponse{
 			StatusCode:  1,
 			StatusMsg:   "Success Receive",
 			FromUserIds: fromuserids,
@@ -85,7 +87,7 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 		}
 		return &response, nil
 	} else {
-		response := chat.DouyinReceiveMessageResponse{
+		response := chat.ReceiveMessageResponse{
 			StatusCode: 2,
 			StatusMsg:  "Don't Have Any Videos",
 		}
