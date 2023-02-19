@@ -190,14 +190,13 @@ func (s *TiktokVideoServiceImpl) PerioUpdateVideoCache(ctx context.Context, numb
 func (s *TiktokVideoServiceImpl) DownloadMaxVideo(ctx context.Context, req *video.DownloadMaxVideoRequest) (resp *video.DownloadMaxVideoResponse, err error) {
 	number := constants.MaxListLength
 	videos := service.RandGetNVideo(number)
-	videourls := service.NewStorageService(ctx).GetNUrlByVideoID(videos)
+	//videourls := service.NewStorageService(ctx).GetNUrlByVideoID(videos)
 	videoInfos := make([]model.GetOneVideoInfo, number)
 	for index, _ := range videoInfos {
 		videoInfos[index].Id = videos[index].VideoID
 		videoInfos[index].Title = videos[index].VideoTitle
-		videoInfos[index].Content = videourls[index]
-		time, _ := strconv.ParseInt(videos[index].VideoCreateTime, 10, 64)
-		videoInfos[index].Created_at = time
+		//videoInfos[index].Content = videourls[index]
+		//time, _ := strconv.ParseInt(videos[index].VideoCreateTime, 10, 64)
 	}
 
 	nvideoInfos := model.GetNVideoInfos{
