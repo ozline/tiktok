@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/cloudwego/kitex/server"
 	"github.com/go-redis/redis"
-	"github.com/ozline/tiktok/pkg/constants"
 	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video/tiktokvideoservice"
 	"github.com/ozline/tiktok/services/video/model"
 	"github.com/ozline/tiktok/services/video/service"
@@ -17,7 +16,8 @@ import (
 var RDB *redis.Client
 
 func main() {
-	addr, _ := net.ResolveTCPAddr("tcp", constants.VideoServiceListenAddress)
+
+	addr, _ := net.ResolveTCPAddr("tcp", "127.0.0.1:8892")
 	svr := video.NewServer(new(TiktokVideoServiceImpl), server.WithServiceAddr(addr))
 
 	db, err := gorm.Open(sqlite.Open("videoStorage.db"), &gorm.Config{})

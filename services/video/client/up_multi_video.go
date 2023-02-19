@@ -13,7 +13,7 @@ import (
 func main() {
 	//fmt.Println("----- UpMultiVideoTest -----")
 
-	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8892"))
+	client, err := tiktokvideoservice.NewClient("kitexprotobuf", client.WithHostPorts("0.0.0.0:8080"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,10 +25,10 @@ func main() {
 		title := fmt.Sprintf("%s%d", "Video", i)
 
 		request := &video.PutVideoRequest{
-			PlayUrl:   vidstr,
-			CoverUrl:  picstr,
-			Title:     title,
-			OwnerName: "sunyiwen",
+			PlayUrl:  vidstr,
+			CoverUrl: picstr,
+			Title:    title,
+			//OwnerName: "sunyiwen",
 		}
 		_, err := client.PutVideo(context.Background(), request)
 		if err != nil {
