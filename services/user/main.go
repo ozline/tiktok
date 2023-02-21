@@ -8,9 +8,9 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	user "github.com/ozline/tiktok/kitex_gen/tiktok/user/tiktokuserservice"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/services/user/configs"
-	user "github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
 
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 

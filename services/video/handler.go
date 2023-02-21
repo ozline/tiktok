@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/ozline/tiktok/pkg/constants"
-	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
-	"github.com/ozline/tiktok/services/video/model"
-	"github.com/ozline/tiktok/services/video/service"
 	"os"
 	"strconv"
 	"time"
+
+	video "github.com/ozline/tiktok/kitex_gen/tiktok/video"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/services/video/model"
+	"github.com/ozline/tiktok/services/video/service"
 )
 
 // TiktokVideoServiceImpl implements the last service interface defined in the IDL.

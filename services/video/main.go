@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
+	"log"
+	"net"
+
 	"github.com/cloudwego/kitex/server"
 	"github.com/go-redis/redis"
-	video "github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video/tiktokvideoservice"
+	video "github.com/ozline/tiktok/kitex_gen/tiktok/video/tiktokvideoservice"
 	"github.com/ozline/tiktok/services/video/model"
 	"github.com/ozline/tiktok/services/video/service"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
-	"net"
 )
 
 var RDB *redis.Client

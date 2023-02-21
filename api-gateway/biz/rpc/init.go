@@ -2,17 +2,24 @@ package rpc
 
 import (
 	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/chat/tiktokchatservice"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/comment/tiktokcommentservice"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/follow/tiktokfollowservice"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user/tiktokuserservice"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/video/tiktokvideoservice"
 	"github.com/ozline/tiktok/pkg/constants"
-	"github.com/ozline/tiktok/services/auth/kitex_gen/tiktok/auth/tiktokauthservice"
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
-	"github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video/tiktokvideoservice"
+
+	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 var (
-	userClient  tiktokuserservice.Client
-	authClient  tiktokauthservice.Client
-	videoClient tiktokvideoservice.Client
+	userClient    tiktokuserservice.Client
+	videoClient   tiktokvideoservice.Client
+	followClient  tiktokfollowservice.Client
+	commentClient tiktokcommentservice.Client
+	chatClient    tiktokchatservice.Client
 )
 
 var debug = true
@@ -22,34 +29,13 @@ func Init() {
 	if debug {
 		initUserRPC()
 	} else {
-		initAuthRPC()
 		initUserRPC()
 		initVideoRPC()
+		initChatRPC()
+		initCommentRPC()
+		initFollowRPC()
 	}
 }
-
-func initAuthRPC() {
-	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
-
-	if err != nil {
-		panic(err)
-	}
-
-	c, err := tiktokauthservice.NewClient(
-		constants.AuthServiceName,
-		client.WithMuxConnection(constants.MuxConnection),
-		client.WithRPCTimeout(constants.RPCTimeout),
-		client.WithConnectTimeout(constants.ConnectTimeout),
-		client.WithResolver(r),
-	)
-
-	if err != nil {
-		panic(err)
-	}
-
-	authClient = c
-}
-
 func initUserRPC() {
 	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
 
@@ -62,6 +48,8 @@ func initUserRPC() {
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),
 		client.WithConnectTimeout(constants.ConnectTimeout),
+		client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),
 	)
 
@@ -84,6 +72,8 @@ func initVideoRPC() {
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),
 		client.WithConnectTimeout(constants.ConnectTimeout),
+		client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),
 	)
 
@@ -92,4 +82,76 @@ func initVideoRPC() {
 	}
 
 	videoClient = c
+}
+
+func initFollowRPC() {
+	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
+
+	if err != nil {
+		panic(err)
+	}
+
+	c, err := tiktokfollowservice.NewClient(
+		constants.FollowServiceName,
+		client.WithMuxConnection(constants.MuxConnection),
+		client.WithRPCTimeout(constants.RPCTimeout),
+		client.WithConnectTimeout(constants.ConnectTimeout),
+		client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithFailureRetry(retry.NewFailurePolicy()),
+		client.WithResolver(r),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	followClient = c
+}
+
+func initCommentRPC() {
+	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
+
+	if err != nil {
+		panic(err)
+	}
+
+	c, err := tiktokcommentservice.NewClient(
+		constants.CommentServiceName,
+		client.WithMuxConnection(constants.MuxConnection),
+		client.WithRPCTimeout(constants.RPCTimeout),
+		client.WithConnectTimeout(constants.ConnectTimeout),
+		client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithFailureRetry(retry.NewFailurePolicy()),
+		client.WithResolver(r),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	commentClient = c
+}
+
+func initChatRPC() {
+	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
+
+	if err != nil {
+		panic(err)
+	}
+
+	c, err := tiktokchatservice.NewClient(
+		constants.ChatServiceName,
+		client.WithMuxConnection(constants.MuxConnection),
+		client.WithRPCTimeout(constants.RPCTimeout),
+		client.WithConnectTimeout(constants.ConnectTimeout),
+		client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithFailureRetry(retry.NewFailurePolicy()),
+		client.WithResolver(r),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	chatClient = c
 }

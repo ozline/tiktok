@@ -3,7 +3,7 @@ package rpc
 import (
 	"context"
 
-	"github.com/ozline/tiktok/services/video/kitex_gen/tiktok/video"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/video"
 )
 
 // func VideoGetList(ctx context.Context, req *video.GetVideoListRequest) (*video.GetVideoListResponse, error) {

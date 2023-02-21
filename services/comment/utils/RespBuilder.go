@@ -3,8 +3,8 @@ package utils
 import (
 	"errors"
 
+	"github.com/ozline/tiktok/kitex_gen/tiktok/comment"
 	"github.com/ozline/tiktok/pkg/errno"
-	"github.com/ozline/tiktok/services/comment/kitex_gen/tiktok/comment"
 )
 
 func PostRespBuilder(f func() (resp *comment.PostResp, err error)) (*comment.PostResp, error) {

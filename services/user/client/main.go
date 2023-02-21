@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/cloudwego/kitex/client"
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user/tiktokuserservice"
 	"log"
+
+	"github.com/cloudwego/kitex/client"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user/tiktokuserservice"
 )
 
 func main() {

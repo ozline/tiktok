@@ -4,13 +4,27 @@ import (
 	"context"
 
 	"github.com/ozline/tiktok/api-gateway/biz/model/model"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/pkg/errno"
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 )
 
-// Login returns token
+func GetToken(ctx context.Context, req *user.GetTokenRequest) (string, error) {
+	resp, err := userClient.GetToken(ctx, req)
+
+	if err != nil {
+		return "", err
+	}
+
+	if resp.Base.Code != errno.SuccessCode {
+		return "", errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
+	}
+
+	return resp.Token, nil
+}
+
+// Login returns [userid, token]
 func UserLogin(ctx context.Context, req *user.UserLoginRequest) (int64, string, error) {
-	resp, err := userClient.Login(ctx, req)
+	resp, err := userClient.Login(ctx, req) // RPC调用
 
 	if err != nil {
 		return -1, "", errno.ServiceInternalError
@@ -23,6 +37,7 @@ func UserLogin(ctx context.Context, req *user.UserLoginRequest) (int64, string, 
 	return resp.UserId, resp.Token, nil
 }
 
+// Register returns [userid, token]
 func UserRegister(ctx context.Context, req *user.UserRegisterRequest) (int64, string, error) {
 	resp, err := userClient.Register(ctx, req)
 
@@ -37,6 +52,7 @@ func UserRegister(ctx context.Context, req *user.UserRegisterRequest) (int64, st
 	return resp.UserId, resp.Token, nil
 }
 
+// GetInfo returns [User]
 func UserGetInfo(ctx context.Context, req *user.UserRequest) (*model.User, error) {
 	resp, err := userClient.Info(ctx, req)
 

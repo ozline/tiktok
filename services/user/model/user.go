@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/services/user/configs"
 	"gorm.io/gorm"
 )
@@ -22,19 +21,15 @@ func CheckUser(username string) bool {
 	var count int64
 	configs.Db.Where("username = ?", username).Count(&count)
 
-	klog.Info("Check User cnt:", count)
-
 	return count > 0 // 存在数目则表示已经注册
 }
 
 // 注册用户
-func AddUser(data *User) int {
+func AddUser(data *User) bool {
 	err := configs.Db.Create(&data).Error
 	fmt.Println(err)
-	if err != nil {
-		return 1
-	}
-	return 0
+
+	return err != nil
 }
 
 // 查询注册用户id

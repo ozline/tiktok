@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/ozline/tiktok/services/follow/kitex_gen/tiktok/follow"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/follow"
 	"github.com/ozline/tiktok/services/follow/model"
 )
 

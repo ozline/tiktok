@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
+	comment "github.com/ozline/tiktok/kitex_gen/tiktok/comment"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
-	comment "github.com/ozline/tiktok/services/comment/kitex_gen/tiktok/comment"
 	"github.com/ozline/tiktok/services/comment/model"
 	"github.com/ozline/tiktok/services/comment/service"
 	"github.com/ozline/tiktok/services/comment/utils"

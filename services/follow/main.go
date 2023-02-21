@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/cloudwego/kitex/server"
-	"github.com/ozline/tiktok/pkg/constants"
-	follow "github.com/ozline/tiktok/services/follow/kitex_gen/tiktok/follow/tiktokfollowservice"
-	"github.com/ozline/tiktok/services/follow/model"
 	"log"
 	"net"
+
+	"github.com/cloudwego/kitex/server"
+	follow "github.com/ozline/tiktok/kitex_gen/tiktok/follow/tiktokfollowservice"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/services/follow/model"
 )
 
 func init() {

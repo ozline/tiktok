@@ -10,8 +10,8 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
 
+	comment "github.com/ozline/tiktok/kitex_gen/tiktok/comment/tiktokcommentservice"
 	"github.com/ozline/tiktok/pkg/constants"
-	comment "github.com/ozline/tiktok/services/comment/kitex_gen/tiktok/comment/tiktokcommentservice"
 	_ "github.com/ozline/tiktok/services/comment/model"
 )
 

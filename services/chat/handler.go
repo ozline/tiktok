@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"time"
+
 	"github.com/golang/glog"
+	chat "github.com/ozline/tiktok/kitex_gen/tiktok/chat"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
-	chat "github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
 	"github.com/ozline/tiktok/services/chat/model"
 	"github.com/ozline/tiktok/services/chat/service"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"time"
 )
 
 // TiktokChatServiceImpl implements the last service interface defined in the IDL.

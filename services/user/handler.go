@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/services/user/model"
 	"github.com/ozline/tiktok/services/user/pack"
 	"github.com/ozline/tiktok/services/user/service"
@@ -38,7 +38,7 @@ func (s *TiktokUserServiceImpl) Login(ctx context.Context, req *user.UserLoginRe
 		return resp, nil
 	}
 	//3.登陆验证通过，生成token
-	token, err := utils.CreateToken(int64(user.ID))
+	token, err := utils.CreateToken(user.ID)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
@@ -78,7 +78,7 @@ func (s *TiktokUserServiceImpl) Register(ctx context.Context, req *user.UserRegi
 	user.Username = req.Username
 	user.Password = encodePWD
 	//4.用户数据插入数据库
-	if ok := model.AddUser(&user); ok == 1 {
+	if ok := model.AddUser(&user); ok {
 		resp.Base = pack.BuildBaseResp(errno.ServiceInternalError)
 		return resp, nil
 	}

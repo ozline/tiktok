@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/ozline/tiktok/services/comment/kitex_gen/tiktok/comment"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/comment"
 	"github.com/ozline/tiktok/services/comment/model"
 )
 

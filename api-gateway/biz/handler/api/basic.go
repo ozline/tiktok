@@ -9,8 +9,8 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	basic "github.com/ozline/tiktok/api-gateway/biz/model/message/basic"
 	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/pkg/errno"
-	"github.com/ozline/tiktok/services/user/kitex_gen/tiktok/user"
 )
 
 // UserRegister .

@@ -1,14 +1,15 @@
 package main
 
 import (
+	"log"
+	"net"
+
 	"github.com/cloudwego/kitex/server"
+	chat "github.com/ozline/tiktok/kitex_gen/tiktok/chat/tiktokchatservice"
 	"github.com/ozline/tiktok/pkg/constants"
-	chat "github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat/tiktokchatservice"
 	"github.com/ozline/tiktok/services/chat/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
-	"net"
 )
 
 func main() {
