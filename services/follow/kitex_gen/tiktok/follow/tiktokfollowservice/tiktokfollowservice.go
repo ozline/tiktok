@@ -24,6 +24,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	methods := map[string]kitex.MethodInfo{
 		"Ping":           kitex.NewMethodInfo(pingHandler, newPingArgs, newPingResult, false),
 		"RelationAction": kitex.NewMethodInfo(relationActionHandler, newRelationActionArgs, newRelationActionResult, false),
+		"RelationQuery":  kitex.NewMethodInfo(relationQueryHandler, newRelationQueryArgs, newRelationQueryResult, false),
 		"FollowList":     kitex.NewMethodInfo(followListHandler, newFollowListArgs, newFollowListResult, false),
 		"FollowerList":   kitex.NewMethodInfo(followerListHandler, newFollowerListArgs, newFollowerListResult, false),
 		"FriendList":     kitex.NewMethodInfo(friendListHandler, newFriendListArgs, newFriendListResult, false),
@@ -130,14 +131,14 @@ func (p *PingArgs) IsSetReq() bool {
 }
 
 type PingResult struct {
-	Success *follow.PingRsp
+	Success *follow.BaseRsp
 }
 
-var PingResult_Success_DEFAULT *follow.PingRsp
+var PingResult_Success_DEFAULT *follow.BaseRsp
 
 func (p *PingResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(follow.PingRsp)
+		p.Success = new(follow.BaseRsp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -164,7 +165,7 @@ func (p *PingResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *PingResult) Unmarshal(in []byte) error {
-	msg := new(follow.PingRsp)
+	msg := new(follow.BaseRsp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -172,7 +173,7 @@ func (p *PingResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *PingResult) GetSuccess() *follow.PingRsp {
+func (p *PingResult) GetSuccess() *follow.BaseRsp {
 	if !p.IsSetSuccess() {
 		return PingResult_Success_DEFAULT
 	}
@@ -180,7 +181,7 @@ func (p *PingResult) GetSuccess() *follow.PingRsp {
 }
 
 func (p *PingResult) SetSuccess(x interface{}) {
-	p.Success = x.(*follow.PingRsp)
+	p.Success = x.(*follow.BaseRsp)
 }
 
 func (p *PingResult) IsSetSuccess() bool {
@@ -275,14 +276,14 @@ func (p *RelationActionArgs) IsSetReq() bool {
 }
 
 type RelationActionResult struct {
-	Success *follow.RelationActionRsp
+	Success *follow.BaseRsp
 }
 
-var RelationActionResult_Success_DEFAULT *follow.RelationActionRsp
+var RelationActionResult_Success_DEFAULT *follow.BaseRsp
 
 func (p *RelationActionResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(follow.RelationActionRsp)
+		p.Success = new(follow.BaseRsp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -309,7 +310,7 @@ func (p *RelationActionResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *RelationActionResult) Unmarshal(in []byte) error {
-	msg := new(follow.RelationActionRsp)
+	msg := new(follow.BaseRsp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -317,7 +318,7 @@ func (p *RelationActionResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *RelationActionResult) GetSuccess() *follow.RelationActionRsp {
+func (p *RelationActionResult) GetSuccess() *follow.BaseRsp {
 	if !p.IsSetSuccess() {
 		return RelationActionResult_Success_DEFAULT
 	}
@@ -325,10 +326,155 @@ func (p *RelationActionResult) GetSuccess() *follow.RelationActionRsp {
 }
 
 func (p *RelationActionResult) SetSuccess(x interface{}) {
-	p.Success = x.(*follow.RelationActionRsp)
+	p.Success = x.(*follow.BaseRsp)
 }
 
 func (p *RelationActionResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func relationQueryHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(follow.RelationQueryReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(follow.TiktokFollowService).RelationQuery(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *RelationQueryArgs:
+		success, err := handler.(follow.TiktokFollowService).RelationQuery(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RelationQueryResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newRelationQueryArgs() interface{} {
+	return &RelationQueryArgs{}
+}
+
+func newRelationQueryResult() interface{} {
+	return &RelationQueryResult{}
+}
+
+type RelationQueryArgs struct {
+	Req *follow.RelationQueryReq
+}
+
+func (p *RelationQueryArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(follow.RelationQueryReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RelationQueryArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RelationQueryArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RelationQueryArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in RelationQueryArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RelationQueryArgs) Unmarshal(in []byte) error {
+	msg := new(follow.RelationQueryReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RelationQueryArgs_Req_DEFAULT *follow.RelationQueryReq
+
+func (p *RelationQueryArgs) GetReq() *follow.RelationQueryReq {
+	if !p.IsSetReq() {
+		return RelationQueryArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RelationQueryArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type RelationQueryResult struct {
+	Success *follow.RelationQueryRsp
+}
+
+var RelationQueryResult_Success_DEFAULT *follow.RelationQueryRsp
+
+func (p *RelationQueryResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(follow.RelationQueryRsp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RelationQueryResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RelationQueryResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RelationQueryResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in RelationQueryResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RelationQueryResult) Unmarshal(in []byte) error {
+	msg := new(follow.RelationQueryRsp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RelationQueryResult) GetSuccess() *follow.RelationQueryRsp {
+	if !p.IsSetSuccess() {
+		return RelationQueryResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RelationQueryResult) SetSuccess(x interface{}) {
+	p.Success = x.(*follow.RelationQueryRsp)
+}
+
+func (p *RelationQueryResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
@@ -336,7 +482,7 @@ func followListHandler(ctx context.Context, handler interface{}, arg, result int
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(follow.FollowListReq)
+		req := new(follow.UserListReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -366,12 +512,12 @@ func newFollowListResult() interface{} {
 }
 
 type FollowListArgs struct {
-	Req *follow.FollowListReq
+	Req *follow.UserListReq
 }
 
 func (p *FollowListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(follow.FollowListReq)
+		p.Req = new(follow.UserListReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -398,7 +544,7 @@ func (p *FollowListArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FollowListArgs) Unmarshal(in []byte) error {
-	msg := new(follow.FollowListReq)
+	msg := new(follow.UserListReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -406,9 +552,9 @@ func (p *FollowListArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var FollowListArgs_Req_DEFAULT *follow.FollowListReq
+var FollowListArgs_Req_DEFAULT *follow.UserListReq
 
-func (p *FollowListArgs) GetReq() *follow.FollowListReq {
+func (p *FollowListArgs) GetReq() *follow.UserListReq {
 	if !p.IsSetReq() {
 		return FollowListArgs_Req_DEFAULT
 	}
@@ -420,14 +566,14 @@ func (p *FollowListArgs) IsSetReq() bool {
 }
 
 type FollowListResult struct {
-	Success *follow.FollowListRsp
+	Success *follow.UserListRsp
 }
 
-var FollowListResult_Success_DEFAULT *follow.FollowListRsp
+var FollowListResult_Success_DEFAULT *follow.UserListRsp
 
 func (p *FollowListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(follow.FollowListRsp)
+		p.Success = new(follow.UserListRsp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -454,7 +600,7 @@ func (p *FollowListResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FollowListResult) Unmarshal(in []byte) error {
-	msg := new(follow.FollowListRsp)
+	msg := new(follow.UserListRsp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -462,7 +608,7 @@ func (p *FollowListResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *FollowListResult) GetSuccess() *follow.FollowListRsp {
+func (p *FollowListResult) GetSuccess() *follow.UserListRsp {
 	if !p.IsSetSuccess() {
 		return FollowListResult_Success_DEFAULT
 	}
@@ -470,7 +616,7 @@ func (p *FollowListResult) GetSuccess() *follow.FollowListRsp {
 }
 
 func (p *FollowListResult) SetSuccess(x interface{}) {
-	p.Success = x.(*follow.FollowListRsp)
+	p.Success = x.(*follow.UserListRsp)
 }
 
 func (p *FollowListResult) IsSetSuccess() bool {
@@ -481,7 +627,7 @@ func followerListHandler(ctx context.Context, handler interface{}, arg, result i
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(follow.FollowerListReq)
+		req := new(follow.UserListReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -511,12 +657,12 @@ func newFollowerListResult() interface{} {
 }
 
 type FollowerListArgs struct {
-	Req *follow.FollowerListReq
+	Req *follow.UserListReq
 }
 
 func (p *FollowerListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(follow.FollowerListReq)
+		p.Req = new(follow.UserListReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -543,7 +689,7 @@ func (p *FollowerListArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FollowerListArgs) Unmarshal(in []byte) error {
-	msg := new(follow.FollowerListReq)
+	msg := new(follow.UserListReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -551,9 +697,9 @@ func (p *FollowerListArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var FollowerListArgs_Req_DEFAULT *follow.FollowerListReq
+var FollowerListArgs_Req_DEFAULT *follow.UserListReq
 
-func (p *FollowerListArgs) GetReq() *follow.FollowerListReq {
+func (p *FollowerListArgs) GetReq() *follow.UserListReq {
 	if !p.IsSetReq() {
 		return FollowerListArgs_Req_DEFAULT
 	}
@@ -565,14 +711,14 @@ func (p *FollowerListArgs) IsSetReq() bool {
 }
 
 type FollowerListResult struct {
-	Success *follow.FollowerListRsp
+	Success *follow.UserListRsp
 }
 
-var FollowerListResult_Success_DEFAULT *follow.FollowerListRsp
+var FollowerListResult_Success_DEFAULT *follow.UserListRsp
 
 func (p *FollowerListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(follow.FollowerListRsp)
+		p.Success = new(follow.UserListRsp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -599,7 +745,7 @@ func (p *FollowerListResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FollowerListResult) Unmarshal(in []byte) error {
-	msg := new(follow.FollowerListRsp)
+	msg := new(follow.UserListRsp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -607,7 +753,7 @@ func (p *FollowerListResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *FollowerListResult) GetSuccess() *follow.FollowerListRsp {
+func (p *FollowerListResult) GetSuccess() *follow.UserListRsp {
 	if !p.IsSetSuccess() {
 		return FollowerListResult_Success_DEFAULT
 	}
@@ -615,7 +761,7 @@ func (p *FollowerListResult) GetSuccess() *follow.FollowerListRsp {
 }
 
 func (p *FollowerListResult) SetSuccess(x interface{}) {
-	p.Success = x.(*follow.FollowerListRsp)
+	p.Success = x.(*follow.UserListRsp)
 }
 
 func (p *FollowerListResult) IsSetSuccess() bool {
@@ -626,7 +772,7 @@ func friendListHandler(ctx context.Context, handler interface{}, arg, result int
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(follow.FriendListReq)
+		req := new(follow.UserListReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -656,12 +802,12 @@ func newFriendListResult() interface{} {
 }
 
 type FriendListArgs struct {
-	Req *follow.FriendListReq
+	Req *follow.UserListReq
 }
 
 func (p *FriendListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(follow.FriendListReq)
+		p.Req = new(follow.UserListReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -688,7 +834,7 @@ func (p *FriendListArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FriendListArgs) Unmarshal(in []byte) error {
-	msg := new(follow.FriendListReq)
+	msg := new(follow.UserListReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -696,9 +842,9 @@ func (p *FriendListArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var FriendListArgs_Req_DEFAULT *follow.FriendListReq
+var FriendListArgs_Req_DEFAULT *follow.UserListReq
 
-func (p *FriendListArgs) GetReq() *follow.FriendListReq {
+func (p *FriendListArgs) GetReq() *follow.UserListReq {
 	if !p.IsSetReq() {
 		return FriendListArgs_Req_DEFAULT
 	}
@@ -710,14 +856,14 @@ func (p *FriendListArgs) IsSetReq() bool {
 }
 
 type FriendListResult struct {
-	Success *follow.FriendListRsp
+	Success *follow.UserListRsp
 }
 
-var FriendListResult_Success_DEFAULT *follow.FriendListRsp
+var FriendListResult_Success_DEFAULT *follow.UserListRsp
 
 func (p *FriendListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(follow.FriendListRsp)
+		p.Success = new(follow.UserListRsp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -744,7 +890,7 @@ func (p *FriendListResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FriendListResult) Unmarshal(in []byte) error {
-	msg := new(follow.FriendListRsp)
+	msg := new(follow.UserListRsp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -752,7 +898,7 @@ func (p *FriendListResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *FriendListResult) GetSuccess() *follow.FriendListRsp {
+func (p *FriendListResult) GetSuccess() *follow.UserListRsp {
 	if !p.IsSetSuccess() {
 		return FriendListResult_Success_DEFAULT
 	}
@@ -760,7 +906,7 @@ func (p *FriendListResult) GetSuccess() *follow.FriendListRsp {
 }
 
 func (p *FriendListResult) SetSuccess(x interface{}) {
-	p.Success = x.(*follow.FriendListRsp)
+	p.Success = x.(*follow.UserListRsp)
 }
 
 func (p *FriendListResult) IsSetSuccess() bool {
@@ -777,7 +923,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) Ping(ctx context.Context, Req *follow.PingReq) (r *follow.PingRsp, err error) {
+func (p *kClient) Ping(ctx context.Context, Req *follow.PingReq) (r *follow.BaseRsp, err error) {
 	var _args PingArgs
 	_args.Req = Req
 	var _result PingResult
@@ -787,7 +933,7 @@ func (p *kClient) Ping(ctx context.Context, Req *follow.PingReq) (r *follow.Ping
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) RelationAction(ctx context.Context, Req *follow.RelationActionReq) (r *follow.RelationActionRsp, err error) {
+func (p *kClient) RelationAction(ctx context.Context, Req *follow.RelationActionReq) (r *follow.BaseRsp, err error) {
 	var _args RelationActionArgs
 	_args.Req = Req
 	var _result RelationActionResult
@@ -797,7 +943,17 @@ func (p *kClient) RelationAction(ctx context.Context, Req *follow.RelationAction
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) FollowList(ctx context.Context, Req *follow.FollowListReq) (r *follow.FollowListRsp, err error) {
+func (p *kClient) RelationQuery(ctx context.Context, Req *follow.RelationQueryReq) (r *follow.RelationQueryRsp, err error) {
+	var _args RelationQueryArgs
+	_args.Req = Req
+	var _result RelationQueryResult
+	if err = p.c.Call(ctx, "RelationQuery", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FollowList(ctx context.Context, Req *follow.UserListReq) (r *follow.UserListRsp, err error) {
 	var _args FollowListArgs
 	_args.Req = Req
 	var _result FollowListResult
@@ -807,7 +963,7 @@ func (p *kClient) FollowList(ctx context.Context, Req *follow.FollowListReq) (r 
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) FollowerList(ctx context.Context, Req *follow.FollowerListReq) (r *follow.FollowerListRsp, err error) {
+func (p *kClient) FollowerList(ctx context.Context, Req *follow.UserListReq) (r *follow.UserListRsp, err error) {
 	var _args FollowerListArgs
 	_args.Req = Req
 	var _result FollowerListResult
@@ -817,7 +973,7 @@ func (p *kClient) FollowerList(ctx context.Context, Req *follow.FollowerListReq)
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) FriendList(ctx context.Context, Req *follow.FriendListReq) (r *follow.FriendListRsp, err error) {
+func (p *kClient) FriendList(ctx context.Context, Req *follow.UserListReq) (r *follow.UserListRsp, err error) {
 	var _args FriendListArgs
 	_args.Req = Req
 	var _result FriendListResult

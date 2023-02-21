@@ -5,13 +5,56 @@ package follow;
 option go_package = "tiktok/follow";
 
 service tiktokFollowService {
-  rpc PingPong(Request1) returns (Response){};
+  rpc Ping(PingReq) returns (BaseRsp){};
+  rpc RelationAction(RelationActionReq) returns (BaseRsp){}; // 关系变更操作
+  rpc RelationQuery(RelationQueryReq) returns (RelationQueryRsp){};
+  rpc FollowList(UserListReq) returns (UserListRsp){}; // 用户关注列表
+  rpc FollowerList(UserListReq) returns (UserListRsp){}; // 用户粉丝列表
+  rpc FriendList(UserListReq) returns (UserListRsp){}; // 用户好友列表，好友为互关关系。
 }
 
-message Response{
-    string message = 1;
+message User {
+  int64 id = 1; // 用户id
+  string name = 2; // 用户名称
+  optional int64 follow_count = 3; // 关注总数
+  optional int64 follower_count = 4; // 粉丝总数
+  bool is_follow = 5; // true-已关注，false-未关注
 }
 
-message Request1{
-        string message = 1;
+message BaseRsp {
+  int64 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+}
+
+message RelationQueryRsp {
+  int64 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  int32 relation_code = 3; // 关系码，1-未关注，2-关注，3-粉丝，4-好友
+}
+
+message UserListRsp {
+  int64 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  repeated User user_list = 3; // 用户信息列表
+}
+
+message PingReq {
+  string message = 1;
+}
+
+message RelationActionReq {
+  int64 user_id = 1; // 用户id
+  int64 to_user_id = 2; // 对⽅⽤户id
+  int32 action_type = 3; // 1-关注，2-取消关注
+}
+
+message RelationQueryReq {
+  int64 user_id = 1; // 用户id
+  int64 to_user_id = 2; // 对方用户id
+}
+
+message UserListReq {
+  int64 user_id = 1; // 用户id
+  int32 page_num = 2;
+  int32 page_size = 3;
 }

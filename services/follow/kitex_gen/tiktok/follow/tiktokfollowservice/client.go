@@ -11,11 +11,12 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	Ping(ctx context.Context, Req *follow.PingReq, callOptions ...callopt.Option) (r *follow.PingRsp, err error)
-	RelationAction(ctx context.Context, Req *follow.RelationActionReq, callOptions ...callopt.Option) (r *follow.RelationActionRsp, err error)
-	FollowList(ctx context.Context, Req *follow.FollowListReq, callOptions ...callopt.Option) (r *follow.FollowListRsp, err error)
-	FollowerList(ctx context.Context, Req *follow.FollowerListReq, callOptions ...callopt.Option) (r *follow.FollowerListRsp, err error)
-	FriendList(ctx context.Context, Req *follow.FriendListReq, callOptions ...callopt.Option) (r *follow.FriendListRsp, err error)
+	Ping(ctx context.Context, Req *follow.PingReq, callOptions ...callopt.Option) (r *follow.BaseRsp, err error)
+	RelationAction(ctx context.Context, Req *follow.RelationActionReq, callOptions ...callopt.Option) (r *follow.BaseRsp, err error)
+	RelationQuery(ctx context.Context, Req *follow.RelationQueryReq, callOptions ...callopt.Option) (r *follow.RelationQueryRsp, err error)
+	FollowList(ctx context.Context, Req *follow.UserListReq, callOptions ...callopt.Option) (r *follow.UserListRsp, err error)
+	FollowerList(ctx context.Context, Req *follow.UserListReq, callOptions ...callopt.Option) (r *follow.UserListRsp, err error)
+	FriendList(ctx context.Context, Req *follow.UserListReq, callOptions ...callopt.Option) (r *follow.UserListRsp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -47,27 +48,32 @@ type kTiktokFollowServiceClient struct {
 	*kClient
 }
 
-func (p *kTiktokFollowServiceClient) Ping(ctx context.Context, Req *follow.PingReq, callOptions ...callopt.Option) (r *follow.PingRsp, err error) {
+func (p *kTiktokFollowServiceClient) Ping(ctx context.Context, Req *follow.PingReq, callOptions ...callopt.Option) (r *follow.BaseRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Ping(ctx, Req)
 }
 
-func (p *kTiktokFollowServiceClient) RelationAction(ctx context.Context, Req *follow.RelationActionReq, callOptions ...callopt.Option) (r *follow.RelationActionRsp, err error) {
+func (p *kTiktokFollowServiceClient) RelationAction(ctx context.Context, Req *follow.RelationActionReq, callOptions ...callopt.Option) (r *follow.BaseRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.RelationAction(ctx, Req)
 }
 
-func (p *kTiktokFollowServiceClient) FollowList(ctx context.Context, Req *follow.FollowListReq, callOptions ...callopt.Option) (r *follow.FollowListRsp, err error) {
+func (p *kTiktokFollowServiceClient) RelationQuery(ctx context.Context, Req *follow.RelationQueryReq, callOptions ...callopt.Option) (r *follow.RelationQueryRsp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.RelationQuery(ctx, Req)
+}
+
+func (p *kTiktokFollowServiceClient) FollowList(ctx context.Context, Req *follow.UserListReq, callOptions ...callopt.Option) (r *follow.UserListRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FollowList(ctx, Req)
 }
 
-func (p *kTiktokFollowServiceClient) FollowerList(ctx context.Context, Req *follow.FollowerListReq, callOptions ...callopt.Option) (r *follow.FollowerListRsp, err error) {
+func (p *kTiktokFollowServiceClient) FollowerList(ctx context.Context, Req *follow.UserListReq, callOptions ...callopt.Option) (r *follow.UserListRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FollowerList(ctx, Req)
 }
 
-func (p *kTiktokFollowServiceClient) FriendList(ctx context.Context, Req *follow.FriendListReq, callOptions ...callopt.Option) (r *follow.FriendListRsp, err error) {
+func (p *kTiktokFollowServiceClient) FriendList(ctx context.Context, Req *follow.UserListReq, callOptions ...callopt.Option) (r *follow.UserListRsp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FriendList(ctx, Req)
 }
