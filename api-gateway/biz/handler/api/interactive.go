@@ -6,8 +6,13 @@ import (
 	"context"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	interactive "github.com/ozline/tiktok/api-gateway/biz/model/message/interactive"
+	"github.com/ozline/tiktok/api-gateway/biz/model/model"
+	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/comment"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 )
 
 // FavoriteAction .
@@ -17,13 +22,34 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	var req interactive.FavoriteActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(interactive.FavoriteActionResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	var islike bool
+	if req.ActionType == 1 {
+		islike = true
+	} else {
+		islike = false
+	}
+
+	err = rpc.FavoriteAction(ctx, &comment.FavoriteReq{
+		Uid:     currentUserID,
+		IsLike:  islike,
+		VideoId: req.VideoId,
+	})
+
+	SendCommonResponse(c, &interactive.FavoriteActionResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+	})
 }
 
 // FavoriteList .
@@ -33,13 +59,41 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	var req interactive.FavoriteListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(interactive.FavoriteListResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	res, err := rpc.GetFavoriteList(ctx, &comment.FavoriteListReq{
+		Uid:        currentUserID,
+		PageSize:   constants.PageSize,
+		PageNumber: constants.PageNum,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	list := make([]*model.Video, 0)
+
+	for _, v := range res {
+		//TODO: GetVideoInfo
+
+		list = append(list, &model.Video{})
+	}
+
+	SendCommonResponse(c, &interactive.FavoriteListResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+		VideoList:  list,
+	})
 }
 
 // CommentAction .
@@ -49,13 +103,48 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	var req interactive.CommentActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(interactive.CommentActionResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	res, err := rpc.PostComment(ctx, &comment.PostReq{
+		Uid:     currentUserID,
+		Vid:     req.VideoId,
+		Content: req.CommentText,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	user, err := rpc.UserGetInfo(ctx, &user.UserRequest{
+		UserId: res.Uid,
+		Token:  req.Token,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	SendCommonResponse(c, &interactive.CommentActionResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+		Comment: &model.Comment{
+			Id:         res.Id,
+			User:       user,
+			Content:    res.Content,
+			CreateDate: res.Ctime,
+		},
+	})
 }
 
 // CommentList .
@@ -65,11 +154,51 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 	var req interactive.CommentListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(interactive.CommentListResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	res, err := rpc.GetCommentList(ctx, &comment.ListReq{
+		Uid:        currentUserID,
+		Vid:        req.VideoId,
+		Type:       comment.ListType_comment,
+		PageNumber: constants.PageNum,
+		PageSize:   constants.PageSize,
+	})
+
+	list := make([]*model.Comment, 0)
+
+	//TODO: 性能优化
+
+	for _, v := range res {
+		user, err := rpc.UserGetInfo(ctx, &user.UserRequest{
+			UserId: v.Uid,
+			Token:  req.Token,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		list = append(list, &model.Comment{
+			Id:         v.Id,
+			User:       user,
+			Content:    v.Content,
+			CreateDate: v.Ctime,
+		})
+	}
+
+	SendCommonResponse(c, &interactive.CommentListResponse{
+		StatusCode:  errno.SuccessCode,
+		StatusMsg:   errno.SuccessMsg,
+		CommentList: list,
+	})
 }

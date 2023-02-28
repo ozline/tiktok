@@ -15,6 +15,8 @@ type Client interface {
 	Post(ctx context.Context, Req *comment.PostReq, callOptions ...callopt.Option) (r *comment.PostResp, err error)
 	SetLike(ctx context.Context, Req *comment.LikeReq, callOptions ...callopt.Option) (r *comment.LikeResp, err error)
 	GetLike(ctx context.Context, Req *comment.LikeReq, callOptions ...callopt.Option) (r *comment.LikeResp, err error)
+	SetFavorite(ctx context.Context, Req *comment.FavoriteReq, callOptions ...callopt.Option) (r *comment.FavoriteResp, err error)
+	FavoriteList(ctx context.Context, Req *comment.FavoriteListReq, callOptions ...callopt.Option) (r *comment.FavoriteListResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +66,14 @@ func (p *kTiktokCommentServiceClient) SetLike(ctx context.Context, Req *comment.
 func (p *kTiktokCommentServiceClient) GetLike(ctx context.Context, Req *comment.LikeReq, callOptions ...callopt.Option) (r *comment.LikeResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetLike(ctx, Req)
+}
+
+func (p *kTiktokCommentServiceClient) SetFavorite(ctx context.Context, Req *comment.FavoriteReq, callOptions ...callopt.Option) (r *comment.FavoriteResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.SetFavorite(ctx, Req)
+}
+
+func (p *kTiktokCommentServiceClient) FavoriteList(ctx context.Context, Req *comment.FavoriteListReq, callOptions ...callopt.Option) (r *comment.FavoriteListResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavoriteList(ctx, Req)
 }

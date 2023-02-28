@@ -8,6 +8,7 @@ import (
 	"github.com/ozline/tiktok/pkg/errno"
 )
 
+// GetToken return token
 func GetToken(ctx context.Context, req *user.GetTokenRequest) (string, error) {
 	resp, err := userClient.GetToken(ctx, req)
 
@@ -20,6 +21,21 @@ func GetToken(ctx context.Context, req *user.GetTokenRequest) (string, error) {
 	}
 
 	return resp.Token, nil
+}
+
+// CheckToken return userid or -1(exist error)
+func CheckToken(ctx context.Context, req *user.CheckTokenRequest) (int64, error) {
+	resp, err := userClient.CheckToken(ctx, req)
+
+	if err != nil {
+		return -1, err
+	}
+
+	if resp.Base.Code != errno.SuccessCode {
+		return -1, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
+	}
+
+	return resp.Info.UserId, nil
 }
 
 // Login returns [userid, token]

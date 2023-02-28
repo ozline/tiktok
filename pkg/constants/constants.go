@@ -54,4 +54,8 @@ const (
 	// 七牛云仓库访问密钥
 	AccessKey = "m5KRX39z1fu9ssut0SFgCWwLxxRiWHB-I2jPalWV"
 	SecretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
+
+	// Page相关
+	PageNum  = 1
+	PageSize = 10
 )

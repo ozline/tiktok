@@ -6,9 +6,9 @@ import (
 	"context"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	basic "github.com/ozline/tiktok/api-gateway/biz/model/message/basic"
 	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/follow"
 	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/pkg/errno"
 )
@@ -60,6 +60,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 
 	if err != nil {
 		SendErrorResponse(c, err)
+		return
 	}
 
 	SendCommonResponse(c, &basic.UserLoginResponse{
@@ -88,11 +89,27 @@ func UserGetInfo(ctx context.Context, c *app.RequestContext) {
 
 	if err != nil {
 		SendErrorResponse(c, err)
+		return
 	}
 
-	//TODO: get follow relationship
+	currentUserID, err := PhaseToken(req.Token)
 
-	res.IsFollow = false // 这部分需要再rpc一下relation服务
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	relation, err := rpc.RelationQuery(context.Background(), &follow.RelationQueryReq{
+		UserId:   currentUserID,
+		ToUserId: req.UserId,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	res.IsFollow = relation != 2 // is_follow表示该用户是否已被现用户关注
 
 	SendCommonResponse(c, &basic.UserResponse{
 		StatusCode: errno.SuccessCode,
@@ -112,9 +129,10 @@ func VideoGetFeeds(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(basic.FeedResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	SendCommonResponse(c, &basic.FeedResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+	})
 }
 
 // VideoPublishAction .
@@ -128,9 +146,10 @@ func VideoPublishAction(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(basic.PublishActionResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	SendCommonResponse(c, &basic.PublishActionResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+	})
 }
 
 // VideoPublishList .
@@ -144,7 +163,8 @@ func VideoPublishList(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(basic.PublishListResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	SendCommonResponse(c, &basic.PublishListResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+	})
 }

@@ -1,13 +1,14 @@
 package model
 
 import (
+	"log"
+	"time"
+
 	"github.com/ozline/tiktok/pkg/constants"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"log"
-	"time"
 )
 
 var db *gorm.DB
@@ -19,11 +20,8 @@ func Setup() {
 		tablePrefix string
 	)
 
-	// pass config to dsn
-	dsn := constants.MySQLDefaultDSN
-
 	// open the database and buffer the config
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+	db, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   tablePrefix, // set the prefix name of table
 			SingularTable: true,        // use singular table by default
@@ -36,6 +34,10 @@ func Setup() {
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
 	})
+
+	if err != nil {
+		panic(err)
+	}
 
 	mysqlDB, err := db.DB()
 	if err != nil {

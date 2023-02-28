@@ -6,8 +6,11 @@ import (
 	"context"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	social "github.com/ozline/tiktok/api-gateway/biz/model/message/social"
+	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/follow"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 )
 
 // RelationAction .
@@ -17,13 +20,32 @@ func RelationAction(ctx context.Context, c *app.RequestContext) {
 	var req social.RelationActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(social.RelationActionResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	err = rpc.RelationAction(ctx, &follow.RelationActionReq{
+		UserId:     currentUserID,
+		ToUserId:   req.ToUserId,
+		ActionType: int32(req.ActionType),
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	SendCommonResponse(c, &social.RelationActionResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+	})
 }
 
 // RelationFollowList .
@@ -33,13 +55,33 @@ func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 	var req social.RelationFollowListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(social.RelationFollowListResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	res, err := rpc.GetFollowList(ctx, &follow.UserListReq{
+		UserId:   currentUserID,
+		PageNum:  constants.PageNum,
+		PageSize: constants.PageSize,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	SendCommonResponse(c, &social.RelationFollowListResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+		UserList:   res,
+	})
 }
 
 // RelationFollowerList .
@@ -49,13 +91,33 @@ func RelationFollowerList(ctx context.Context, c *app.RequestContext) {
 	var req social.RelationFollowListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(social.RelationFollowListResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	res, err := rpc.GetFollowerList(ctx, &follow.UserListReq{
+		UserId:   currentUserID,
+		PageNum:  constants.PageNum,
+		PageSize: constants.PageSize,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	SendCommonResponse(c, &social.RelationFollowerListResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+		UserList:   res,
+	})
 }
 
 // RleationFriendList .
@@ -65,13 +127,33 @@ func RleationFriendList(ctx context.Context, c *app.RequestContext) {
 	var req social.RelationFriendListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(social.RelationFriendListResponse)
+	currentUserID, err := PhaseToken(req.Token)
 
-	c.JSON(consts.StatusOK, resp)
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	res, err := rpc.GetFriendList(ctx, &follow.UserListReq{
+		UserId:   currentUserID,
+		PageNum:  constants.PageNum,
+		PageSize: constants.PageSize,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	SendCommonResponse(c, &social.RelationFriendListResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+		UserList:   res,
+	})
 }
 
 // MessageSend .
@@ -81,13 +163,14 @@ func MessageSend(ctx context.Context, c *app.RequestContext) {
 	var req social.MessageSendRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(social.MessageSendResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	SendCommonResponse(c, &social.MessageSendResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+	})
 }
 
 // MessageChatMsg .
@@ -97,11 +180,12 @@ func MessageChatMsg(ctx context.Context, c *app.RequestContext) {
 	var req social.MessageChatMsgRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
 		return
 	}
 
-	resp := new(social.MessageChatMsgResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	SendCommonResponse(c, &social.MessageChatMsgResponse{
+		StatusCode: errno.SuccessCode,
+		StatusMsg:  errno.SuccessMsg,
+	})
 }

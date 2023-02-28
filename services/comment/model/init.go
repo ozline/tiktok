@@ -42,7 +42,7 @@ func init() {
 	// SetConnMaxLifetiment 设置连接的最大可复用时间。
 	sqlDB.SetConnMaxLifetime(10 * time.Second)
 
-	db.AutoMigrate(&Comment{}, &CommentLike{})
+	db.AutoMigrate(&Comment{}, &CommentLike{}, &VideoFavorite{})
 }
 
 func DB() *gorm.DB {

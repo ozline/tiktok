@@ -6,15 +6,17 @@ option go_package = "tiktok/comment";
 
 service tiktokCommentService {
   /**
-  * type: 
+  * type:
   *   comment: find by uid   (need uid)
   *   like:    find by like  (need uid)
   *   video:   find by vodeo (need vid) // not implement
   */
-  rpc List   (ListReq) returns (ListResp){};
-  rpc Post   (PostReq) returns (PostResp){};
-  rpc SetLike(LikeReq) returns (LikeResp){};
-  rpc GetLike(LikeReq) returns (LikeResp){};
+  rpc List          (ListReq)         returns (ListResp){};
+  rpc Post          (PostReq)         returns (PostResp){};
+  rpc SetLike       (LikeReq)         returns (LikeResp){};
+  rpc GetLike       (LikeReq)         returns (LikeResp){};
+  rpc SetFavorite   (FavoriteReq)     returns (FavoriteResp){};
+  rpc FavoriteList  (FavoriteListReq) returns (FavoriteListResp){};
 }
 
 message Comment {
@@ -54,8 +56,8 @@ message PostReq {
 }
 
 message PostResp {
-  BaseInfo info       = 1;
-  int64    contend_id = 2;
+  BaseInfo info        = 1;
+  Comment  comment     = 2;
 }
 
 message LikeReq {
@@ -67,6 +69,28 @@ message LikeReq {
 message LikeResp {
   BaseInfo info    = 1;
   bool     is_like = 2;
+}
+
+message FavoriteReq {
+  int64 uid       = 1;
+  bool is_like    = 2;
+  int64 video_id  = 3;
+}
+
+message FavoriteResp {
+  BaseInfo info = 1;
+}
+
+message FavoriteListReq {
+  int64 uid         = 1;
+  int64 page_size   = 2;
+  int64 page_number = 3;
+}
+
+message FavoriteListResp {
+  BaseInfo info = 1;
+  int64 count = 2;
+  repeated int64 videos = 3; // only ID
 }
 
 message BaseInfo {

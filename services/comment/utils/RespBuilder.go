@@ -58,6 +58,40 @@ func LikeRespBuilder(f func() (resp *comment.LikeResp, err error)) (*comment.Lik
 	return &comment.LikeResp{Info: baseResp(s)}, nil
 }
 
+func FavoriteRespBuilder(f func() (resp *comment.FavoriteResp, err error)) (*comment.FavoriteResp, error) {
+	resp, err := f()
+	if err == nil {
+		resp.Info = baseResp(errno.Success)
+		return resp, nil
+	}
+
+	e := errno.ErrNo{}
+
+	if errors.As(err, &e) {
+		return &comment.FavoriteResp{Info: baseResp(e)}, nil
+	}
+
+	s := errno.ServiceError.WithMessage(err.Error())
+	return &comment.FavoriteResp{Info: baseResp(s)}, nil
+}
+
+func FavoriteListRespBuilder(f func() (resp *comment.FavoriteListResp, err error)) (*comment.FavoriteListResp, error) {
+	resp, err := f()
+	if err == nil {
+		resp.Info = baseResp(errno.Success)
+		return resp, nil
+	}
+
+	e := errno.ErrNo{}
+
+	if errors.As(err, &e) {
+		return &comment.FavoriteListResp{Info: baseResp(e)}, nil
+	}
+
+	s := errno.ServiceError.WithMessage(err.Error())
+	return &comment.FavoriteListResp{Info: baseResp(s)}, nil
+}
+
 func baseResp(err errno.ErrNo) *comment.BaseInfo {
 	return &comment.BaseInfo{
 		Code: err.ErrorCode,

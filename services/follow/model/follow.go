@@ -2,9 +2,10 @@ package model
 
 import (
 	"errors"
+	"log"
+
 	"github.com/ozline/tiktok/pkg/constants"
 	"gorm.io/gorm"
-	"log"
 )
 
 type (
@@ -36,7 +37,7 @@ func AddRelation(userId, toUserId int64) error {
 	// if there is no record for this relationship, create;
 	// or find record, return error;
 	// or other error, return error.
-		err == gorm.ErrRecordNotFound {
+	err == gorm.ErrRecordNotFound {
 		// insert new relation to database.
 		if err := db.Create(&relation).Error; err != nil {
 			// TODO: import a global log system
@@ -63,7 +64,7 @@ func DeleteRelation(userId, toUserId int64) error {
 	// if there is no record for this relationship, error no record;
 	// or find record, deleter;
 	// or other error, return error.
-		err != nil {
+	err != nil {
 		// insert new relation to database.
 		if err := db.Delete(&relation).Error; err != nil {
 			// TODO: import a global log system
@@ -88,10 +89,7 @@ func IsFollowRelation(userId, toUserId int64) bool {
 		log.Println("[FollowService]", err)
 		return false
 	} else {
-		if count > 0 {
-			return true
-		}
-		return false
+		return count > 0
 	}
 }
 
@@ -104,10 +102,7 @@ func IsFollowerRelation(userId, toUserId int64) bool {
 		log.Println("[FollowService]", err)
 		return false
 	} else {
-		if count > 0 {
-			return true
-		}
-		return false
+		return count > 0
 	}
 }
 
@@ -124,7 +119,7 @@ func QueryFollowsList(userId int64, pageNum int32, pageSize int32) ([]User, erro
 		Find(&followIdList).Error; err != nil {
 		return nil, err
 	} else {
-		db.Table(constants.UserTableName).Where("user_id = ?", followIdList).Find(&data)
+		db.Table(constants.UserTableName).Where("id = ?", followIdList).Find(&data)
 		return data, nil
 	}
 }
@@ -157,8 +152,7 @@ func QueryFriendsList(userId int64, pageNum int32, pageSize int32) ([]User, erro
 	if err := db.Table(constants.FollowTableName).
 		Select("to_user_id").
 		Where("user_id = ?", userId).
-		Find(&tempList).Error;
-		err != nil {
+		Find(&tempList).Error; err != nil {
 		return nil, err
 	}
 
@@ -169,10 +163,9 @@ func QueryFriendsList(userId int64, pageNum int32, pageSize int32) ([]User, erro
 	}
 
 	if err := db.Table(constants.UserTableName).
-		Where("user_id = ?", userId).
+		Where("id = ?", userId).
 		Limit(int(pageSize)).Offset(int((pageNum - 1) * pageSize)).
-		Find(&data).Error;
-		err != nil {
+		Find(&data).Error; err != nil {
 		return nil, err
 	}
 

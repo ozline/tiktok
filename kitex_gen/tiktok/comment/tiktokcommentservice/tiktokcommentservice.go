@@ -22,10 +22,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "tiktokCommentService"
 	handlerType := (*comment.TiktokCommentService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"List":    kitex.NewMethodInfo(listHandler, newListArgs, newListResult, false),
-		"Post":    kitex.NewMethodInfo(postHandler, newPostArgs, newPostResult, false),
-		"SetLike": kitex.NewMethodInfo(setLikeHandler, newSetLikeArgs, newSetLikeResult, false),
-		"GetLike": kitex.NewMethodInfo(getLikeHandler, newGetLikeArgs, newGetLikeResult, false),
+		"List":         kitex.NewMethodInfo(listHandler, newListArgs, newListResult, false),
+		"Post":         kitex.NewMethodInfo(postHandler, newPostArgs, newPostResult, false),
+		"SetLike":      kitex.NewMethodInfo(setLikeHandler, newSetLikeArgs, newSetLikeResult, false),
+		"GetLike":      kitex.NewMethodInfo(getLikeHandler, newGetLikeArgs, newGetLikeResult, false),
+		"SetFavorite":  kitex.NewMethodInfo(setFavoriteHandler, newSetFavoriteArgs, newSetFavoriteResult, false),
+		"FavoriteList": kitex.NewMethodInfo(favoriteListHandler, newFavoriteListArgs, newFavoriteListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "comment",
@@ -621,6 +623,296 @@ func (p *GetLikeResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func setFavoriteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(comment.FavoriteReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(comment.TiktokCommentService).SetFavorite(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *SetFavoriteArgs:
+		success, err := handler.(comment.TiktokCommentService).SetFavorite(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*SetFavoriteResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newSetFavoriteArgs() interface{} {
+	return &SetFavoriteArgs{}
+}
+
+func newSetFavoriteResult() interface{} {
+	return &SetFavoriteResult{}
+}
+
+type SetFavoriteArgs struct {
+	Req *comment.FavoriteReq
+}
+
+func (p *SetFavoriteArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(comment.FavoriteReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *SetFavoriteArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *SetFavoriteArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *SetFavoriteArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in SetFavoriteArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *SetFavoriteArgs) Unmarshal(in []byte) error {
+	msg := new(comment.FavoriteReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var SetFavoriteArgs_Req_DEFAULT *comment.FavoriteReq
+
+func (p *SetFavoriteArgs) GetReq() *comment.FavoriteReq {
+	if !p.IsSetReq() {
+		return SetFavoriteArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *SetFavoriteArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type SetFavoriteResult struct {
+	Success *comment.FavoriteResp
+}
+
+var SetFavoriteResult_Success_DEFAULT *comment.FavoriteResp
+
+func (p *SetFavoriteResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(comment.FavoriteResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *SetFavoriteResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *SetFavoriteResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *SetFavoriteResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in SetFavoriteResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *SetFavoriteResult) Unmarshal(in []byte) error {
+	msg := new(comment.FavoriteResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *SetFavoriteResult) GetSuccess() *comment.FavoriteResp {
+	if !p.IsSetSuccess() {
+		return SetFavoriteResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *SetFavoriteResult) SetSuccess(x interface{}) {
+	p.Success = x.(*comment.FavoriteResp)
+}
+
+func (p *SetFavoriteResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func favoriteListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(comment.FavoriteListReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(comment.TiktokCommentService).FavoriteList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *FavoriteListArgs:
+		success, err := handler.(comment.TiktokCommentService).FavoriteList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*FavoriteListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newFavoriteListArgs() interface{} {
+	return &FavoriteListArgs{}
+}
+
+func newFavoriteListResult() interface{} {
+	return &FavoriteListResult{}
+}
+
+type FavoriteListArgs struct {
+	Req *comment.FavoriteListReq
+}
+
+func (p *FavoriteListArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(comment.FavoriteListReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *FavoriteListArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *FavoriteListArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *FavoriteListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in FavoriteListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *FavoriteListArgs) Unmarshal(in []byte) error {
+	msg := new(comment.FavoriteListReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var FavoriteListArgs_Req_DEFAULT *comment.FavoriteListReq
+
+func (p *FavoriteListArgs) GetReq() *comment.FavoriteListReq {
+	if !p.IsSetReq() {
+		return FavoriteListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *FavoriteListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type FavoriteListResult struct {
+	Success *comment.FavoriteListResp
+}
+
+var FavoriteListResult_Success_DEFAULT *comment.FavoriteListResp
+
+func (p *FavoriteListResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(comment.FavoriteListResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *FavoriteListResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *FavoriteListResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *FavoriteListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in FavoriteListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *FavoriteListResult) Unmarshal(in []byte) error {
+	msg := new(comment.FavoriteListResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *FavoriteListResult) GetSuccess() *comment.FavoriteListResp {
+	if !p.IsSetSuccess() {
+		return FavoriteListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *FavoriteListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*comment.FavoriteListResp)
+}
+
+func (p *FavoriteListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -666,6 +958,26 @@ func (p *kClient) GetLike(ctx context.Context, Req *comment.LikeReq) (r *comment
 	_args.Req = Req
 	var _result GetLikeResult
 	if err = p.c.Call(ctx, "GetLike", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) SetFavorite(ctx context.Context, Req *comment.FavoriteReq) (r *comment.FavoriteResp, err error) {
+	var _args SetFavoriteArgs
+	_args.Req = Req
+	var _result SetFavoriteResult
+	if err = p.c.Call(ctx, "SetFavorite", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FavoriteList(ctx context.Context, Req *comment.FavoriteListReq) (r *comment.FavoriteListResp, err error) {
+	var _args FavoriteListArgs
+	_args.Req = Req
+	var _result FavoriteListResult
+	if err = p.c.Call(ctx, "FavoriteList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

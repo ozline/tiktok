@@ -20,3 +20,13 @@ func CommentMapping(input []*model.Comment) []*comment.Comment {
 	}
 	return comments
 }
+
+func FavoriteMapping(input []*model.VideoFavorite) []int64 {
+	favorites := make([]int64, len(input))
+
+	for i, v := range input {
+		favorites[i] = v.VideoID
+	}
+
+	return favorites
+}

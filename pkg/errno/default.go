@@ -13,4 +13,8 @@ var (
 
 	// User
 	UserExistedError = NewErrNo(ParamErrorCode, "User existed")
+
+	// Comment
+	UnexpectedTypeError = NewErrNo(UnexpectedTypeErrorCode, "Unexpected type")
+	NotImplementError   = NewErrNo(NotImplementErrorCode, "Not implement")
 )

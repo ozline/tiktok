@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"errors"
+	"time"
 
 	comment "github.com/ozline/tiktok/kitex_gen/tiktok/comment"
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	"github.com/ozline/tiktok/services/comment/model"
 	"github.com/ozline/tiktok/services/comment/service"
@@ -22,13 +23,13 @@ func (s *TiktokCommentServiceImpl) List(ctx context.Context, req *comment.ListRe
 		switch req.Type {
 		case comment.ListType_like:
 			// db = db.Joins("comment_like", db.Where(&model.CommentLike{UserID: req.Uid}))
-			return nil, errors.New("not implement")
+			return nil, errno.NotImplementError
 		case comment.ListType_video:
 			db = db.Where(&model.Comment{VideoID: req.Vid})
 		case comment.ListType_comment:
 			db = db.Where(&model.Comment{UserID: req.Uid})
 		default:
-			return nil, errors.New("unexpected type")
+			return nil, errno.UnexpectedTypeError
 		}
 		var comments []*model.Comment
 		var count int64
@@ -48,7 +49,12 @@ func (s *TiktokCommentServiceImpl) Post(ctx context.Context, req *comment.PostRe
 			return nil, err
 		}
 		id := sf.NextVal()
-		return &comment.PostResp{ContendId: id},
+		return &comment.PostResp{Comment: &comment.Comment{
+				Id:      id,
+				Uid:     req.Uid,
+				Content: req.Content,
+				Ctime:   time.Now().Format("01-02"),
+			}},
 			model.DB().Create(&model.Comment{
 				ID:             id,
 				UserID:         req.Uid,
@@ -82,5 +88,32 @@ func (s *TiktokCommentServiceImpl) GetLike(ctx context.Context, req *comment.Lik
 			return
 		}
 		return &comment.LikeResp{IsLike: count == 1}, nil
+	})
+}
+
+// SetFavorite implements the TiktokCommentServiceImpl interface.
+func (s *TiktokCommentServiceImpl) SetFavorite(ctx context.Context, req *comment.FavoriteReq) (resp *comment.FavoriteResp, err error) {
+	return utils.FavoriteRespBuilder(func() (resp *comment.FavoriteResp, err error) {
+		if req.IsLike {
+			return &comment.FavoriteResp{}, service.CreateFavorite(req.Uid, req.VideoId)
+		}
+		return &comment.FavoriteResp{}, service.DeleteFavorite(req.Uid, req.VideoId)
+	})
+}
+
+// FavoriteList implements the TiktokCommentServiceImpl interface.
+func (s *TiktokCommentServiceImpl) FavoriteList(ctx context.Context, req *comment.FavoriteListReq) (resp *comment.FavoriteListResp, err error) {
+	return utils.FavoriteListRespBuilder(func() (resp *comment.FavoriteListResp, err error) {
+		db := model.DB().Model(&model.VideoFavorite{}).Where(&model.VideoFavorite{UserID: req.Uid})
+
+		favorites := make([]*model.VideoFavorite, 0)
+		var count int64
+		err = db.Count(&count).Offset(int(req.PageNumber) - 1).Limit(int(req.PageSize)).Find(&favorites).Error
+
+		if err != nil {
+			return nil, err
+		}
+
+		return &comment.FavoriteListResp{Count: count, Videos: utils.FavoriteMapping(favorites)}, nil
 	})
 }
