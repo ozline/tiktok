@@ -6,6 +6,8 @@ import (
 
 	"github.com/golang/glog"
 	chat "github.com/ozline/tiktok/kitex_gen/tiktok/chat"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils/snowflake"
 	"github.com/ozline/tiktok/services/chat/model"
 	"github.com/ozline/tiktok/services/chat/service"
@@ -18,60 +20,75 @@ type TiktokChatServiceImpl struct{}
 
 // SendChatMessage implements the TiktokChatServiceImpl interface.
 func (s *TiktokChatServiceImpl) SendChatMessage(ctx context.Context, req *chat.SendMessageRequest) (resp *chat.SendMessageResponse, err error) {
-	//fmt.Println("----- SendChatMessage -----")
-	snow, err := snowflake.NewSnowflake(int64(0), int64(0))
+
+	snow, err := snowflake.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
 	if err != nil {
 		glog.Error(err)
 		return
 	}
+	nowTime := time.Now().Format("2006-01-02 15:04:05")
+
 	message := model.Message{
 		ID:           snow.NextVal(),
-		From_user_id: req.FromUserId,
-		To_user_id:   req.ToUserId,
+		From_user_id: req.FromUser,
+		To_user_id:   req.ToUser,
 		Content:      req.Content,
-		Create_time:  time.Now().Format("2006-01-02 15:04:05"),
+		Create_time:  nowTime,
 	}
 	dataServer := service.NewDataBaseService(ctx)
 	dataServer.SendMessageMysqlHandler(message)
 	dataServer.ReceiveMessageMysqlHandler(message)
 
-	response := chat.SendMessageResponse{
+	return &chat.SendMessageResponse{
 		Base: &chat.BaseResp{
-			Code: 1,
-			Msg:  "Success message",
+			Code: errno.SuccessCode,
+			Msg:  errno.SuccessMsg,
 		},
-		FromUserId: req.FromUserId,
-		ToUserId:   req.ToUserId,
-		Content:    req.Content,
-	}
-	return &response, nil
+		Data: &chat.ChatMsg{
+			FromUser:   req.FromUser,
+			ToUser:     req.ToUser,
+			Content:    req.Content,
+			CreateTime: nowTime,
+		},
+	}, nil
 }
 
 // AcceptChatMessage implements the TiktokChatServiceImpl interface.
 func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat.ReceiveMessageRequest) (resp *chat.ReceiveMessageResponse, err error) {
-	//fmt.Println("----- AcceptChatMessage -----")
+
 	db, err := gorm.Open(sqlite.Open("receiveMessage.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
 	var messages []model.Message
-	db.Where("To_user_id <> ?", req.ToUserId).Find(&messages)
-	fromuserids := make([]int64, len(messages))
-	touserids := make([]int64, len(messages))
-	contents := make([]string, len(messages))
-	for index, message := range messages {
-		fromuserids[index] = message.From_user_id
-		touserids[index] = message.To_user_id
-		contents[index] = message.Content
+	err = db.Where("To_user_id <> ?", req.ToUser).Find(&messages).Error
+
+	if err != nil {
+		return &chat.ReceiveMessageResponse{
+			Base: &chat.BaseResp{
+				Code: errno.ServiceErrorCode,
+				Msg:  err.Error(),
+			},
+		}, nil
 	}
 
-	response := chat.ReceiveMessageResponse{
-		StatusCode:  1,
-		StatusMsg:   "Success Receive",
-		FromUserIds: fromuserids,
-		ToUserIds:   touserids,
-		Contents:    contents,
+	msgs := make([]*chat.ChatMsg, 0)
+
+	for _, v := range messages {
+		msgs = append(msgs, &chat.ChatMsg{
+			FromUser:   v.From_user_id,
+			ToUser:     v.To_user_id,
+			Content:    v.Content,
+			CreateTime: v.Create_time,
+		})
 	}
-	return &response, nil
+
+	return &chat.ReceiveMessageResponse{
+		Base: &chat.BaseResp{
+			Code: errno.SuccessCode,
+			Msg:  errno.SuccessMsg,
+		},
+		Data: msgs,
+	}, nil
 }

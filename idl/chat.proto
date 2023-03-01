@@ -14,34 +14,31 @@ message BaseResp {
   string msg = 2;
 }
 
+message ChatMsg {
+  int64 from_user = 1;
+  int64 to_user = 2;
+  string content = 3;
+  string create_time = 4;
+}
+
 message SendMessageRequest {
-  string token = 1; // 用户鉴权token
-  int64 from_user_id = 2;
-  int64 to_user_id = 3; // 对方用户id
-  string content = 4;
-  int64 create_time = 5;
-  int64 seq_id = 6;
+  int64 from_user = 1;
+  int64 to_user = 2;
+  string content = 3;
 }
 
 message SendMessageResponse {
   BaseResp base = 1;
-  int64 from_user_id = 2;
-  int64 to_user_id = 3;
-  string content = 4;
-  int64 ack_id = 5;
+  ChatMsg data = 2;
 }
 
 message ReceiveMessageRequest {
-  int64 to_user_id = 1; // 对方用户id
+  int64 to_user = 1; // 对方用户id
   int64 seq_id = 2;
 }
 
 message ReceiveMessageResponse {
-  int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  string status_msg = 2; // 返回状态描述
-  repeated int64 from_user_ids = 3;
-  repeated int64 to_user_ids = 4;
-  repeated string contents = 5;
-  repeated int64 create_time = 6;
+  BaseResp base = 1;
+  repeated ChatMsg data = 3;
 }
 

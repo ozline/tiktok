@@ -4,7 +4,7 @@ package tiktokchatservice
 
 import (
 	server "github.com/cloudwego/kitex/server"
-	chat "github.com/ozline/tiktok/kitex_gen/tiktok/chat"
+	chat "github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
 )
 
 // NewInvoker creates a server.Invoker with the given handler and options.

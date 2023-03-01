@@ -46,6 +46,11 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 		VideoId: req.VideoId,
 	})
 
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
 	SendCommonResponse(c, &interactive.FavoriteActionResponse{
 		StatusCode: errno.SuccessCode,
 		StatusMsg:  errno.SuccessMsg,
@@ -86,7 +91,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	for _, v := range res {
 		//TODO: GetVideoInfo
 
-		list = append(list, &model.Video{})
+		list = append(list, &model.Video{Id: v})
 	}
 
 	SendCommonResponse(c, &interactive.FavoriteListResponse{
@@ -172,6 +177,11 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 		PageNumber: constants.PageNum,
 		PageSize:   constants.PageSize,
 	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
 
 	list := make([]*model.Comment, 0)
 
