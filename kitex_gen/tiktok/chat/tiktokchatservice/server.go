@@ -3,7 +3,7 @@ package tiktokchatservice
 
 import (
 	server "github.com/cloudwego/kitex/server"
-	chat "github.com/ozline/tiktok/services/chat/kitex_gen/tiktok/chat"
+	chat "github.com/ozline/tiktok/kitex_gen/tiktok/chat"
 )
 
 // NewServer creates a server.Server with the given handler and options.

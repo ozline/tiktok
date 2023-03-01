@@ -7,7 +7,9 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/app"
 	social "github.com/ozline/tiktok/api-gateway/biz/model/message/social"
+	"github.com/ozline/tiktok/api-gateway/biz/model/model"
 	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/chat"
 	"github.com/ozline/tiktok/kitex_gen/tiktok/follow"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
@@ -167,6 +169,24 @@ func MessageSend(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	currentUserID, err := PhaseToken(req.Token)
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	err = rpc.SendChatMessage(ctx, &chat.SendMessageRequest{
+		FromUser: currentUserID,
+		ToUser:   req.ToUserId,
+		Content:  req.Content,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
 	SendCommonResponse(c, &social.MessageSendResponse{
 		StatusCode: errno.SuccessCode,
 		StatusMsg:  errno.SuccessMsg,
@@ -184,8 +204,36 @@ func MessageChatMsg(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	currentUserID, err := PhaseToken(req.Token)
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	resp, err := rpc.GetChatMessage(ctx, &chat.ReceiveMessageRequest{
+		ToUser:   req.ToUserId,
+		FromUser: currentUserID,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	list := make([]*model.Message, 0)
+
+	for _, v := range resp {
+		list = append(list, &model.Message{
+			Id:         v.Id,
+			Content:    v.Content,
+			CreateDate: v.CreateTime,
+		})
+	}
+
 	SendCommonResponse(c, &social.MessageChatMsgResponse{
-		StatusCode: errno.SuccessCode,
-		StatusMsg:  errno.SuccessMsg,
+		StatusCode:  errno.SuccessCode,
+		StatusMsg:   errno.SuccessMsg,
+		MessageList: list,
 	})
 }

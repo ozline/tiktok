@@ -58,7 +58,7 @@ func (s *TiktokChatServiceImpl) AcceptChatMessage(ctx context.Context, req *chat
 
 	db, err := gorm.Open(sqlite.Open("receiveMessage.db"), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		panic(err)
 	}
 
 	var messages []model.Message

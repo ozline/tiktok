@@ -19,6 +19,7 @@ message ChatMsg {
   int64 to_user = 2;
   string content = 3;
   string create_time = 4;
+  int64 id = 5;
 }
 
 message SendMessageRequest {
@@ -33,8 +34,8 @@ message SendMessageResponse {
 }
 
 message ReceiveMessageRequest {
-  int64 to_user = 1; // 对方用户id
-  int64 seq_id = 2;
+  int64 from_user = 1;
+  int64 to_user = 2;
 }
 
 message ReceiveMessageResponse {
