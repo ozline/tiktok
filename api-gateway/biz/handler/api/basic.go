@@ -7,9 +7,13 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/app"
 	basic "github.com/ozline/tiktok/api-gateway/biz/model/message/basic"
+	"github.com/ozline/tiktok/api-gateway/biz/model/model"
 	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/comment"
 	"github.com/ozline/tiktok/kitex_gen/tiktok/follow"
 	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/video"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 )
 
@@ -129,9 +133,69 @@ func VideoGetFeeds(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	// Phase Token
+	currentUserID, err := PhaseToken(req.Token)
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	// Generate VideoID List
+	res, err := rpc.GetFeeds(ctx, &video.FeedRequest{
+		LatestTime: req.LatestTime,
+		PageNum:    constants.PageNum,
+		PageSize:   constants.PageSize,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
+		return
+	}
+
+	// Generate VideoInfo List
+	list := make([]*model.Video, 0)
+
+	for _, v := range res {
+
+		// Get Author Info
+		author, err := rpc.UserGetInfo(ctx, &user.UserRequest{
+			UserId: v.UserId,
+			Token:  req.Token,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		// Get CommentCount, FavoriteCount, IsFavorite
+		res, err := rpc.GetVideoCountInfo(ctx, &comment.GetVideoInfoReq{
+			Uid:     currentUserID,
+			VideoId: v.Id,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		list = append(list, &model.Video{
+			Id:            v.Id,
+			PlayUrl:       v.PlayUrl,
+			CoverUrl:      v.CoverUrl,
+			Title:         v.Title,
+			Author:        author,
+			CommentCount:  res.CommentCount,
+			FavoriteCount: res.FavoriteCount,
+			IsFavorite:    res.IsFavorite,
+		})
+	}
+
 	SendCommonResponse(c, &basic.FeedResponse{
 		StatusCode: errno.SuccessCode,
 		StatusMsg:  errno.SuccessMsg,
+		VideoList:  list,
 	})
 }
 
@@ -143,6 +207,24 @@ func VideoPublishAction(ctx context.Context, c *app.RequestContext) {
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
+		return
+	}
+
+	currentUserID, err := PhaseToken(req.Token)
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	err = rpc.VideoUpload(ctx, &video.PublishActionResquest{
+		Data:   req.Data,
+		Userid: currentUserID,
+		Title:  req.Title,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
 		return
 	}
 
@@ -163,8 +245,68 @@ func VideoPublishList(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	// Phase Token
+	currentUserID, err := PhaseToken(req.Token)
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	// Get VideoID List
+	res, err := rpc.VideoGetList(ctx, &video.PublishListRequest{
+		Userid:   currentUserID,
+		PageNum:  constants.PageNum,
+		PageSize: constants.PageSize,
+	})
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	// Generate VideoInfo list
+	list := make([]*model.Video, 0)
+
+	for _, v := range res {
+
+		// Get Author Info
+		author, err := rpc.UserGetInfo(ctx, &user.UserRequest{
+			UserId: v.UserId,
+			Token:  req.Token,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		// Get CommentCount, FavoriteCount, IsFavorite
+		res, err := rpc.GetVideoCountInfo(ctx, &comment.GetVideoInfoReq{
+			Uid:     currentUserID,
+			VideoId: v.Id,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		list = append(list, &model.Video{
+			Id:            v.Id,
+			PlayUrl:       v.PlayUrl,
+			CoverUrl:      v.CoverUrl,
+			Title:         v.Title,
+			Author:        author,
+			CommentCount:  res.CommentCount,
+			FavoriteCount: res.FavoriteCount,
+			IsFavorite:    res.IsFavorite,
+		})
+	}
+
 	SendCommonResponse(c, &basic.PublishListResponse{
 		StatusCode: errno.SuccessCode,
 		StatusMsg:  errno.SuccessMsg,
+		VideoList:  list,
 	})
 }

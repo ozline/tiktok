@@ -19,8 +19,7 @@ const (
 	FollowServiceName  = "tiktok-follow"
 	ChatServiceName    = "tiktok-chat"
 	VideoServiceName   = "tiktok-video"
-
-	AuthServiceName = "tiktok-auth"
+	// AuthServiceName = "tiktok-auth"
 
 	// 服务端口
 	GatewayListenAddress        = "127.0.0.1:8080"
@@ -29,7 +28,7 @@ const (
 	FollowServiceListenAddress  = "127.0.0.1:8890"
 	ChatServiceListenAddress    = "127.0.0.1:8891"
 	VideoServiceListenAddress   = "127.0.0.1:8892"
-	AuthServiceListenAddress    = "127.0.0.1:8893"
+	// AuthServiceListenAddress    = "127.0.0.1:8893"
 
 	// 表格名
 	UserTableName    = "user"
@@ -51,11 +50,15 @@ const (
 	MaxVideoSize   = 300000
 	MaxListLength  = 100
 
-	// 七牛云仓库访问密钥
-	AccessKey = "m5KRX39z1fu9ssut0SFgCWwLxxRiWHB-I2jPalWV"
-	SecretKey = "CRmeH-AESMTlOr9bCPpDIVtndztgJe_3CHtdVSoK"
+	// Aliyun SDK
+	OSSEndpoint        = "files.ozline.icu"               // 默认启用域名绑定
+	OSSAccessKeyID     = "LTAI5t6gqQgzCzVgdUWw6uip"       // AccessKeyID
+	OSSAccessKeySecret = "diAQZbzqI6JJm53IoKSdGAudNZIbol" // AccessKeySecret
+	OSSBucketName      = "ozliinex"                       // 桶名
+	UplaodRoutines     = 3                                // 并发数量
+	MainDirectory      = "tiktok"                         // 主目录
 
-	// Page相关
+	// Page
 	PageNum  = 1
 	PageSize = 10
 )

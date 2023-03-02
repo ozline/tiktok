@@ -117,3 +117,41 @@ func (s *TiktokCommentServiceImpl) FavoriteList(ctx context.Context, req *commen
 		return &comment.FavoriteListResp{Count: count, Videos: utils.FavoriteMapping(favorites)}, nil
 	})
 }
+
+// GetVideoInfo implements the TiktokCommentServiceImpl interface.
+func (s *TiktokCommentServiceImpl) GetVideoInfo(ctx context.Context, req *comment.GetVideoInfoReq) (resp *comment.GetVideoInfoResp, err error) {
+	return utils.GetVideoInfoRespBuilder(func() (resp *comment.GetVideoInfoResp, err error) {
+		resp = new(comment.GetVideoInfoResp)
+		var count int64
+
+		// Check favorite exist
+		db := model.DB().Model(&model.VideoFavorite{}).Where(&model.VideoFavorite{UserID: req.Uid, VideoID: req.VideoId})
+
+		if db.Error != nil {
+			resp.IsFavorite = false
+		} else {
+			resp.IsFavorite = true
+		}
+
+		// Get Count
+		db = model.DB().Model(&model.Comment{}).Where(&model.Comment{VideoID: req.VideoId}).Count(&count)
+
+		if db.Error != nil {
+			resp.CommentCount = 0
+		} else {
+			resp.CommentCount = count
+		}
+
+		// Get Favorites
+		db = model.DB().Model(&model.VideoFavorite{}).Where(&model.VideoFavorite{VideoID: req.VideoId}).Count(&count)
+
+		if db.Error != nil {
+			resp.FavoriteCount = 0
+		} else {
+			resp.FavoriteCount = count
+		}
+
+		return resp, nil
+
+	})
+}

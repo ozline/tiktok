@@ -11,6 +11,7 @@ import (
 	"github.com/ozline/tiktok/api-gateway/biz/rpc"
 	"github.com/ozline/tiktok/kitex_gen/tiktok/comment"
 	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/video"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 )
@@ -89,9 +90,46 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	list := make([]*model.Video, 0)
 
 	for _, v := range res {
-		//TODO: GetVideoInfo
 
-		list = append(list, &model.Video{Id: v})
+		info, err := rpc.GetVideoInfo(ctx, &video.GetInfoRequest{
+			VideoId: v,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		author, err := rpc.UserGetInfo(ctx, &user.UserRequest{
+			UserId: info.UserId,
+			Token:  req.Token,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		countinfo, err := rpc.GetVideoCountInfo(ctx, &comment.GetVideoInfoReq{
+			Uid:     currentUserID,
+			VideoId: v,
+		})
+
+		if err != nil {
+			SendErrorResponse(c, err)
+			return
+		}
+
+		list = append(list, &model.Video{
+			Id:            v,
+			Author:        author,
+			Title:         info.Title,
+			PlayUrl:       info.PlayUrl,
+			CoverUrl:      info.CoverUrl,
+			FavoriteCount: countinfo.FavoriteCount,
+			CommentCount:  countinfo.CommentCount,
+			IsFavorite:    countinfo.IsFavorite,
+		})
 	}
 
 	SendCommonResponse(c, &interactive.FavoriteListResponse{

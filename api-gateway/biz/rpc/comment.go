@@ -80,3 +80,17 @@ func FavoriteAction(ctx context.Context, req *comment.FavoriteReq) error {
 
 	return nil
 }
+
+func GetVideoCountInfo(ctx context.Context, req *comment.GetVideoInfoReq) (*comment.GetVideoInfoResp, error) {
+	resp, err := commentClient.GetVideoInfo(ctx, req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Info.Code != errno.SuccessCode {
+		return nil, errno.NewErrNo(resp.Info.Code, resp.Info.Msg)
+	}
+
+	return resp, nil
+}

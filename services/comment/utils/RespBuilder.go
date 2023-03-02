@@ -92,6 +92,24 @@ func FavoriteListRespBuilder(f func() (resp *comment.FavoriteListResp, err error
 	return &comment.FavoriteListResp{Info: baseResp(s)}, nil
 }
 
+func GetVideoInfoRespBuilder(f func() (resp *comment.GetVideoInfoResp, err error)) (*comment.GetVideoInfoResp, error) {
+	resp, err := f()
+
+	if err == nil {
+		resp.Info = baseResp(errno.Success)
+		return resp, nil
+	}
+
+	e := errno.ErrNo{}
+
+	if errors.As(err, &e) {
+		return &comment.GetVideoInfoResp{Info: baseResp(e)}, nil
+	}
+
+	s := errno.ServiceError.WithMessage(err.Error())
+	return &comment.GetVideoInfoResp{Info: baseResp(s)}, nil
+}
+
 func baseResp(err errno.ErrNo) *comment.BaseInfo {
 	return &comment.BaseInfo{
 		Code: err.ErrorCode,

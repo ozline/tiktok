@@ -5,85 +5,64 @@ package video;
 option go_package = "tiktok/video";
 
 service tiktokVideoService {
-  rpc putVideo(putVideoRequest) returns (putVideoResponse){};
-  rpc deleteVideo(deleteVideoRequest) returns (deleteVideoResponse){};
-  rpc getOneVideoInfo(getOneVideoInfoRequest) returns (getOneVideoInfoResponse){};
-  rpc downloadOneVideo(downloadOneVideoRequest) returns (downloadOneVideoResponse){};
-  rpc downloadMultiVideo(downloadMultiVideoRequest) returns (downloadMultiVideoResponse){};
-  rpc downloadMaxVideo(downloadMaxVideoRequest) returns (downloadMaxVideoResponse){};
+  rpc PublishAction (PublishActionResquest) returns (PublishActionResponse){};
+  rpc PublishList (PublishListRequest) returns (PublishListResponse){};
+  rpc Feed (FeedRequest) returns (FeedResponse){};
+  rpc GetInfo (GetInfoRequest) returns (GetInfoResponse){};
 }
 
-message putVideoRequest{
-  string play_url = 1;
-  string cover_url = 2;
+message BaseResp {
+  int64 code = 1;
+  string msg = 2;
+}
+
+message PublishActionResquest {
+  bytes data = 1;
+  int64 userid = 2;
   string title = 3;
-  int64 owner_id = 4;
 }
 
-message putVideoResponse{
-  bool state = 1;
-  string title = 2;
-  int64 owner_id = 3;
-  string err_state = 4;
+message PublishActionResponse {
+  BaseResp base = 1;
 }
 
-message deleteVideoRequest {
-  string title = 1;
-  int64 deletor_id = 2;
+message PublishListRequest {
+  int64 userid = 1;
+  int64 page_num = 2;
+  int64 page_size = 3;
 }
 
-message deleteVideoResponse {
-  bool state = 1;
-  string delete_video_name = 2;
-  int64 deletor_id = 3;
-  int64 video_owner_id = 4;
-  string err_state = 5;
+message PublishListResponse {
+  BaseResp base = 1;
+  repeated Video video_list = 2;  // 用户发布的视频列表
 }
 
-message getOneVideoInfoRequest {
-  string video_name = 1;
+message FeedRequest {
+  string latest_time = 1;
+  int64 user_id = 2;
+  int64 page_num = 3;
+  int64 page_size = 4;
 }
 
-message getOneVideoInfoResponse {
-  bool state = 1;
-  int64 video_id = 2; // 视频ID
-  string play_url = 3; // 播放地址
-  string cover_url = 4; // 封面地址
-  string video_title = 5; // 标题
-  int64 video_size = 6;
-  string video_mime_type = 7;
-  int64 owner_id = 8; // 用户名称
-  string err_state = 9;
-}
-message downloadOneVideoRequest {
-  string video_name = 1;
+message FeedResponse {
+  BaseResp base = 1;
+  repeated Video video_list = 3;  // 视频列表
+  int64 next_time = 4;            // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
 }
 
-message downloadOneVideoResponse {
-  bool state = 1;
-  string video_title = 2;
-  string video_url = 3;
-  int64 owner_id = 4;
+message GetInfoRequest {
+  int64 video_id = 1;
 }
 
-message downloadMultiVideoRequest {
-  int64 video_number = 1;
-  int64 downloador_id = 2;
+message GetInfoResponse {
+  BaseResp base = 1;
+  Video video = 2;
 }
 
-message downloadMultiVideoResponse {
-  bool state = 1;
-  int64 video_number = 2;
-  repeated string video_urls = 3;
-  string err_state = 4;
-}
-
-message downloadMaxVideoRequest {
-  int64 downloador_id = 1;
-}
-
-message downloadMaxVideoResponse {
-  bool state = 1;
-  string video_info = 2;
-  string err_state = 3;
+message Video {
+  int64 id = 1;             // 视频唯一标识
+  int64 user_id = 2;        // 作者id
+  string play_url = 3;      // 视频播放地址
+  string cover_url = 4;     // 视频封面地址
+  string title = 8;         // 视频标题
 }

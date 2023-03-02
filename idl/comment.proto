@@ -17,6 +17,8 @@ service tiktokCommentService {
   rpc GetLike       (LikeReq)         returns (LikeResp){};
   rpc SetFavorite   (FavoriteReq)     returns (FavoriteResp){};
   rpc FavoriteList  (FavoriteListReq) returns (FavoriteListResp){};
+  rpc GetVideoInfo   (GetVideoInfoReq)     returns (GetVideoInfoResp){}; // get a video's comment/favorite count and is_favorite
+
 }
 
 message Comment {
@@ -91,6 +93,18 @@ message FavoriteListResp {
   BaseInfo info = 1;
   int64 count = 2;
   repeated int64 videos = 3; // only ID
+}
+
+message GetVideoInfoReq {
+  int64 uid       = 1; // current user
+  int64 video_id  = 2;
+}
+
+message GetVideoInfoResp {
+  BaseInfo info = 1;
+  bool is_favorite = 2;
+  int64 comment_count = 3;
+  int64 favorite_count = 4;
 }
 
 message BaseInfo {

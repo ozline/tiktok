@@ -11,12 +11,10 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	PutVideo(ctx context.Context, Req *video.PutVideoRequest, callOptions ...callopt.Option) (r *video.PutVideoResponse, err error)
-	DeleteVideo(ctx context.Context, Req *video.DeleteVideoRequest, callOptions ...callopt.Option) (r *video.DeleteVideoResponse, err error)
-	GetOneVideoInfo(ctx context.Context, Req *video.GetOneVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetOneVideoInfoResponse, err error)
-	DownloadOneVideo(ctx context.Context, Req *video.DownloadOneVideoRequest, callOptions ...callopt.Option) (r *video.DownloadOneVideoResponse, err error)
-	DownloadMultiVideo(ctx context.Context, Req *video.DownloadMultiVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMultiVideoResponse, err error)
-	DownloadMaxVideo(ctx context.Context, Req *video.DownloadMaxVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMaxVideoResponse, err error)
+	PublishAction(ctx context.Context, Req *video.PublishActionResquest, callOptions ...callopt.Option) (r *video.PublishActionResponse, err error)
+	PublishList(ctx context.Context, Req *video.PublishListRequest, callOptions ...callopt.Option) (r *video.PublishListResponse, err error)
+	Feed(ctx context.Context, Req *video.FeedRequest, callOptions ...callopt.Option) (r *video.FeedResponse, err error)
+	GetInfo(ctx context.Context, Req *video.GetInfoRequest, callOptions ...callopt.Option) (r *video.GetInfoResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -48,32 +46,22 @@ type kTiktokVideoServiceClient struct {
 	*kClient
 }
 
-func (p *kTiktokVideoServiceClient) PutVideo(ctx context.Context, Req *video.PutVideoRequest, callOptions ...callopt.Option) (r *video.PutVideoResponse, err error) {
+func (p *kTiktokVideoServiceClient) PublishAction(ctx context.Context, Req *video.PublishActionResquest, callOptions ...callopt.Option) (r *video.PublishActionResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.PutVideo(ctx, Req)
+	return p.kClient.PublishAction(ctx, Req)
 }
 
-func (p *kTiktokVideoServiceClient) DeleteVideo(ctx context.Context, Req *video.DeleteVideoRequest, callOptions ...callopt.Option) (r *video.DeleteVideoResponse, err error) {
+func (p *kTiktokVideoServiceClient) PublishList(ctx context.Context, Req *video.PublishListRequest, callOptions ...callopt.Option) (r *video.PublishListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.DeleteVideo(ctx, Req)
+	return p.kClient.PublishList(ctx, Req)
 }
 
-func (p *kTiktokVideoServiceClient) GetOneVideoInfo(ctx context.Context, Req *video.GetOneVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetOneVideoInfoResponse, err error) {
+func (p *kTiktokVideoServiceClient) Feed(ctx context.Context, Req *video.FeedRequest, callOptions ...callopt.Option) (r *video.FeedResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetOneVideoInfo(ctx, Req)
+	return p.kClient.Feed(ctx, Req)
 }
 
-func (p *kTiktokVideoServiceClient) DownloadOneVideo(ctx context.Context, Req *video.DownloadOneVideoRequest, callOptions ...callopt.Option) (r *video.DownloadOneVideoResponse, err error) {
+func (p *kTiktokVideoServiceClient) GetInfo(ctx context.Context, Req *video.GetInfoRequest, callOptions ...callopt.Option) (r *video.GetInfoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.DownloadOneVideo(ctx, Req)
-}
-
-func (p *kTiktokVideoServiceClient) DownloadMultiVideo(ctx context.Context, Req *video.DownloadMultiVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMultiVideoResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.DownloadMultiVideo(ctx, Req)
-}
-
-func (p *kTiktokVideoServiceClient) DownloadMaxVideo(ctx context.Context, Req *video.DownloadMaxVideoRequest, callOptions ...callopt.Option) (r *video.DownloadMaxVideoResponse, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.DownloadMaxVideo(ctx, Req)
+	return p.kClient.GetInfo(ctx, Req)
 }

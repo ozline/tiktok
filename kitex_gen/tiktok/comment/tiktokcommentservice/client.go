@@ -17,6 +17,7 @@ type Client interface {
 	GetLike(ctx context.Context, Req *comment.LikeReq, callOptions ...callopt.Option) (r *comment.LikeResp, err error)
 	SetFavorite(ctx context.Context, Req *comment.FavoriteReq, callOptions ...callopt.Option) (r *comment.FavoriteResp, err error)
 	FavoriteList(ctx context.Context, Req *comment.FavoriteListReq, callOptions ...callopt.Option) (r *comment.FavoriteListResp, err error)
+	GetVideoInfo(ctx context.Context, Req *comment.GetVideoInfoReq, callOptions ...callopt.Option) (r *comment.GetVideoInfoResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -76,4 +77,9 @@ func (p *kTiktokCommentServiceClient) SetFavorite(ctx context.Context, Req *comm
 func (p *kTiktokCommentServiceClient) FavoriteList(ctx context.Context, Req *comment.FavoriteListReq, callOptions ...callopt.Option) (r *comment.FavoriteListResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FavoriteList(ctx, Req)
+}
+
+func (p *kTiktokCommentServiceClient) GetVideoInfo(ctx context.Context, Req *comment.GetVideoInfoReq, callOptions ...callopt.Option) (r *comment.GetVideoInfoResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetVideoInfo(ctx, Req)
 }
