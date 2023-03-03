@@ -22,20 +22,12 @@ var (
 	chatClient    tiktokchatservice.Client
 )
 
-var debug = true
-
 func Init() {
-
-	if debug {
-		initUserRPC()
-		initVideoRPC()
-	} else {
-		initUserRPC()
-		initVideoRPC()
-		initChatRPC()
-		initCommentRPC()
-		initFollowRPC()
-	}
+	initUserRPC()
+	initVideoRPC()
+	initChatRPC()
+	initCommentRPC()
+	initFollowRPC()
 }
 func initUserRPC() {
 	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})

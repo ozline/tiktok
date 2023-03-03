@@ -33,9 +33,19 @@ func NewOSS(endpoint, accessKeyID, accessKeySecret, MainDirectory string) (*OSS,
 	return res, nil
 }
 
-// Upload files to OSS
-func (o *OSS) UploadObject(filename string, data []byte) (string, error) {
+// Upload files to OSS By Bytes
+func (o *OSS) UploadObjectByBytes(filename string, data []byte) (string, error) {
 	err := o.bucket.PutObject(o.mainDirectory+"/"+filename, bytes.NewReader(data), oss.Routines(constants.UplaodRoutines))
+	if err != nil {
+		return "", err
+	}
+
+	return o.BuildSourceURL(filename), nil
+}
+
+// Upload files to OSS By File
+func (o *OSS) UploadObjectByFile(filename string, localfilename string) (string, error) {
+	err := o.bucket.UploadFile(o.mainDirectory+"/"+filename, localfilename, constants.PartSize, oss.Routines(constants.UplaodRoutines))
 	if err != nil {
 		return "", err
 	}
@@ -46,7 +56,3 @@ func (o *OSS) UploadObject(filename string, data []byte) (string, error) {
 func (o *OSS) BuildSourceURL(filename string) string {
 	return "https://" + o.endpoint + "/" + o.mainDirectory + "/" + filename
 }
-
-// func DeleteObject(bucket *oss.Bucket, deletePath string) error {
-// 	return nil
-// }

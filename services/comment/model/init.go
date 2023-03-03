@@ -47,7 +47,7 @@ func init() {
 		panic(err)
 	}
 
-	db.AutoMigrate(&Comment{}, &CommentLike{}, &VideoFavorite{})
+	db = db.Table(constants.CommentTableName)
 }
 
 func DB() *gorm.DB {

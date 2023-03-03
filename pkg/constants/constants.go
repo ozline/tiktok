@@ -59,8 +59,12 @@ const (
 	OSSBucketName      = "ozliinex"                       // 桶名
 	UplaodRoutines     = 3                                // 并发数量
 	MainDirectory      = "tiktok"                         // 主目录
+	PartSize           = 100 * 1024
 
 	// Page
 	PageNum  = 1
 	PageSize = 10
+
+	// ffmpeg
+	FrameNum = 1
 )

@@ -2,11 +2,15 @@ package service
 
 import (
 	"context"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/ozline/tiktok/kitex_gen/tiktok/video"
 	"github.com/ozline/tiktok/pkg/constants"
 	utils "github.com/ozline/tiktok/pkg/utils/encode"
 	OSS "github.com/ozline/tiktok/pkg/utils/oss"
+	"github.com/ozline/tiktok/pkg/utils/snapshot"
 	"github.com/ozline/tiktok/services/video/dal/db"
 )
 
@@ -31,7 +35,7 @@ func (vs *VideoService) EnableOSS() error {
 }
 
 func (vs *VideoService) PublishAction(req *video.PublishActionResquest) error {
-	filename := utils.MD5Bytes(req.Data) + ".mp4" // Generate a unique file name
+	filename := utils.MD5Bytes(req.Data) // Generate a unique file name
 
 	err := vs.EnableOSS()
 
@@ -39,15 +43,38 @@ func (vs *VideoService) PublishAction(req *video.PublishActionResquest) error {
 		return err
 	}
 
-	playurl, err := vs.oss.UploadObject(filename, req.Data) // Upload video to OSS
+	playurl, err := vs.oss.UploadObjectByBytes(filename+".mp4", req.Data) // Upload video to OSS
 
 	if err != nil {
 		return err
 	}
 
-	// TODO: Use FFMPEG to get covertURL
+	// Save Video To Local
+	err = ioutil.WriteFile("./assets/"+filename+".mp4", req.Data, 0666) // Save video to local
 
-	err = db.CreateVideo(vs.ctx, req, playurl, playurl)
+	if err != nil {
+		return err
+	}
+
+	// Get Cover Image
+	coverfile, err := snapshot.GetSnapShot("./assets/"+filename+".mp4", filename) // Generate a cover image
+
+	if err != nil {
+		return err
+	}
+
+	_, coverfilename := filepath.Split(coverfile) // Get cover image name
+
+	coverurl, err := vs.oss.UploadObjectByFile(coverfilename, coverfile) // Upload cover image to OSS
+
+	if err != nil {
+		return err
+	}
+
+	os.Remove(coverfile)
+	os.Remove("./assets/" + filename + ".mp4")
+
+	err = db.CreateVideo(vs.ctx, req, playurl, coverurl)
 
 	if err != nil {
 		return err

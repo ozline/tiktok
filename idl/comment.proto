@@ -11,13 +11,13 @@ service tiktokCommentService {
   *   like:    find by like  (need uid)
   *   video:   find by vodeo (need vid) // not implement
   */
-  rpc List          (ListReq)         returns (ListResp){};
-  rpc Post          (PostReq)         returns (PostResp){};
-  rpc SetLike       (LikeReq)         returns (LikeResp){};
-  rpc GetLike       (LikeReq)         returns (LikeResp){};
-  rpc SetFavorite   (FavoriteReq)     returns (FavoriteResp){};
-  rpc FavoriteList  (FavoriteListReq) returns (FavoriteListResp){};
-  rpc GetVideoInfo   (GetVideoInfoReq)     returns (GetVideoInfoResp){}; // get a video's comment/favorite count and is_favorite
+  rpc List          (ListReq)             returns (ListResp){};
+  rpc Post          (PostReq)             returns (PostResp){};
+  rpc SetLike       (LikeReq)             returns (LikeResp){};
+  rpc GetLike       (LikeReq)             returns (LikeResp){};
+  rpc SetFavorite   (FavoriteReq)         returns (FavoriteResp){};
+  rpc FavoriteList  (FavoriteListReq)     returns (FavoriteListResp){};
+  rpc GetVideoInfo  (GetVideoInfoReq)     returns (GetVideoInfoResp){}; // get a video's comment/favorite count and is_favorite
 
 }
 
