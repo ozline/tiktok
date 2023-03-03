@@ -17,14 +17,15 @@ require (
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/disintegration/imaging v1.6.2
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20230215024021-be92bf60dfc7
+	github.com/u2takey/ffmpeg-go v0.4.1
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
 require (
 	github.com/aws/aws-sdk-go v1.38.20 // indirect
-	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
@@ -34,7 +35,6 @@ require (
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/stretchr/testify v1.8.1 // indirect
-	github.com/u2takey/ffmpeg-go v0.4.1 // indirect
 	github.com/u2takey/go-utils v0.3.1 // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	go.opentelemetry.io/otel v1.10.0 // indirect
@@ -42,7 +42,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.10.0 // indirect
 	go.opentelemetry.io/otel/trace v1.10.0 // indirect
 	go.uber.org/goleak v1.2.0 // indirect
-	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
+	golang.org/x/image v0.5.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
