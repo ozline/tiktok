@@ -4,31 +4,47 @@ import (
 	"log"
 	"net"
 
+	"github.com/cloudwego/kitex/pkg/limit"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
+	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
 	chat "github.com/ozline/tiktok/kitex_gen/tiktok/chat/tiktokchatservice"
 	"github.com/ozline/tiktok/pkg/constants"
-	"github.com/ozline/tiktok/services/chat/model"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/ozline/tiktok/pkg/tracer"
+	"github.com/ozline/tiktok/services/video/dal"
 )
 
+func Init() {
+	dal.Init()
+	tracer.InitJaeger(constants.CommentServiceName)
+}
+
 func main() {
+	// Etcd Register
+	r, err := etcd.NewEtcdRegistry([]string{constants.EtcdEndpoints})
+
+	if err != nil {
+		panic(err)
+	}
+
+	// Start Service
+
 	addr, _ := net.ResolveTCPAddr("tcp", constants.ChatServiceListenAddress)
-	svr := chat.NewServer(new(TiktokChatServiceImpl), server.WithServiceAddr(addr))
-
-	dbr, err := gorm.Open(sqlite.Open("receiveMessage.db"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-	// 迁移 schema
-	dbr.AutoMigrate(&model.Message{})
-
-	dbs, err := gorm.Open(sqlite.Open("sendMessage.db"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-	// 迁移 schema
-	dbs.AutoMigrate(&model.Message{})
+	svr := chat.NewServer(
+		new(TiktokChatServiceImpl),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: constants.ChatServiceName,
+		}),
+		server.WithServiceAddr(addr),
+		server.WithRegistry(r),
+		server.WithSuite(trace.NewDefaultServerSuite()),
+		server.WithLimit(&limit.Option{
+			MaxConnections: constants.MaxConnections,
+			MaxQPS:         constants.MaxQPS,
+		}),
+		server.WithMuxTransport(),
+	)
 
 	err = svr.Run()
 	if err != nil {

@@ -45,7 +45,7 @@ func (vs *VideoService) PublishAction(req *video.PublishActionResquest) error {
 		return err
 	}
 
-	// TODO: Use FFMPEG to get coverURL
+	// TODO: Use FFMPEG to get covertURL
 
 	err = db.CreateVideo(vs.ctx, req, playurl, playurl)
 
@@ -57,14 +57,7 @@ func (vs *VideoService) PublishAction(req *video.PublishActionResquest) error {
 }
 
 func (vs *VideoService) PublishList(req *video.PublishListRequest) ([]*video.Video, error) {
-
-	videos, err := db.GetVideoList(vs.ctx, req)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return videos, nil
+	return db.GetVideoList(vs.ctx, req)
 }
 
 func (vs *VideoService) GetFeeds(req *video.FeedRequest) ([]*video.Video, error) {
@@ -81,12 +74,5 @@ func (vs *VideoService) GetFeeds(req *video.FeedRequest) ([]*video.Video, error)
 }
 
 func (vs *VideoService) GetVideo(req *video.GetInfoRequest) (*video.Video, error) {
-
-	video, err := db.GetInfo(vs.ctx, req)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return video, nil
+	return db.GetInfo(vs.ctx, req)
 }

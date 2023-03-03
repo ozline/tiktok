@@ -12,5 +12,5 @@ func register(r *server.Hertz) {
 
 	router.GeneratedRegister(r)
 
-	customizedRegister(r)
+	// customizedRegister(r)
 }

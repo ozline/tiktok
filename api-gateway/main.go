@@ -3,12 +3,43 @@
 package main
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/ozline/tiktok/api-gateway/biz/rpc"
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/tracer"
 )
 
-func main() {
-	h := server.Default()
+func Init() {
+	tracer.InitJaeger(constants.GatewayServiceName)
+	rpc.Init()
+}
 
-	register(h)
-	h.Spin()
+func main() {
+	Init()
+	r := server.New(
+		server.WithHostPorts(constants.GatewayListenAddress),
+		server.WithHandleMethodNotAllowed(true),
+	)
+
+	r.Use(recovery.Recovery(recovery.WithRecoveryHandler(recoveryHandler))) // Recovery
+
+	register(r)
+	r.Spin()
+}
+
+func recoveryHandler(ctx context.Context, c *app.RequestContext, err interface{}, stack []byte) {
+	hlog.SystemLogger().CtxErrorf(ctx, "[Recovery] err=%v\nstack=%s", err, stack)
+
+	c.JSON(consts.StatusInternalServerError, map[string]interface{}{
+		"code":    errno.ServiceErrorCode,
+		"message": fmt.Sprintf("[Recovery] err=%v\nstack=%s", err, stack),
+	})
 }

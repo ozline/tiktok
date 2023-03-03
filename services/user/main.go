@@ -19,11 +19,12 @@ import (
 )
 
 func main() {
-	// 数据库
-	configs.InitDB()
 
 	// Jaeger
 	tracer.InitJaeger(constants.UserServiceName)
+
+	// 数据库
+	configs.InitDB()
 
 	// 日志记录
 	klog.SetLogger(kitexlogrus.NewLogger())

@@ -4,6 +4,8 @@ package api
 
 import (
 	"context"
+	"io"
+	"mime/multipart"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	basic "github.com/ozline/tiktok/api-gateway/biz/model/message/basic"
@@ -16,6 +18,12 @@ import (
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 )
+
+type VideoFile struct {
+	Data  *multipart.FileHeader `form:"data" binding:"required"`
+	Token string                `form:"token" binding:"required"`
+	Title string                `form:"title" binding:"required"`
+}
 
 // UserRegister .
 // @router /douyin/user/register [POST]
@@ -203,7 +211,7 @@ func VideoGetFeeds(ctx context.Context, c *app.RequestContext) {
 // @router /douyin/publish/action [POST]
 func VideoPublishAction(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req basic.PublishActionRequest
+	var req VideoFile
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		SendErrorResponse(c, errno.ParamError.WithMessage(err.Error()))
@@ -217,8 +225,24 @@ func VideoPublishAction(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	file, err := req.Data.Open()
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
+	defer file.Close()
+
+	byteContext, err := io.ReadAll(file)
+
+	if err != nil {
+		SendErrorResponse(c, err)
+		return
+	}
+
 	err = rpc.VideoUpload(ctx, &video.PublishActionResquest{
-		Data:   req.Data,
+		Data:   byteContext,
 		Userid: currentUserID,
 		Title:  req.Title,
 	})

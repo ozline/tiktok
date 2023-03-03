@@ -28,6 +28,7 @@ func Init() {
 
 	if debug {
 		initUserRPC()
+		initVideoRPC()
 	} else {
 		initUserRPC()
 		initVideoRPC()

@@ -19,7 +19,6 @@ const (
 	FollowServiceName  = "tiktok-follow"
 	ChatServiceName    = "tiktok-chat"
 	VideoServiceName   = "tiktok-video"
-	// AuthServiceName = "tiktok-auth"
 
 	// 服务端口
 	GatewayListenAddress        = "127.0.0.1:8080"
@@ -28,11 +27,10 @@ const (
 	FollowServiceListenAddress  = "127.0.0.1:8890"
 	ChatServiceListenAddress    = "127.0.0.1:8891"
 	VideoServiceListenAddress   = "127.0.0.1:8892"
-	// AuthServiceListenAddress    = "127.0.0.1:8893"
 
 	// 表格名
 	UserTableName    = "user"
-	ChatTableName    = "chat"
+	ChatTableName    = "message"
 	CommentTableName = "comment"
 	FollowTableName  = "follow"
 	VideoTableName   = "video"
@@ -45,12 +43,16 @@ const (
 	EtcdEndpoints = "127.0.0.1:2379"
 
 	// Limit
-	MaxConnections = 1000
-	MaxQPS         = 100
-	MaxVideoSize   = 300000
-	MaxListLength  = 100
+	MaxConnections  = 1000
+	MaxQPS          = 100
+	MaxVideoSize    = 300000
+	MaxListLength   = 100
+	MaxIdleConns    = 10
+	MaxOpenConns    = 100
+	ConnMaxLifetime = 10 * time.Second
 
 	// Aliyun SDK
+	// AccessKey Expires at 2023-03-03-16-00-00
 	OSSEndpoint        = "files.ozline.icu"               // 默认启用域名绑定
 	OSSAccessKeyID     = "LTAI5t6gqQgzCzVgdUWw6uip"       // AccessKeyID
 	OSSAccessKeySecret = "diAQZbzqI6JJm53IoKSdGAudNZIbol" // AccessKeySecret

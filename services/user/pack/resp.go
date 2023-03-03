@@ -3,7 +3,7 @@ package pack
 import (
 	"errors"
 
-	user "github.com/ozline/tiktok/kitex_gen/tiktok/user"
+	"github.com/ozline/tiktok/kitex_gen/tiktok/user"
 	"github.com/ozline/tiktok/pkg/errno"
 )
 

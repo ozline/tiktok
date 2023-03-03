@@ -2,12 +2,13 @@ package model
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/ozline/tiktok/pkg/constants"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+
+	gormopentracing "gorm.io/plugin/opentracing"
 )
 
 var db *gorm.DB
@@ -34,13 +35,17 @@ func init() {
 	fmt.Println("数据库连接成功！")
 	sqlDB, _ := db.DB()
 	// SetMaxIdleCons 设置连接池中的最大闲置连接数。
-	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxIdleConns(constants.MaxIdleConns)
 
 	// SetMaxOpenCons 设置数据库的最大连接数量。
-	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxOpenConns(constants.MaxOpenConns)
 
-	// SetConnMaxLifetiment 设置连接的最大可复用时间。
-	sqlDB.SetConnMaxLifetime(10 * time.Second)
+	// SetConnMaxLifeTime 设置连接的最大可复用时间。
+	sqlDB.SetConnMaxLifetime(constants.ConnMaxLifetime)
+
+	if err = db.Use(gormopentracing.New()); err != nil {
+		panic(err)
+	}
 
 	db.AutoMigrate(&Comment{}, &CommentLike{}, &VideoFavorite{})
 }

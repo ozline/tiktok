@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"net"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
@@ -13,7 +13,13 @@ import (
 	comment "github.com/ozline/tiktok/kitex_gen/tiktok/comment/tiktokcommentservice"
 	"github.com/ozline/tiktok/pkg/constants"
 	_ "github.com/ozline/tiktok/services/comment/model"
+
+	tracer "github.com/ozline/tiktok/pkg/tracer"
 )
+
+func Init() {
+	tracer.InitJaeger(constants.CommentServiceName)
+}
 
 func main() {
 
@@ -30,6 +36,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	Init()
 
 	svr := comment.NewServer(
 		new(TiktokCommentServiceImpl), // 实现服务的结构体
@@ -50,6 +58,6 @@ func main() {
 	err = svr.Run()
 
 	if err != nil {
-		log.Println(err.Error())
+		klog.Fatal(err)
 	}
 }

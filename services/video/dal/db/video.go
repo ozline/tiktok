@@ -18,6 +18,7 @@ type Video struct {
 
 func CreateVideo(ctx context.Context, req *video.PublishActionResquest, playURL string, coverURL string) error {
 	return DB.Create(&Video{
+		ID:       Sf.NextVal(),
 		Title:    req.Title,
 		PlayUrl:  playURL,
 		CoverUrl: coverURL,

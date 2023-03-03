@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+
+	gormopentracing "gorm.io/plugin/opentracing"
 )
 
 var Db *gorm.DB
@@ -48,4 +50,9 @@ func InitDB() {
 
 	// SetConnMaxLifetiment 设置连接的最大可复用时间。
 	sqlDB.SetConnMaxLifetime(10 * time.Second)
+
+	if err = Db.Use(gormopentracing.New()); err != nil {
+		panic(err)
+	}
+
 }

@@ -11,7 +11,6 @@ require (
 	golang.org/x/crypto v0.6.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.5
-	gorm.io/driver/sqlite v1.4.4
 	gorm.io/gorm v1.24.3
 )
 
@@ -19,7 +18,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20230215024021-be92bf60dfc7
-	github.com/uber/jaeger-client-go v2.29.1+incompatible
+	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
@@ -69,7 +68,6 @@ require (
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/klauspost/cpuid/v2 v2.1.0 // indirect
-	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/nyaruka/phonenumbers v1.0.55 // indirect
