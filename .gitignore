@@ -1,0 +1,66 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# macOS rubbish
+.DS_Store
+
+# hertz
+*.o
+*.a
+*.so
+_obj
+_test
+*.[568vq]
+[568vq].out
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+_testmain.go
+*.exe
+*.exe~
+*.test
+*.prof
+*.rar
+*.zip
+*.gz
+*.psd
+*.bmd
+*.cfg
+*.pptx
+*.log
+*nohup.out
+*settings.pyc
+*.sublime-project
+*.sublime-workspace
+!.gitkeep
+.DS_Store
+/.idea
+/.vscode
+/output
+*.local.yml
+dumped_hertz_remote_config.json
+
+# Kitex output&client files
+cmd/**/output
+cmd/**/client
+
+# Hertz output binary
+cmd/api/tiktok_api
+
+# Hertz related
+dumped_hertz_remote_config.json

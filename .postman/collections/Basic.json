@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "00b3a8a5-9c17-41c9-8dfb-26eaeec631be",
+		"name": "Basic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "19835992-00b3a8a5-9c17-41c9-8dfb-26eaeec631be"
+	},
+	"item": [
+		{
+			"name": "用户注册",
+			"id": "f4badd42-672c-4871-924c-a8ba970b6ea5",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/douyin/user/register",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户登录",
+			"id": "9b2a41d1-dd56-4492-bc90-0f4c32a632ca",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/douyin/user/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户信息",
+			"id": "c7770b74-fcdc-435e-b23e-893ef0c53cc1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/user/?user_id=&token=",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"user",
+						""
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": ""
+						},
+						{
+							"key": "token",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "视频流",
+			"id": "32fac45a-4f38-4c82-8834-6db77eb67c8e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/douyin/feed/?latest_time&token",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"feed",
+						""
+					],
+					"query": [
+						{
+							"key": "latest_time",
+							"value": null
+						},
+						{
+							"key": "token",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "视频投稿",
+			"id": "16db14a1-9054-4400-ab57-5c6dc04a64ad",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "data",
+							"type": "file",
+							"value": null
+						},
+						{
+							"key": "token",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/douyin/publish/action/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"publish",
+						"action",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "发布列表",
+			"id": "015a1979-e4f4-40d7-8d04-7f4b99ef4e51",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{host}}/douyin/publish/list/?user_id=&token=",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"douyin",
+						"publish",
+						"list",
+						""
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": ""
+						},
+						{
+							"key": "token",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "16752ae0-a072-42e3-aae9-e31bd50db3cf",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "67933e92-765a-4603-b7fc-fc315c7ea1a4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "c5161ce8-40b7-44c8-b9fe-6a16e8dbfd6a",
+			"key": "host",
+			"value": "localhost:8888",
+			"type": "string"
+		}
+	]
+}
