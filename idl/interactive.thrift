@@ -3,57 +3,57 @@ namespace go interactive
 include "user.thrift"
 
 struct BaseResp {
-    1: i64 code,
-    2: string msg,
+    1: required i64 code,
+    2: optional string msg,
 }
 
 struct Comment{
-    1: i64 id
-    2: user.User user
-    3: string content
-    4: string create_date
+    1: required i64 id
+    2: required user.User user
+    3: required string content
+    4: required string create_date
 }
 
 struct FavoriteActionRequest {
-    1: string video_id,
-    2: string action_type,
-    3: string token,
+    1: required string video_id,
+    2: required string action_type,
+    3: required string token,
 }
 
 struct FavoriteActionResponse {
-    1: BaseResp base,
+    1: required BaseResp base,
 }
 
 struct FavoriteListRequest {
-    1: string user_id,
-    2: string token,
+    1: required string user_id,
+    2: required string token,
 }
 
 struct FavoriteListResponse {
-    1: BaseResp base,
+    1: required BaseResp base,
 }
 
 struct CommentActionRequest {
-    1: string video_id,
-    2: string action_type,
-    3: string token,
+    1: required string video_id,
+    2: required string action_type,
+    3: required string token,
     4: optional string comment_text,
     5: optional string comment_id, 
 }
 
 struct CommentActionResponse {
-    1: BaseResp base,
-    2: Comment comment
+    1: required BaseResp base,
+    2: optional Comment comment
 }
 
 struct CommentListRequest {
-    1: string video_id,
-    2: string token,
+    1: required string video_id,
+    2: required string token,
 }
 
 struct CommentListResponse {
-    1: BaseResp base,
-    2: list<Comment> comment_list
+    1: required BaseResp base,
+    2: required list<Comment> comment_list
 }
 
 service InteractiveService {
