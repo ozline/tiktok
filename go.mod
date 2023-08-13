@@ -24,7 +24,7 @@ require (
 	github.com/cloudwego/configmanager v0.2.0 // indirect
 	github.com/cloudwego/fastpb v0.0.4 // indirect
 	github.com/cloudwego/frugal v0.1.6 // indirect
-	github.com/cloudwego/netpoll v0.4.0 // indirect
+	github.com/cloudwego/netpoll v0.4.1 // indirect
 	github.com/cloudwego/thriftgo v0.2.11 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
