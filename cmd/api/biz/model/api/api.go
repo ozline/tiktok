@@ -2391,7 +2391,10 @@ type FeedResponse struct {
 }
 
 func NewFeedResponse() *FeedResponse {
-	return &FeedResponse{}
+	return &FeedResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *FeedResponse) GetStatusCode() (v int64) {
@@ -2920,7 +2923,10 @@ type UserRegisterResponse struct {
 }
 
 func NewUserRegisterResponse() *UserRegisterResponse {
-	return &UserRegisterResponse{}
+	return &UserRegisterResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *UserRegisterResponse) GetStatusCode() (v int64) {
@@ -3426,7 +3432,10 @@ type UserLoginResponse struct {
 }
 
 func NewUserLoginResponse() *UserLoginResponse {
-	return &UserLoginResponse{}
+	return &UserLoginResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *UserLoginResponse) GetStatusCode() (v int64) {
@@ -3931,7 +3940,10 @@ type UserResponse struct {
 }
 
 func NewUserResponse() *UserResponse {
-	return &UserResponse{}
+	return &UserResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *UserResponse) GetStatusCode() (v int64) {
@@ -4444,7 +4456,10 @@ type PublishActionResponse struct {
 }
 
 func NewPublishActionResponse() *PublishActionResponse {
-	return &PublishActionResponse{}
+	return &PublishActionResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *PublishActionResponse) GetStatusCode() (v int64) {
@@ -4845,7 +4860,10 @@ type PublishListResponse struct {
 }
 
 func NewPublishListResponse() *PublishListResponse {
-	return &PublishListResponse{}
+	return &PublishListResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *PublishListResponse) GetStatusCode() (v int64) {
@@ -5371,7 +5389,10 @@ type FavoriteActionResponse struct {
 }
 
 func NewFavoriteActionResponse() *FavoriteActionResponse {
-	return &FavoriteActionResponse{}
+	return &FavoriteActionResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *FavoriteActionResponse) GetStatusCode() (v int64) {
@@ -5772,7 +5793,10 @@ type FavoriteListResponse struct {
 }
 
 func NewFavoriteListResponse() *FavoriteListResponse {
-	return &FavoriteListResponse{}
+	return &FavoriteListResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *FavoriteListResponse) GetStatusCode() (v int64) {
@@ -6404,7 +6428,10 @@ type CommentActionResponse struct {
 }
 
 func NewCommentActionResponse() *CommentActionResponse {
-	return &CommentActionResponse{}
+	return &CommentActionResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *CommentActionResponse) GetStatusCode() (v int64) {
@@ -6860,7 +6887,10 @@ type CommentListResponse struct {
 }
 
 func NewCommentListResponse() *CommentListResponse {
-	return &CommentListResponse{}
+	return &CommentListResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *CommentListResponse) GetStatusCode() (v int64) {
@@ -7386,7 +7416,10 @@ type RelationActionResponse struct {
 }
 
 func NewRelationActionResponse() *RelationActionResponse {
-	return &RelationActionResponse{}
+	return &RelationActionResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *RelationActionResponse) GetStatusCode() (v int64) {
@@ -7787,7 +7820,10 @@ type RelationFollowListResponse struct {
 }
 
 func NewRelationFollowListResponse() *RelationFollowListResponse {
-	return &RelationFollowListResponse{}
+	return &RelationFollowListResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *RelationFollowListResponse) GetStatusCode() (v int64) {
@@ -8259,7 +8295,10 @@ type RelationFollowerListResponse struct {
 }
 
 func NewRelationFollowerListResponse() *RelationFollowerListResponse {
-	return &RelationFollowerListResponse{}
+	return &RelationFollowerListResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *RelationFollowerListResponse) GetStatusCode() (v int64) {
@@ -8731,7 +8770,10 @@ type RelationFriendListResponse struct {
 }
 
 func NewRelationFriendListResponse() *RelationFriendListResponse {
-	return &RelationFriendListResponse{}
+	return &RelationFriendListResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *RelationFriendListResponse) GetStatusCode() (v int64) {
@@ -9257,7 +9299,10 @@ type MessageChatResponse struct {
 }
 
 func NewMessageChatResponse() *MessageChatResponse {
-	return &MessageChatResponse{}
+	return &MessageChatResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *MessageChatResponse) GetStatusCode() (v int64) {
@@ -9835,7 +9880,10 @@ type MessageActionResponse struct {
 }
 
 func NewMessageActionResponse() *MessageActionResponse {
-	return &MessageActionResponse{}
+	return &MessageActionResponse{
+
+		StatusCode: 0,
+	}
 }
 
 func (p *MessageActionResponse) GetStatusCode() (v int64) {
