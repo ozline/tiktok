@@ -2210,8 +2210,8 @@ func (p *FollowListResponse) Field2DeepEqual(src []*User) bool {
 }
 
 type FollowerListRequest struct {
-	UserId int64 `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Token  int64 `thrift:"token,2" frugal:"2,default,i64" json:"token"`
+	UserId int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
+	Token  string `thrift:"token,2" frugal:"2,default,string" json:"token"`
 }
 
 func NewFollowerListRequest() *FollowerListRequest {
@@ -2226,13 +2226,13 @@ func (p *FollowerListRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *FollowerListRequest) GetToken() (v int64) {
+func (p *FollowerListRequest) GetToken() (v string) {
 	return p.Token
 }
 func (p *FollowerListRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *FollowerListRequest) SetToken(val int64) {
+func (p *FollowerListRequest) SetToken(val string) {
 	p.Token = val
 }
 
@@ -2271,7 +2271,7 @@ func (p *FollowerListRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -2320,7 +2320,7 @@ func (p *FollowerListRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *FollowerListRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
 		p.Token = v
@@ -2379,10 +2379,10 @@ WriteFieldEndError:
 }
 
 func (p *FollowerListRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Token); err != nil {
+	if err := oprot.WriteString(p.Token); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2424,9 +2424,9 @@ func (p *FollowerListRequest) Field1DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *FollowerListRequest) Field2DeepEqual(src int64) bool {
+func (p *FollowerListRequest) Field2DeepEqual(src string) bool {
 
-	if p.Token != src {
+	if strings.Compare(p.Token, src) != 0 {
 		return false
 	}
 	return true

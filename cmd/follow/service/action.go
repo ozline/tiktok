@@ -5,7 +5,7 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/follow"
 )
 
-// Action Functions for the follow/close operation
+// Action Function for the follow/close operation
 func (s *FollowService) Action(req *follow.ActionRequest) (*db.Follow, error) {
 	//TODO:获取用户ID
 	action := &db.Follow{

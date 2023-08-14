@@ -1800,7 +1800,7 @@ func (p *FollowerListRequest) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.STRING {
 				l, err = p.FastReadField2(buf[offset:])
 				offset += l
 				if err != nil {
@@ -1865,7 +1865,7 @@ func (p *FollowerListRequest) FastReadField1(buf []byte) (int, error) {
 func (p *FollowerListRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
-	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
@@ -1916,8 +1916,8 @@ func (p *FollowerListRequest) fastWriteField1(buf []byte, binaryWriter bthrift.B
 
 func (p *FollowerListRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "token", thrift.I64, 2)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.Token)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "token", thrift.STRING, 2)
+	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Token)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -1934,8 +1934,8 @@ func (p *FollowerListRequest) field1Length() int {
 
 func (p *FollowerListRequest) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("token", thrift.I64, 2)
-	l += bthrift.Binary.I64Length(p.Token)
+	l += bthrift.Binary.FieldBeginLength("token", thrift.STRING, 2)
+	l += bthrift.Binary.StringLengthNocopy(p.Token)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
