@@ -1,7 +1,7 @@
 create table tiktok.user
 (
     `id`               bigint auto_increment not null,
-    `username`         varchar(255)                                                                 not null,
+    `username`         varchar(255)                                                                 not null unique,
     `password`         varchar(255)                                                                 not null,
     `avatar`           varchar(255) default 'https://files.ozline.icu/images/avatar.jpg'            not null comment 'url',
     `background_image` varchar(255) default 'https://files.ozline.icu/images/BannerImg_221116.jpeg' not null comment 'url',

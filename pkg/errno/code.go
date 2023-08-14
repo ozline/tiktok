@@ -2,7 +2,11 @@
 package errno
 
 const (
-	// Success
+	// For api-gateway
+	StatusSuccessCode = 0
+	StatusSuccessMsg  = "ok"
+
+	// For microservices
 	SuccessCode = 10000
 	SuccessMsg  = "ok"
 
