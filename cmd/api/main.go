@@ -13,10 +13,12 @@ import (
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/tracer"
 )
 
 func Init() {
 	rpc.Init()
+	tracer.InitJaeger(constants.GatewayServiceName)
 }
 
 func main() {

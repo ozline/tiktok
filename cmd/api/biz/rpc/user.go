@@ -11,6 +11,8 @@ import (
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/middleware"
+
+	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 func InitUserRPC() {
@@ -23,11 +25,12 @@ func InitUserRPC() {
 	c, err := userservice.NewClient(
 		constants.UserServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
-		client.WithMuxConnection(1),
+		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),
 		client.WithConnectTimeout(constants.ConnectTimeout),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),
+		client.WithSuite(trace.NewDefaultClientSuite()),
 	)
 
 	if err != nil {
