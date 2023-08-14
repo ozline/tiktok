@@ -14,7 +14,7 @@ struct User {
     6: string avatar,
     7: string background_image,
     8: string signature,
-    9: string total_favorited,
+    9: i64 total_favorited,
     10: i64 work_count,
     11: i64 favorited_count,
 }
@@ -27,6 +27,7 @@ struct RegisterRequest {
 struct RegisterResponse {
     1: BaseResp base,
     2: i64 user_id,
+    3: string token,
 }
 
 struct LoginRequest {

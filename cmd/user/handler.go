@@ -32,8 +32,16 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReques
 		return resp, nil
 	}
 
+	token, err := utils.CreateToken(userResp.Id)
+
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.UserId = userResp.Id
+	resp.Token = token
 	return
 }
 
