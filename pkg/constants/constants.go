@@ -13,12 +13,12 @@ const (
 	ConnectTimeout = 50 * time.Millisecond
 
 	// 服务名
-	GatewayServiceName = "tiktok-gateway"
-	UserServiceName    = "tiktok-user"
-	CommentServiceName = "tiktok-comment"
-	FollowServiceName  = "tiktok-follow"
-	ChatServiceName    = "tiktok-chat"
-	VideoServiceName   = "tiktok-video"
+	GatewayServiceName = "gateway"
+	UserServiceName    = "user"
+	CommentServiceName = "comment"
+	FollowServiceName  = "follow"
+	ChatServiceName    = "chat"
+	VideoServiceName   = "video"
 
 	// 服务端口
 	GatewayListenAddress        = "127.0.0.1:8080"

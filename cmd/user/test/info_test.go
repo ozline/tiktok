@@ -14,7 +14,7 @@ func TestGetUserInfo(t *testing.T) {
 	TestLogin(t)
 	t.Logf("Token: %v", token)
 	req := &user.InfoRequest{
-		UserId: 10001,
+		UserId: 10001, // 按需修改账号
 		Token:  token,
 	}
 

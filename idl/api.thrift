@@ -56,7 +56,7 @@ struct FeedRequest {
 }
 
 struct FeedResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<Video> video_list,
     4: optional i64 next_time,
@@ -68,7 +68,7 @@ struct UserRegisterRequest {
 }
 
 struct UserRegisterResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required i64 user_id,
     4: required string token,
@@ -80,7 +80,7 @@ struct UserLoginRequest {
 }
 
 struct UserLoginResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required i64 user_id,
     4: required string token,
@@ -92,7 +92,7 @@ struct UserRequest {
 }
 
 struct UserResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional i64 status_msg,
     3: required User user,
 }
@@ -104,7 +104,7 @@ struct PublishActionRequest {
 }
 
 struct PublishActionResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
 }
 
@@ -114,7 +114,7 @@ struct PublishListRequest {
 }
 
 struct PublishListResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<Video> video_list,
 }
@@ -128,7 +128,7 @@ struct FavoriteActionRequest {
 }
 
 struct FavoriteActionResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
 }
 
@@ -138,7 +138,7 @@ struct FavoriteListRequest {
 }
 
 struct FavoriteListResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<Video> video_list,
 }
@@ -152,7 +152,7 @@ struct CommentActionRequest {
 }
 
 struct CommentActionResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: optional Comment comment, // 评论成功才返回
 }
@@ -163,7 +163,7 @@ struct CommentListRequest {
 }
 
 struct CommentListResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<Comment> comment_list,
 }
@@ -177,7 +177,7 @@ struct RelationActionRequest {
 }
 
 struct RelationActionResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
 }
 
@@ -187,7 +187,7 @@ struct RelationFollowListRequest {
 }
 
 struct RelationFollowListResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<User> user_list,
 }
@@ -198,7 +198,7 @@ struct RelationFollowerListRequest {
 }
 
 struct RelationFollowerListResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<User> user_list,
 }
@@ -209,7 +209,7 @@ struct RelationFriendListRequest {
 }
 
 struct RelationFriendListResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<FriendUser> user_list,
 }
@@ -221,7 +221,7 @@ struct MessageChatRequest {
 }
 
 struct MessageChatResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: optional string status_msg,
     3: required list<Message> message_list,
 }
@@ -234,7 +234,7 @@ struct MessageActionRequest {
 }
 
 struct MessageActionResponse {
-    1: required i64 status_code,
+    1: required i64 status_code = 0,
     2: required string status_msg,
 }
 

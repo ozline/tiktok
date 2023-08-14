@@ -241,7 +241,7 @@ type User struct {
 	Avatar          string `thrift:"avatar,6" frugal:"6,default,string" json:"avatar"`
 	BackgroundImage string `thrift:"background_image,7" frugal:"7,default,string" json:"background_image"`
 	Signature       string `thrift:"signature,8" frugal:"8,default,string" json:"signature"`
-	TotalFavorited  string `thrift:"total_favorited,9" frugal:"9,default,string" json:"total_favorited"`
+	TotalFavorited  int64  `thrift:"total_favorited,9" frugal:"9,default,i64" json:"total_favorited"`
 	WorkCount       int64  `thrift:"work_count,10" frugal:"10,default,i64" json:"work_count"`
 	FavoritedCount  int64  `thrift:"favorited_count,11" frugal:"11,default,i64" json:"favorited_count"`
 }
@@ -286,7 +286,7 @@ func (p *User) GetSignature() (v string) {
 	return p.Signature
 }
 
-func (p *User) GetTotalFavorited() (v string) {
+func (p *User) GetTotalFavorited() (v int64) {
 	return p.TotalFavorited
 }
 
@@ -321,7 +321,7 @@ func (p *User) SetBackgroundImage(val string) {
 func (p *User) SetSignature(val string) {
 	p.Signature = val
 }
-func (p *User) SetTotalFavorited(val string) {
+func (p *User) SetTotalFavorited(val int64) {
 	p.TotalFavorited = val
 }
 func (p *User) SetWorkCount(val int64) {
@@ -445,7 +445,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 9:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField9(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -577,7 +577,7 @@ func (p *User) ReadField8(iprot thrift.TProtocol) error {
 }
 
 func (p *User) ReadField9(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.TotalFavorited = v
@@ -809,10 +809,10 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField9(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("total_favorited", thrift.STRING, 9); err != nil {
+	if err = oprot.WriteFieldBegin("total_favorited", thrift.I64, 9); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.TotalFavorited); err != nil {
+	if err := oprot.WriteI64(p.TotalFavorited); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -964,9 +964,9 @@ func (p *User) Field8DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *User) Field9DeepEqual(src string) bool {
+func (p *User) Field9DeepEqual(src int64) bool {
 
-	if strings.Compare(p.TotalFavorited, src) != 0 {
+	if p.TotalFavorited != src {
 		return false
 	}
 	return true
@@ -1212,6 +1212,7 @@ func (p *RegisterRequest) Field2DeepEqual(src string) bool {
 type RegisterResponse struct {
 	Base   *BaseResp `thrift:"base,1" frugal:"1,default,BaseResp" json:"base"`
 	UserId int64     `thrift:"user_id,2" frugal:"2,default,i64" json:"user_id"`
+	Token  string    `thrift:"token,3" frugal:"3,default,string" json:"token"`
 }
 
 func NewRegisterResponse() *RegisterResponse {
@@ -1234,16 +1235,24 @@ func (p *RegisterResponse) GetBase() (v *BaseResp) {
 func (p *RegisterResponse) GetUserId() (v int64) {
 	return p.UserId
 }
+
+func (p *RegisterResponse) GetToken() (v string) {
+	return p.Token
+}
 func (p *RegisterResponse) SetBase(val *BaseResp) {
 	p.Base = val
 }
 func (p *RegisterResponse) SetUserId(val int64) {
 	p.UserId = val
 }
+func (p *RegisterResponse) SetToken(val string) {
+	p.Token = val
+}
 
 var fieldIDToName_RegisterResponse = map[int16]string{
 	1: "base",
 	2: "user_id",
+	3: "token",
 }
 
 func (p *RegisterResponse) IsSetBase() bool {
@@ -1282,6 +1291,16 @@ func (p *RegisterResponse) Read(iprot thrift.TProtocol) (err error) {
 		case 2:
 			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -1336,6 +1355,15 @@ func (p *RegisterResponse) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *RegisterResponse) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Token = v
+	}
+	return nil
+}
+
 func (p *RegisterResponse) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("RegisterResponse"); err != nil {
@@ -1348,6 +1376,10 @@ func (p *RegisterResponse) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -1403,6 +1435,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
+func (p *RegisterResponse) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Token); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
 func (p *RegisterResponse) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1422,6 +1471,9 @@ func (p *RegisterResponse) DeepEqual(ano *RegisterResponse) bool {
 	if !p.Field2DeepEqual(ano.UserId) {
 		return false
 	}
+	if !p.Field3DeepEqual(ano.Token) {
+		return false
+	}
 	return true
 }
 
@@ -1435,6 +1487,13 @@ func (p *RegisterResponse) Field1DeepEqual(src *BaseResp) bool {
 func (p *RegisterResponse) Field2DeepEqual(src int64) bool {
 
 	if p.UserId != src {
+		return false
+	}
+	return true
+}
+func (p *RegisterResponse) Field3DeepEqual(src string) bool {
+
+	if strings.Compare(p.Token, src) != 0 {
 		return false
 	}
 	return true

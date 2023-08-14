@@ -18,3 +18,8 @@ gen:
 	hz update \
 	-module $(MODULE)/cmd/$(SERVICE_NAME) \
 	-idl ../../idl/api.thrift \
+
+.PHONY: server
+server:
+	make build
+	cd output && sh bootstrap.sh
