@@ -11,10 +11,10 @@ require (
 	github.com/cloudwego/kitex v0.6.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/kitex-contrib/registry-etcd v0.1.0
-	google.golang.org/protobuf v1.31.0
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.3
 )
