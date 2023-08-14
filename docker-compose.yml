@@ -6,64 +6,64 @@ networks:
 
 services:
 
-  # Database
-  mysql:
-      container_name: mysql
-      image: mysql:latest
-      restart: always
-      environment:
-          - MYSQL_ROOT_PASSWORD=root
-          - MYSQL_DATABASE=tiktok
-          - MYSQL_USER=tiktok
-          - MYSQL_PASSWORD=tiktok
-          - TZ=Asia/Shanghai
-      volumes:
-          - ./pkg/configs/sql:/docker-entrypoint-initdb.d/
-      ports:
-          - "3306:3306"
-      networks:
-          - tiktok
+    mysql:
+        container_name: mysql
+        image: mysql:latest
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=tiktok
+            - MYSQL_USER=tiktok
+            - MYSQL_PASSWORD=tiktok
+            - TZ=Asia/Shanghai
+        volumes:
+            - ./pkg/configs/sql:/docker-entrypoint-initdb.d/
+        ports:
+            - "3306:3306"
+        networks:
+            - tiktok
+    # # Redis
+    # redis:
+    #   image: "redis:latest"
+    #   restart: always
+    #   ports:
+    #     - 6379:6379
+    #   volumes:
+    #     - /usr/local/redis:/var/lib/redis
+    #   environment:
+    #     - REDIS_PASSWORD=tiktok
+    #     - ALLOW_EMPTY_PASSWORD=no
 
-  # # Redis
-  # redis:
-  #   image: "redis:latest"
-  #   restart: always
-  #   ports:
-  #     - 6379:6379
-  #   volumes:
-  #     - /usr/local/redis:/var/lib/redis
-  #   environment:
-  #     - REDIS_PASSWORD=tiktok
-  #     - ALLOW_EMPTY_PASSWORD=no
+    # rabbitmq:
+    #   image: "rabbitmq:latest"
+    #   ports:
+    #     - 5672:5672
+    #     - 15672:15672
+    #   environment:
+    #     - RABBITMQ_DEFAULT_USER=tiktok
+    #     - RABBITMQ_DEFAULT_PASS=tiktok
+    etcd:
+        container_name: etcd
+        image: "quay.io/coreos/etcd:v3.5.5"
+        restart: always
+        ports:
+            - "2379:2379"
+        environment:
+            - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+            - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+            - ETCD_API=3
+        networks:
+            - tiktok
 
-  # # Message Broker
-  # rabbitmq:
-  #   image: "rabbitmq:latest"
-  #   ports:
-  #     - 5672:5672
-  #     - 15672:15672
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=tiktok
-  #     - RABBITMQ_DEFAULT_PASS=tiktok
-
-  # k-v store
-  etcd:
-      image: "quay.io/coreos/etcd:v3.5.5"
-      restart: always
-      ports:
-          - "2379:2379"
-      environment:
-          - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-          - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
-          - ETCD_API=3
-
-  # # Tracer
-  # jaeger:
-  #   image: "jaegertracing/all-in-one:latest"
-  #   restart: always
-  #   ports:
-  #     - 16686:16686
-  #     - 6831:6831/udp
+    jaeger:
+        container_name: jaeger
+        image: "jaegertracing/all-in-one:latest"
+        restart: always
+        ports:
+            - 16686:16686
+            - 6831:6831/udp
+        networks:
+            - tiktok
 
   # # Monitor
   # prometheus:

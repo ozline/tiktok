@@ -6,15 +6,15 @@ var (
 	// Success
 	Success = NewErrNo(SuccessCode, "Success")
 
-	ServiceError             = NewErrNo(ServiceErrorCode, "Service is unable to start successfully")
-	ServiceInternalError     = NewErrNo(ServiceErrorCode, "Service Internal Error")
-	ParamError               = NewErrNo(ParamErrorCode, "Parameter error")
-	AuthorizationFailedError = NewErrNo(AuthorizationFailedErrCode, "Authorization failed")
+	ServiceError             = NewErrNo(ServiceErrorCode, "service is unable to start successfully")
+	ServiceInternalError     = NewErrNo(ServiceErrorCode, "service internal error")
+	ParamError               = NewErrNo(ParamErrorCode, "parameter error")
+	AuthorizationFailedError = NewErrNo(AuthorizationFailedErrCode, "authorization failed")
 
 	// User
-	UserExistedError = NewErrNo(ParamErrorCode, "User existed")
+	UserExistedError = NewErrNo(ParamErrorCode, "user existed")
 
 	// Comment
-	UnexpectedTypeError = NewErrNo(UnexpectedTypeErrorCode, "Unexpected type")
-	NotImplementError   = NewErrNo(NotImplementErrorCode, "Not implement")
+	UnexpectedTypeError = NewErrNo(UnexpectedTypeErrorCode, "unexpected type")
+	NotImplementError   = NewErrNo(NotImplementErrorCode, "not implement")
 )

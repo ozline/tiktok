@@ -8,6 +8,9 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
+	"github.com/ozline/tiktok/cmd/api/biz/pack"
+	"github.com/ozline/tiktok/cmd/api/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/user"
 )
 
 // Feed .
@@ -17,7 +20,7 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	var req api.FeedRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
@@ -33,13 +36,24 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	var req api.UserRegisterRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.UserRegisterResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	resp.UserID, resp.Token, err = rpc.UserRegister(ctx, &user.RegisterRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	// resp.StatusCode = errno.StatusSuccessCode
+	pack.SendResponse(c, resp)
 }
 
 // UserLogin .
@@ -49,13 +63,23 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	var req api.UserLoginRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.UserLoginResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	resp.UserID, resp.Token, err = rpc.UserLogin(ctx, &user.LoginRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	pack.SendResponse(c, resp)
 }
 
 // UserInfo .
@@ -65,13 +89,24 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 	var req api.UserRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.UserResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	user, err := rpc.UserInfo(ctx, &user.InfoRequest{
+		UserId: req.UserID,
+		Token:  req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.User = pack.User(user)
+	pack.SendResponse(c, resp)
 }
 
 // PublishAction .
@@ -81,7 +116,7 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	var req api.PublishActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
@@ -97,7 +132,7 @@ func PublishList(ctx context.Context, c *app.RequestContext) {
 	var req api.PublishListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
