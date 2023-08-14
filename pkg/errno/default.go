@@ -17,9 +17,4 @@ var (
 	// Comment
 	UnexpectedTypeError = NewErrNo(UnexpectedTypeErrorCode, "Unexpected type")
 	NotImplementError   = NewErrNo(NotImplementErrorCode, "Not implement")
-
-	//Video
-	CreateMergeVideoError = NewErrNo(ServiceErrorCode, "create mergeVideo fail")
-	WriteVideoFileError   = NewErrNo(ServiceErrorCode, "write video error")
-	ReceiveRequsetError   = NewErrNo(ServiceErrorCode, "receive requset error")
 )
