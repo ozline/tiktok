@@ -44,8 +44,6 @@ func TestPutVideo(t *testing.T) {
 				putStream.Send(&video.PutVideoRequest{
 					IsFinished: true,
 					Cover:      text_cover,
-					UserId:     10000,
-					Token:      token,
 				})
 				break
 			}
