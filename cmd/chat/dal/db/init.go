@@ -53,8 +53,8 @@ func Init() {
 	}
 	RedisDB = redis.NewClient(&redis.Options{
 		Addr:     constants.RedisAddr,
-		Password: constants.RedisPWD,     // no password set
-		DB:       constants.ReidsDB_Chat, // use default DB
+		Password: constants.RedisPWD,    // no password set
+		DB:       constants.RedisDBChat, // use default DB
 	})
 	if RedisDB == nil {
 		panic(errors.New("[redis init error]"))

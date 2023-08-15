@@ -10,6 +10,7 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
+	"github.com/ozline/tiktok/cmd/video/service"
 )
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
@@ -24,7 +25,8 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
 	resp := new(video.PutVideoResponse)
 	//文件名
-	var objectName string
+	var videoName string
+	var coverName string
 	//追加位置
 	var nextPos int64 = 0
 	//从环境变量获取key
@@ -50,8 +52,8 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			hanlerPutVideoError(stream, err)
 			return nil
 		}
-		if objectName == "" {
-			objectName = generateVideoName(req.UserId)
+		if videoName == "" {
+			videoName = generateVideoName(req.UserId)
 		}
 		if req.IsFinished {
 			//上传封面
@@ -60,6 +62,10 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 				hanlerPutVideoError(stream, err)
 				return nil
 			}
+			//保存到数据库
+			playUrl := fmt.Sprintf("https://jiuxia821.cn/%s", videoName)
+			coverUrl := fmt.Sprintf("https://jiuxia821.cn/%s", coverName)
+			service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
 			log.Println("视频全部传输完成")
 			resp.Base = pack.BuildBaseResp(nil)
 			resp.State = 2
@@ -67,7 +73,7 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			break
 		}
 		log.Printf("received block %v:", req.GetBlockId())
-		nextPos, err = bucket.AppendObject(objectName, bytes.NewReader(req.VideoBlock), nextPos)
+		nextPos, err = bucket.AppendObject(videoName, bytes.NewReader(req.VideoBlock), nextPos)
 		if err != nil {
 			hanlerPutVideoError(stream, err)
 			return nil
