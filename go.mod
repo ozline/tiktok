@@ -6,6 +6,7 @@ replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 
 require (
 	github.com/apache/thrift v0.13.0
+	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/hertz v0.6.7
 	github.com/cloudwego/kitex v0.6.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -13,6 +14,7 @@ require (
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.3
 )
@@ -23,9 +25,8 @@ require (
 	github.com/bytedance/sonic v1.8.8 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/chenzhuoyu/iasm v0.0.0-20230222070914-0b1b64b0e762 // indirect
-	github.com/choleraehyq/pid v0.0.16 // indirect
+	github.com/choleraehyq/pid v0.0.17 // indirect
 	github.com/cloudwego/configmanager v0.2.0 // indirect
-	github.com/cloudwego/fastpb v0.0.4 // indirect
 	github.com/cloudwego/frugal v0.1.6 // indirect
 	github.com/cloudwego/netpoll v0.4.1 // indirect
 	github.com/cloudwego/thriftgo v0.2.11 // indirect
@@ -66,6 +67,5 @@ require (
 	golang.org/x/text v0.6.0 // indirect
 	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
 	google.golang.org/grpc v1.41.0 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

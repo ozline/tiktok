@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/ozline/tiktok/pkg/constants"
 	"testing"
 
 	"github.com/cloudwego/kitex/client"
@@ -12,7 +13,9 @@ var token string
 
 func TestMain(m *testing.M) {
 	// 连接服务器
-	c, err := userservice.NewClient("user", client.WithHostPorts("0.0.0.0:8888"))
+	c, err := userservice.NewClient("user",
+		client.WithMuxConnection(constants.MuxConnection),
+		client.WithHostPorts("0.0.0.0:8888"))
 
 	if err != nil {
 		panic(err)
