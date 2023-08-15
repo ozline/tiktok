@@ -23,7 +23,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 	//TODO:redis缓存
 
-	//若为空，则写入数据库且成功关注
+	//若查无此数据，则写入数据库且成功关注
 	err := DB.WithContext(ctx).Model(&Follow{}).
 		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
 		First(&followResp).Error
@@ -31,10 +31,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			follow.Id = SF.NextVal()
-			if err := DB.WithContext(ctx).Create(follow).Error; err != nil {
-				return err
-			}
-			return nil
+			return DB.WithContext(ctx).Create(follow).Error
 		}
 		return err
 	}
