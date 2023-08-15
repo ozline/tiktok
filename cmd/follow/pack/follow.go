@@ -25,6 +25,6 @@ func BuildBaseResp(err error) *follow.BaseResp {
 func baseResp(err errno.ErrNo) *follow.BaseResp {
 	return &follow.BaseResp{
 		Code: err.ErrorCode,
-		Msg:  err.ErrorMsg,
+		Msg:  &err.ErrorMsg,
 	}
 }
