@@ -10,7 +10,6 @@ import (
 )
 
 func TestCommentList(t *testing.T) {
-	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNjkyNjE3NzQ5LCJpYXQiOjE2OTIwMTI5NDksImlzcyI6InRpa3RvayJ9.NS6ESu4WVohWJ7lGMBn6PiiKrnnsB67PHq8EtcYw5n8"
 	req := &interactive.CommentListRequest{
 		VideoId: "1",
 		Token:   token,
