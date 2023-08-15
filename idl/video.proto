@@ -43,9 +43,12 @@ message FeedResponse{
 }
 message PutVideoRequest{
     bytes video_block = 1; //分块的视频文件
-    int64 user_id = 2;     //用户ID
-    int64 block_id = 3;    //分块的id
-    bool isFinished =4;    //发送给服务端判断视频是否传输完成，
+    bytes cover = 2;       //封面文件
+    int64 user_id = 3;     //用户ID
+    int64 block_id = 4;    //分块的id
+    bool isFinished =5;    //发送给服务端判断视频是否传输完成，
+    string title = 6;      //视频标题
+    string token = 7;      //token
 }
 message PutVideoResponse{
     BaseResp base = 1; 

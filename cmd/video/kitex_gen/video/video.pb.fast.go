@@ -384,6 +384,21 @@ func (x *PutVideoRequest) FastRead(buf []byte, _type int8, number int32) (offset
 		if err != nil {
 			goto ReadFieldError
 		}
+	case 5:
+		offset, err = x.fastReadField5(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 6:
+		offset, err = x.fastReadField6(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 7:
+		offset, err = x.fastReadField7(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
 	default:
 		offset, err = fastpb.Skip(buf, _type, number)
 		if err != nil {
@@ -403,17 +418,32 @@ func (x *PutVideoRequest) fastReadField1(buf []byte, _type int8) (offset int, er
 }
 
 func (x *PutVideoRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	x.Cover, offset, err = fastpb.ReadBytes(buf, _type)
 	return offset, err
 }
 
 func (x *PutVideoRequest) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	x.BlockId, offset, err = fastpb.ReadInt64(buf, _type)
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
 func (x *PutVideoRequest) fastReadField4(buf []byte, _type int8) (offset int, err error) {
+	x.BlockId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *PutVideoRequest) fastReadField5(buf []byte, _type int8) (offset int, err error) {
 	x.IsFinished, offset, err = fastpb.ReadBool(buf, _type)
+	return offset, err
+}
+
+func (x *PutVideoRequest) fastReadField6(buf []byte, _type int8) (offset int, err error) {
+	x.Title, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *PutVideoRequest) fastReadField7(buf []byte, _type int8) (offset int, err error) {
+	x.Token, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
@@ -736,6 +766,9 @@ func (x *PutVideoRequest) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField2(buf[offset:])
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
+	offset += x.fastWriteField5(buf[offset:])
+	offset += x.fastWriteField6(buf[offset:])
+	offset += x.fastWriteField7(buf[offset:])
 	return offset
 }
 
@@ -748,26 +781,50 @@ func (x *PutVideoRequest) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *PutVideoRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.UserId == 0 {
+	if len(x.Cover) == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetUserId())
+	offset += fastpb.WriteBytes(buf[offset:], 2, x.GetCover())
 	return offset
 }
 
 func (x *PutVideoRequest) fastWriteField3(buf []byte) (offset int) {
-	if x.BlockId == 0 {
+	if x.UserId == 0 {
 		return offset
 	}
-	offset += fastpb.WriteInt64(buf[offset:], 3, x.GetBlockId())
+	offset += fastpb.WriteInt64(buf[offset:], 3, x.GetUserId())
 	return offset
 }
 
 func (x *PutVideoRequest) fastWriteField4(buf []byte) (offset int) {
+	if x.BlockId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 4, x.GetBlockId())
+	return offset
+}
+
+func (x *PutVideoRequest) fastWriteField5(buf []byte) (offset int) {
 	if !x.IsFinished {
 		return offset
 	}
-	offset += fastpb.WriteBool(buf[offset:], 4, x.GetIsFinished())
+	offset += fastpb.WriteBool(buf[offset:], 5, x.GetIsFinished())
+	return offset
+}
+
+func (x *PutVideoRequest) fastWriteField6(buf []byte) (offset int) {
+	if x.Title == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 6, x.GetTitle())
+	return offset
+}
+
+func (x *PutVideoRequest) fastWriteField7(buf []byte) (offset int) {
+	if x.Token == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 7, x.GetToken())
 	return offset
 }
 
@@ -1075,6 +1132,9 @@ func (x *PutVideoRequest) Size() (n int) {
 	n += x.sizeField2()
 	n += x.sizeField3()
 	n += x.sizeField4()
+	n += x.sizeField5()
+	n += x.sizeField6()
+	n += x.sizeField7()
 	return n
 }
 
@@ -1087,26 +1147,50 @@ func (x *PutVideoRequest) sizeField1() (n int) {
 }
 
 func (x *PutVideoRequest) sizeField2() (n int) {
-	if x.UserId == 0 {
+	if len(x.Cover) == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(2, x.GetUserId())
+	n += fastpb.SizeBytes(2, x.GetCover())
 	return n
 }
 
 func (x *PutVideoRequest) sizeField3() (n int) {
-	if x.BlockId == 0 {
+	if x.UserId == 0 {
 		return n
 	}
-	n += fastpb.SizeInt64(3, x.GetBlockId())
+	n += fastpb.SizeInt64(3, x.GetUserId())
 	return n
 }
 
 func (x *PutVideoRequest) sizeField4() (n int) {
+	if x.BlockId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(4, x.GetBlockId())
+	return n
+}
+
+func (x *PutVideoRequest) sizeField5() (n int) {
 	if !x.IsFinished {
 		return n
 	}
-	n += fastpb.SizeBool(4, x.GetIsFinished())
+	n += fastpb.SizeBool(5, x.GetIsFinished())
+	return n
+}
+
+func (x *PutVideoRequest) sizeField6() (n int) {
+	if x.Title == "" {
+		return n
+	}
+	n += fastpb.SizeString(6, x.GetTitle())
+	return n
+}
+
+func (x *PutVideoRequest) sizeField7() (n int) {
+	if x.Token == "" {
+		return n
+	}
+	n += fastpb.SizeString(7, x.GetToken())
 	return n
 }
 
@@ -1178,9 +1262,12 @@ var fieldIDToName_FeedResponse = map[int32]string{
 
 var fieldIDToName_PutVideoRequest = map[int32]string{
 	1: "VideoBlock",
-	2: "UserId",
-	3: "BlockId",
-	4: "IsFinished",
+	2: "Cover",
+	3: "UserId",
+	4: "BlockId",
+	5: "IsFinished",
+	6: "Title",
+	7: "Token",
 }
 
 var fieldIDToName_PutVideoResponse = map[int32]string{

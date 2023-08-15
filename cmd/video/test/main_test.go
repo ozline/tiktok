@@ -5,6 +5,7 @@ import (
 
 	"github.com/cloudwego/kitex/client"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video/videoservice"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 var conn videoservice.Client
@@ -19,5 +20,6 @@ func TestMain(m *testing.M) {
 	}
 
 	conn = c
+	token, _ = utils.CreateToken(10000)
 	m.Run()
 }
