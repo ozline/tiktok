@@ -18,7 +18,7 @@ type Follow struct {
 	ActionType int64 `gorm:"default:1"` //1-关注, 2-取消关注
 }
 
-func FollowAction(ctx context.Context, follow *Follow) (*Follow, error) {
+func FollowAction(ctx context.Context, follow *Follow) error {
 	followResp := new(Follow)
 
 	//TODO:redis缓存
@@ -32,11 +32,11 @@ func FollowAction(ctx context.Context, follow *Follow) (*Follow, error) {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			follow.Id = SF.NextVal()
 			if err := DB.WithContext(ctx).Create(follow).Error; err != nil {
-				return nil, err
+				return err
 			}
-			return follow, nil
+			return nil
 		}
-		return nil, err
+		return err
 	}
 
 	//关注/取关操作
@@ -44,9 +44,9 @@ func FollowAction(ctx context.Context, follow *Follow) (*Follow, error) {
 		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
 		Update("action_type", follow.ActionType).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return follow, nil
+	return nil
 }
 
 // 关注列表(获取to_user_id的列表)

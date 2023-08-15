@@ -3,13 +3,14 @@ package service
 import (
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
 	"github.com/ozline/tiktok/cmd/follow/rpc"
+	"github.com/ozline/tiktok/cmd/follow/util"
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
 )
 
 // FollowList View the follow list
-func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]user.User, error) {
-	var userList []user.User
+func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.User, error) {
+	var userList []*follow.User
 
 	followList, err := db.FollowListAction(s.ctx, req.UserId)
 	if err != nil {
@@ -24,7 +25,8 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]user.User,
 		if err != nil {
 			return nil, err
 		}
-		userList = append(userList, *user)
+		follow := util.ConvertStruct(user) //结构体转换
+		userList = append(userList, follow)
 	}
 	return &userList, nil
 }
