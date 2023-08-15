@@ -55,7 +55,8 @@ func GetCommentByID(ctx context.Context, commentId int64) (*Comment, error) {
 func GetCommentsByVideoID(ctx context.Context, commentId int64) (*[]Comment, error) {
 	var commentsResp *[]Comment
 
-	err := DB.Table(constants.CommentTableName).WithContext(ctx).Where("video_id = ?", commentId).Find(&commentsResp).Error
+	err := DB.Table(constants.CommentTableName).WithContext(ctx).Where("video_id = ?", commentId).
+		Order("created_at desc").Find(&commentsResp).Error
 
 	if err != nil {
 		return nil, err

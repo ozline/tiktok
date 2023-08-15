@@ -5,6 +5,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/ozline/tiktok/cmd/interactive/dal"
 	"github.com/ozline/tiktok/cmd/interactive/rpc"
 	interactive "github.com/ozline/tiktok/kitex_gen/interactive/interactiveservice"
@@ -39,8 +40,10 @@ func main() {
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 			ServiceName: constants.CommentServiceName,
 		}),
+		server.WithMuxTransport(),
 		server.WithServiceAddr(addr),
 		server.WithRegistry(r),
+		server.WithSuite(trace.NewDefaultServerSuite()),
 		server.WithLimit(&limit.Option{
 			MaxConnections: constants.MaxConnections,
 			MaxQPS:         constants.MaxQPS,

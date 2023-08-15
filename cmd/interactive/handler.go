@@ -8,6 +8,7 @@ import (
 	"github.com/ozline/tiktok/cmd/interactive/service"
 	interactive "github.com/ozline/tiktok/kitex_gen/interactive"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
 )
@@ -31,33 +32,36 @@ func (s *InteractiveServiceImpl) FavoriteList(ctx context.Context, req *interact
 func (s *InteractiveServiceImpl) CommentAction(ctx context.Context, req *interactive.CommentActionRequest) (resp *interactive.CommentActionResponse, err error) {
 	resp = new(interactive.CommentActionResponse)
 
-	if (req.ActionType != "1" && req.ActionType != "2") || (req.ActionType == "1" && len(*req.CommentText) == 0) {
-		resp.Base = pack.BuildBaseResp(errno.ParamError)
-		return resp, nil
-	}
-
 	commentResp := new(db.Comment)
 
+	switch req.ActionType {
 	//1-发布评论
-	if req.ActionType == "1" {
+	case constants.AddComment:
+		if len(*req.CommentText) == 0 {
+			resp.Base = pack.BuildBaseResp(errno.ParamError)
+			return resp, nil
+		}
 		commentResp, err = service.NewCommentService(ctx).CreateComment(req)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
-
-		//2-删除评论
-	} else if req.ActionType == "2" {
+	//2-删除评论
+	case constants.DeleteComment:
 		commentResp, err = service.NewCommentService(ctx).DeleteComment(req)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
+
+	default:
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
 	}
 
-	user, err := rpc.UserInfo(ctx, &user.InfoRequest{
+	userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
 		UserId: commentResp.UserId,
 		Token:  req.Token,
 	})
@@ -68,7 +72,7 @@ func (s *InteractiveServiceImpl) CommentAction(ctx context.Context, req *interac
 
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.Comment = pack.Comment(commentResp)
-	resp.Comment.User = user
+	resp.Comment.User = userInfo
 
 	return
 }
@@ -83,26 +87,30 @@ func (s *InteractiveServiceImpl) CommentList(ctx context.Context, req *interacti
 		return resp, nil
 	}
 
-	commentResp, err := service.NewCommentService(ctx).GetComments(req)
+	commentsResp, err := service.NewCommentService(ctx).GetComments(req)
 
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 
-	resp.Base = pack.BuildBaseResp(nil)
-	resp.CommentList = pack.Comments(commentResp)
-	for index, comment := range resp.CommentList {
-		user, err := rpc.UserInfo(ctx, &user.InfoRequest{
-			UserId: (*commentResp)[index].UserId,
+	commentList := make([]*interactive.Comment, 0, len(*commentsResp))
+	for _, comment := range *commentsResp {
+		userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
+			UserId: comment.UserId,
 			Token:  req.Token,
 		})
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
-		comment.User = user
+		rComment := new(interactive.Comment)
+		rComment = pack.Comment(&comment)
+		rComment.User = userInfo
+		commentList = append(commentList, rComment)
 	}
 
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.CommentList = commentList
 	return
 }
