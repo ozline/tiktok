@@ -28,22 +28,19 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
 		First(&followResp).Error
 
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			follow.Id = SF.NextVal()
-			return DB.WithContext(ctx).Create(follow).Error
-		}
-		return err
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		follow.Id = SF.NextVal()
+		return DB.WithContext(ctx).Create(follow).Error
 	}
 
 	//关注/取关操作
-	err = DB.WithContext(ctx).Model(&Follow{}).
+	if err := DB.WithContext(ctx).Model(&Follow{}).
 		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
-		Update("action_type", follow.ActionType).Error
-	if err != nil {
+		Update("action_type", follow.ActionType).Error; err != nil {
 		return err
 	}
-	return nil
+
+	return err
 }
 
 // 关注列表(获取to_user_id的列表)
