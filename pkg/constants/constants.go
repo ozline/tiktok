@@ -7,6 +7,11 @@ const (
 
 	JwtSecret = "MTAxNTkwMTg1Mw=="
 
+	//redis
+	RedisAddr = "127.0.0.1:6379"
+	RedisPWD = "tiktok"
+	RedisDB_Chat = 1
+
 	// RPC
 	MuxConnection  = 1
 	RPCTimeout     = 3 * time.Second
