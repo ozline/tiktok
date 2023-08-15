@@ -8,9 +8,9 @@ const (
 	JwtSecret = "MTAxNTkwMTg1Mw=="
 
 	//redis
-	RedisAddr = "127.0.0.1:6379"
-	RedisPWD = "tiktok"
-	RedisDB_Chat = 1
+	RedisAddr   = "127.0.0.1:6379"
+	RedisPWD    = "tiktok"
+	RedisDBChat = 1
 
 	// RPC
 	MuxConnection  = 1
