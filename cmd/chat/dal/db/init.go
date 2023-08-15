@@ -1,8 +1,5 @@
 package db
 
-
-package db
-
 import (
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -49,7 +46,7 @@ func Init() {
 	sqlDB.SetMaxOpenConns(constants.MaxConnections)     // 最大连接数
 	sqlDB.SetConnMaxLifetime(constants.ConnMaxLifetime) // 最大可复用时间
 
-	DB = DB.Table(constants.UserTableName)
+	DB = DB.Table(constants.ChatTableName)
 
 	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
 		panic(err)
@@ -59,6 +56,7 @@ func Init() {
 		Password: constants.RedisPWD, // no password set
 		DB:       constants.ReidsDB_Chat,        // use default DB
 	})
+	//docker run -d --privileged=true -p 6379:6379 -v /usr/local/redis/conf/redis.conf:/etc/redis/redis.conf -v /usr/local/redis/data:/data --name redis-1 redis:latest redis-server /etc/redis/redis.conf --appendonly yes
     if RedisDB==nil{
         panic(errors.New("[redis init error]"))
     }

@@ -10,7 +10,10 @@ const (
 	//redis
 	RedisAddr = "127.0.0.1:6379"
 	RedisPWD = "tiktok"
-	RedisDB_Chat = 1
+	ReidsDB_Chat = 1
+
+	//mq
+	MQurl = "amqp://admin:admin123@127.0.0.1:5672/"
 
 	// RPC
 	MuxConnection  = 1

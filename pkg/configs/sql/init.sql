@@ -73,3 +73,13 @@ create table tiktok.follow
     constraint id
         primary key (id)
 ) engine=InnoDB auto_increment=10000 default charset=utf8mb4;
+
+create table `tiktok`.`message`( 
+    `id`                  bigint auto_increment NOT NULL
+    `to_user_id`          bigint NOT NULL
+    `from_user_id`        bigint NOT NULL
+    `content`             longtext NOT NULL
+    `created_at`          timestamp     default current_timestamp                                        not null,
+    `updated_at`          timestamp     default current_timestamp                                        not null on update current_timestamp comment 'update profile time',
+    `deleted_at`          timestamp     default null
+)engine=InnoDB auto_increment=10000 default charset=utf8mb4;
