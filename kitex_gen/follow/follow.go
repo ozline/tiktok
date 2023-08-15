@@ -10,8 +10,8 @@ import (
 )
 
 type BaseResp struct {
-	Code int64  `thrift:"code,1" frugal:"1,default,i64" json:"code"`
-	Msg  string `thrift:"msg,2" frugal:"2,default,string" json:"msg"`
+	Code int64   `thrift:"code,1,required" frugal:"1,required,i64" json:"code"`
+	Msg  *string `thrift:"msg,2,optional" frugal:"2,optional,string" json:"msg,omitempty"`
 }
 
 func NewBaseResp() *BaseResp {
@@ -26,13 +26,18 @@ func (p *BaseResp) GetCode() (v int64) {
 	return p.Code
 }
 
+var BaseResp_Msg_DEFAULT string
+
 func (p *BaseResp) GetMsg() (v string) {
-	return p.Msg
+	if !p.IsSetMsg() {
+		return BaseResp_Msg_DEFAULT
+	}
+	return *p.Msg
 }
 func (p *BaseResp) SetCode(val int64) {
 	p.Code = val
 }
-func (p *BaseResp) SetMsg(val string) {
+func (p *BaseResp) SetMsg(val *string) {
 	p.Msg = val
 }
 
@@ -41,10 +46,15 @@ var fieldIDToName_BaseResp = map[int16]string{
 	2: "msg",
 }
 
+func (p *BaseResp) IsSetMsg() bool {
+	return p.Msg != nil
+}
+
 func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetCode bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -65,6 +75,7 @@ func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetCode = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -94,6 +105,10 @@ func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetCode {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -108,6 +123,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_BaseResp[fieldId]))
 }
 
 func (p *BaseResp) ReadField1(iprot thrift.TProtocol) error {
@@ -123,7 +140,7 @@ func (p *BaseResp) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Msg = v
+		p.Msg = &v
 	}
 	return nil
 }
@@ -179,14 +196,16 @@ WriteFieldEndError:
 }
 
 func (p *BaseResp) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("msg", thrift.STRING, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Msg); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetMsg() {
+		if err = oprot.WriteFieldBegin("msg", thrift.STRING, 2); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Msg); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -224,26 +243,31 @@ func (p *BaseResp) Field1DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *BaseResp) Field2DeepEqual(src string) bool {
+func (p *BaseResp) Field2DeepEqual(src *string) bool {
 
-	if strings.Compare(p.Msg, src) != 0 {
+	if p.Msg == src {
+		return true
+	} else if p.Msg == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.Msg, *src) != 0 {
 		return false
 	}
 	return true
 }
 
 type User struct {
-	Id              int64  `thrift:"id,1" frugal:"1,default,i64" json:"id"`
-	Name            string `thrift:"name,2" frugal:"2,default,string" json:"name"`
-	FollowCount     int64  `thrift:"follow_count,3" frugal:"3,default,i64" json:"follow_count"`
-	FollowerCount   int64  `thrift:"follower_count,4" frugal:"4,default,i64" json:"follower_count"`
-	IsFollow        bool   `thrift:"is_follow,5" frugal:"5,default,bool" json:"is_follow"`
-	Avatar          string `thrift:"avatar,6" frugal:"6,default,string" json:"avatar"`
-	BackgroundImage string `thrift:"background_image,7" frugal:"7,default,string" json:"background_image"`
-	Signature       string `thrift:"signature,8" frugal:"8,default,string" json:"signature"`
-	TotalFavorited  int64  `thrift:"total_favorited,9" frugal:"9,default,i64" json:"total_favorited"`
-	WorkCount       int64  `thrift:"work_count,10" frugal:"10,default,i64" json:"work_count"`
-	FavoriteCount   int64  `thrift:"favorite_count,11" frugal:"11,default,i64" json:"favorite_count"`
+	Id              int64   `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
+	Name            string  `thrift:"name,2,required" frugal:"2,required,string" json:"name"`
+	FollowCount     *int64  `thrift:"follow_count,3,optional" frugal:"3,optional,i64" json:"follow_count,omitempty"`
+	FollowerCount   *int64  `thrift:"follower_count,4,optional" frugal:"4,optional,i64" json:"follower_count,omitempty"`
+	IsFollow        bool    `thrift:"is_follow,5,required" frugal:"5,required,bool" json:"is_follow"`
+	Avatar          *string `thrift:"avatar,6,optional" frugal:"6,optional,string" json:"avatar,omitempty"`
+	BackgroundImage *string `thrift:"background_image,7,optional" frugal:"7,optional,string" json:"background_image,omitempty"`
+	Signature       *string `thrift:"signature,8,optional" frugal:"8,optional,string" json:"signature,omitempty"`
+	TotalFavorited  *int64  `thrift:"total_favorited,9,optional" frugal:"9,optional,i64" json:"total_favorited,omitempty"`
+	WorkCount       *int64  `thrift:"work_count,10,optional" frugal:"10,optional,i64" json:"work_count,omitempty"`
+	FavoriteCount   *int64  `thrift:"favorite_count,11,optional" frugal:"11,optional,i64" json:"favorite_count,omitempty"`
 }
 
 func NewUser() *User {
@@ -262,40 +286,80 @@ func (p *User) GetName() (v string) {
 	return p.Name
 }
 
+var User_FollowCount_DEFAULT int64
+
 func (p *User) GetFollowCount() (v int64) {
-	return p.FollowCount
+	if !p.IsSetFollowCount() {
+		return User_FollowCount_DEFAULT
+	}
+	return *p.FollowCount
 }
 
+var User_FollowerCount_DEFAULT int64
+
 func (p *User) GetFollowerCount() (v int64) {
-	return p.FollowerCount
+	if !p.IsSetFollowerCount() {
+		return User_FollowerCount_DEFAULT
+	}
+	return *p.FollowerCount
 }
 
 func (p *User) GetIsFollow() (v bool) {
 	return p.IsFollow
 }
 
+var User_Avatar_DEFAULT string
+
 func (p *User) GetAvatar() (v string) {
-	return p.Avatar
+	if !p.IsSetAvatar() {
+		return User_Avatar_DEFAULT
+	}
+	return *p.Avatar
 }
+
+var User_BackgroundImage_DEFAULT string
 
 func (p *User) GetBackgroundImage() (v string) {
-	return p.BackgroundImage
+	if !p.IsSetBackgroundImage() {
+		return User_BackgroundImage_DEFAULT
+	}
+	return *p.BackgroundImage
 }
+
+var User_Signature_DEFAULT string
 
 func (p *User) GetSignature() (v string) {
-	return p.Signature
+	if !p.IsSetSignature() {
+		return User_Signature_DEFAULT
+	}
+	return *p.Signature
 }
+
+var User_TotalFavorited_DEFAULT int64
 
 func (p *User) GetTotalFavorited() (v int64) {
-	return p.TotalFavorited
+	if !p.IsSetTotalFavorited() {
+		return User_TotalFavorited_DEFAULT
+	}
+	return *p.TotalFavorited
 }
+
+var User_WorkCount_DEFAULT int64
 
 func (p *User) GetWorkCount() (v int64) {
-	return p.WorkCount
+	if !p.IsSetWorkCount() {
+		return User_WorkCount_DEFAULT
+	}
+	return *p.WorkCount
 }
 
+var User_FavoriteCount_DEFAULT int64
+
 func (p *User) GetFavoriteCount() (v int64) {
-	return p.FavoriteCount
+	if !p.IsSetFavoriteCount() {
+		return User_FavoriteCount_DEFAULT
+	}
+	return *p.FavoriteCount
 }
 func (p *User) SetId(val int64) {
 	p.Id = val
@@ -303,31 +367,31 @@ func (p *User) SetId(val int64) {
 func (p *User) SetName(val string) {
 	p.Name = val
 }
-func (p *User) SetFollowCount(val int64) {
+func (p *User) SetFollowCount(val *int64) {
 	p.FollowCount = val
 }
-func (p *User) SetFollowerCount(val int64) {
+func (p *User) SetFollowerCount(val *int64) {
 	p.FollowerCount = val
 }
 func (p *User) SetIsFollow(val bool) {
 	p.IsFollow = val
 }
-func (p *User) SetAvatar(val string) {
+func (p *User) SetAvatar(val *string) {
 	p.Avatar = val
 }
-func (p *User) SetBackgroundImage(val string) {
+func (p *User) SetBackgroundImage(val *string) {
 	p.BackgroundImage = val
 }
-func (p *User) SetSignature(val string) {
+func (p *User) SetSignature(val *string) {
 	p.Signature = val
 }
-func (p *User) SetTotalFavorited(val int64) {
+func (p *User) SetTotalFavorited(val *int64) {
 	p.TotalFavorited = val
 }
-func (p *User) SetWorkCount(val int64) {
+func (p *User) SetWorkCount(val *int64) {
 	p.WorkCount = val
 }
-func (p *User) SetFavoriteCount(val int64) {
+func (p *User) SetFavoriteCount(val *int64) {
 	p.FavoriteCount = val
 }
 
@@ -345,10 +409,45 @@ var fieldIDToName_User = map[int16]string{
 	11: "favorite_count",
 }
 
+func (p *User) IsSetFollowCount() bool {
+	return p.FollowCount != nil
+}
+
+func (p *User) IsSetFollowerCount() bool {
+	return p.FollowerCount != nil
+}
+
+func (p *User) IsSetAvatar() bool {
+	return p.Avatar != nil
+}
+
+func (p *User) IsSetBackgroundImage() bool {
+	return p.BackgroundImage != nil
+}
+
+func (p *User) IsSetSignature() bool {
+	return p.Signature != nil
+}
+
+func (p *User) IsSetTotalFavorited() bool {
+	return p.TotalFavorited != nil
+}
+
+func (p *User) IsSetWorkCount() bool {
+	return p.WorkCount != nil
+}
+
+func (p *User) IsSetFavoriteCount() bool {
+	return p.FavoriteCount != nil
+}
+
 func (p *User) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetId bool = false
+	var issetName bool = false
+	var issetIsFollow bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -369,6 +468,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetId = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -379,6 +479,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetName = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -409,6 +510,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetIsFollow = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -488,6 +590,20 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetName {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetIsFollow {
+		fieldId = 5
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -502,6 +618,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_User[fieldId]))
 }
 
 func (p *User) ReadField1(iprot thrift.TProtocol) error {
@@ -526,7 +644,7 @@ func (p *User) ReadField3(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.FollowCount = v
+		p.FollowCount = &v
 	}
 	return nil
 }
@@ -535,7 +653,7 @@ func (p *User) ReadField4(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.FollowerCount = v
+		p.FollowerCount = &v
 	}
 	return nil
 }
@@ -553,7 +671,7 @@ func (p *User) ReadField6(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Avatar = v
+		p.Avatar = &v
 	}
 	return nil
 }
@@ -562,7 +680,7 @@ func (p *User) ReadField7(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.BackgroundImage = v
+		p.BackgroundImage = &v
 	}
 	return nil
 }
@@ -571,7 +689,7 @@ func (p *User) ReadField8(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Signature = v
+		p.Signature = &v
 	}
 	return nil
 }
@@ -580,7 +698,7 @@ func (p *User) ReadField9(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.TotalFavorited = v
+		p.TotalFavorited = &v
 	}
 	return nil
 }
@@ -589,7 +707,7 @@ func (p *User) ReadField10(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.WorkCount = v
+		p.WorkCount = &v
 	}
 	return nil
 }
@@ -598,7 +716,7 @@ func (p *User) ReadField11(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.FavoriteCount = v
+		p.FavoriteCount = &v
 	}
 	return nil
 }
@@ -707,14 +825,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("follow_count", thrift.I64, 3); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.FollowCount); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetFollowCount() {
+		if err = oprot.WriteFieldBegin("follow_count", thrift.I64, 3); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI64(*p.FollowCount); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -724,14 +844,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("follower_count", thrift.I64, 4); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.FollowerCount); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetFollowerCount() {
+		if err = oprot.WriteFieldBegin("follower_count", thrift.I64, 4); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI64(*p.FollowerCount); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -758,14 +880,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField6(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("avatar", thrift.STRING, 6); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Avatar); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetAvatar() {
+		if err = oprot.WriteFieldBegin("avatar", thrift.STRING, 6); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Avatar); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -775,14 +899,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField7(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("background_image", thrift.STRING, 7); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.BackgroundImage); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetBackgroundImage() {
+		if err = oprot.WriteFieldBegin("background_image", thrift.STRING, 7); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.BackgroundImage); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -792,14 +918,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField8(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("signature", thrift.STRING, 8); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Signature); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetSignature() {
+		if err = oprot.WriteFieldBegin("signature", thrift.STRING, 8); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Signature); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -809,14 +937,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField9(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("total_favorited", thrift.I64, 9); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.TotalFavorited); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetTotalFavorited() {
+		if err = oprot.WriteFieldBegin("total_favorited", thrift.I64, 9); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI64(*p.TotalFavorited); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -826,14 +956,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField10(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("work_count", thrift.I64, 10); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.WorkCount); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetWorkCount() {
+		if err = oprot.WriteFieldBegin("work_count", thrift.I64, 10); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI64(*p.WorkCount); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -843,14 +975,16 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField11(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("favorite_count", thrift.I64, 11); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.FavoriteCount); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetFavoriteCount() {
+		if err = oprot.WriteFieldBegin("favorite_count", thrift.I64, 11); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI64(*p.FavoriteCount); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -922,16 +1056,26 @@ func (p *User) Field2DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *User) Field3DeepEqual(src int64) bool {
+func (p *User) Field3DeepEqual(src *int64) bool {
 
-	if p.FollowCount != src {
+	if p.FollowCount == src {
+		return true
+	} else if p.FollowCount == nil || src == nil {
+		return false
+	}
+	if *p.FollowCount != *src {
 		return false
 	}
 	return true
 }
-func (p *User) Field4DeepEqual(src int64) bool {
+func (p *User) Field4DeepEqual(src *int64) bool {
 
-	if p.FollowerCount != src {
+	if p.FollowerCount == src {
+		return true
+	} else if p.FollowerCount == nil || src == nil {
+		return false
+	}
+	if *p.FollowerCount != *src {
 		return false
 	}
 	return true
@@ -943,53 +1087,83 @@ func (p *User) Field5DeepEqual(src bool) bool {
 	}
 	return true
 }
-func (p *User) Field6DeepEqual(src string) bool {
+func (p *User) Field6DeepEqual(src *string) bool {
 
-	if strings.Compare(p.Avatar, src) != 0 {
+	if p.Avatar == src {
+		return true
+	} else if p.Avatar == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.Avatar, *src) != 0 {
 		return false
 	}
 	return true
 }
-func (p *User) Field7DeepEqual(src string) bool {
+func (p *User) Field7DeepEqual(src *string) bool {
 
-	if strings.Compare(p.BackgroundImage, src) != 0 {
+	if p.BackgroundImage == src {
+		return true
+	} else if p.BackgroundImage == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.BackgroundImage, *src) != 0 {
 		return false
 	}
 	return true
 }
-func (p *User) Field8DeepEqual(src string) bool {
+func (p *User) Field8DeepEqual(src *string) bool {
 
-	if strings.Compare(p.Signature, src) != 0 {
+	if p.Signature == src {
+		return true
+	} else if p.Signature == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.Signature, *src) != 0 {
 		return false
 	}
 	return true
 }
-func (p *User) Field9DeepEqual(src int64) bool {
+func (p *User) Field9DeepEqual(src *int64) bool {
 
-	if p.TotalFavorited != src {
+	if p.TotalFavorited == src {
+		return true
+	} else if p.TotalFavorited == nil || src == nil {
+		return false
+	}
+	if *p.TotalFavorited != *src {
 		return false
 	}
 	return true
 }
-func (p *User) Field10DeepEqual(src int64) bool {
+func (p *User) Field10DeepEqual(src *int64) bool {
 
-	if p.WorkCount != src {
+	if p.WorkCount == src {
+		return true
+	} else if p.WorkCount == nil || src == nil {
+		return false
+	}
+	if *p.WorkCount != *src {
 		return false
 	}
 	return true
 }
-func (p *User) Field11DeepEqual(src int64) bool {
+func (p *User) Field11DeepEqual(src *int64) bool {
 
-	if p.FavoriteCount != src {
+	if p.FavoriteCount == src {
+		return true
+	} else if p.FavoriteCount == nil || src == nil {
+		return false
+	}
+	if *p.FavoriteCount != *src {
 		return false
 	}
 	return true
 }
 
 type FriendUser struct {
-	User    *User  `thrift:"user,1" frugal:"1,default,User" json:"user"`
-	Message string `thrift:"message,2" frugal:"2,default,string" json:"message"`
-	MsgType int64  `thrift:"msgType,3" frugal:"3,default,i64" json:"msgType"`
+	User    *User   `thrift:"user,1,required" frugal:"1,required,User" json:"user"`
+	Message *string `thrift:"message,2,optional" frugal:"2,optional,string" json:"message,omitempty"`
+	MsgType int64   `thrift:"msgType,3,required" frugal:"3,required,i64" json:"msgType"`
 }
 
 func NewFriendUser() *FriendUser {
@@ -1009,8 +1183,13 @@ func (p *FriendUser) GetUser() (v *User) {
 	return p.User
 }
 
+var FriendUser_Message_DEFAULT string
+
 func (p *FriendUser) GetMessage() (v string) {
-	return p.Message
+	if !p.IsSetMessage() {
+		return FriendUser_Message_DEFAULT
+	}
+	return *p.Message
 }
 
 func (p *FriendUser) GetMsgType() (v int64) {
@@ -1019,7 +1198,7 @@ func (p *FriendUser) GetMsgType() (v int64) {
 func (p *FriendUser) SetUser(val *User) {
 	p.User = val
 }
-func (p *FriendUser) SetMessage(val string) {
+func (p *FriendUser) SetMessage(val *string) {
 	p.Message = val
 }
 func (p *FriendUser) SetMsgType(val int64) {
@@ -1036,10 +1215,16 @@ func (p *FriendUser) IsSetUser() bool {
 	return p.User != nil
 }
 
+func (p *FriendUser) IsSetMessage() bool {
+	return p.Message != nil
+}
+
 func (p *FriendUser) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetUser bool = false
+	var issetMsgType bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -1060,6 +1245,7 @@ func (p *FriendUser) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetUser = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1080,6 +1266,7 @@ func (p *FriendUser) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetMsgType = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1099,6 +1286,15 @@ func (p *FriendUser) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetUser {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetMsgType {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -1113,6 +1309,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FriendUser[fieldId]))
 }
 
 func (p *FriendUser) ReadField1(iprot thrift.TProtocol) error {
@@ -1127,7 +1325,7 @@ func (p *FriendUser) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Message = v
+		p.Message = &v
 	}
 	return nil
 }
@@ -1196,14 +1394,16 @@ WriteFieldEndError:
 }
 
 func (p *FriendUser) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("message", thrift.STRING, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Message); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetMessage() {
+		if err = oprot.WriteFieldBegin("message", thrift.STRING, 2); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Message); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -1261,9 +1461,14 @@ func (p *FriendUser) Field1DeepEqual(src *User) bool {
 	}
 	return true
 }
-func (p *FriendUser) Field2DeepEqual(src string) bool {
+func (p *FriendUser) Field2DeepEqual(src *string) bool {
 
-	if strings.Compare(p.Message, src) != 0 {
+	if p.Message == src {
+		return true
+	} else if p.Message == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.Message, *src) != 0 {
 		return false
 	}
 	return true
@@ -1277,9 +1482,9 @@ func (p *FriendUser) Field3DeepEqual(src int64) bool {
 }
 
 type ActionRequest struct {
-	Token      string `thrift:"token,1" frugal:"1,default,string" json:"token"`
-	ToUserId   int64  `thrift:"to_user_id,2" frugal:"2,default,i64" json:"to_user_id"`
-	ActionType int64  `thrift:"action_type,3" frugal:"3,default,i64" json:"action_type"`
+	Token      string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
+	ToUserId   int64  `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
+	ActionType int64  `thrift:"action_type,3,required" frugal:"3,required,i64" json:"action_type"`
 }
 
 func NewActionRequest() *ActionRequest {
@@ -1321,6 +1526,9 @@ func (p *ActionRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetToken bool = false
+	var issetToUserId bool = false
+	var issetActionType bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -1341,6 +1549,7 @@ func (p *ActionRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetToken = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1351,6 +1560,7 @@ func (p *ActionRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetToUserId = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1361,6 +1571,7 @@ func (p *ActionRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetActionType = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1380,6 +1591,20 @@ func (p *ActionRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetToken {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetToUserId {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetActionType {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -1394,6 +1619,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_ActionRequest[fieldId]))
 }
 
 func (p *ActionRequest) ReadField1(iprot thrift.TProtocol) error {
@@ -1559,7 +1786,7 @@ func (p *ActionRequest) Field3DeepEqual(src int64) bool {
 }
 
 type ActionResponse struct {
-	Base *BaseResp `thrift:"base,1" frugal:"1,default,BaseResp" json:"base"`
+	Base *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
 }
 
 func NewActionResponse() *ActionResponse {
@@ -1594,6 +1821,7 @@ func (p *ActionResponse) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetBase bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -1614,6 +1842,7 @@ func (p *ActionResponse) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetBase = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1633,6 +1862,10 @@ func (p *ActionResponse) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetBase {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -1647,6 +1880,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_ActionResponse[fieldId]))
 }
 
 func (p *ActionResponse) ReadField1(iprot thrift.TProtocol) error {
@@ -1731,8 +1966,8 @@ func (p *ActionResponse) Field1DeepEqual(src *BaseResp) bool {
 }
 
 type FollowListRequest struct {
-	UserId int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Token  string `thrift:"token,2" frugal:"2,default,string" json:"token"`
+	UserId int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
+	Token  string `thrift:"token,2,required" frugal:"2,required,string" json:"token"`
 }
 
 func NewFollowListRequest() *FollowListRequest {
@@ -1766,6 +2001,8 @@ func (p *FollowListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetUserId bool = false
+	var issetToken bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -1786,6 +2023,7 @@ func (p *FollowListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetUserId = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1796,6 +2034,7 @@ func (p *FollowListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetToken = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -1815,6 +2054,15 @@ func (p *FollowListRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetUserId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetToken {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -1829,6 +2077,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FollowListRequest[fieldId]))
 }
 
 func (p *FollowListRequest) ReadField1(iprot thrift.TProtocol) error {
@@ -1954,8 +2204,8 @@ func (p *FollowListRequest) Field2DeepEqual(src string) bool {
 }
 
 type FollowListResponse struct {
-	Base     *BaseResp `thrift:"base,1" frugal:"1,default,BaseResp" json:"base"`
-	UserList []*User   `thrift:"user_list,2" frugal:"2,default,list<User>" json:"user_list"`
+	Base     *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
+	UserList []*User   `thrift:"user_list,2,optional" frugal:"2,optional,list<User>" json:"user_list,omitempty"`
 }
 
 func NewFollowListResponse() *FollowListResponse {
@@ -1975,7 +2225,12 @@ func (p *FollowListResponse) GetBase() (v *BaseResp) {
 	return p.Base
 }
 
+var FollowListResponse_UserList_DEFAULT []*User
+
 func (p *FollowListResponse) GetUserList() (v []*User) {
+	if !p.IsSetUserList() {
+		return FollowListResponse_UserList_DEFAULT
+	}
 	return p.UserList
 }
 func (p *FollowListResponse) SetBase(val *BaseResp) {
@@ -1994,10 +2249,15 @@ func (p *FollowListResponse) IsSetBase() bool {
 	return p.Base != nil
 }
 
+func (p *FollowListResponse) IsSetUserList() bool {
+	return p.UserList != nil
+}
+
 func (p *FollowListResponse) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetBase bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2018,6 +2278,7 @@ func (p *FollowListResponse) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetBase = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2047,6 +2308,10 @@ func (p *FollowListResponse) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetBase {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -2061,6 +2326,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FollowListResponse[fieldId]))
 }
 
 func (p *FollowListResponse) ReadField1(iprot thrift.TProtocol) error {
@@ -2142,22 +2409,24 @@ WriteFieldEndError:
 }
 
 func (p *FollowListResponse) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("user_list", thrift.LIST, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.UserList)); err != nil {
-		return err
-	}
-	for _, v := range p.UserList {
-		if err := v.Write(oprot); err != nil {
+	if p.IsSetUserList() {
+		if err = oprot.WriteFieldBegin("user_list", thrift.LIST, 2); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteListBegin(thrift.STRUCT, len(p.UserList)); err != nil {
 			return err
 		}
-	}
-	if err := oprot.WriteListEnd(); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+		for _, v := range p.UserList {
+			if err := v.Write(oprot); err != nil {
+				return err
+			}
+		}
+		if err := oprot.WriteListEnd(); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -2210,8 +2479,8 @@ func (p *FollowListResponse) Field2DeepEqual(src []*User) bool {
 }
 
 type FollowerListRequest struct {
-	UserId int64 `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Token  int64 `thrift:"token,2" frugal:"2,default,i64" json:"token"`
+	UserId int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
+	Token  string `thrift:"token,2,required" frugal:"2,required,string" json:"token"`
 }
 
 func NewFollowerListRequest() *FollowerListRequest {
@@ -2226,13 +2495,13 @@ func (p *FollowerListRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *FollowerListRequest) GetToken() (v int64) {
+func (p *FollowerListRequest) GetToken() (v string) {
 	return p.Token
 }
 func (p *FollowerListRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *FollowerListRequest) SetToken(val int64) {
+func (p *FollowerListRequest) SetToken(val string) {
 	p.Token = val
 }
 
@@ -2245,6 +2514,8 @@ func (p *FollowerListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetUserId bool = false
+	var issetToken bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2265,16 +2536,18 @@ func (p *FollowerListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetUserId = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetToken = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2294,6 +2567,15 @@ func (p *FollowerListRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetUserId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetToken {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -2308,6 +2590,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FollowerListRequest[fieldId]))
 }
 
 func (p *FollowerListRequest) ReadField1(iprot thrift.TProtocol) error {
@@ -2320,7 +2604,7 @@ func (p *FollowerListRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *FollowerListRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
 		p.Token = v
@@ -2379,10 +2663,10 @@ WriteFieldEndError:
 }
 
 func (p *FollowerListRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.Token); err != nil {
+	if err := oprot.WriteString(p.Token); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2424,17 +2708,17 @@ func (p *FollowerListRequest) Field1DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *FollowerListRequest) Field2DeepEqual(src int64) bool {
+func (p *FollowerListRequest) Field2DeepEqual(src string) bool {
 
-	if p.Token != src {
+	if strings.Compare(p.Token, src) != 0 {
 		return false
 	}
 	return true
 }
 
 type FollowerListResponse struct {
-	Base     *BaseResp `thrift:"base,1" frugal:"1,default,BaseResp" json:"base"`
-	UserList []*User   `thrift:"user_list,2" frugal:"2,default,list<User>" json:"user_list"`
+	Base     *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
+	UserList []*User   `thrift:"user_list,2,optional" frugal:"2,optional,list<User>" json:"user_list,omitempty"`
 }
 
 func NewFollowerListResponse() *FollowerListResponse {
@@ -2454,7 +2738,12 @@ func (p *FollowerListResponse) GetBase() (v *BaseResp) {
 	return p.Base
 }
 
+var FollowerListResponse_UserList_DEFAULT []*User
+
 func (p *FollowerListResponse) GetUserList() (v []*User) {
+	if !p.IsSetUserList() {
+		return FollowerListResponse_UserList_DEFAULT
+	}
 	return p.UserList
 }
 func (p *FollowerListResponse) SetBase(val *BaseResp) {
@@ -2473,10 +2762,15 @@ func (p *FollowerListResponse) IsSetBase() bool {
 	return p.Base != nil
 }
 
+func (p *FollowerListResponse) IsSetUserList() bool {
+	return p.UserList != nil
+}
+
 func (p *FollowerListResponse) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetBase bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2497,6 +2791,7 @@ func (p *FollowerListResponse) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetBase = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2526,6 +2821,10 @@ func (p *FollowerListResponse) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetBase {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -2540,6 +2839,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FollowerListResponse[fieldId]))
 }
 
 func (p *FollowerListResponse) ReadField1(iprot thrift.TProtocol) error {
@@ -2621,22 +2922,24 @@ WriteFieldEndError:
 }
 
 func (p *FollowerListResponse) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("user_list", thrift.LIST, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.UserList)); err != nil {
-		return err
-	}
-	for _, v := range p.UserList {
-		if err := v.Write(oprot); err != nil {
+	if p.IsSetUserList() {
+		if err = oprot.WriteFieldBegin("user_list", thrift.LIST, 2); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteListBegin(thrift.STRUCT, len(p.UserList)); err != nil {
 			return err
 		}
-	}
-	if err := oprot.WriteListEnd(); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+		for _, v := range p.UserList {
+			if err := v.Write(oprot); err != nil {
+				return err
+			}
+		}
+		if err := oprot.WriteListEnd(); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -2689,8 +2992,8 @@ func (p *FollowerListResponse) Field2DeepEqual(src []*User) bool {
 }
 
 type FriendListRequest struct {
-	UserId int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
-	Token  string `thrift:"token,2" frugal:"2,default,string" json:"token"`
+	UserId int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
+	Token  string `thrift:"token,2,required" frugal:"2,required,string" json:"token"`
 }
 
 func NewFriendListRequest() *FriendListRequest {
@@ -2724,6 +3027,8 @@ func (p *FriendListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetUserId bool = false
+	var issetToken bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2744,6 +3049,7 @@ func (p *FriendListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetUserId = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2754,6 +3060,7 @@ func (p *FriendListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetToken = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2773,6 +3080,15 @@ func (p *FriendListRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetUserId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetToken {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -2787,6 +3103,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FriendListRequest[fieldId]))
 }
 
 func (p *FriendListRequest) ReadField1(iprot thrift.TProtocol) error {
@@ -2912,8 +3230,8 @@ func (p *FriendListRequest) Field2DeepEqual(src string) bool {
 }
 
 type FriendListResponse struct {
-	Base     *BaseResp     `thrift:"base,1" frugal:"1,default,BaseResp" json:"base"`
-	UserList []*FriendUser `thrift:"user_list,2" frugal:"2,default,list<FriendUser>" json:"user_list"`
+	Base     *BaseResp     `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
+	UserList []*FriendUser `thrift:"user_list,2,optional" frugal:"2,optional,list<FriendUser>" json:"user_list,omitempty"`
 }
 
 func NewFriendListResponse() *FriendListResponse {
@@ -2933,7 +3251,12 @@ func (p *FriendListResponse) GetBase() (v *BaseResp) {
 	return p.Base
 }
 
+var FriendListResponse_UserList_DEFAULT []*FriendUser
+
 func (p *FriendListResponse) GetUserList() (v []*FriendUser) {
+	if !p.IsSetUserList() {
+		return FriendListResponse_UserList_DEFAULT
+	}
 	return p.UserList
 }
 func (p *FriendListResponse) SetBase(val *BaseResp) {
@@ -2952,10 +3275,15 @@ func (p *FriendListResponse) IsSetBase() bool {
 	return p.Base != nil
 }
 
+func (p *FriendListResponse) IsSetUserList() bool {
+	return p.UserList != nil
+}
+
 func (p *FriendListResponse) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetBase bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2976,6 +3304,7 @@ func (p *FriendListResponse) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetBase = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -3005,6 +3334,10 @@ func (p *FriendListResponse) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetBase {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -3019,6 +3352,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FriendListResponse[fieldId]))
 }
 
 func (p *FriendListResponse) ReadField1(iprot thrift.TProtocol) error {
@@ -3100,22 +3435,24 @@ WriteFieldEndError:
 }
 
 func (p *FriendListResponse) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("user_list", thrift.LIST, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.UserList)); err != nil {
-		return err
-	}
-	for _, v := range p.UserList {
-		if err := v.Write(oprot); err != nil {
+	if p.IsSetUserList() {
+		if err = oprot.WriteFieldBegin("user_list", thrift.LIST, 2); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteListBegin(thrift.STRUCT, len(p.UserList)); err != nil {
 			return err
 		}
-	}
-	if err := oprot.WriteListEnd(); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+		for _, v := range p.UserList {
+			if err := v.Write(oprot); err != nil {
+				return err
+			}
+		}
+		if err := oprot.WriteListEnd(); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
