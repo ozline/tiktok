@@ -79,13 +79,13 @@ func (s *FollowServiceImpl) FriendList(ctx context.Context, req *follow.FriendLi
 		return resp, nil
 	}
 
-	// friendResp, err := service.NewFollowService(ctx).FriendList(req)
+	friendResp, err := service.NewFollowService(ctx).FriendList(req)
 
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
-	// resp.UserList = *friendResp
+	resp.UserList = *friendResp
 	return
 }
