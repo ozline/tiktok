@@ -1,23 +1,20 @@
 package db
 
-
-package db
-
 import (
+	"github.com/go-redis/redis/v8"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
+	"github.com/pkg/errors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-    "github.com/go-redis/redis/v8"
-    "github.com/pkg/errors"
 )
 
-var ( 
-    DB *gorm.DB
-    SF *utils.Snowflake
-    RedisDB *redis.Client
+var (
+	DB      *gorm.DB
+	SF      *utils.Snowflake
+	RedisDB *redis.Client
 )
 
 func Init() {
@@ -54,12 +51,12 @@ func Init() {
 	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
 		panic(err)
 	}
-    RedisDB = redis.NewClient(&redis.Options{
+	RedisDB = redis.NewClient(&redis.Options{
 		Addr:     constants.RedisAddr,
-		Password: constants.RedisPWD, // no password set
-		DB:       constants.ReidsDB_Chat,        // use default DB
+		Password: constants.RedisPWD,    // no password set
+		DB:       constants.RedisDBChat, // use default DB
 	})
-    if RedisDB==nil{
-        panic(errors.New("[redis init error]"))
-    }
+	if RedisDB == nil {
+		panic(errors.New("[redis init error]"))
+	}
 }
