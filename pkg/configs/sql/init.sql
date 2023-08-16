@@ -48,8 +48,8 @@ create table tiktok.video
 (
     `id`              bigint auto_increment               not null,
     `user_id`         bigint                              not null,
-    `favorite_count`  bigint                              not null,
-    `comment_count`   bigint                              not null,
+    `favorite_count`  bigint   default 0                  not null,
+    `comment_count`   bigint   default 0                  not null,
     `play_url`        varchar(255)                        not null comment 'url',
     `cover_url`       varchar(255)                        not null comment 'url',
     `title`           varchar(255)                        not null,
