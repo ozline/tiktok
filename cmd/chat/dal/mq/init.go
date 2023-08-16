@@ -1,14 +1,15 @@
 package mq
 
 import (
-    "github.com/streadway/amqp"
-    "github.com/ozline/tiktok/pkg/constants"
-    "fmt"
+	"fmt"
+
+	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/streadway/amqp"
 )
 
-type RabbitMQ struct{
-    conn *amqp.Connection
-    mqurl string
+type RabbitMQ struct {
+	conn  *amqp.Connection
+	mqurl string
 }
 
 var Rmq *RabbitMQ
@@ -20,13 +21,12 @@ func InitRabbitMQ() {
 	}
 	dial, err := amqp.Dial(Rmq.mqurl)
 	if err != nil {
-        fmt.Println(err)
-        return
+		fmt.Println(err)
+		return
 	}
 	Rmq.conn = dial
-	return
 }
 
-func (r *RabbitMQ) destroy(){
-    r.conn.Close()
+func (r *RabbitMQ) destroy() {
+	r.conn.Close()
 }
