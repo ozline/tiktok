@@ -54,7 +54,16 @@ message PutVideoResponse{
     BaseResp base = 1; 
     int64 state =2;        //0 表示接收失败 1表示接收成功但未完成，2表示全部接收完成
 }
+message GetFavoriteVideoInfoRequest{
+    repeated int64 video_id = 1;  //需要获取的video_id
+    string token = 2;             //token
+}
+message GetFavoriteVideoInfoResponse{
+    BaseResp base = 1;
+    repeated Video video_list = 2; //获取的video信息
+}
 service VideoService {
     rpc Feed(FeedRequest) returns (FeedResponse){};
     rpc PutVideo(stream PutVideoRequest) returns (stream PutVideoResponse){};
+    rpc GetFavoriteVideoInfo(GetFavoriteVideoInfoRequest)returns (GetFavoriteVideoInfoResponse){};
 }

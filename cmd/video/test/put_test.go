@@ -44,6 +44,8 @@ func TestPutVideo(t *testing.T) {
 				putStream.Send(&video.PutVideoRequest{
 					IsFinished: true,
 					Cover:      text_cover,
+					Token:      token,
+					Title:      fmt.Sprintf("%v test_video", time.Now()),
 				})
 				break
 			}
@@ -78,7 +80,7 @@ func TestPutVideo(t *testing.T) {
 			t.Error(errno.NewErrNo(resp.Base.Code, resp.Base.Msg))
 			t.Fail()
 		}
-		fmt.Printf("Resp:\n %v\n", resp)
+		t.Logf("Resp:\n %+v\n", resp)
 
 		if resp.State == 2 {
 			fmt.Println("success")

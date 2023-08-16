@@ -11,6 +11,8 @@ import (
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
 	"github.com/ozline/tiktok/cmd/video/service"
+	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
@@ -24,6 +26,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 
 func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
 	resp := new(video.PutVideoResponse)
+
 	//文件名
 	var videoName string
 	var coverName string
@@ -52,6 +55,10 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			hanlerPutVideoError(stream, err)
 			return nil
 		}
+		if _, err := utils.CheckToken(req.Token); err != nil {
+			hanlerPutVideoError(stream, err)
+			return nil
+		}
 		if videoName == "" {
 			videoName = generateVideoName(req.UserId)
 		}
@@ -65,7 +72,12 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			//保存到数据库
 			playUrl := fmt.Sprintf("https://jiuxia821.cn/%s", videoName)
 			coverUrl := fmt.Sprintf("https://jiuxia821.cn/%s", coverName)
-			service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
+
+			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
+			if err != nil {
+				hanlerPutVideoError(stream, err)
+				return nil
+			}
 			log.Println("视频全部传输完成")
 			resp.Base = pack.BuildBaseResp(nil)
 			resp.State = 2
@@ -83,6 +95,27 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 		stream.Send(resp)
 	}
 	stream.Close()
+	return
+}
+
+// GetFavoriteVideoInfo implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.GetFavoriteVideoInfoRequest) (resp *video.GetFavoriteVideoInfoResponse, err error) {
+	resp = new(video.GetFavoriteVideoInfoResponse)
+	if len(req.VideoId) == 0 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+	videoList, err := service.NewVideoService(ctx).GetVideoInfo(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.VideoList = pack.VideoLikedList(videoList)
 	return
 }
 func hanlerPutVideoError(stream video.VideoService_PutVideoServer, err error) {

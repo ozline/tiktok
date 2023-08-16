@@ -27,3 +27,10 @@ func CreateVideo(ctx context.Context, video *Video) (*Video, error) {
 	}
 	return video, nil
 }
+func GetVideoInfo(ctx context.Context, videoId []int64) ([]Video, error) {
+	var videoResp []Video
+	if err := DB.WithContext(ctx).Where("id IN ?", videoId).Find(&videoResp).Error; err != nil {
+		return nil, err
+	}
+	return videoResp, nil
+}
