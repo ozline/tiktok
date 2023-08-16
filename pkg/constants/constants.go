@@ -8,9 +8,12 @@ const (
 	JwtSecret = "MTAxNTkwMTg1Mw=="
 
 	//redis
-	RedisAddr   = "127.0.0.1:6379"
-	RedisPWD    = "tiktok"
-	RedisDBChat = 1
+	RedisAddr = "127.0.0.1:6379"
+	RedisPWD = "tiktok"
+	ReidsDB_Chat = 1
+
+	//mq
+	MQurl = "amqp://admin:admin123@127.0.0.1:5672/"
 
 	// RPC
 	MuxConnection  = 1
@@ -76,4 +79,7 @@ const (
 	//Action Type
 	AddComment    = "1"
 	DeleteComment = "2"
+
+	//Follow Type
+	FollowAction = 1
 )

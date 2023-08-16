@@ -18,5 +18,5 @@ gen:
 	go mod tidy
 
 .PHONY: test
-client:
+test:
 	cd test && go test -v
