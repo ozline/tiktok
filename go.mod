@@ -16,6 +16,7 @@ require (
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
+	github.com/streadway/amqp v1.1.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1

@@ -22,17 +22,20 @@ services:
             - "3306:3306"
         networks:
             - tiktok
-    # # Redis
-    # redis:
-    #   image: "redis:latest"
-    #   restart: always
-    #   ports:
-    #     - 6379:6379
-    #   volumes:
-    #     - /usr/local/redis:/var/lib/redis
-    #   environment:
-    #     - REDIS_PASSWORD=tiktok
-    #     - ALLOW_EMPTY_PASSWORD=no
+     # Redis
+    redis:
+      image: "redis:latest"
+      restart: always
+      ports:
+        - 6379:6379
+      volumes:
+        - /usr/local/redis/conf/redis.conf:/var/lib/redis/conf/redis.conf
+        - /usr/local/redis/data:/data
+      environment:
+        - REDIS_PASSWORD=tiktok
+        - ALLOW_EMPTY_PASSWORD=no
+      networks:
+            - tiktok
 
     # rabbitmq:
     #   image: "rabbitmq:latest"
