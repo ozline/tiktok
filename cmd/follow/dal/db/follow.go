@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/ozline/tiktok/pkg/constants"
@@ -19,26 +20,58 @@ type Follow struct {
 	ActionType int64 `gorm:"default:1"` //1-关注, 2-取消关注
 }
 
+const (
+	Action       = "followAction"
+	FollowList   = "followList"
+	FollowerList = "followerList"
+	FriendList   = "friendList"
+)
+
 func FollowAction(ctx context.Context, follow *Follow) error {
 	followResp := new(Follow)
 
-	//TODO:redis缓存
+	field := strconv.FormatInt(follow.UserId, 10)
+	value := strconv.FormatInt(follow.ToUserId, 10)
 
-	//若查无此数据，则写入数据库且成功关注
-	err := DB.WithContext(ctx).Model(&Follow{}).
+	//判断数据是否存在与redis(存在为已关注，不存在为已取关)
+	b, err := RedisClient.HExists(ctx, Action, field).Result()
+	if err != nil {
+		return err
+	}
+
+	//数据存在,进行取关
+	if b {
+		err = DB.WithContext(ctx).Model(&Follow{}).
+			Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
+			Update("action_type", follow.ActionType).Error
+		if err == nil {
+			return RedisClient.HDel(ctx, Action, field).Err()
+		}
+		return err
+	}
+
+	//--------------//
+	//TODO:redis限流//
+	//-------------//
+
+	//数据不存在，进行关注
+	err = RedisClient.HSet(ctx, Action, field, value).Err()
+	if err != nil {
+		return err
+	}
+
+	//查询db
+	err = DB.WithContext(ctx).Model(&Follow{}).
 		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
 		First(&followResp).Error
 
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) { //db中也查询不到,创建关注
 		follow.Id = SF.NextVal()
 		return DB.WithContext(ctx).Create(follow).Error
-	}
-
-	//关注/取关操作
-	if err := DB.WithContext(ctx).Model(&Follow{}).
-		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
-		Update("action_type", follow.ActionType).Error; err != nil {
-		return err
+	} else if err == nil {
+		return DB.WithContext(ctx).Model(&Follow{}).
+			Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
+			Update("action_type", follow.ActionType).Error
 	}
 
 	return err
@@ -48,6 +81,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	var followList []int64
 	//TODO:redis缓存
+
 	err := DB.WithContext(ctx).Model(&Follow{}).Select("to_user_id").
 		Where("user_id = ? AND action_type = ?", uid, constants.FollowAction).
 		Find(&followList).Error
