@@ -7,7 +7,6 @@ import (
 	pack "github.com/ozline/tiktok/cmd/chat/pack"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
-
 )
 
 // MessageServiceImpl implements the last service interface defined in the IDL.

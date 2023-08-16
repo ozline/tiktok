@@ -5,6 +5,7 @@ go 1.20
 replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 
 require (
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.8+incompatible
 	github.com/apache/thrift v0.13.0
 	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/hertz v0.6.7
@@ -69,6 +70,7 @@ require (
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220817070843-5a390386f1f2 // indirect
 	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba // indirect
 	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c // indirect
 	google.golang.org/grpc v1.41.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

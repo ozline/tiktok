@@ -75,4 +75,11 @@ const (
 
 	// ffmpeg
 	FrameNum = 1
+
+	//Action Type
+	AddComment    = "1"
+	DeleteComment = "2"
+
+	//Follow Type
+	FollowAction = 1
 )
