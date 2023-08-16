@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ozline/tiktok/pkg/constants"
 	"gorm.io/gorm"
 )
 
@@ -48,7 +49,7 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	var followList []int64
 	//TODO:redis缓存
 	err := DB.WithContext(ctx).Model(&Follow{}).Select("to_user_id").
-		Where("user_id = ? AND action_type = ?", uid, 1).
+		Where("user_id = ? AND action_type = ?", uid, constants.FollowAction).
 		Find(&followList).Error
 
 	if err != nil {
@@ -62,7 +63,7 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	var followerList []int64
 	//TODO:redis缓存
 	err := DB.WithContext(ctx).Model(&Follow{}).Select("user_id").
-		Where("to_user_id = ? AND action_type = ?", uid, 1).
+		Where("to_user_id = ? AND action_type = ?", uid, constants.FollowAction).
 		Find(&followerList).Error
 
 	if err != nil {
@@ -80,7 +81,7 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 
 	//先获取本人关注的列表
 	err := DB.WithContext(ctx).Model(&Follow{}).Select("to_user_id").
-		Where("user_id = ? AND action_type = ?", uid, 1).
+		Where("user_id = ? AND action_type = ?", uid, constants.FollowAction).
 		Find(&tempList).Error
 
 	if err != nil {
@@ -89,7 +90,7 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 
 	for _, id := range tempList {
 		err = DB.WithContext(ctx).Model(&Follow{}).
-			Where("user_id = ? AND to_user_id = ? AND action_type = ?", id, uid, 1).Error
+			Where("user_id = ? AND to_user_id = ? AND action_type = ?", id, uid, constants.FollowAction).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				continue

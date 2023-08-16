@@ -8,5 +8,4 @@ var (
 
 func Init() {
 	InitUserRPC()
-	InitChatRPC()
 }
