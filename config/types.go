@@ -36,6 +36,7 @@ type config struct {
 	Etcd      etcd
 	RabbitMQ  rabbitMQ
 	Redis     redis
+	OSS       oss
 }
 
 type rabbitMQ struct {
@@ -47,4 +48,12 @@ type rabbitMQ struct {
 type redis struct {
 	Addr     string
 	Password string
+}
+
+type oss struct {
+	Endpoint        string
+	AccessKeyID     string `yaml:"accessKey-id"`
+	AccessKeySecret string `yaml:"accessKey-secret"`
+	BucketName      string
+	MainDirectory   string `yaml:"main-directory"`
 }

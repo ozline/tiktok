@@ -1,3 +1,6 @@
+# NOTICE: copy and rename this file to config.yaml
+# NOTICE: some cofig need to complete
+
 server:
   jwt-secret: MTAxNTkwMTg1Mw==
   version: "1.0"
@@ -13,6 +16,14 @@ mysql:
   username: tiktok
   password: tiktok
   charset: utf8mb4
+
+# you need to complete this config to use video service
+oss:
+  endpoint:
+  accessKey-id:
+  accessKey-secret:
+  bucketname:
+  main-directory: tiktok
 
 etcd:
   addr: 127.0.0.1:2379

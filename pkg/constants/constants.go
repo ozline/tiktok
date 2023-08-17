@@ -11,19 +11,12 @@ const (
 	ConnectTimeout = 50 * time.Millisecond
 
 	// service name
-	GatewayServiceName = "api"
+	APIServiceName     = "api"
 	UserServiceName    = "user"
 	CommentServiceName = "comment"
 	FollowServiceName  = "follow"
 	ChatServiceName    = "chat"
 	VideoServiceName   = "video"
-
-	// server port
-	GatewayListenAddress        = "127.0.0.1:8080"
-	CommentServiceListenAddress = "127.0.0.1:8889"
-	FollowServiceListenAddress  = "127.0.0.1:8890"
-	ChatServiceListenAddress    = "127.0.0.1:8891"
-	VideoServiceListenAddress   = "127.0.0.1:8892"
 
 	// db table name
 	UserTableName    = "user"
@@ -46,14 +39,8 @@ const (
 	ConnMaxLifetime = 10 * time.Second
 
 	// Aliyun SDK
-	// AccessKey Expires at 2023-03-03-16-00-00
-	OSSEndpoint        = "files.ozline.icu"               // 默认启用域名绑定
-	OSSAccessKeyID     = "LTAI5t6gqQgzCzVgdUWw6uip"       // AccessKeyID
-	OSSAccessKeySecret = "diAQZbzqI6JJm53IoKSdGAudNZIbol" // AccessKeySecret
-	OSSBucketName      = "ozliinex"                       // 桶名
-	UplaodRoutines     = 3                                // 并发数量
-	MainDirectory      = "tiktok"                         // 主目录
-	PartSize           = 100 * 1024
+	UplaodRoutines = 3 // 并发数量
+	PartSize       = 100 * 1024
 
 	// page
 	PageNum  = 1

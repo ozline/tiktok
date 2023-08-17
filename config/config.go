@@ -15,6 +15,7 @@ var (
 	Etcd      *etcd
 	RabbitMQ  *rabbitMQ
 	Redis     *redis
+	OSS       *oss
 )
 
 func Init(path string, service string) {
@@ -47,6 +48,7 @@ func configMapping(srv string) {
 	Mysql = &c.MySQL
 	RabbitMQ = &c.RabbitMQ
 	Redis = &c.Redis
+	OSS = &c.OSS
 
 	Service = GetService(srv)
 }

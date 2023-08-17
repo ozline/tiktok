@@ -27,10 +27,10 @@ func Init() {
 	// config init
 	path = flag.String("config", "./config", "config path")
 	flag.Parse()
-	config.Init(*path, constants.UserServiceName)
+	config.Init(*path, constants.VideoServiceName)
 
 	dal.Init()
-	tracer.InitJaeger(constants.UserServiceName)
+	tracer.InitJaeger(constants.VideoServiceName)
 	rpc.Init()
 }
 func main() {

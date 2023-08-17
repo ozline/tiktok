@@ -65,3 +65,6 @@ cmd/api/tiktok_api
 
 # Hertz related
 dumped_hertz_remote_config.json
+
+# config
+# config/config.yaml

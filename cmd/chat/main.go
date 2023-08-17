@@ -29,7 +29,7 @@ func Init() {
 	// config init
 	path = flag.String("config", "./config", "config path")
 	flag.Parse()
-	config.Init(*path, constants.UserServiceName)
+	config.Init(*path, constants.ChatServiceName)
 
 	dal.Init()
 	tracer.InitJaeger(constants.ChatServiceName)
