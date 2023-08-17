@@ -33,6 +33,7 @@ func (s *InteractiveServiceImpl) CommentAction(ctx context.Context, req *interac
 	resp = new(interactive.CommentActionResponse)
 
 	commentResp := new(db.Comment)
+	commentService := service.NewCommentService(ctx)
 
 	switch req.ActionType {
 	//1-发布评论
@@ -41,7 +42,18 @@ func (s *InteractiveServiceImpl) CommentAction(ctx context.Context, req *interac
 			resp.Base = pack.BuildBaseResp(errno.ParamError)
 			return resp, nil
 		}
-		commentResp, err = service.NewCommentService(ctx).CreateComment(req)
+
+		ok, err := commentService.MatchSensitiveWords(*req.CommentText)
+		if err != nil {
+			resp.Base = pack.BuildBaseResp(errno.SensitiveWordsHTTPError)
+			return resp, nil
+		}
+		if ok {
+			resp.Base = pack.BuildBaseResp(errno.SensitiveWordsError)
+			return resp, nil
+		}
+
+		commentResp, err = commentService.CreateComment(req)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
@@ -49,7 +61,7 @@ func (s *InteractiveServiceImpl) CommentAction(ctx context.Context, req *interac
 		}
 	//2-删除评论
 	case constants.DeleteComment:
-		commentResp, err = service.NewCommentService(ctx).DeleteComment(req)
+		commentResp, err = commentService.DeleteComment(req)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
@@ -57,7 +69,7 @@ func (s *InteractiveServiceImpl) CommentAction(ctx context.Context, req *interac
 		}
 
 	default:
-		resp.Base = pack.BuildBaseResp(err)
+		resp.Base = pack.BuildBaseResp(errno.UnexpectedTypeError)
 		return resp, nil
 	}
 
@@ -82,7 +94,7 @@ func (s *InteractiveServiceImpl) CommentList(ctx context.Context, req *interacti
 	resp = new(interactive.CommentListResponse)
 
 	// 校验token
-	if _, err := utils.CheckToken(req.Token); err != nil {
+	if _, err = utils.CheckToken(req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
@@ -94,19 +106,28 @@ func (s *InteractiveServiceImpl) CommentList(ctx context.Context, req *interacti
 		return resp, nil
 	}
 
+	users := make(map[int64]int) // 利用map避免重复查询
 	commentList := make([]*interactive.Comment, 0, len(*commentsResp))
-	for _, comment := range *commentsResp {
-		userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
-			UserId: comment.UserId,
-			Token:  req.Token,
-		})
-		if err != nil {
-			resp.Base = pack.BuildBaseResp(err)
-			return resp, nil
-		}
+	for commentIndex, comment := range *commentsResp {
 		rComment := new(interactive.Comment)
 		rComment = pack.Comment(&comment)
-		rComment.User = userInfo
+
+		index, ok := users[comment.UserId]
+		if !ok {
+			userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
+				UserId: comment.UserId,
+				Token:  req.Token,
+			})
+			if err != nil {
+				resp.Base = pack.BuildBaseResp(err)
+				return resp, nil
+			}
+			rComment.User = userInfo
+			users[comment.UserId] = commentIndex
+		} else {
+			rComment.User = commentList[index].User
+		}
+
 		commentList = append(commentList, rComment)
 	}
 

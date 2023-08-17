@@ -1,6 +1,10 @@
 package main
 
 import (
+	"flag"
+	"net"
+
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
@@ -8,13 +12,24 @@ import (
 	trace "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/ozline/tiktok/cmd/interactive/dal"
 	"github.com/ozline/tiktok/cmd/interactive/rpc"
+	"github.com/ozline/tiktok/config"
 	interactive "github.com/ozline/tiktok/kitex_gen/interactive/interactiveservice"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/tracer"
-	"net"
+	"github.com/ozline/tiktok/pkg/utils"
+)
+
+var (
+	path       *string
+	listenAddr string // listen port
 )
 
 func Init() {
+	// config init
+	path = flag.String("config", "./config", "config path")
+	flag.Parse()
+	config.Init(*path, constants.CommentServiceName)
+
 	rpc.Init()
 	dal.Init()
 	tracer.InitJaeger(constants.CommentServiceName)
@@ -23,13 +38,25 @@ func Init() {
 func main() {
 	Init()
 
-	r, err := etcd.NewEtcdRegistry([]string{constants.EtcdEndpoints})
+	r, err := etcd.NewEtcdRegistry([]string{config.Etcd.Addr})
 
 	if err != nil {
 		panic(err)
 	}
 
-	addr, err := net.ResolveTCPAddr("tcp", constants.CommentServiceListenAddress)
+	// get available port from config set
+	for index, addr := range config.Service.AddrList {
+		if ok := utils.AddrCheck(addr); ok {
+			listenAddr = addr
+			break
+		}
+
+		if index == len(config.Service.AddrList)-1 {
+			klog.Fatal("not available port from config")
+		}
+	}
+
+	addr, err := net.ResolveTCPAddr("tcp", listenAddr)
 
 	if err != nil {
 		panic(err)

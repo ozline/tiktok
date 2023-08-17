@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
+	"github.com/ozline/tiktok/cmd/follow/pack"
 	"github.com/ozline/tiktok/cmd/follow/rpc"
-	"github.com/ozline/tiktok/cmd/follow/util"
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
 )
@@ -25,7 +25,7 @@ func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follo
 		if err != nil {
 			return nil, err
 		}
-		follower := util.ConvertStruct(user) //结构体转换
+		follower := pack.User(user) //结构体转换
 		userList = append(userList, follower)
 	}
 	return &userList, nil

@@ -1,26 +1,26 @@
 package db
 
 import (
+	"github.com/go-redis/redis/v8"
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
+	"github.com/pkg/errors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-    "github.com/go-redis/redis/v8"
-    "github.com/pkg/errors"
 )
 
-var ( 
-    DB *gorm.DB
-    SF *utils.Snowflake
-    RedisDB *redis.Client
+var (
+	DB *gorm.DB
+	SF *utils.Snowflake
 )
 
 func Init() {
 	var err error
 
-	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
+	DB, err = gorm.Open(mysql.Open(config.Etcd.Addr),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,                                // 禁用默认事务
@@ -51,13 +51,4 @@ func Init() {
 	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
 		panic(err)
 	}
-    RedisDB = redis.NewClient(&redis.Options{
-		Addr:     constants.RedisAddr,
-		Password: constants.RedisPWD, // no password set
-		DB:       constants.ReidsDB_Chat,        // use default DB
-	})
-	//docker run -d --privileged=true -p 6379:6379 -v /usr/local/redis/conf/redis.conf:/etc/redis/redis.conf -v /usr/local/redis/data:/data --name redis-1 redis:latest redis-server /etc/redis/redis.conf --appendonly yes
-    if RedisDB==nil{
-        panic(errors.New("[redis init error]"))
-    }
 }

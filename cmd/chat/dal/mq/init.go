@@ -3,8 +3,8 @@ package mq
 import (
 	"fmt"
 
-	"github.com/ozline/tiktok/pkg/constants"
-	"github.com/streadway/amqp"
+	"github.com/ozline/tiktok/pkg/utils"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type RabbitMQ struct {
@@ -17,7 +17,7 @@ var Rmq *RabbitMQ
 func InitRabbitMQ() {
 
 	Rmq = &RabbitMQ{
-		mqurl: constants.MQurl,
+		mqurl: utils.GetMQUrl(),
 	}
 	dial, err := amqp.Dial(Rmq.mqurl)
 	if err != nil {
@@ -25,6 +25,7 @@ func InitRabbitMQ() {
 		return
 	}
 	Rmq.conn = dial
+	return
 }
 
 func (r *RabbitMQ) destroy() {
