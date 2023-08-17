@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/config"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -14,8 +14,8 @@ func Init() {
 	ctx := context.Background()
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     constants.RedisAddr,
-		Password: constants.RedisPassword,
+		Addr:     config.Redis.Addr,
+		Password: config.Redis.Password,
 		DB:       0,
 	})
 

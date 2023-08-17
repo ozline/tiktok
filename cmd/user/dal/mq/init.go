@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/utils"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func Init() {
-	conn, err := amqp.Dial(constants.MQurl)
+	conn, err := amqp.Dial(utils.GetMQUrl())
 
 	if err != nil {
 		panic(err)

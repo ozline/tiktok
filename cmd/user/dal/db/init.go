@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
 	"gorm.io/driver/mysql"
@@ -15,7 +16,7 @@ var SF *utils.Snowflake
 func Init() {
 	var err error
 
-	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
+	DB, err = gorm.Open(mysql.Open(utils.GetMysqlDSN()),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,                                // 禁用默认事务
@@ -43,7 +44,7 @@ func Init() {
 
 	DB = DB.Table(constants.UserTableName)
 
-	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
+	if SF, err = utils.NewSnowflake(config.Snowflake.DatancenterID, config.Snowflake.WorkerID); err != nil {
 		panic(err)
 	}
 }

@@ -58,6 +58,7 @@ dumped_hertz_remote_config.json
 # Kitex output&client files
 cmd/**/output
 cmd/**/client
+/output
 
 # Hertz output binary
 cmd/api/tiktok_api

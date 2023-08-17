@@ -17,12 +17,12 @@ services:
             - MYSQL_PASSWORD=tiktok
             - TZ=Asia/Shanghai
         volumes:
-            - ./pkg/configs/sql:/docker-entrypoint-initdb.d/
+            - ./config/sql:/docker-entrypoint-initdb.d/
         ports:
             - "3306:3306"
         networks:
             - tiktok
-     # Redis
+
     redis:
       image: "redis:latest"
       restart: always
@@ -37,14 +37,18 @@ services:
       networks:
             - tiktok
 
-    # rabbitmq:
-    #   image: "rabbitmq:latest"
-    #   ports:
-    #     - 5672:5672
-    #     - 15672:15672
-    #   environment:
-    #     - RABBITMQ_DEFAULT_USER=tiktok
-    #     - RABBITMQ_DEFAULT_PASS=tiktok
+    rabbitmq:
+        container_name: rabiitmq
+        image: "rabbitmq:latest"
+        ports:
+            - 5672:5672
+            - 15672:15672
+        environment:
+            - RABBITMQ_DEFAULT_USER=tiktok
+            - RABBITMQ_DEFAULT_PASS=tiktok
+        networks:
+            - tiktok
+
     etcd:
         container_name: etcd
         image: "quay.io/coreos/etcd:v3.5.5"

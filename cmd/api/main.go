@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -11,12 +12,23 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/tracer"
 )
 
+var (
+	path       *string
+	listenAddr string // listen port
+)
+
 func Init() {
+	// config init
+	path = flag.String("config", "./config", "config path")
+	flag.Parse()
+	config.Init(*path, constants.UserServiceName)
+
 	rpc.Init()
 	tracer.InitJaeger(constants.GatewayServiceName)
 }

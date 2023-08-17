@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/ozline/tiktok/kitex_gen/chat/messageservice"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -19,7 +20,7 @@ var (
 )
 
 func InitChatRPC() {
-	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
+	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
 
 	if err != nil {
 		panic(err)
