@@ -15,7 +15,7 @@ var SF *utils.Snowflake
 func Init() {
 	var err error
 
-	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
+	DB, err = gorm.Open(mysql.Open(utils.GetMysqlDSN()),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true, // 禁用默认事务
