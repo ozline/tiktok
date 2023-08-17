@@ -1,30 +1,9 @@
 package utils
 
 import (
-	//"github.com/chain-zhang/pinyin"
 	"regexp"
 	"strings"
 )
-
-// HansCovertPinyin 中文汉字转拼音
-//func HansCovertPinyin(contents []string) []string {
-//	pinyinContents := make([]string, 0)
-//	for _, content := range contents {
-//		chineseReg := regexp.MustCompile("[\u4e00-\u9fa5]")
-//		if !chineseReg.Match([]byte(content)) {
-//			continue
-//		}
-//
-//		// 只有中文才转
-//		pin := pinyin.New(content)
-//		pinStr, err := pin.Convert()
-//		fmt.Println(content, "->", pinStr)
-//		if err == nil {
-//			pinyinContents = append(pinyinContents, pinStr)
-//		}
-//	}
-//	return pinyinContents
-//}
 
 // TrieNode 敏感词前缀树节点
 type TrieNode struct {
@@ -60,16 +39,12 @@ func (st *SensitiveTrie) FilterSpecialChar(text string) string {
 func (st *SensitiveTrie) AddWord(sensitiveWord string) {
 	// 添加前先过滤一遍
 	sensitiveWord = st.FilterSpecialChar(sensitiveWord)
-
-	// 将敏感词转换成utf-8编码后的rune类型(int32)
 	tireNode := st.root
-	sensitiveChars := []rune(sensitiveWord)
-	for _, charInt := range sensitiveChars {
+	for _, charInt := range sensitiveWord {
 		// 添加敏感词到前缀树中
 		tireNode = tireNode.AddChild(charInt)
 	}
 	tireNode.End = true
-	//tireNode.Data = sensitiveWord
 }
 
 // AddWords 批量添加敏感词

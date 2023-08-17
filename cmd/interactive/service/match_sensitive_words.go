@@ -37,6 +37,6 @@ func (s *CommentService) MatchSensitiveWords(text string) (bool, error) {
 	if err = json.Unmarshal([]byte(string(body)), &res); err != nil {
 		return false, err
 	}
-	return res.IsPass, nil
+	return !res.IsPass, nil
 
 }
