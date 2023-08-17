@@ -6,6 +6,7 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/kitex_gen/user/userservice"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -16,7 +17,7 @@ import (
 )
 
 func InitUserRPC() {
-	r, err := etcd.NewEtcdResolver([]string{constants.EtcdEndpoints})
+	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
 
 	if err != nil {
 		panic(err)

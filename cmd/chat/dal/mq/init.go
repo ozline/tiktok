@@ -3,7 +3,7 @@ package mq
 import (
 	"fmt"
 
-	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/utils"
 	"github.com/streadway/amqp"
 )
 
@@ -17,7 +17,7 @@ var Rmq *RabbitMQ
 func InitRabbitMQ() {
 
 	Rmq = &RabbitMQ{
-		mqurl: constants.MQurl,
+		mqurl: utils.GetMQUrl(),
 	}
 	dial, err := amqp.Dial(Rmq.mqurl)
 	if err != nil {
