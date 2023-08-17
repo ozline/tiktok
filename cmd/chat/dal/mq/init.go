@@ -25,6 +25,7 @@ func InitRabbitMQ() {
 		return
 	}
 	Rmq.conn = dial
+	return
 }
 
 func (r *RabbitMQ) destroy() {
