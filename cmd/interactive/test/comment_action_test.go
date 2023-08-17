@@ -10,7 +10,7 @@ import (
 )
 
 func TestCommentAction(t *testing.T) {
-	content := "test"
+	content := "草泥马！！！"
 	id := "10001"
 	req := &interactive.CommentActionRequest{
 		VideoId:     "1",
