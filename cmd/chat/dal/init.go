@@ -1,12 +1,10 @@
 package dal
 
-
 import (
-    "github.com/ozline/tiktok/cmd/chat/dal/db"
-    "github.com/ozline/tiktok/cmd/chat/dal/mq"
+	"github.com/ozline/tiktok/cmd/chat/dal/db"
 )
 
 func Init() {
 	db.Init()
-    mq.InitRabbitMQ()
+	//mq.InitRabbitMQ()
 }

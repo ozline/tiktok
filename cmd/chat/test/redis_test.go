@@ -1,28 +1,27 @@
 package test
 
-
 import (
-    "github.com/ozline/tiktok/cmd/chat/dal/db"
-    "github.com/ozline/tiktok/cmd/chat/dal"
-    "context"
-    "testing"
-    "fmt"
-    "time"
-    "github.com/go-redis/redis/v8"
-    "strconv"
+	"context"
+	"fmt"
+	"strconv"
+	"testing"
+	"time"
+
+	"github.com/ozline/tiktok/cmd/chat/dal"
+	"github.com/ozline/tiktok/cmd/chat/dal/cache"
+	redis "github.com/redis/go-redis/v9"
 )
 
-
-func TestRedis(t *testing.T){
-    dal.Init()
-    res,_ := db.RedisDB.Exists(context.Background(), "key1").Result()
-    fmt.Println(res)
-    mem,err :=db.RedisDB.ZRevRangeByScore(context.Background(),"key1",&redis.ZRangeBy{
-        Min:strconv.Itoa(0),
-        Max:strconv.Itoa(int(time.Now().Unix())),
+func TestRedis(t *testing.T) {
+	dal.Init()
+	res, _ := cache.RedisDB.Exists(context.Background(), "key1").Result()
+	fmt.Println(res)
+	mem, err := cache.RedisDB.ZRevRangeByScore(context.Background(), "key1", &redis.ZRangeBy{
+		Min: strconv.Itoa(0),
+		Max: strconv.Itoa(int(time.Now().Unix())),
 	}).Result()
-    if err!=nil{
-        panic(err)
-    }
-    fmt.Println(mem)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(mem)
 }
