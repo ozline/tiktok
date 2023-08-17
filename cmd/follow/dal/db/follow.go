@@ -33,6 +33,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 	tid := strconv.FormatInt(follow.ToUserId, 10)
 	uid := strconv.FormatInt(follow.UserId, 10)
+
 	//判断数据是否存在于redis(存在为已关注，不存在为已取关)
 	b, err := r.SIsMember(ctx, cache.FollowListKey(follow.UserId), tid).Result()
 	if err != nil {
