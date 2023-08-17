@@ -77,6 +77,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 	} else if err != nil {
 		return err
 	}
+
 	//db中存在,修改ActionType
 	err = DB.WithContext(ctx).Model(&Follow{}).
 		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
