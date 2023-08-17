@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -35,6 +36,7 @@ func Init() {
 }
 func main() {
 	Init()
+	fmt.Println(config.OSS)
 	r, err := etcd.NewEtcdRegistry([]string{config.Etcd.Addr})
 
 	if err != nil {

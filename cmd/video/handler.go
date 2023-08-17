@@ -11,6 +11,7 @@ import (
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
 	"github.com/ozline/tiktok/cmd/video/service"
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
 )
@@ -20,31 +21,23 @@ type VideoServiceImpl struct{}
 
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
-	// TODO: Your code here...
 	return
 }
 
 func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
 	resp := new(video.PutVideoResponse)
-
 	//文件名
 	var videoName string
 	var coverName string
 	//追加位置
 	var nextPos int64 = 0
-	//从环境变量获取key
-	provider, err := oss.NewEnvironmentVariableCredentialsProvider()
-	if err != nil {
-		hanlerPutVideoError(stream, err)
-		return nil
-	}
 	// 创建OSSClient实例。
-	client, err := oss.New("https://oss-cn-shenzhen.aliyuncs.com", "", "", oss.SetCredentialsProvider(&provider))
+	client, err := oss.New(config.OSS.Endpoint, config.OSS.AccessKeyID, config.OSS.AccessKeySecret)
 	if err != nil {
 		hanlerPutVideoError(stream, err)
 		return nil
 	}
-	bucket, err := client.Bucket("jiuxia-video")
+	bucket, err := client.Bucket(config.OSS.BucketName)
 	if err != nil {
 		hanlerPutVideoError(stream, err)
 		return nil
@@ -64,14 +57,14 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 		}
 		if req.IsFinished {
 			//上传封面
-			err = bucket.PutObject(generateCoverName(req.UserId), bytes.NewReader(req.Cover))
+			err = bucket.PutObject(config.OSS.MainDirectory+"/"+generateCoverName(req.UserId), bytes.NewReader(req.Cover))
 			if err != nil {
 				hanlerPutVideoError(stream, err)
 				return nil
 			}
 			//保存到数据库
-			playUrl := fmt.Sprintf("https://jiuxia821.cn/%s", videoName)
-			coverUrl := fmt.Sprintf("https://jiuxia821.cn/%s", coverName)
+			playUrl := fmt.Sprintf("%s/%s", config.OSS.Endpoint, videoName)
+			coverUrl := fmt.Sprintf("%s/%s", config.OSS.Endpoint, coverName)
 
 			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
 			if err != nil {
@@ -85,7 +78,7 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			break
 		}
 		log.Printf("received block %v:", req.GetBlockId())
-		nextPos, err = bucket.AppendObject(videoName, bytes.NewReader(req.VideoBlock), nextPos)
+		nextPos, err = bucket.AppendObject(config.OSS.MainDirectory+"/"+videoName, bytes.NewReader(req.VideoBlock), nextPos)
 		if err != nil {
 			hanlerPutVideoError(stream, err)
 			return nil
