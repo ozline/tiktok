@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 CURDIR=$(cd $(dirname $0); pwd)
+CONFIG_PATH=$(dirname $(dirname $(dirname $CURDIR)))/config
 
 if [ "X$1" != "X" ]; then
     RUNTIME_ROOT=$1
@@ -18,5 +19,4 @@ if [ ! -d "$KITEX_LOG_DIR/rpc" ]; then
     mkdir -p "$KITEX_LOG_DIR/rpc"
 fi
 
-exec "$CURDIR/bin/video"
-
+exec "$CURDIR/bin/video" -config $CONFIG_PATH

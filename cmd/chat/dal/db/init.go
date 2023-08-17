@@ -1,8 +1,11 @@
 package db
 
 import (
+	"github.com/go-redis/redis/v8"
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
+	"github.com/pkg/errors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -17,7 +20,7 @@ var (
 func Init() {
 	var err error
 
-	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
+	DB, err = gorm.Open(mysql.Open(config.Etcd.Addr),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,                                // 禁用默认事务
