@@ -15,6 +15,8 @@ var (
 	UserExistedError = NewErrNo(ParamErrorCode, "user existed")
 
 	// Comment
-	UnexpectedTypeError = NewErrNo(UnexpectedTypeErrorCode, "unexpected type")
-	NotImplementError   = NewErrNo(NotImplementErrorCode, "not implement")
+	UnexpectedTypeError     = NewErrNo(UnexpectedTypeErrorCode, "unexpected type")
+	NotImplementError       = NewErrNo(NotImplementErrorCode, "not implement")
+	SensitiveWordsError     = NewErrNo(SensitiveWordsErrorCode, "existed sensitive words")
+	SensitiveWordsHTTPError = NewErrNo(ServiceErrorCode, "sensiWords api error")
 )
