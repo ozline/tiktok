@@ -6,8 +6,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
@@ -45,7 +47,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 			return err
 		}
 		//从对方的粉丝列表移除
-		r.SRem(ctx, cache.FollowerListKey(follow.ToUserId), uid).Err()
+		err = r.SRem(ctx, cache.FollowerListKey(follow.ToUserId), uid).Err()
 		if err != nil {
 			return err
 		}
@@ -62,20 +64,26 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 	if err != nil {
 		return err
 	}
+
 	//查询db
 	err = DB.WithContext(ctx).Model(&Follow{}).
 		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
 		First(&followResp).Error
 
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) { //db中也查询不到,创建关注
+	if errors.Is(err, gorm.ErrRecordNotFound) { //db中也查询不到,创建关注
 		follow.Id = SF.NextVal()
 		return DB.WithContext(ctx).Create(follow).Error
-	} else if err == nil { //db中存在,修改ActionType
-		return DB.WithContext(ctx).Model(&Follow{}).
-			Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
-			Update("action_type", follow.ActionType).Error
+	} else if err != nil {
+		return err
 	}
-	return err
+	//db中存在,修改ActionType
+	err = DB.WithContext(ctx).Model(&Follow{}).
+		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
+		Update("action_type", follow.ActionType).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // 关注列表(获取to_user_id的列表)
@@ -86,9 +94,12 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	key := cache.FollowListKey(uid)
 
 	idList, err := r.SMembers(ctx, key).Result()
-	if err != nil {
+	if err == redis.Nil {
+		klog.Info("Not found followList")
+	} else if err != nil {
 		return nil, err
 	}
+
 	if len(idList) == 0 {
 		err := DB.WithContext(ctx).Model(&Follow{}).Select("to_user_id").
 			Where("user_id = ? AND action_type = ?", uid, constants.FollowAction).
@@ -114,9 +125,12 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	key := cache.FollowerListKey(uid)
 
 	idList, err := r.SMembers(ctx, key).Result()
-	if err != nil {
+	if err == redis.Nil {
+		klog.Info("Not found followerList")
+	} else if err != nil {
 		return nil, err
 	}
+
 	if len(idList) == 0 {
 		err := DB.WithContext(ctx).Model(&Follow{}).Select("user_id").
 			Where("to_user_id = ? AND action_type = ?", uid, constants.FollowAction).
@@ -144,17 +158,19 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	//先获取本人关注的列表
 	key := cache.FollowListKey(uid)
 	idList, err := r.SMembers(ctx, key).Result()
-	if err != nil {
+	if err == redis.Nil {
+		klog.Info("Not found followList")
+	} else if err != nil {
 		return nil, err
 	}
+
 	if len(idList) != 0 {
 		for _, id := range idList {
 			//查询粉丝列表
 			b, err := r.SIsMember(ctx, cache.FollowerListKey(uid), id).Result()
 			if err != nil {
 				return nil, err
-			}
-			if !b {
+			} else if !b {
 				continue
 			}
 			fid, _ := strconv.ParseInt(id, 10, 64)
@@ -163,7 +179,7 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		return &friendList, nil
 	}
 
-	//从db中获取
+	//若redis中不存在,从db中获取
 	err = DB.WithContext(ctx).Model(&Follow{}).Select("to_user_id").
 		Where("user_id = ? AND action_type = ?", uid, constants.FollowAction).
 		Find(&tempList).Error
@@ -174,10 +190,9 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	for _, id := range tempList {
 		err = DB.WithContext(ctx).Model(&Follow{}).
 			Where("user_id = ? AND to_user_id = ? AND action_type = ?", id, uid, constants.FollowAction).Error
-		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				continue
-			}
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			continue
+		} else if err != nil {
 			return nil, err
 		}
 		friendList = append(friendList, id)
