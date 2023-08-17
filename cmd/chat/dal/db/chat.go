@@ -39,7 +39,7 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 	//RedisDB.WithContext(ctx)
 	key := strconv.FormatInt(to_user_id, 10) + "-" + strconv.FormatInt(from_user_id, 10)
 	revkey := strconv.FormatInt(from_user_id, 10) + "-" + strconv.FormatInt(to_user_id, 10)
-	if ok1, _ := cache.RedisDB.Exists(ctx, key).Result(); ok1 != 0 {
+	if ok, _ := cache.RedisDB.Exists(ctx, key).Result(); ok != 0 {
 		//查询 a->b的消息
 		mem, err := cache.RedisDB.ZRevRangeByScore(ctx, key, &redis.ZRangeBy{
 			Min: strconv.Itoa(0),
@@ -66,7 +66,7 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		}
 		//messageMember, _ := json.Marshal(temp)
 	}
-	if ok2, _ := cache.RedisDB.Exists(ctx, revkey).Result(); ok2 != 0 {
+	if ok, _ := cache.RedisDB.Exists(ctx, revkey).Result(); ok != 0 {
 		mem, err := cache.RedisDB.ZRevRangeByScore(ctx, key, &redis.ZRangeBy{
 			Min: strconv.FormatInt(0, 10),
 			Max: strconv.FormatInt(time.Now().Unix(), 10),
