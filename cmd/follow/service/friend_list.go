@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
+	"github.com/ozline/tiktok/cmd/follow/pack"
 	"github.com/ozline/tiktok/cmd/follow/rpc"
-	"github.com/ozline/tiktok/cmd/follow/util"
 	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
@@ -26,7 +26,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		if err != nil {
 			return nil, err
 		}
-		friend := util.ConvertStruct(user) //结构体转换
+		friend := pack.User(user) //结构体转换
 
 		message, msgType, err := rpc.GetMessage(s.ctx, &chat.MessageListRequest{
 			Token:    req.Token,

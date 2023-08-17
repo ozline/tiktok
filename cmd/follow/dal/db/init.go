@@ -1,9 +1,6 @@
 package db
 
 import (
-	"context"
-
-	"github.com/go-redis/redis/v8"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
 	"gorm.io/driver/mysql"
@@ -14,7 +11,6 @@ import (
 
 var DB *gorm.DB
 var SF *utils.Snowflake
-var RedisClient *redis.Client
 
 func Init() {
 	var err error
@@ -51,14 +47,4 @@ func Init() {
 		panic(err)
 	}
 
-	//redis
-	RedisClient = redis.NewClient(&redis.Options{
-		Addr: constants.RedisAddr,
-		// Password: constants.RedisPWD,
-		DB: 2, //constants.RedisDBFollow
-	})
-	_, err = RedisClient.Ping(context.TODO()).Result()
-	if err != nil {
-		panic(err)
-	}
 }
