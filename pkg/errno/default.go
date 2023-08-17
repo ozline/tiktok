@@ -18,5 +18,5 @@ var (
 	UnexpectedTypeError     = NewErrNo(UnexpectedTypeErrorCode, "unexpected type")
 	NotImplementError       = NewErrNo(NotImplementErrorCode, "not implement")
 	SensitiveWordsError     = NewErrNo(SensitiveWordsErrorCode, "existed sensitive words")
-	SensitiveWordsHTTPError = NewErrNo(ServiceErrorCode, "sensiWords api error")
+	SensitiveWordsHTTPError = NewErrNo(ServiceErrorCode, "sensitive-words api error")
 )
