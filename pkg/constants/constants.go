@@ -3,6 +3,8 @@ package constants
 import "time"
 
 const (
+	JWTValue = "MTAxNTkwMTg1Mw=="
+
 	ReidsDB_Chat = 1
 
 	// RPC

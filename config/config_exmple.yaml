@@ -58,7 +58,7 @@ services:
     load-balance: false
     addr:
       - 127.0.0.1:10004
-  interactive:
+  comment:
     name: interactive
     load-balance: false
     addr:
@@ -68,11 +68,3 @@ services:
     load-balance: false
     addr:
       - 127.0.0.1:10006
-  experimental:
-    name: experimental
-    load-balance: false
-    addr:
-      - 127.0.0.1:10007
-      - 127.0.0.1:10008
-      - 127.0.0.1:10009
-      - 127.0.0.1:10010

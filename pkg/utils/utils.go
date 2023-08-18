@@ -25,11 +25,7 @@ func GetMQUrl() string {
 
 	url := strings.Join([]string{"amqp://", config.RabbitMQ.Username, ":", config.RabbitMQ.Password, "@", config.RabbitMQ.Addr, "/"}, "")
 
-	klog.Infof("generate url: %v\n", url)
-
 	return url
-
-	// amqp://tiktok:tiktok@127.0.0.1:5672/
 }
 
 func AddrCheck(addr string) bool {
