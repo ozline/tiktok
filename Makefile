@@ -1,5 +1,5 @@
 DIR = $(shell pwd)
-CMD = $(DIR)/CMD
+CMD = $(DIR)/cmd
 CONFIG_PATH = $(DIR)/config
 IDL_PATH = $(DIR)/idl
 OUTPUT_PATH = $(DIR)/output
