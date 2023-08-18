@@ -33,7 +33,7 @@ type MiddleMessage struct {
 }
 type MessageArray []*Message
 
-func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, error) {
+func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, bool, error) {
 	messageList := make(MessageArray, 0)
 	//redis  ZSET
 	//RedisDB.WithContext(ctx)
@@ -41,13 +41,15 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 	revkey := strconv.FormatInt(from_user_id, 10) + "-" + strconv.FormatInt(to_user_id, 10)
 	if ok, _ := cache.RedisDB.Exists(ctx, key).Result(); ok != 0 {
 		//查询 a->b的消息
+
 		mem, err := cache.RedisDB.ZRevRangeByScore(ctx, key, &redis.ZRangeBy{
 			Min: strconv.Itoa(0),
 			Max: strconv.Itoa(int(time.Now().Unix())),
 		}).Result()
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
+		klog.Info(mem)
 		//暂时用forrange
 		for _, val := range mem {
 			tempMessage := new(MiddleMessage)
@@ -55,24 +57,25 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 			err = json.Unmarshal([]byte(val), &tempMessage)
 			if err != nil {
 				klog.Info(err)
-				return nil, err
+				return nil, false, err
 			}
 			err = convert(message, tempMessage)
 			if err != nil {
 				klog.Info(err)
-				return nil, err
+				return nil, false, err
 			}
 			messageList = append(messageList, message)
 		}
 		//messageMember, _ := json.Marshal(temp)
 	}
+
 	if ok, _ := cache.RedisDB.Exists(ctx, revkey).Result(); ok != 0 {
-		mem, err := cache.RedisDB.ZRevRangeByScore(ctx, key, &redis.ZRangeBy{
+		mem, err := cache.RedisDB.ZRevRangeByScore(ctx, revkey, &redis.ZRangeBy{
 			Min: strconv.FormatInt(0, 10),
 			Max: strconv.FormatInt(time.Now().Unix(), 10),
 		}).Result()
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
 		//暂时用forrange
 		for _, val := range mem {
@@ -81,12 +84,12 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 			err = json.Unmarshal([]byte(val), &tempMessage)
 			if err != nil {
 				klog.Info(err)
-				return nil, err
+				return nil, false, err
 			}
 			err = convert(message, tempMessage)
 			if err != nil {
 				klog.Info(err)
-				return nil, err
+				return nil, false, err
 			}
 			messageList = append(messageList, message)
 		}
@@ -94,35 +97,28 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 	if len(messageList) > 0 {
 		//合并排序
 		sort.Sort(MessageArray(messageList))
-		//暂时用forrange
-		for _, v := range messageList {
-			messageRes := make([]*Message, 0)
-			messageTmp := &Message{
-				Id:         v.Id,
-				ToUserId:   v.ToUserId,
-				FromUserId: v.FromUserId,
-				Content:    v.Content,
-			}
-			messageRes = append(messageRes, messageTmp)
-			klog.Info(*v)
-		}
-		return nil, nil
+		return messageList, false, nil
 	}
 
 	//mysql
+
 	messageListFormMysql := make([]*Message, 0)
 	err := DB.WithContext(ctx).Where("(to_user_id=? AND from_user_id =?) OR (to_user_id=? AND from_user_id =?) ", to_user_id, from_user_id, from_user_id, to_user_id).Order("created_at desc").Find(&messageListFormMysql).Error
 	if err != nil {
 		// add some logs
 		klog.Info("err happen")
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("User not found")
+			return nil, false, errors.New("User not found")
 		}
-		return nil, err
+		return nil, false, err
 	}
 	//回写redis --先返回信息，然后送到mq进行异步处理
+	return messageListFormMysql, true, nil
+}
 
-	return messageListFormMysql, nil
+func (d *DBAction) InsertMessage(message *Message) error {
+	err := d.DB.Create(message).Error
+	return err
 }
 
 func (array MessageArray) Len() int {
@@ -141,7 +137,7 @@ func convert(message *Message, tempMessage *MiddleMessage) (err error) {
 	message.ToUserId = tempMessage.ToUserId
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content
-	message.CreatedAt, err = time.ParseInLocation("2006-01-02T15:04:05Z", tempMessage.CreatedAt, time.Local)
-	message.UpdatedAt, err = time.ParseInLocation("2006-01-02T15:04:05Z", tempMessage.UpdatedAt, time.Local)
+	message.CreatedAt, err = time.Parse(time.RFC3339, tempMessage.CreatedAt)
+	message.UpdatedAt, err = time.Parse(time.RFC3339, tempMessage.UpdatedAt)
 	return
 }
