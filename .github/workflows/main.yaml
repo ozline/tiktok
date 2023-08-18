@@ -3,6 +3,7 @@ on: [push]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +29,7 @@ jobs:
         run: make user
 
       - name: Run local server
-        run: cd ./output/user && nohup sh bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
+        run: nohup sh ./output/user/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
 
       - name: Test interfaces
-        run: cd ./../../test && go test -v
+        run: cd test && go test -v ./...
