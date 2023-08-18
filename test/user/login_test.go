@@ -10,18 +10,17 @@ import (
 	"github.com/ozline/tiktok/pkg/errno"
 )
 
-func TestRegister(t *testing.T) {
-	req := &user.RegisterRequest{
+func testLogin(t *testing.T) {
+	req := &user.LoginRequest{
 		Username: "ozline",
 		Password: "123456",
 	}
 
-	resp, err := conn.Register(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+	resp, err := conn.Login(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
 
 	if err != nil {
 		t.Error(err)
-		t.FailNow()
-
+		t.Fail()
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
@@ -29,5 +28,6 @@ func TestRegister(t *testing.T) {
 		t.Fail()
 	}
 
-	t.Logf("Resp:\n%v\n\n", resp)
+	token = resp.Token
+	id = resp.User.Id
 }

@@ -8,13 +8,20 @@ import (
 	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
-func TestGetUserInfo(t *testing.T) {
-	TestLogin(t)
-	t.Logf("Token: %v", token)
+func testGetUserInfo(t *testing.T) {
+
+	token, err := utils.CreateToken(10001)
+
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+
 	req := &user.InfoRequest{
-		UserId: 10001, // 按需修改账号
+		UserId: id, // 按需修改账号
 		Token:  token,
 	}
 
@@ -29,6 +36,4 @@ func TestGetUserInfo(t *testing.T) {
 		t.Error(errno.NewErrNo(resp.Base.Code, resp.Base.Msg))
 		t.Fail()
 	}
-
-	t.Logf("Resp:\n%v\n\n", resp)
 }
