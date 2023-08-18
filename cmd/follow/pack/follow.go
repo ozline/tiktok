@@ -1,30 +1,22 @@
 package pack
 
 import (
-	"errors"
-
 	"github.com/ozline/tiktok/kitex_gen/follow"
-	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/kitex_gen/user"
 )
 
-func BuildBaseResp(err error) *follow.BaseResp {
-	if err == nil {
-		return baseResp(errno.Success)
-	}
-
-	e := errno.ErrNo{}
-
-	if errors.As(err, &e) {
-		return baseResp(e)
-	}
-
-	s := errno.ServiceError.WithMessage(err.Error())
-	return baseResp(s)
-}
-
-func baseResp(err errno.ErrNo) *follow.BaseResp {
-	return &follow.BaseResp{
-		Code: err.ErrorCode,
-		Msg:  &err.ErrorMsg,
+func User(user *user.User) *follow.User {
+	return &follow.User{
+		Id:              user.Id,
+		Name:            user.Name,
+		FollowCount:     &user.FollowCount,
+		FollowerCount:   &user.FollowerCount,
+		IsFollow:        user.IsFollow,
+		Avatar:          &user.Avatar,
+		BackgroundImage: &user.BackgroundImage,
+		Signature:       &user.Signature,
+		TotalFavorited:  &user.TotalFavorited,
+		WorkCount:       &user.WorkCount,
+		FavoriteCount:   &user.FavoritedCount,
 	}
 }

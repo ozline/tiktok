@@ -13,9 +13,8 @@ import (
 )
 
 var (
-	DB      *gorm.DB
-	SF      *utils.Snowflake
-	RedisDB *redis.Client
+	DB *gorm.DB
+	SF *utils.Snowflake
 )
 
 func Init() {
@@ -51,14 +50,5 @@ func Init() {
 
 	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
 		panic(err)
-	}
-	RedisDB = redis.NewClient(&redis.Options{
-		Addr:     config.Redis.Addr,
-		Password: config.Redis.Password,  // no password set
-		DB:       constants.ReidsDB_Chat, // use default DB
-	})
-	//docker run -d --privileged=true -p 6379:6379 -v /usr/local/redis/conf/redis.conf:/etc/redis/redis.conf -v /usr/local/redis/data:/data --name redis-1 redis:latest redis-server /etc/redis/redis.conf --appendonly yes
-	if RedisDB == nil {
-		panic(errors.New("[redis init error]"))
 	}
 }
