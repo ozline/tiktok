@@ -13,7 +13,8 @@ import (
 
 func TestGetLikedVideo(t *testing.T) {
 	req := &video.GetFavoriteVideoInfoRequest{
-		VideoId: []int64{479434630982795264},
+		//测试的时候根据数据库改
+		VideoId: []int64{480401105549787136},
 		Token:   token,
 	}
 	resp, err := conn.GetFavoriteVideoInfo(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))

@@ -153,8 +153,20 @@ func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
+	//获取user信息
+	userList := make([]*user.User, len(videoList))
+	for i := 0; i < len(videoList); i++ {
+		userList[i], err = rpc.GetUser(ctx, &user.InfoRequest{
+			UserId: videoList[i].UserID,
+			Token:  req.Token,
+		})
+		if err != nil {
+			resp.Base = pack.BuildBaseResp(err)
+			return resp, nil
+		}
+	}
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.VideoList = pack.VideoLikedList(videoList)
+	resp.VideoList = pack.VideoLikedList(videoList, userList)
 	return
 }
 func hanlerPutVideoError(stream video.VideoService_PutVideoServer, err error) {

@@ -13,6 +13,7 @@ import (
 
 func TestFeed(t *testing.T) {
 	req := &video.FeedRequest{
+		//测试的时候根据数据库改
 		LatestTime: "2023-08-18 07:22:43"}
 
 	resp, err := conn.Feed(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))

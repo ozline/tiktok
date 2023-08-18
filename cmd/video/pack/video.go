@@ -28,8 +28,8 @@ func Video(data *db.Video, user *user.User) *video.Video {
 		},
 		PlayUrl:       data.PlayUrl,
 		CoverUrl:      data.CoverUrl,
-		FavoriteCount: 0, //TODO
-		CommentCount:  0,
+		FavoriteCount: 0,    //TODO
+		CommentCount:  0,    //TODO
 		IsFavorite:    true, //TODO
 		Title:         data.Title,
 	}
@@ -43,13 +43,25 @@ func VideoList(data []db.Video, userList []*user.User) []*video.Video {
 }
 
 // 用于获取喜欢列表 IsFavorite保证为true
-func VideoLiked(data *db.Video) *video.Video {
+func VideoLiked(data *db.Video, user *user.User) *video.Video {
 	if data == nil {
 		return nil
 	}
 	return &video.Video{
-		Id:            data.Id,
-		Anthor:        nil, //TODO
+		Id: data.Id,
+		Anthor: &video.User{
+			Id:              user.Id,
+			Name:            user.Name,
+			FollowCount:     user.FollowCount,
+			FollowerCount:   user.FollowerCount,
+			IsFollow:        user.IsFollow,
+			Avatar:          user.Avatar,
+			BackgroundImage: user.BackgroundImage,
+			Signature:       user.Signature,
+			TotalFavorited:  user.TotalFavorited,
+			WorkCount:       user.WorkCount,
+			FavoriteCount:   user.FavoritedCount,
+		},
 		PlayUrl:       data.PlayUrl,
 		CoverUrl:      data.CoverUrl,
 		FavoriteCount: 0, //TODO
@@ -58,10 +70,10 @@ func VideoLiked(data *db.Video) *video.Video {
 		Title:         data.Title,
 	}
 }
-func VideoLikedList(data []db.Video) []*video.Video {
+func VideoLikedList(data []db.Video, userList []*user.User) []*video.Video {
 	videoList := make([]*video.Video, 0, len(data))
-	for _, v := range data {
-		videoList = append(videoList, VideoLiked(&v))
+	for i := 0; i < len(data); i++ {
+		videoList = append(videoList, VideoLiked(&data[i], userList[i]))
 	}
 	return videoList
 }
