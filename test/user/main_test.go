@@ -1,36 +1,32 @@
 package main
 
 import (
+	"context"
 	"testing"
 
-	"github.com/ozline/tiktok/pkg/constants"
-
-	"github.com/cloudwego/kitex/client"
-	"github.com/ozline/tiktok/kitex_gen/user/userservice"
+	"github.com/ozline/tiktok/cmd/user/dal"
+	"github.com/ozline/tiktok/cmd/user/service"
+	"github.com/ozline/tiktok/config"
 )
 
 var (
-	conn     userservice.Client
 	username string
 	password string
 	token    string
 	id       int64
+
+	userService *service.UserService
 )
 
 func TestMain(m *testing.M) {
-	// 连接服务器
-	c, err := userservice.NewClient("user",
-		client.WithMuxConnection(constants.MuxConnection),
-		client.WithHostPorts("0.0.0.0:10002"))
+	config.InitForTest()
+	dal.Init()
 
-	if err != nil {
-		panic(err)
-	}
+	userService = service.NewUserService(context.Background())
 
 	username = "ozline"
 	password = "123456"
 
-	conn = c
 	m.Run()
 }
 

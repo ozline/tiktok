@@ -1,33 +1,30 @@
 package main
 
 import (
-	"context"
 	"testing"
-	"time"
 
-	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/ozline/tiktok/kitex_gen/user"
-	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 func testLogin(t *testing.T) {
-	req := &user.LoginRequest{
-		Username: "ozline",
-		Password: "123456",
-	}
 
-	resp, err := conn.Login(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+	resp, err := userService.CheckUser(&user.LoginRequest{
+		Username: username,
+		Password: password,
+	})
 
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
 
-	if resp.Base.Code != errno.SuccessCode {
-		t.Error(errno.NewErrNo(resp.Base.Code, resp.Base.Msg))
+	token, err = utils.CreateToken(resp.Id)
+
+	if err != nil {
+		t.Error(err)
 		t.Fail()
 	}
 
-	token = resp.Token
-	id = resp.User.Id
+	id = resp.Id
 }
