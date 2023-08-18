@@ -1,0 +1,51 @@
+version: '3.7'
+
+networks:
+    tiktok:
+        driver: bridge
+
+services:
+
+    mysql:
+        container_name: mysql
+        image: mysql:latest
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=tiktok
+            - MYSQL_USER=tiktok
+            - MYSQL_PASSWORD=tiktok
+            - TZ=Asia/Shanghai
+        volumes:
+            - ./config/sql:/docker-entrypoint-initdb.d/
+        ports:
+            - "3306:3306"
+        networks:
+            - tiktok
+
+    redis:
+        container_name: redis
+        image: "redis:latest"
+        restart: always
+        ports:
+            - 6379:6379
+        volumes:
+            - /usr/local/redis/conf/redis.conf:/var/lib/redis/conf/redis.conf
+            - /usr/local/redis/data:/data
+        environment:
+            - REDIS_PASSWORD=tiktok
+            - ALLOW_EMPTY_PASSWORD=no
+        networks:
+                - tiktok
+
+    rabbitmq:
+        container_name: rabiitmq
+        image: "rabbitmq:latest"
+        ports:
+            - 5672:5672
+            - 15672:15672
+        environment:
+            - RABBITMQ_DEFAULT_USER=tiktok
+            - RABBITMQ_DEFAULT_PASS=tiktok
+        networks:
+            - tiktok

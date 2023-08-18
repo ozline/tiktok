@@ -16,5 +16,5 @@ const (
 	AuthorizationFailedErrCode = 10003 // 鉴权失败
 	UnexpectedTypeErrorCode    = 10004 // 未知类型
 	NotImplementErrorCode      = 10005 // 未实装
-	SensitiveWordsErrorCode    = 10006 //敏感词错误
+	SensitiveWordsErrorCode    = 10006 // 敏感词错误
 )

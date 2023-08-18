@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 CURDIR=$(cd $(dirname $0); pwd)
-CONFIG_PATH=$(dirname $(dirname $CURDIR))/config
+CONFIG_PATH=$(dirname $(dirname $(dirname $CURDIR)))/config
 
 if [ "X$1" != "X" ]; then
     RUNTIME_ROOT=$1
@@ -26,4 +26,4 @@ export JAEGER_REPORTER_LOG_SPANS=true
 export JAEGER_AGENT_HOST="127.0.0.1"
 export JAEGER_AGENT_PORT=6831
 
-exec "$CURDIR/bin/user" -config $CONFIG_PATH
+exec "$CURDIR/bin/interaction" -config $CONFIG_PATH
