@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [user, video]
+        service: [user]
     steps:
 
       - name: Checkout code
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [user, video]
+        service: [user]
     steps:
 
       - name: Checkout code
