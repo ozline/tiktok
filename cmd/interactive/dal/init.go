@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"github.com/ozline/tiktok/cmd/interactive/dal/cache"
 	"github.com/ozline/tiktok/cmd/interactive/dal/db"
 	"github.com/ozline/tiktok/cmd/interactive/dal/sensitive_words"
 )
@@ -8,4 +9,5 @@ import (
 func Init() {
 	db.Init()
 	sensitive_words.Init()
+	cache.Init()
 }

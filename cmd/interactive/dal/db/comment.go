@@ -9,10 +9,10 @@ import (
 )
 
 type Comment struct {
-	Id        int64
-	UserId    int64
+	Id        int64 `json:"id"`
+	UserId    int64 `json:"user_id"`
 	VideoId   int64
-	Content   string
+	Content   string `json:"content"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -52,10 +52,10 @@ func GetCommentByID(ctx context.Context, commentId int64) (*Comment, error) {
 	return commentResp, nil
 }
 
-func GetCommentsByVideoID(ctx context.Context, commentId int64) (*[]Comment, error) {
-	var commentsResp *[]Comment
+func GetCommentsByVideoID(ctx context.Context, videoId int64) ([]Comment, error) {
+	var commentsResp []Comment
 
-	err := DB.Table(constants.CommentTableName).WithContext(ctx).Where("video_id = ?", commentId).
+	err := DB.Table(constants.CommentTableName).WithContext(ctx).Where("video_id = ?", videoId).
 		Order("created_at desc").Find(&commentsResp).Error
 
 	if err != nil {
@@ -63,4 +63,17 @@ func GetCommentsByVideoID(ctx context.Context, commentId int64) (*[]Comment, err
 	}
 
 	return commentsResp, nil
+}
+
+func CountCommentsByVideoID(ctx context.Context, videoId int64) (int64, error) {
+	var count int64
+
+	err := DB.Table(constants.CommentTableName).WithContext(ctx).Where("video_id = ? and deleted_at IS NULL", videoId).
+		Count(&count).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }

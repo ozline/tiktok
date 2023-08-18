@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/ozline/tiktok/cmd/interactive/dal/cache"
 	"github.com/ozline/tiktok/cmd/interactive/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interactive"
 	"github.com/ozline/tiktok/pkg/errno"
@@ -26,6 +27,23 @@ func (s *CommentService) CreateComment(req *interactive.CommentActionRequest) (*
 		UserId:  claim.UserId,
 		Content: *req.CommentText,
 	}
+	comment, err := db.CreateComment(s.ctx, commentModel)
+	if err != nil {
+		return nil, err
+	}
 
-	return db.CreateComment(s.ctx, commentModel)
+	exist, err := cache.IsExistComment(s.ctx, videoId)
+	if err != nil {
+		return nil, err
+	}
+	if exist == 1 {
+		err = cache.AddComment(s.ctx, videoId,
+			&cache.Comment{Id: comment.Id, UserId: comment.UserId, Content: comment.Content},
+			float64(comment.CreatedAt.Unix()))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return comment, nil
 }

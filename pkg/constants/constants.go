@@ -13,12 +13,12 @@ const (
 	ConnectTimeout = 50 * time.Millisecond
 
 	// service name
-	APIServiceName     = "api"
-	UserServiceName    = "user"
-	CommentServiceName = "comment"
-	FollowServiceName  = "follow"
-	ChatServiceName    = "chat"
-	VideoServiceName   = "video"
+	APIServiceName         = "api"
+	UserServiceName        = "user"
+	InteractiveServiceName = "interactive"
+	FollowServiceName      = "follow"
+	ChatServiceName        = "chat"
+	VideoServiceName       = "video"
 
 	// db table name
 	UserTableName    = "user"

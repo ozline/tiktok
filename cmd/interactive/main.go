@@ -28,11 +28,11 @@ func Init() {
 	// config init
 	path = flag.String("config", "./config", "config path")
 	flag.Parse()
-	config.Init(*path, constants.CommentServiceName)
+	config.Init(*path, constants.InteractiveServiceName)
 
 	rpc.Init()
 	dal.Init()
-	tracer.InitJaeger(constants.CommentServiceName)
+	tracer.InitJaeger(constants.InteractiveServiceName)
 }
 
 func main() {
@@ -65,7 +65,7 @@ func main() {
 	svr := interactive.NewServer(
 		new(InteractiveServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: constants.CommentServiceName,
+			ServiceName: constants.InteractiveServiceName,
 		}),
 		server.WithMuxTransport(),
 		server.WithServiceAddr(addr),

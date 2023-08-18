@@ -135,3 +135,26 @@ func (s *InteractiveServiceImpl) CommentList(ctx context.Context, req *interacti
 	resp.CommentList = commentList
 	return
 }
+
+// CommentCount implements the InteractiveServiceImpl interface.
+func (s *InteractiveServiceImpl) CommentCount(ctx context.Context, req *interactive.CommentCountRequest) (resp *interactive.CommentCountResponse, err error) {
+	resp = new(interactive.CommentCountResponse)
+
+	// 校验token
+	if req.Token != nil {
+		if _, err = utils.CheckToken(*req.Token); err != nil {
+			resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+			return resp, nil
+		}
+	}
+
+	count, err := service.NewCommentService(ctx).CountComments(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.CommentCount = count
+	return
+}
