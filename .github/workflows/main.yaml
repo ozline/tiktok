@@ -31,4 +31,4 @@ jobs:
         run: cd ./output/user && nohup sh bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
 
       - name: Test interfaces
-        run: cd ../../test && go test -v
+        run: cd ./../../test && go test -v
