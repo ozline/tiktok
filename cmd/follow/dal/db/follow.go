@@ -110,7 +110,7 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	if len(idList) == 0 {
-		err := DB.WithContext(ctx).Model(&Follow{}).Select("to_user_id").
+		err := DB.WithContext(ctx).Table(constants.FollowTableName).Select("to_user_id").
 			Where("user_id = ? AND action_type = ?", uid, constants.FollowAction).
 			Find(&followList).Error
 		if err != nil {
@@ -144,7 +144,7 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	if len(idList) == 0 {
-		err := DB.WithContext(ctx).Model(&Follow{}).Select("user_id").
+		err := DB.WithContext(ctx).Table(constants.FollowTableName).Select("user_id").
 			Where("to_user_id = ? AND action_type = ?", uid, constants.FollowAction).
 			Find(&followerList).Error
 		if err != nil {
@@ -195,7 +195,7 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	//若redis中不存在,从db中获取
-	err = DB.WithContext(ctx).Model(&Follow{}).Select("to_user_id").
+	err = DB.WithContext(ctx).Table(constants.FollowTableName).Select("to_user_id").
 		Where("user_id = ? AND action_type = ?", uid, constants.FollowAction).
 		Find(&tempList).Error
 	if err != nil {
