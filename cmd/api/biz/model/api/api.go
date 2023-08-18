@@ -5130,7 +5130,7 @@ func (p *PublishListResponse) String() string {
 	return fmt.Sprintf("PublishListResponse(%+v)", *p)
 }
 
-// interaction
+// Interactive
 type FavoriteActionRequest struct {
 	Token   string `thrift:"token,1,required" form:"token,required" json:"token,required" query:"token,required"`
 	VideoID int64  `thrift:"video_id,2,required" form:"video_id,required" json:"video_id,required" query:"video_id,required"`
@@ -10170,7 +10170,7 @@ func (p *BasicServiceClient) PublishList(ctx context.Context, req *PublishListRe
 	return _result.GetSuccess(), nil
 }
 
-type InteractionService interface {
+type InteractiveService interface {
 	FavoriteAction(ctx context.Context, req *FavoriteActionRequest) (r *FavoriteActionResponse, err error)
 
 	FavoriteList(ctx context.Context, req *FavoriteListRequest) (r *FavoriteListResponse, err error)
@@ -10180,63 +10180,63 @@ type InteractionService interface {
 	CommentList(ctx context.Context, req *CommentListRequest) (r *CommentListResponse, err error)
 }
 
-type InteractionServiceClient struct {
+type InteractiveServiceClient struct {
 	c thrift.TClient
 }
 
-func NewInteractionServiceClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *InteractionServiceClient {
-	return &InteractionServiceClient{
+func NewInteractiveServiceClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *InteractiveServiceClient {
+	return &InteractiveServiceClient{
 		c: thrift.NewTStandardClient(f.GetProtocol(t), f.GetProtocol(t)),
 	}
 }
 
-func NewInteractionServiceClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *InteractionServiceClient {
-	return &InteractionServiceClient{
+func NewInteractiveServiceClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *InteractiveServiceClient {
+	return &InteractiveServiceClient{
 		c: thrift.NewTStandardClient(iprot, oprot),
 	}
 }
 
-func NewInteractionServiceClient(c thrift.TClient) *InteractionServiceClient {
-	return &InteractionServiceClient{
+func NewInteractiveServiceClient(c thrift.TClient) *InteractiveServiceClient {
+	return &InteractiveServiceClient{
 		c: c,
 	}
 }
 
-func (p *InteractionServiceClient) Client_() thrift.TClient {
+func (p *InteractiveServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *InteractionServiceClient) FavoriteAction(ctx context.Context, req *FavoriteActionRequest) (r *FavoriteActionResponse, err error) {
-	var _args InteractionServiceFavoriteActionArgs
+func (p *InteractiveServiceClient) FavoriteAction(ctx context.Context, req *FavoriteActionRequest) (r *FavoriteActionResponse, err error) {
+	var _args InteractiveServiceFavoriteActionArgs
 	_args.Req = req
-	var _result InteractionServiceFavoriteActionResult
+	var _result InteractiveServiceFavoriteActionResult
 	if err = p.Client_().Call(ctx, "FavoriteAction", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *InteractionServiceClient) FavoriteList(ctx context.Context, req *FavoriteListRequest) (r *FavoriteListResponse, err error) {
-	var _args InteractionServiceFavoriteListArgs
+func (p *InteractiveServiceClient) FavoriteList(ctx context.Context, req *FavoriteListRequest) (r *FavoriteListResponse, err error) {
+	var _args InteractiveServiceFavoriteListArgs
 	_args.Req = req
-	var _result InteractionServiceFavoriteListResult
+	var _result InteractiveServiceFavoriteListResult
 	if err = p.Client_().Call(ctx, "FavoriteList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *InteractionServiceClient) CommentAction(ctx context.Context, req *CommentActionRequest) (r *CommentActionResponse, err error) {
-	var _args InteractionServiceCommentActionArgs
+func (p *InteractiveServiceClient) CommentAction(ctx context.Context, req *CommentActionRequest) (r *CommentActionResponse, err error) {
+	var _args InteractiveServiceCommentActionArgs
 	_args.Req = req
-	var _result InteractionServiceCommentActionResult
+	var _result InteractiveServiceCommentActionResult
 	if err = p.Client_().Call(ctx, "CommentAction", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *InteractionServiceClient) CommentList(ctx context.Context, req *CommentListRequest) (r *CommentListResponse, err error) {
-	var _args InteractionServiceCommentListArgs
+func (p *InteractiveServiceClient) CommentList(ctx context.Context, req *CommentListRequest) (r *CommentListResponse, err error) {
+	var _args InteractiveServiceCommentListArgs
 	_args.Req = req
-	var _result InteractionServiceCommentListResult
+	var _result InteractiveServiceCommentListResult
 	if err = p.Client_().Call(ctx, "CommentList", &_args, &_result); err != nil {
 		return
 	}
@@ -12424,33 +12424,33 @@ func (p *BasicServicePublishListResult) String() string {
 	return fmt.Sprintf("BasicServicePublishListResult(%+v)", *p)
 }
 
-type InteractionServiceProcessor struct {
+type InteractiveServiceProcessor struct {
 	processorMap map[string]thrift.TProcessorFunction
-	handler      InteractionService
+	handler      InteractiveService
 }
 
-func (p *InteractionServiceProcessor) AddToProcessorMap(key string, processor thrift.TProcessorFunction) {
+func (p *InteractiveServiceProcessor) AddToProcessorMap(key string, processor thrift.TProcessorFunction) {
 	p.processorMap[key] = processor
 }
 
-func (p *InteractionServiceProcessor) GetProcessorFunction(key string) (processor thrift.TProcessorFunction, ok bool) {
+func (p *InteractiveServiceProcessor) GetProcessorFunction(key string) (processor thrift.TProcessorFunction, ok bool) {
 	processor, ok = p.processorMap[key]
 	return processor, ok
 }
 
-func (p *InteractionServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
+func (p *InteractiveServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
 	return p.processorMap
 }
 
-func NewInteractionServiceProcessor(handler InteractionService) *InteractionServiceProcessor {
-	self := &InteractionServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	self.AddToProcessorMap("FavoriteAction", &interactionServiceProcessorFavoriteAction{handler: handler})
-	self.AddToProcessorMap("FavoriteList", &interactionServiceProcessorFavoriteList{handler: handler})
-	self.AddToProcessorMap("CommentAction", &interactionServiceProcessorCommentAction{handler: handler})
-	self.AddToProcessorMap("CommentList", &interactionServiceProcessorCommentList{handler: handler})
+func NewInteractiveServiceProcessor(handler InteractiveService) *InteractiveServiceProcessor {
+	self := &InteractiveServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self.AddToProcessorMap("FavoriteAction", &interactiveServiceProcessorFavoriteAction{handler: handler})
+	self.AddToProcessorMap("FavoriteList", &interactiveServiceProcessorFavoriteList{handler: handler})
+	self.AddToProcessorMap("CommentAction", &interactiveServiceProcessorCommentAction{handler: handler})
+	self.AddToProcessorMap("CommentList", &interactiveServiceProcessorCommentList{handler: handler})
 	return self
 }
-func (p *InteractionServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+func (p *InteractiveServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
 	name, _, seqId, err := iprot.ReadMessageBegin()
 	if err != nil {
 		return false, err
@@ -12468,12 +12468,12 @@ func (p *InteractionServiceProcessor) Process(ctx context.Context, iprot, oprot 
 	return false, x
 }
 
-type interactionServiceProcessorFavoriteAction struct {
-	handler InteractionService
+type interactiveServiceProcessorFavoriteAction struct {
+	handler InteractiveService
 }
 
-func (p *interactionServiceProcessorFavoriteAction) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := InteractionServiceFavoriteActionArgs{}
+func (p *interactiveServiceProcessorFavoriteAction) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := InteractiveServiceFavoriteActionArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
@@ -12486,7 +12486,7 @@ func (p *interactionServiceProcessorFavoriteAction) Process(ctx context.Context,
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := InteractionServiceFavoriteActionResult{}
+	result := InteractiveServiceFavoriteActionResult{}
 	var retval *FavoriteActionResponse
 	if retval, err2 = p.handler.FavoriteAction(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FavoriteAction: "+err2.Error())
@@ -12516,12 +12516,12 @@ func (p *interactionServiceProcessorFavoriteAction) Process(ctx context.Context,
 	return true, err
 }
 
-type interactionServiceProcessorFavoriteList struct {
-	handler InteractionService
+type interactiveServiceProcessorFavoriteList struct {
+	handler InteractiveService
 }
 
-func (p *interactionServiceProcessorFavoriteList) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := InteractionServiceFavoriteListArgs{}
+func (p *interactiveServiceProcessorFavoriteList) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := InteractiveServiceFavoriteListArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
@@ -12534,7 +12534,7 @@ func (p *interactionServiceProcessorFavoriteList) Process(ctx context.Context, s
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := InteractionServiceFavoriteListResult{}
+	result := InteractiveServiceFavoriteListResult{}
 	var retval *FavoriteListResponse
 	if retval, err2 = p.handler.FavoriteList(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FavoriteList: "+err2.Error())
@@ -12564,12 +12564,12 @@ func (p *interactionServiceProcessorFavoriteList) Process(ctx context.Context, s
 	return true, err
 }
 
-type interactionServiceProcessorCommentAction struct {
-	handler InteractionService
+type interactiveServiceProcessorCommentAction struct {
+	handler InteractiveService
 }
 
-func (p *interactionServiceProcessorCommentAction) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := InteractionServiceCommentActionArgs{}
+func (p *interactiveServiceProcessorCommentAction) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := InteractiveServiceCommentActionArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
@@ -12582,7 +12582,7 @@ func (p *interactionServiceProcessorCommentAction) Process(ctx context.Context, 
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := InteractionServiceCommentActionResult{}
+	result := InteractiveServiceCommentActionResult{}
 	var retval *CommentActionResponse
 	if retval, err2 = p.handler.CommentAction(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing CommentAction: "+err2.Error())
@@ -12612,12 +12612,12 @@ func (p *interactionServiceProcessorCommentAction) Process(ctx context.Context, 
 	return true, err
 }
 
-type interactionServiceProcessorCommentList struct {
-	handler InteractionService
+type interactiveServiceProcessorCommentList struct {
+	handler InteractiveService
 }
 
-func (p *interactionServiceProcessorCommentList) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := InteractionServiceCommentListArgs{}
+func (p *interactiveServiceProcessorCommentList) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := InteractiveServiceCommentListArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
@@ -12630,7 +12630,7 @@ func (p *interactionServiceProcessorCommentList) Process(ctx context.Context, se
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := InteractionServiceCommentListResult{}
+	result := InteractiveServiceCommentListResult{}
 	var retval *CommentListResponse
 	if retval, err2 = p.handler.CommentList(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing CommentList: "+err2.Error())
@@ -12660,32 +12660,32 @@ func (p *interactionServiceProcessorCommentList) Process(ctx context.Context, se
 	return true, err
 }
 
-type InteractionServiceFavoriteActionArgs struct {
+type InteractiveServiceFavoriteActionArgs struct {
 	Req *FavoriteActionRequest `thrift:"req,1"`
 }
 
-func NewInteractionServiceFavoriteActionArgs() *InteractionServiceFavoriteActionArgs {
-	return &InteractionServiceFavoriteActionArgs{}
+func NewInteractiveServiceFavoriteActionArgs() *InteractiveServiceFavoriteActionArgs {
+	return &InteractiveServiceFavoriteActionArgs{}
 }
 
-var InteractionServiceFavoriteActionArgs_Req_DEFAULT *FavoriteActionRequest
+var InteractiveServiceFavoriteActionArgs_Req_DEFAULT *FavoriteActionRequest
 
-func (p *InteractionServiceFavoriteActionArgs) GetReq() (v *FavoriteActionRequest) {
+func (p *InteractiveServiceFavoriteActionArgs) GetReq() (v *FavoriteActionRequest) {
 	if !p.IsSetReq() {
-		return InteractionServiceFavoriteActionArgs_Req_DEFAULT
+		return InteractiveServiceFavoriteActionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-var fieldIDToName_InteractionServiceFavoriteActionArgs = map[int16]string{
+var fieldIDToName_InteractiveServiceFavoriteActionArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *InteractionServiceFavoriteActionArgs) IsSetReq() bool {
+func (p *InteractiveServiceFavoriteActionArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *InteractionServiceFavoriteActionArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteActionArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -12734,7 +12734,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceFavoriteActionArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceFavoriteActionArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -12744,7 +12744,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteActionArgs) ReadField1(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceFavoriteActionArgs) ReadField1(iprot thrift.TProtocol) error {
 	p.Req = NewFavoriteActionRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
@@ -12752,7 +12752,7 @@ func (p *InteractionServiceFavoriteActionArgs) ReadField1(iprot thrift.TProtocol
 	return nil
 }
 
-func (p *InteractionServiceFavoriteActionArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteActionArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("FavoriteAction_args"); err != nil {
 		goto WriteStructBeginError
@@ -12781,7 +12781,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteActionArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteActionArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -12798,39 +12798,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteActionArgs) String() string {
+func (p *InteractiveServiceFavoriteActionArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceFavoriteActionArgs(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceFavoriteActionArgs(%+v)", *p)
 }
 
-type InteractionServiceFavoriteActionResult struct {
+type InteractiveServiceFavoriteActionResult struct {
 	Success *FavoriteActionResponse `thrift:"success,0,optional"`
 }
 
-func NewInteractionServiceFavoriteActionResult() *InteractionServiceFavoriteActionResult {
-	return &InteractionServiceFavoriteActionResult{}
+func NewInteractiveServiceFavoriteActionResult() *InteractiveServiceFavoriteActionResult {
+	return &InteractiveServiceFavoriteActionResult{}
 }
 
-var InteractionServiceFavoriteActionResult_Success_DEFAULT *FavoriteActionResponse
+var InteractiveServiceFavoriteActionResult_Success_DEFAULT *FavoriteActionResponse
 
-func (p *InteractionServiceFavoriteActionResult) GetSuccess() (v *FavoriteActionResponse) {
+func (p *InteractiveServiceFavoriteActionResult) GetSuccess() (v *FavoriteActionResponse) {
 	if !p.IsSetSuccess() {
-		return InteractionServiceFavoriteActionResult_Success_DEFAULT
+		return InteractiveServiceFavoriteActionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-var fieldIDToName_InteractionServiceFavoriteActionResult = map[int16]string{
+var fieldIDToName_InteractiveServiceFavoriteActionResult = map[int16]string{
 	0: "success",
 }
 
-func (p *InteractionServiceFavoriteActionResult) IsSetSuccess() bool {
+func (p *InteractiveServiceFavoriteActionResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *InteractionServiceFavoriteActionResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteActionResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -12879,7 +12879,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceFavoriteActionResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceFavoriteActionResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -12889,7 +12889,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteActionResult) ReadField0(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceFavoriteActionResult) ReadField0(iprot thrift.TProtocol) error {
 	p.Success = NewFavoriteActionResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
@@ -12897,7 +12897,7 @@ func (p *InteractionServiceFavoriteActionResult) ReadField0(iprot thrift.TProtoc
 	return nil
 }
 
-func (p *InteractionServiceFavoriteActionResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteActionResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("FavoriteAction_result"); err != nil {
 		goto WriteStructBeginError
@@ -12926,7 +12926,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteActionResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteActionResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -12945,39 +12945,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteActionResult) String() string {
+func (p *InteractiveServiceFavoriteActionResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceFavoriteActionResult(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceFavoriteActionResult(%+v)", *p)
 }
 
-type InteractionServiceFavoriteListArgs struct {
+type InteractiveServiceFavoriteListArgs struct {
 	Req *FavoriteListRequest `thrift:"req,1"`
 }
 
-func NewInteractionServiceFavoriteListArgs() *InteractionServiceFavoriteListArgs {
-	return &InteractionServiceFavoriteListArgs{}
+func NewInteractiveServiceFavoriteListArgs() *InteractiveServiceFavoriteListArgs {
+	return &InteractiveServiceFavoriteListArgs{}
 }
 
-var InteractionServiceFavoriteListArgs_Req_DEFAULT *FavoriteListRequest
+var InteractiveServiceFavoriteListArgs_Req_DEFAULT *FavoriteListRequest
 
-func (p *InteractionServiceFavoriteListArgs) GetReq() (v *FavoriteListRequest) {
+func (p *InteractiveServiceFavoriteListArgs) GetReq() (v *FavoriteListRequest) {
 	if !p.IsSetReq() {
-		return InteractionServiceFavoriteListArgs_Req_DEFAULT
+		return InteractiveServiceFavoriteListArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-var fieldIDToName_InteractionServiceFavoriteListArgs = map[int16]string{
+var fieldIDToName_InteractiveServiceFavoriteListArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *InteractionServiceFavoriteListArgs) IsSetReq() bool {
+func (p *InteractiveServiceFavoriteListArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *InteractionServiceFavoriteListArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteListArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -13026,7 +13026,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceFavoriteListArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceFavoriteListArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -13036,7 +13036,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteListArgs) ReadField1(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceFavoriteListArgs) ReadField1(iprot thrift.TProtocol) error {
 	p.Req = NewFavoriteListRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
@@ -13044,7 +13044,7 @@ func (p *InteractionServiceFavoriteListArgs) ReadField1(iprot thrift.TProtocol) 
 	return nil
 }
 
-func (p *InteractionServiceFavoriteListArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteListArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("FavoriteList_args"); err != nil {
 		goto WriteStructBeginError
@@ -13073,7 +13073,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteListArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteListArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -13090,39 +13090,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteListArgs) String() string {
+func (p *InteractiveServiceFavoriteListArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceFavoriteListArgs(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceFavoriteListArgs(%+v)", *p)
 }
 
-type InteractionServiceFavoriteListResult struct {
+type InteractiveServiceFavoriteListResult struct {
 	Success *FavoriteListResponse `thrift:"success,0,optional"`
 }
 
-func NewInteractionServiceFavoriteListResult() *InteractionServiceFavoriteListResult {
-	return &InteractionServiceFavoriteListResult{}
+func NewInteractiveServiceFavoriteListResult() *InteractiveServiceFavoriteListResult {
+	return &InteractiveServiceFavoriteListResult{}
 }
 
-var InteractionServiceFavoriteListResult_Success_DEFAULT *FavoriteListResponse
+var InteractiveServiceFavoriteListResult_Success_DEFAULT *FavoriteListResponse
 
-func (p *InteractionServiceFavoriteListResult) GetSuccess() (v *FavoriteListResponse) {
+func (p *InteractiveServiceFavoriteListResult) GetSuccess() (v *FavoriteListResponse) {
 	if !p.IsSetSuccess() {
-		return InteractionServiceFavoriteListResult_Success_DEFAULT
+		return InteractiveServiceFavoriteListResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-var fieldIDToName_InteractionServiceFavoriteListResult = map[int16]string{
+var fieldIDToName_InteractiveServiceFavoriteListResult = map[int16]string{
 	0: "success",
 }
 
-func (p *InteractionServiceFavoriteListResult) IsSetSuccess() bool {
+func (p *InteractiveServiceFavoriteListResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *InteractionServiceFavoriteListResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteListResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -13171,7 +13171,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceFavoriteListResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceFavoriteListResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -13181,7 +13181,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteListResult) ReadField0(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceFavoriteListResult) ReadField0(iprot thrift.TProtocol) error {
 	p.Success = NewFavoriteListResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
@@ -13189,7 +13189,7 @@ func (p *InteractionServiceFavoriteListResult) ReadField0(iprot thrift.TProtocol
 	return nil
 }
 
-func (p *InteractionServiceFavoriteListResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteListResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("FavoriteList_result"); err != nil {
 		goto WriteStructBeginError
@@ -13218,7 +13218,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteListResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceFavoriteListResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -13237,39 +13237,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteListResult) String() string {
+func (p *InteractiveServiceFavoriteListResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceFavoriteListResult(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceFavoriteListResult(%+v)", *p)
 }
 
-type InteractionServiceCommentActionArgs struct {
+type InteractiveServiceCommentActionArgs struct {
 	Req *CommentActionRequest `thrift:"req,1"`
 }
 
-func NewInteractionServiceCommentActionArgs() *InteractionServiceCommentActionArgs {
-	return &InteractionServiceCommentActionArgs{}
+func NewInteractiveServiceCommentActionArgs() *InteractiveServiceCommentActionArgs {
+	return &InteractiveServiceCommentActionArgs{}
 }
 
-var InteractionServiceCommentActionArgs_Req_DEFAULT *CommentActionRequest
+var InteractiveServiceCommentActionArgs_Req_DEFAULT *CommentActionRequest
 
-func (p *InteractionServiceCommentActionArgs) GetReq() (v *CommentActionRequest) {
+func (p *InteractiveServiceCommentActionArgs) GetReq() (v *CommentActionRequest) {
 	if !p.IsSetReq() {
-		return InteractionServiceCommentActionArgs_Req_DEFAULT
+		return InteractiveServiceCommentActionArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-var fieldIDToName_InteractionServiceCommentActionArgs = map[int16]string{
+var fieldIDToName_InteractiveServiceCommentActionArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *InteractionServiceCommentActionArgs) IsSetReq() bool {
+func (p *InteractiveServiceCommentActionArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *InteractionServiceCommentActionArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentActionArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -13318,7 +13318,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceCommentActionArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceCommentActionArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -13328,7 +13328,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentActionArgs) ReadField1(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceCommentActionArgs) ReadField1(iprot thrift.TProtocol) error {
 	p.Req = NewCommentActionRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
@@ -13336,7 +13336,7 @@ func (p *InteractionServiceCommentActionArgs) ReadField1(iprot thrift.TProtocol)
 	return nil
 }
 
-func (p *InteractionServiceCommentActionArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentActionArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CommentAction_args"); err != nil {
 		goto WriteStructBeginError
@@ -13365,7 +13365,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentActionArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentActionArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -13382,39 +13382,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentActionArgs) String() string {
+func (p *InteractiveServiceCommentActionArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceCommentActionArgs(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceCommentActionArgs(%+v)", *p)
 }
 
-type InteractionServiceCommentActionResult struct {
+type InteractiveServiceCommentActionResult struct {
 	Success *CommentActionResponse `thrift:"success,0,optional"`
 }
 
-func NewInteractionServiceCommentActionResult() *InteractionServiceCommentActionResult {
-	return &InteractionServiceCommentActionResult{}
+func NewInteractiveServiceCommentActionResult() *InteractiveServiceCommentActionResult {
+	return &InteractiveServiceCommentActionResult{}
 }
 
-var InteractionServiceCommentActionResult_Success_DEFAULT *CommentActionResponse
+var InteractiveServiceCommentActionResult_Success_DEFAULT *CommentActionResponse
 
-func (p *InteractionServiceCommentActionResult) GetSuccess() (v *CommentActionResponse) {
+func (p *InteractiveServiceCommentActionResult) GetSuccess() (v *CommentActionResponse) {
 	if !p.IsSetSuccess() {
-		return InteractionServiceCommentActionResult_Success_DEFAULT
+		return InteractiveServiceCommentActionResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-var fieldIDToName_InteractionServiceCommentActionResult = map[int16]string{
+var fieldIDToName_InteractiveServiceCommentActionResult = map[int16]string{
 	0: "success",
 }
 
-func (p *InteractionServiceCommentActionResult) IsSetSuccess() bool {
+func (p *InteractiveServiceCommentActionResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *InteractionServiceCommentActionResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentActionResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -13463,7 +13463,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceCommentActionResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceCommentActionResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -13473,7 +13473,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentActionResult) ReadField0(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceCommentActionResult) ReadField0(iprot thrift.TProtocol) error {
 	p.Success = NewCommentActionResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
@@ -13481,7 +13481,7 @@ func (p *InteractionServiceCommentActionResult) ReadField0(iprot thrift.TProtoco
 	return nil
 }
 
-func (p *InteractionServiceCommentActionResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentActionResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CommentAction_result"); err != nil {
 		goto WriteStructBeginError
@@ -13510,7 +13510,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentActionResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentActionResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -13529,39 +13529,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentActionResult) String() string {
+func (p *InteractiveServiceCommentActionResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceCommentActionResult(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceCommentActionResult(%+v)", *p)
 }
 
-type InteractionServiceCommentListArgs struct {
+type InteractiveServiceCommentListArgs struct {
 	Req *CommentListRequest `thrift:"req,1"`
 }
 
-func NewInteractionServiceCommentListArgs() *InteractionServiceCommentListArgs {
-	return &InteractionServiceCommentListArgs{}
+func NewInteractiveServiceCommentListArgs() *InteractiveServiceCommentListArgs {
+	return &InteractiveServiceCommentListArgs{}
 }
 
-var InteractionServiceCommentListArgs_Req_DEFAULT *CommentListRequest
+var InteractiveServiceCommentListArgs_Req_DEFAULT *CommentListRequest
 
-func (p *InteractionServiceCommentListArgs) GetReq() (v *CommentListRequest) {
+func (p *InteractiveServiceCommentListArgs) GetReq() (v *CommentListRequest) {
 	if !p.IsSetReq() {
-		return InteractionServiceCommentListArgs_Req_DEFAULT
+		return InteractiveServiceCommentListArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-var fieldIDToName_InteractionServiceCommentListArgs = map[int16]string{
+var fieldIDToName_InteractiveServiceCommentListArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *InteractionServiceCommentListArgs) IsSetReq() bool {
+func (p *InteractiveServiceCommentListArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *InteractionServiceCommentListArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentListArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -13610,7 +13610,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceCommentListArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceCommentListArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -13620,7 +13620,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentListArgs) ReadField1(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceCommentListArgs) ReadField1(iprot thrift.TProtocol) error {
 	p.Req = NewCommentListRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
@@ -13628,7 +13628,7 @@ func (p *InteractionServiceCommentListArgs) ReadField1(iprot thrift.TProtocol) e
 	return nil
 }
 
-func (p *InteractionServiceCommentListArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentListArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CommentList_args"); err != nil {
 		goto WriteStructBeginError
@@ -13657,7 +13657,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentListArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentListArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -13674,39 +13674,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentListArgs) String() string {
+func (p *InteractiveServiceCommentListArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceCommentListArgs(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceCommentListArgs(%+v)", *p)
 }
 
-type InteractionServiceCommentListResult struct {
+type InteractiveServiceCommentListResult struct {
 	Success *CommentListResponse `thrift:"success,0,optional"`
 }
 
-func NewInteractionServiceCommentListResult() *InteractionServiceCommentListResult {
-	return &InteractionServiceCommentListResult{}
+func NewInteractiveServiceCommentListResult() *InteractiveServiceCommentListResult {
+	return &InteractiveServiceCommentListResult{}
 }
 
-var InteractionServiceCommentListResult_Success_DEFAULT *CommentListResponse
+var InteractiveServiceCommentListResult_Success_DEFAULT *CommentListResponse
 
-func (p *InteractionServiceCommentListResult) GetSuccess() (v *CommentListResponse) {
+func (p *InteractiveServiceCommentListResult) GetSuccess() (v *CommentListResponse) {
 	if !p.IsSetSuccess() {
-		return InteractionServiceCommentListResult_Success_DEFAULT
+		return InteractiveServiceCommentListResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-var fieldIDToName_InteractionServiceCommentListResult = map[int16]string{
+var fieldIDToName_InteractiveServiceCommentListResult = map[int16]string{
 	0: "success",
 }
 
-func (p *InteractionServiceCommentListResult) IsSetSuccess() bool {
+func (p *InteractiveServiceCommentListResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *InteractionServiceCommentListResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentListResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -13755,7 +13755,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceCommentListResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractiveServiceCommentListResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -13765,7 +13765,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentListResult) ReadField0(iprot thrift.TProtocol) error {
+func (p *InteractiveServiceCommentListResult) ReadField0(iprot thrift.TProtocol) error {
 	p.Success = NewCommentListResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
@@ -13773,7 +13773,7 @@ func (p *InteractionServiceCommentListResult) ReadField0(iprot thrift.TProtocol)
 	return nil
 }
 
-func (p *InteractionServiceCommentListResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentListResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CommentList_result"); err != nil {
 		goto WriteStructBeginError
@@ -13802,7 +13802,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentListResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *InteractiveServiceCommentListResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -13821,11 +13821,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *InteractionServiceCommentListResult) String() string {
+func (p *InteractiveServiceCommentListResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceCommentListResult(%+v)", *p)
+	return fmt.Sprintf("InteractiveServiceCommentListResult(%+v)", *p)
 }
 
 type SocialServiceProcessor struct {

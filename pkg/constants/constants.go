@@ -5,10 +5,7 @@ import "time"
 const (
 	JWTValue = "MTAxNTkwMTg1Mw=="
 
-	// redis
-	ReidsDB_Chat       = 1
-	RedisDBInteraction = 3
-	RedisHashName      = "like_count"
+	ReidsDB_Chat = 1
 
 	// RPC
 	MuxConnection  = 1
@@ -16,20 +13,19 @@ const (
 	ConnectTimeout = 50 * time.Millisecond
 
 	// service name
-	APIServiceName         = "api"
-	UserServiceName        = "user"
-	InteractionServiceName = "interaction"
-	FollowServiceName      = "follow"
-	ChatServiceName        = "chat"
-	VideoServiceName       = "video"
+	APIServiceName     = "api"
+	UserServiceName    = "user"
+	CommentServiceName = "comment"
+	FollowServiceName  = "follow"
+	ChatServiceName    = "chat"
+	VideoServiceName   = "video"
 
 	// db table name
-	UserTableName     = "user"
-	ChatTableName     = "message"
-	CommentTableName  = "comment"
-	FavoriteTableName = "favorite"
-	FollowTableName   = "follow"
-	VideoTableName    = "video"
+	UserTableName    = "user"
+	ChatTableName    = "message"
+	CommentTableName = "comment"
+	FollowTableName  = "follow"
+	VideoTableName   = "video"
 
 	// snowflake
 	SnowflakeWorkerID     = 0
@@ -55,11 +51,9 @@ const (
 	// ffmpeg
 	FrameNum = 1
 
-	// interaction type
+	// action type
 	AddComment    = "1"
 	DeleteComment = "2"
-	Like          = "1"
-	Dislike       = "2"
 
 	// follow type
 	FollowAction = 1
