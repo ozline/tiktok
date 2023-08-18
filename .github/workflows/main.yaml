@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [user, video]
     steps:
 
       - name: Checkout code
@@ -25,7 +28,7 @@ jobs:
         run: go mod tidy
 
       - name: Build target
-        run: make user
+        run: make ${{ matrix.service }}
 
       - name: Archive production
         uses: actions/upload-artifact@v3
@@ -33,13 +36,19 @@ jobs:
           name: build-output-all
           path: output
 
-  test-user:
+  run-test:
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [user, video, follow]
     steps:
 
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: go mod tidy
 
       - name: Download production
         uses: actions/download-artifact@v3
@@ -52,31 +61,7 @@ jobs:
           compose-file: "./docker-compose.ci.yml"
 
       - name: Run local server
-        run: nohup sh ./output/user/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
+        run: nohup sh ./output/${{ matrix.service }}/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
 
       - name: Test interfaces
-        run: go test -v ./test/...
-
-  test-video:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Download production
-        uses: actions/download-artifact@v3
-        with:
-          name: build-output-all
-
-      - name: Set up environment
-        uses: isbang/compose-action@v1.5.1
-        with:
-          compose-file: "./docker-compose.ci.yml"
-
-      - name: Run local server
-        run: nohup sh ./output/user/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
-
-      - name: Test interfaces
-        run: go test -v ./test/...
+        run: go test -v --cover ./test/${{ matrix.service }}/...
