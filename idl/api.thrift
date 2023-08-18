@@ -119,7 +119,7 @@ struct PublishListResponse {
     3: required list<Video> video_list,
 }
 
-// Interactive
+// interaction
 
 struct FavoriteActionRequest {
     1: required string token,
@@ -250,7 +250,7 @@ service BasicService {
     PublishListResponse PublishList(1: PublishListRequest req) (api.get="/douyin/publish/list")
 }
 
-service InteractiveService {
+service interactionService {
     FavoriteActionResponse FavoriteAction(1: FavoriteActionRequest req) (api.post="/douyin/favorite/action")
     FavoriteListResponse FavoriteList(1: FavoriteListRequest req) (api.get="/douyin/favorite/list")
 
