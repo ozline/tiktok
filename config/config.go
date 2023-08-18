@@ -22,6 +22,8 @@ func Init(path string, service string) {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(path)
 
+	klog.Infof("config path: %v\n", path)
+
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			klog.Fatal("could not find config files")
