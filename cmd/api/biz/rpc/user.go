@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/pkg/loadbalance"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"github.com/ozline/tiktok/config"
@@ -32,6 +33,7 @@ func InitUserRPC() {
 		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),
 		client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithLoadBalancer(loadbalance.NewWeightedRoundRobinBalancer()),
 	)
 
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ozline/tiktok/pkg/utils"
-	"github.com/streadway/amqp"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type RabbitMQ struct {
@@ -25,6 +25,7 @@ func InitRabbitMQ() {
 		return
 	}
 	Rmq.conn = dial
+	return
 }
 
 func (r *RabbitMQ) destroy() {
