@@ -61,7 +61,8 @@ func main() {
 		panic(err)
 	}
 
-	svr := video.NewServer(new(VideoServiceImpl),
+	svr := video.NewServer(
+		new(VideoServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 			ServiceName: constants.VideoServiceName,
 		}),

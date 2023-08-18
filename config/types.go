@@ -56,4 +56,5 @@ type oss struct {
 	AccessKeySecret string `yaml:"accessKey-secret"`
 	BucketName      string
 	MainDirectory   string `yaml:"main-directory"`
+	DomainName      string `yaml:"domain-name"`
 }

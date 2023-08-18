@@ -158,7 +158,7 @@ func (x *User) fastReadField8(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *User) fastReadField9(buf []byte, _type int8) (offset int, err error) {
-	x.TotalFavorited, offset, err = fastpb.ReadString(buf, _type)
+	x.TotalFavorited, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -684,10 +684,10 @@ func (x *User) fastWriteField8(buf []byte) (offset int) {
 }
 
 func (x *User) fastWriteField9(buf []byte) (offset int) {
-	if x.TotalFavorited == "" {
+	if x.TotalFavorited == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 9, x.GetTotalFavorited())
+	offset += fastpb.WriteInt64(buf[offset:], 9, x.GetTotalFavorited())
 	return offset
 }
 
@@ -1107,10 +1107,10 @@ func (x *User) sizeField8() (n int) {
 }
 
 func (x *User) sizeField9() (n int) {
-	if x.TotalFavorited == "" {
+	if x.TotalFavorited == 0 {
 		return n
 	}
-	n += fastpb.SizeString(9, x.GetTotalFavorited())
+	n += fastpb.SizeInt64(9, x.GetTotalFavorited())
 	return n
 }
 

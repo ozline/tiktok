@@ -11,12 +11,12 @@ import (
 	"github.com/ozline/tiktok/pkg/errno"
 )
 
-func TestGetLikedVideo(t *testing.T) {
-	req := &video.GetFavoriteVideoInfoRequest{
-		VideoId: []int64{479434630982795264},
-		Token:   token,
-	}
-	resp, err := conn.GetFavoriteVideoInfo(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+func TestFeed(t *testing.T) {
+	req := &video.FeedRequest{
+		LatestTime: "2023-08-18 07:22:43"}
+
+	resp, err := conn.Feed(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -26,11 +26,10 @@ func TestGetLikedVideo(t *testing.T) {
 		t.Fail()
 	}
 	if resp.VideoList == nil {
-		t.Error(errno.NewErrNo(resp.Base.Code, resp.Base.Msg))
+		t.Error(errno.ServiceError.WithMessage("videoList is null"))
 		t.Fail()
 	}
-	//0值和nil不会显示
+
 	fmt.Printf("Resp:\n%+v\n", resp)
-	fmt.Println("success")
 
 }

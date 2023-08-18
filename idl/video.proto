@@ -17,7 +17,7 @@ message User{
     string avatar = 6;
     string background_image = 7;
     string signature = 8;
-    string total_favorited = 9;
+    int64 total_favorited = 9;
     int64 work_count = 10;
     int64 favorite_count = 11;
 

@@ -45,7 +45,7 @@ func TestPutVideo(t *testing.T) {
 					IsFinished: true,
 					Cover:      text_cover,
 					Token:      token,
-					Title:      fmt.Sprintf("%v test_video", time.Now()),
+					Title:      fmt.Sprintf("%v test_video", time.Now().Unix()),
 				})
 				break
 			}
