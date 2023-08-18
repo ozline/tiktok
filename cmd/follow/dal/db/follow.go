@@ -26,9 +26,12 @@ type Follow struct {
 var r = cache.RedisClient
 
 func FollowAction(ctx context.Context, follow *Follow) error {
+	if err := cache.Limit(ctx); err != nil {
+		return err
+	}
+
 	followResp := new(Follow)
 
-	//TODO:redis限流
 	//TODO:mysql的定时写入
 
 	tid := strconv.FormatInt(follow.ToUserId, 10)
@@ -90,8 +93,12 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 // 关注列表(获取to_user_id的列表)
 func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
+	if err := cache.Limit(ctx); err != nil {
+		return nil, err
+	}
+
 	var followList []int64
-	//TODO:redis限流
+
 	//TODO:mysql的定时写入
 	key := cache.FollowListKey(uid)
 
@@ -120,8 +127,11 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 
 // 粉丝列表(获取user_id的列表)
 func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
+	if err := cache.Limit(ctx); err != nil {
+		return nil, err
+	}
+
 	var followerList []int64
-	//TODO:redis限流
 	//TODO:mysql的定时写入
 
 	key := cache.FollowerListKey(uid)
@@ -151,10 +161,13 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 
 // 好友列表(获取to_user_id的列表)
 func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
+	if err := cache.Limit(ctx); err != nil {
+		return nil, err
+	}
+
 	var tempList []int64
 	var friendList []int64
 
-	//TODO:redis限流
 	//TODO:mysql的定时写入
 
 	//先获取本人关注的列表
