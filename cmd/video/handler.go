@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
 	"github.com/ozline/tiktok/cmd/video/rpc"
@@ -29,7 +29,6 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 	}
 	_, err = time.Parse("2006-01-02 15:04:05", req.LatestTime)
 	if err != nil {
-		log.Println("zz")
 		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
@@ -116,13 +115,13 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 				hanlerPutVideoError(stream, err)
 				return nil
 			}
-			log.Println("视频全部传输完成")
+			klog.Infof("视频全部传输完成")
 			resp.Base = pack.BuildBaseResp(nil)
 			resp.State = 2
 			stream.Send(resp)
 			break
 		}
-		log.Printf("received block %v:", req.GetBlockId())
+		klog.Infof("received block %v:", req.GetBlockId())
 		nextPos, err = bucket.AppendObject(config.OSS.MainDirectory+"/"+videoName, bytes.NewReader(req.VideoBlock), nextPos)
 		if err != nil {
 
