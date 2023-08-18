@@ -1,9 +1,10 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/ozline/tiktok/kitex_gen/chat/messageservice"
-	"testing"
 )
 
 var conn messageservice.Client

@@ -10,12 +10,10 @@ require (
 	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/hertz v0.6.7
 	github.com/cloudwego/kitex v0.6.2
-	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/pkg/errors v0.9.1
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/spf13/viper v1.16.0
@@ -60,6 +58,7 @@ require (
 	github.com/nyaruka/phonenumbers v1.0.55 // indirect
 	github.com/oleiade/lane v1.0.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/afero v1.9.5 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

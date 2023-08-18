@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/ozline/tiktok/config"
+	"github.com/ozline/tiktok/pkg/constants"
 )
 
 type Claims struct {
@@ -24,12 +24,12 @@ func CreateToken(userId int64) (string, error) {
 		},
 	}
 	tokenStruct := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return tokenStruct.SignedString([]byte(config.Server.Secret))
+	return tokenStruct.SignedString([]byte(constants.JWTValue))
 }
 
 func CheckToken(token string) (*Claims, error) {
 	response, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.Server.Secret), nil
+		return []byte(constants.JWTValue), nil
 	})
 
 	if err != nil {
