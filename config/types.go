@@ -1,7 +1,7 @@
 package config
 
 type server struct {
-	Secret  []byte
+	Secret  []byte `yaml:"jwt-secret"`
 	Version string
 	Name    string
 }
