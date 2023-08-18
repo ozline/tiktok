@@ -18,9 +18,11 @@ jobs:
         with:
           compose-file: "./docker-compose.ci.yml"
 
+      - name: Set up config
+        run: cp ./.github/config.ci.yaml ./config/config.yaml
+
       - name: Install dependencies
         run: go mod tidy
-        run: cp ./.github/config.ci.yaml ./config/config.yaml
 
       - name: Build target
         run: make user
