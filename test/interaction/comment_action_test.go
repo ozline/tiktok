@@ -11,12 +11,10 @@ import (
 
 func TestCommentAction(t *testing.T) {
 	content := "呜呜！！！"
-	id := "480406139545059328"
 	req := &interaction.CommentActionRequest{
-		VideoId:     "1",
-		ActionType:  "1",
+		VideoId:     1,
+		ActionType:  1,
 		CommentText: &content,
-		CommentId:   &id,
 		Token:       token,
 	}
 

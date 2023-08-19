@@ -8,7 +8,6 @@ const (
 	// redis
 	ReidsDB_Chat       = 1
 	RedisDBInteraction = 3
-	RedisHashName      = "like_count"
 	CommentExpiredTime = 1 * time.Hour
 
 	// RPC
@@ -57,10 +56,10 @@ const (
 	FrameNum = 1
 
 	// interaction type
-	AddComment    = "1"
-	DeleteComment = "2"
-	Like          = "1"
-	Dislike       = "2"
+	AddComment    = 1
+	DeleteComment = 2
+	Like          = 1
+	Dislike       = 2
 
 	// follow type
 	FollowAction = 1

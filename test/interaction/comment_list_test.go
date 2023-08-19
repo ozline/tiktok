@@ -12,7 +12,7 @@ import (
 
 func TestCommentList(t *testing.T) {
 	req := &interaction.CommentListRequest{
-		VideoId: "1",
+		VideoId: 1,
 		Token:   token,
 	}
 
