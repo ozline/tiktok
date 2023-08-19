@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/redis/go-redis/v9"
 	"strconv"
-	"time"
 )
 
 type Comment struct {
@@ -58,7 +58,7 @@ func AddComments(ctx context.Context, videoId int64, comments *[]Comment, date *
 		klog.Infof("Error: %v\n", err)
 		return err
 	}
-	err = RedisClient.Expire(ctx, strconv.FormatInt(videoId, 10), 60*time.Minute).Err()
+	err = RedisClient.Expire(ctx, strconv.FormatInt(videoId, 10), constants.CommentExpiredTime).Err()
 	if err != nil {
 		klog.Infof("Error: %v\n", err)
 	} else {

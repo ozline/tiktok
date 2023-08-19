@@ -9,6 +9,7 @@ const (
 	ReidsDB_Chat       = 1
 	RedisDBInteraction = 3
 	RedisHashName      = "like_count"
+	CommentExpiredTime = 1 * time.Hour
 
 	// RPC
 	MuxConnection  = 1
