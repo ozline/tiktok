@@ -4,10 +4,13 @@ package api
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
+	"github.com/ozline/tiktok/cmd/api/biz/pack"
+	"github.com/ozline/tiktok/cmd/api/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
 // FavoriteAction .
@@ -17,13 +20,24 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	var req api.FavoriteActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.FavoriteActionResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	err = rpc.FavoriteAction(ctx, &interaction.FavoriteActionRequest{
+		Token:      req.Token,
+		VideoId:    strconv.FormatInt(req.VideoID, 10),
+		ActionType: strconv.FormatInt(req.ActionType, 10),
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	pack.SendResponse(c, resp)
 }
 
 // FavoriteList .
@@ -33,13 +47,24 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	var req api.FavoriteListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.FavoriteListResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	videoList, err := rpc.FavoriteList(ctx, &interaction.FavoriteListRequest{
+		UserId: strconv.FormatInt(req.UserID, 10),
+		Token:  req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.VideoList = pack.VideoListFavorited(videoList)
+	pack.SendResponse(c, resp)
 }
 
 // CommentAction .
@@ -49,13 +74,27 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	var req api.CommentActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.CommentActionResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	comment, err := rpc.CommentAction(ctx, &interaction.CommentActionRequest{
+		VideoId:     strconv.FormatInt(req.VideoID, 10),
+		ActionType:  strconv.FormatInt(req.ActionType, 10),
+		CommentText: &req.CommentText,
+		// CommentId: req.CommentID,
+		// TODO: fix type error
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.Comment = pack.Comment(comment)
+	pack.SendResponse(c, resp)
 }
 
 // CommentList .
@@ -65,11 +104,22 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 	var req api.CommentListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.CommentListResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	commentList, err := rpc.CommentList(ctx, &interaction.CommentListRequest{
+		VideoId: strconv.FormatInt(req.VideoID, 10),
+		Token:   req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.CommentList = pack.CommentList(commentList)
+	pack.SendResponse(c, resp)
 }
