@@ -26,6 +26,7 @@ func TestMain(m *testing.M) {
 
 	touserid = 10002
 	actiontype = 1
+	id = 10001
 
 	m.Run()
 }

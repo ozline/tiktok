@@ -63,5 +63,6 @@ const (
 	Dislike       = "2"
 
 	// follow type
-	FollowAction = 1
+	FollowAction   = 1
+	UnFollowAction = 2
 )

@@ -5,9 +5,11 @@ import (
 	"time"
 
 	"github.com/ozline/tiktok/kitex_gen/follow"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 func testAction(t *testing.T) {
+	token, _ = utils.CreateToken(id)
 	err := followService.Action(&follow.ActionRequest{
 		Token:      token,
 		ToUserId:   touserid,
@@ -22,6 +24,7 @@ func testAction(t *testing.T) {
 }
 
 func BenchmarkAction(b *testing.B) {
+	token, _ = utils.CreateToken(id)
 	for i := 0; i < b.N; i++ {
 		err := followService.Action(&follow.ActionRequest{
 			Token:      token,
