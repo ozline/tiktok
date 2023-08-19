@@ -1,8 +1,9 @@
 package service
 
 import (
-	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"time"
+
+	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
@@ -36,9 +37,9 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*
 	if err != nil {
 		return nil, err
 	}
-  
+
 	if len(comments) != 0 {
-		err = cache.AddComments(s.ctx, videoId, &comments)
+		err = cache.AddComments(s.ctx, req.VideoId, &comments)
 		if err != nil {
 			return nil, err
 		}

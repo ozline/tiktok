@@ -30,8 +30,9 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 	if err != nil {
 		return nil, err
 	}
+
 	if exist == 1 {
-		err = cache.AddComment(s.ctx, videoId, comment)
+		err = cache.AddComment(s.ctx, req.VideoId, comment)
 		if err != nil {
 			return nil, err
 		}
