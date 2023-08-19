@@ -1,32 +1,22 @@
 package main
 
 import (
-	"context"
-	"testing"
-	"time"
-
-	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/ozline/tiktok/pkg/errno"
+	"testing"
 )
 
-func TestCommentList(t *testing.T) {
+func testCommentList(t *testing.T) {
 	req := &interaction.CommentListRequest{
-		VideoId: 1,
+		VideoId: videoId,
 		Token:   token,
 	}
 
-	resp, err := conn.CommentList(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
+	_, err := interactionService.GetComments(req)
 
 	if err != nil {
+		t.Logf("err: [%v] \n", err)
 		t.Error(err)
 		t.Fail()
 	}
-
-	if resp.Base.Code != errno.SuccessCode {
-		t.Error(errno.NewErrNo(resp.Base.Code, *resp.Base.Msg))
-		t.Fail()
-	}
-
-	t.Logf("Resp:\n%v\n\n", resp)
+	t.Log("------------testCommentList success---------------")
 }

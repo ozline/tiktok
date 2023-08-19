@@ -16,10 +16,21 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 	}
 
 	action := &db.Follow{
-		UserId:     claim.UserId,
-		ToUserId:   req.ToUserId,
-		ActionType: req.ActionType,
+		UserId:   claim.UserId,
+		ToUserId: req.ToUserId,
 	}
 
-	return db.FollowAction(s.ctx, action)
+	if req.ActionType == 1 {
+		err = db.FollowAction(s.ctx, action)
+	} else if req.ActionType == 2 {
+		err = db.UnFollowAction(s.ctx, action)
+	} else {
+		return errno.UnexpectedTypeError
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
