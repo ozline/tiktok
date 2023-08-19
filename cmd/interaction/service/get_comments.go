@@ -1,7 +1,6 @@
 package service
 
 import (
-	"encoding/json"
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"strconv"
 	"time"
@@ -28,7 +27,7 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*
 		}
 		for _, rComment := range *rComments {
 			var comment db.Comment
-			err = json.Unmarshal([]byte((rComment.Member).(string)), &comment)
+			_, err = comment.UnmarshalMsg([]byte(rComment.Member.(string)))
 			if err != nil {
 				return nil, err
 			}
@@ -42,17 +41,11 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*
 	if err != nil {
 		return nil, err
 	}
-
-	var rComments []cache.Comment
-	var dates []float64
-	for _, comment := range comments {
-		rComments = append(rComments, cache.Comment{Id: comment.Id, UserId: comment.UserId, Content: comment.Content})
-		dates = append(dates, float64(comment.CreatedAt.Unix()))
-	}
-
-	err = cache.AddComments(s.ctx, videoId, &rComments, &dates)
-	if err != nil {
-		return nil, err
+	if len(comments) != 0 {
+		err = cache.AddComments(s.ctx, videoId, &comments)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &comments, nil
 }

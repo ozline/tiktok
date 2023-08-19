@@ -31,8 +31,7 @@ func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest
 		return nil, err
 	}
 	if exist == 1 {
-		err = cache.DeleteComment(s.ctx, comment.VideoId,
-			&cache.Comment{Id: comment.Id, UserId: comment.UserId, Content: comment.Content})
+		err = cache.DeleteComment(s.ctx, comment.VideoId, comment)
 		if err != nil {
 			return nil, err
 		}
