@@ -2,19 +2,13 @@ package cache
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/redis/go-redis/v9"
 	"strconv"
 )
-
-type Comment struct {
-	Id      int64  `json:"id"`
-	UserId  int64  `json:"user_id"`
-	Content string `json:"content"`
-}
 
 func GetComments(ctx context.Context, videoId int64) (comments *[]redis.Z, err error) {
 	rComments, err := RedisClient.ZRevRangeWithScores(ctx, strconv.FormatInt(videoId, 10), 0, -1).Result()
@@ -26,31 +20,31 @@ func GetComments(ctx context.Context, videoId int64) (comments *[]redis.Z, err e
 	return &rComments, nil
 }
 
-func AddComment(ctx context.Context, videoId int64, comment *Comment, date float64) (err error) {
+func AddComment(ctx context.Context, videoId int64, comment *db.Comment) (err error) {
 	//json序列化
-	data, err := json.Marshal(*comment)
+	data, err := (*comment).MarshalMsg(nil)
 	if err != nil {
 		klog.Infof("Error: %v\n", err)
 		return
 	}
-	err = RedisClient.ZAdd(ctx, strconv.FormatInt(videoId, 10), redis.Z{Score: date, Member: data}).Err()
+	err = RedisClient.ZAdd(ctx, strconv.FormatInt(videoId, 10), redis.Z{Score: float64(comment.CreatedAt.Unix()), Member: data}).Err()
 	if err != nil {
 		klog.Infof("Error: %v\n", err)
 	} else {
-		klog.Infof("Add comment: videoId %v comment %v date %v\n", videoId, data, date)
+		klog.Infof("Add comment: videoId %v comment %v date %v\n", videoId, comment)
 	}
 	return
 }
 
-func AddComments(ctx context.Context, videoId int64, comments *[]Comment, date *[]float64) (err error) {
+func AddComments(ctx context.Context, videoId int64, comments *[]db.Comment) (err error) {
 	var zComments []redis.Z
-	for index, comment := range *comments {
-		data, err := json.Marshal(comment)
+	for _, comment := range *comments {
+		data, err := comment.MarshalMsg(nil)
 		if err != nil {
 			klog.Infof("Error: %v\n", err)
 			return err
 		}
-		zComments = append(zComments, redis.Z{Score: (*date)[index], Member: data})
+		zComments = append(zComments, redis.Z{Score: float64(comment.CreatedAt.Unix()), Member: data})
 	}
 	a, err := RedisClient.ZAdd(ctx, strconv.FormatInt(videoId, 10), zComments...).Result()
 	fmt.Println(a)
@@ -67,8 +61,8 @@ func AddComments(ctx context.Context, videoId int64, comments *[]Comment, date *
 	return
 }
 
-func DeleteComment(ctx context.Context, videoId int64, comment *Comment) (err error) {
-	data, err := json.Marshal(*comment)
+func DeleteComment(ctx context.Context, videoId int64, comment *db.Comment) (err error) {
+	data, err := (*comment).MarshalMsg(nil)
 	if err != nil {
 		klog.Infof("Error: %v\n", err)
 		return

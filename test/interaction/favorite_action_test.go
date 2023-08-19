@@ -12,8 +12,8 @@ import (
 
 func TestFavoriteAction(t *testing.T) {
 	req := &interaction.FavoriteActionRequest{
-		VideoId:    "1",
-		ActionType: "1",
+		VideoId:    1,
+		ActionType: 1,
 		Token:      token,
 	}
 

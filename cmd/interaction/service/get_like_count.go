@@ -6,7 +6,8 @@ import (
 )
 
 func (s *InteractionService) GetLikeCount(req *interaction.FavoriteCountRequest) (int64, error) {
-	likeCount, err := cache.GetLikeCount(s.ctx, req.VideoId)
+
+	likeCount, err := cache.GetVideoLikeCount(s.ctx, req.VideoId)
 	if err != nil {
 		return 0, err
 	}
