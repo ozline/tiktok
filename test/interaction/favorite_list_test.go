@@ -13,7 +13,7 @@ import (
 func TestFavoriteList(t *testing.T) {
 
 	req := &interaction.FavoriteListRequest{
-		UserId: "1",
+		UserId: 1,
 		Token:  token,
 	}
 

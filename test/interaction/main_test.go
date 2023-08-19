@@ -14,7 +14,7 @@ var token string
 func TestMain(m *testing.M) {
 	token, _ = utils.CreateToken(10000)
 	// 连接服务器
-	c, err := interactionservice.NewClient("interactive",
+	c, err := interactionservice.NewClient("interaction",
 		client.WithHostPorts("0.0.0.0:10005"),
 		client.WithMuxConnection(constants.MuxConnection))
 
