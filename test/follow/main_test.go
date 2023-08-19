@@ -4,9 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ozline/tiktok/cmd/chat/dal"
+	"github.com/ozline/tiktok/cmd/follow/dal"
 	"github.com/ozline/tiktok/cmd/follow/service"
 	"github.com/ozline/tiktok/config"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 var (
@@ -26,6 +27,8 @@ func TestMain(m *testing.M) {
 
 	touserid = 10002
 	actiontype = 1
+	token, _ = utils.CreateToken(10001)
+	id = 10001
 
 	m.Run()
 }
