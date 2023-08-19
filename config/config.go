@@ -87,7 +87,7 @@ func InitForTest() {
 	}
 
 	Mysql = &mySQL{
-		Addr:     "127.0.0.1:3306",
+		Addr:     "127.0.0.1:3307",
 		Database: "tiktok",
 		Username: "tiktok",
 		Password: "tiktok",
@@ -101,7 +101,7 @@ func InitForTest() {
 	}
 
 	Redis = &redis{
-		Addr:     "127.0.0.1:6379",
+		Addr:     "127.0.0.1:6380",
 		Password: "tiktok",
 	}
 }

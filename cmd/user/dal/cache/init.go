@@ -16,7 +16,7 @@ func Init() {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     config.Redis.Addr,
 		Password: config.Redis.Password,
-		DB:       0,
+		DB:       1,
 	})
 
 	err := rdb.Set(ctx, "test", "just for test", 0).Err()
