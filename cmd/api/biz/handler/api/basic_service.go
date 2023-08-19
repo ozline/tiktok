@@ -6,7 +6,6 @@ import (
 	"context"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
 	"github.com/ozline/tiktok/cmd/api/biz/pack"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
@@ -26,7 +25,12 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.FeedResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	// tmp, nexttime, err := rpc.VideoFeed(ctx, &video.FeedRequest{
+	// 	LatestTime: req.LatestTime,
+	// 	Token:      *req.Token,
+	// })
+
+	pack.SendResponse(c, resp)
 }
 
 // UserRegister .
@@ -122,7 +126,7 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.PublishActionResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	pack.SendResponse(c, resp)
 }
 
 // PublishList .
@@ -138,5 +142,5 @@ func PublishList(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.PublishListResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	pack.SendResponse(c, resp)
 }
