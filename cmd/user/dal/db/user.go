@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ozline/tiktok/pkg/errno"
 	"gorm.io/gorm"
 )
 
@@ -29,6 +30,18 @@ TODO: follow_count, follower_count, is_follow, work_count, favorite_count, total
 */
 
 func CreateUser(ctx context.Context, user *User) (*User, error) {
+	userResp := new(User)
+
+	err := DB.WithContext(ctx).Where("username = ?", user.Username).First(&userResp).Error
+
+	if err == nil {
+		return nil, errno.UserExistedError
+	}
+
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
 	if err := DB.WithContext(ctx).Create(user).Error; err != nil {
 		// add some logs
 		return nil, err
@@ -46,7 +59,7 @@ func GetUserByUsername(ctx context.Context, username string) (*User, error) {
 		// add some logs
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("User not found")
+			return nil, err
 		}
 		return nil, err
 	}
