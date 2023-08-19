@@ -1,7 +1,7 @@
 package config
 
 type server struct {
-	Secret  []byte `mapstructure:"jwt-secret"`
+	Secret  []byte
 	Version string
 	Name    string
 }
