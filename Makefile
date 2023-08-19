@@ -4,7 +4,7 @@ CONFIG_PATH = $(DIR)/config
 IDL_PATH = $(DIR)/idl
 OUTPUT_PATH = $(DIR)/output
 
-SERVICES := api user follow interaction video
+SERVICES := api user follow interaction video chat
 service = $(word 1, $@)
 
 # mock gen

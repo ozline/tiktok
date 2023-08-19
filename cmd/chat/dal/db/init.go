@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/ozline/tiktok/config"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
 	"gorm.io/driver/mysql"
@@ -10,6 +10,10 @@ import (
 	"gorm.io/gorm/schema"
 )
 
+type DBAction struct {
+	DB *gorm.DB
+}
+
 var (
 	DB *gorm.DB
 	SF *utils.Snowflake
@@ -17,8 +21,7 @@ var (
 
 func Init() {
 	var err error
-
-	DB, err = gorm.Open(mysql.Open(config.Etcd.Addr),
+	DB, err = gorm.Open(mysql.Open(utils.GetMysqlDSN()),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,                                // 禁用默认事务
@@ -39,14 +42,17 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-
 	sqlDB.SetMaxIdleConns(constants.MaxIdleConns)       // 最大闲置连接数
 	sqlDB.SetMaxOpenConns(constants.MaxConnections)     // 最大连接数
 	sqlDB.SetConnMaxLifetime(constants.ConnMaxLifetime) // 最大可复用时间
 
 	DB = DB.Table(constants.ChatTableName)
-
 	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
 		panic(err)
+	}
+}
+func NewDBAction() *DBAction {
+	return &DBAction{
+		DB: DB,
 	}
 }

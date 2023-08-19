@@ -78,10 +78,21 @@ struct CommentListResponse {
     2: required list<Comment> comment_list
 }
 
+struct CommentCountRequest {
+    1: required string video_id,
+    2: optional string token,
+}
+
+struct CommentCountResponse {
+    1: required BaseResp base,
+    2: required i64 comment_count
+}
+
 service InteractionService {
     FavoriteActionResponse FavoriteAction(1: FavoriteActionRequest req)
     FavoriteListResponse FavoriteList(1 : FavoriteListRequest req)
     FavoriteCountResponse FavoriteCount(1 : FavoriteCountRequest req)
     CommentActionResponse CommentAction(1 : CommentActionRequest req)
     CommentListResponse CommentList(1 : CommentListRequest req)
+    CommentCountResponse CommentCount(1 : CommentCountRequest req)
 }

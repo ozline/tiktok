@@ -1,11 +1,30 @@
 package mq
 
 import (
-	"fmt"
+	"time"
 
-	"github.com/ozline/tiktok/pkg/utils"
+	"github.com/cloudwego/kitex/pkg/klog"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"gorm.io/gorm"
 )
+
+type Message struct {
+	Id         int64
+	ToUserId   int64
+	FromUserId int64
+	Content    string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  gorm.DeletedAt `gorm:"index"`
+}
+type MiddleMessage struct {
+	Id         int64
+	ToUserId   int64
+	FromUserId int64
+	Content    string
+	CreatedAt  string
+	UpdatedAt  string
+}
 
 type RabbitMQ struct {
 	conn  *amqp.Connection
@@ -21,7 +40,7 @@ func InitRabbitMQ() {
 	}
 	dial, err := amqp.Dial(Rmq.mqurl)
 	if err != nil {
-		fmt.Println(err)
+		klog.Info(err)
 		return
 	}
 	Rmq.conn = dial
