@@ -31,7 +31,7 @@ message Video{
     string cover_url = 4;
     int64 favorite_count = 5;
     int64 comment_count = 6;
-    int64 is_favorite = 7;
+    bool is_favorite = 7;
     string title = 8;
 }
 
@@ -71,6 +71,13 @@ message GetFavoriteVideoInfoResponse{
     repeated Video video_list = 2; //获取的video信息
 }
 
+message GetPublishListRequest{
+    string token = 1;
+    string user_id = 2 ;
+}message GetPublishListResponse{
+    BaseResp base = 1;
+    repeated Video video_list = 2 ;
+}
 service VideoService {
     rpc Feed(FeedRequest) returns (FeedResponse){};
     rpc PutVideo(stream PutVideoRequest) returns (stream PutVideoResponse){};

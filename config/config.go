@@ -54,10 +54,6 @@ func configMapping(srv string) {
 	RabbitMQ = &c.RabbitMQ
 	Redis = &c.Redis
 	OSS = &c.OSS
-	OSS.AccessKeyID = viper.GetString("oss.accessKey-id")
-	OSS.AccessKeySecret = viper.GetString("oss.accessKey-secret")
-	OSS.MainDirectory = viper.GetString("oss.main-directory")
-	OSS.DomainName = viper.GetString("oss.domain-name")
 	Service = GetService(srv)
 }
 

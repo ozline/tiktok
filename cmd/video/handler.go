@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"time"
 
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
@@ -24,15 +22,9 @@ type VideoServiceImpl struct{}
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
 	resp = new(video.FeedResponse)
-	if req.LatestTime == "" {
-		req.LatestTime = time.Now().Format("2006-01-02 15:04:05")
+	if req.LatestTime == 0 {
+		req.LatestTime = time.Now().Unix()
 	}
-	_, err = time.Parse("2006-01-02 15:04:05", req.LatestTime)
-	if err != nil {
-		resp.Base = pack.BuildBaseResp(errno.ParamError)
-		return resp, nil
-	}
-	//似乎不太合理
 	if req.Token == "" {
 		req.Token, err = utils.CreateToken(10000)
 		if err != nil {
@@ -67,70 +59,75 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 
 func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
 	resp := new(video.PutVideoResponse)
-	//文件名
-	var videoName string
-	var coverName string
 	//追加位置
 	var nextPos int64 = 0
-	// 创建OSSClient实例。
-	client, err := oss.New(config.OSS.Endpoint, config.OSS.AccessKeyID, config.OSS.AccessKeySecret)
-	if err != nil {
-		hanlerPutVideoError(stream, err)
-		return nil
-	}
-	bucket, err := client.Bucket(config.OSS.BucketName)
-	if err != nil {
-		hanlerPutVideoError(stream, err)
-		return nil
-	}
+	var coverName string
+	var videoName string
+	var uploadContext context.Context
+	var createContext context.Context
 	for {
 		req, err := stream.Recv()
 		if err != nil {
-			hanlerPutVideoError(stream, err)
+			resp.Base = pack.BuildBaseResp(err)
+			resp.State = 0
+			stream.Send(resp)
 			return nil
 		}
 		if _, err := utils.CheckToken(req.Token); err != nil {
-			hanlerPutVideoError(stream, err)
+			resp.Base = pack.BuildBaseResp(err)
+			resp.State = 0
+			stream.Send(resp)
 			return nil
 		}
-		if videoName == "" {
-			videoName = generateVideoName(req.UserId)
-		}
 		if coverName == "" {
-			coverName = generateCoverName(req.UserId)
+			coverName = pack.GenerateCoverName(req.UserId)
 		}
-		if req.IsFinished {
-			//上传封面
-			err = bucket.PutObject(config.OSS.MainDirectory+"/"+coverName, bytes.NewReader(req.Cover))
+		if videoName == "" {
+			videoName = pack.GenerateVideoName(req.UserId)
+		}
+		if !req.IsFinished { //上传一部分视频
+			uploadContext = context.WithValue(stream.Context(), "nextPos", nextPos)
+			uploadContext = context.WithValue(uploadContext, "videoName", videoName)
+			nextPos, err = service.NewVideoService(uploadContext).UploadVideo(req)
 			if err != nil {
-				hanlerPutVideoError(stream, err)
+				resp.Base = pack.BuildBaseResp(err)
+				resp.State = 0
+				stream.Send(resp)
+				return nil
+			}
+			resp.Base = pack.BuildBaseResp(nil)
+			resp.State = 1
+			stream.Send(resp)
+		} else { //当视频全部上传完成后，开始封面的上传和持久化处理
+			//上传封面
+			uploadContext = context.WithValue(stream.Context(), "coverName", coverName)
+			err = service.NewVideoService(uploadContext).UploadCover(req)
+			if err != nil {
+				resp.Base = pack.BuildBaseResp(err)
+				resp.State = 0
+				stream.Send(resp)
 				return nil
 			}
 			//保存到数据库
 			playUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
 			coverUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
-
-			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
+			createContext = context.WithValue(stream.Context(), "playUrl", playUrl)
+			createContext = context.WithValue(createContext, "coverUrl", coverUrl)
+			_, err = service.NewVideoService(createContext).CreateVideo(req)
 			if err != nil {
-				hanlerPutVideoError(stream, err)
+				resp.Base = pack.BuildBaseResp(err)
+				resp.State = 0
+				stream.Send(resp)
 				return nil
 			}
 			klog.Infof("视频全部传输完成")
 			resp.Base = pack.BuildBaseResp(nil)
 			resp.State = 2
 			stream.Send(resp)
+			//结束循环停止接收
 			break
 		}
-		klog.Infof("received block %v:", req.GetBlockId())
-		nextPos, err = bucket.AppendObject(config.OSS.MainDirectory+"/"+videoName, bytes.NewReader(req.VideoBlock), nextPos)
-		if err != nil {
 
-			hanlerPutVideoError(stream, err)
-			return nil
-		}
-		resp.Base = pack.BuildBaseResp(nil)
-		resp.State = 1
-		stream.Send(resp)
 	}
 	stream.Close()
 	return
@@ -174,18 +171,4 @@ func hanlerPutVideoError(stream video.VideoService_PutVideoServer, err error) {
 	resp.State = 0
 	stream.Send(resp)
 
-}
-func generateVideoName(UserId int64) string {
-	currentTime := time.Now()
-	// 获取年月日和小时分钟
-	year, month, day := currentTime.Date()
-	hour, minute := currentTime.Hour(), currentTime.Minute()
-	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_video.mp4", UserId, year, month, day, hour, minute)
-}
-func generateCoverName(UserId int64) string {
-	currentTime := time.Now()
-	// 获取年月日和小时分钟
-	year, month, day := currentTime.Date()
-	hour, minute := currentTime.Hour(), currentTime.Minute()
-	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_cover.jpg", UserId, year, month, day, hour, minute)
 }

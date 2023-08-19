@@ -1,6 +1,9 @@
 package pack
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/ozline/tiktok/kitex_gen/user"
 
 	"github.com/ozline/tiktok/cmd/video/dal/db"
@@ -13,7 +16,7 @@ func Video(data *db.Video, user *user.User) *video.Video {
 	}
 	return &video.Video{
 		Id: data.Id,
-		Anthor: &video.User{
+		Author: &video.User{
 			Id:              user.Id,
 			Name:            user.Name,
 			FollowCount:     user.FollowCount,
@@ -49,7 +52,7 @@ func VideoLiked(data *db.Video, user *user.User) *video.Video {
 	}
 	return &video.Video{
 		Id: data.Id,
-		Anthor: &video.User{
+		Author: &video.User{
 			Id:              user.Id,
 			Name:            user.Name,
 			FollowCount:     user.FollowCount,
@@ -76,4 +79,18 @@ func VideoLikedList(data []db.Video, userList []*user.User) []*video.Video {
 		videoList = append(videoList, VideoLiked(&data[i], userList[i]))
 	}
 	return videoList
+}
+func GenerateVideoName(UserId int64) string {
+	currentTime := time.Now()
+	// 获取年月日和小时分钟
+	year, month, day := currentTime.Date()
+	hour, minute := currentTime.Hour(), currentTime.Minute()
+	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_video.mp4", UserId, year, month, day, hour, minute)
+}
+func GenerateCoverName(UserId int64) string {
+	currentTime := time.Now()
+	// 获取年月日和小时分钟
+	year, month, day := currentTime.Date()
+	hour, minute := currentTime.Hour(), currentTime.Minute()
+	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_cover.jpg", UserId, year, month, day, hour, minute)
 }

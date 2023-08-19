@@ -58,13 +58,13 @@ func TestPutVideo(t *testing.T) {
 				UserId:     10000,
 				BlockId:    blockCount,
 				IsFinished: false,
-				Title:      fmt.Sprintf("%v test_video", time.Now()),
 				Token:      token,
 			}
 			fmt.Printf("正在发送block %v\n", blockCount)
 			err = putStream.Send(req)
 			if err != nil {
-				panic(err)
+				t.Error(err)
+				t.Fail()
 			}
 			blockCount++
 		}
