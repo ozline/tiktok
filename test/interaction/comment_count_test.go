@@ -8,7 +8,7 @@ import (
 func testCommentCount(t *testing.T) {
 
 	req := &interaction.CommentCountRequest{
-		VideoId: "1",
+		VideoId: 1,
 		Token:   &token,
 	}
 	_, err := interactionService.CountComments(req)

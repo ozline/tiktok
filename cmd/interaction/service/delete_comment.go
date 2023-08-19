@@ -5,18 +5,12 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 
-	"strconv"
 )
 
 // DeleteComment delete comment
 func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest) (*db.Comment, error) {
 
-	commentId, err := strconv.ParseInt(*req.CommentId, 10, 64)
-	if err != nil {
-		return nil, err
-	}
-
-	comment, err := db.GetCommentByID(s.ctx, commentId)
+	comment, err := db.GetCommentByID(s.ctx, *req.CommentId)
 	if err != nil {
 		return nil, err
 	}
