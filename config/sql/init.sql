@@ -66,7 +66,7 @@ create table tiktok.follow
     `status`      bigint    default 1                 not null,
     `user_id`     bigint                              not null comment 'user id',
     `to_user_id`  bigint                              not null comment 'target user id',
-    `action_type` bigint    default 1                 not null comment 'action type',
+    `status`      bigint    default 1                 not null comment 'status',
     `created_at`  timestamp default current_timestamp not null,
     `updated_at`  timestamp default current_timestamp not null on update current_timestamp comment 'update profile time',
     `deleted_at`  timestamp default null null,
