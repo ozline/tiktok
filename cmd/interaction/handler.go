@@ -15,11 +15,11 @@ import (
 	"github.com/ozline/tiktok/pkg/utils"
 )
 
-// interactionServiceImpl implements the last service interface defined in the IDL.
-type interactionServiceImpl struct{}
+// InteractionServiceImpl implements the last service interface defined in the IDL.
+type InteractionServiceImpl struct{}
 
 // FavoriteAction implements the interactionServiceImpl interface.
-func (s *interactionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
+func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
 	resp = new(interaction.FavoriteActionResponse)
 
 	claims, err := utils.CheckToken(req.Token)
@@ -53,7 +53,7 @@ func (s *interactionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 }
 
 // FavoriteList implements the interactionServiceImpl interface.
-func (s *interactionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
+func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
 	resp = new(interaction.FavoriteListResponse)
 
 	if _, err := utils.CheckToken(req.Token); err != nil {
@@ -78,7 +78,7 @@ func (s *interactionServiceImpl) FavoriteList(ctx context.Context, req *interact
 }
 
 // CommentAction implements the interactionServiceImpl interface.
-func (s *interactionServiceImpl) CommentAction(ctx context.Context, req *interaction.CommentActionRequest) (resp *interaction.CommentActionResponse, err error) {
+func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interaction.CommentActionRequest) (resp *interaction.CommentActionResponse, err error) {
 	resp = new(interaction.CommentActionResponse)
 
 	commentResp := new(db.Comment)
@@ -139,7 +139,7 @@ func (s *interactionServiceImpl) CommentAction(ctx context.Context, req *interac
 }
 
 // CommentList implements the interactionServiceImpl interface.
-func (s *interactionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
+func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
 	resp = new(interaction.CommentListResponse)
 
 	// 校验token
@@ -186,7 +186,7 @@ func (s *interactionServiceImpl) CommentList(ctx context.Context, req *interacti
 }
 
 // FavoriteCount implements the interactionServiceImpl interface.
-func (s *interactionServiceImpl) FavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest) (resp *interaction.FavoriteCountResponse, err error) {
+func (s *InteractionServiceImpl) FavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest) (resp *interaction.FavoriteCountResponse, err error) {
 	resp = new(interaction.FavoriteCountResponse)
 
 	if _, err := utils.CheckToken(req.Token); err != nil {
@@ -202,5 +202,28 @@ func (s *interactionServiceImpl) FavoriteCount(ctx context.Context, req *interac
 
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.LikeCount = likeCount
+	return
+}
+
+// CommentCount implements the interactionServiceImpl interface.
+func (s *InteractionServiceImpl) CommentCount(ctx context.Context, req *interaction.CommentCountRequest) (resp *interaction.CommentCountResponse, err error) {
+	resp = new(interaction.CommentCountResponse)
+
+	// 校验token
+	if req.Token != nil {
+		if _, err = utils.CheckToken(*req.Token); err != nil {
+			resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+			return resp, nil
+		}
+	}
+
+	count, err := service.NewInteractionService(ctx).CountComments(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.CommentCount = count
 	return
 }
