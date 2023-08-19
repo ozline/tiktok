@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/bytedance/sonic"
+	"github.com/ozline/tiktok/cmd/chat/dal/db"
 	"github.com/ozline/tiktok/cmd/chat/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/chat"
 )
@@ -12,6 +13,7 @@ func (c *ChatService) SendMessage(req *chat.MessagePostRequest) error {
 
 	//构造消息格式
 	message := &mq.MiddleMessage{
+		Id:         db.SF.NextVal(),
 		ToUserId:   req.ToUserId,
 		FromUserId: req.FromUserId,
 		Content:    req.Content,

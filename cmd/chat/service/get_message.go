@@ -1,8 +1,7 @@
 package service
 
 import (
-	"encoding/json"
-
+	"github.com/bytedance/sonic"
 	"github.com/ozline/tiktok/cmd/chat/dal/db"
 	"github.com/ozline/tiktok/cmd/chat/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/chat"
@@ -16,7 +15,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		return nil, err
 	}
 	if ok {
-		mq_message, _ := json.Marshal(messages)
+		mq_message, _ := sonic.Marshal(messages)
 		err = mq.MessageMQCli.Publish(c.ctx, string(mq_message))
 		if err != nil {
 			return messages, err
