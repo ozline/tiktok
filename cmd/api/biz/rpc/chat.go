@@ -55,3 +55,17 @@ func MessageAction(ctx context.Context, req *chat.MessagePostRequest) error {
 
 	return nil
 }
+
+func MessageList(ctx context.Context, req *chat.MessageListRequest) ([]*chat.Message, int64, error) {
+	resp, err := chatClient.MessageList(ctx, req)
+
+	if err != nil {
+		return nil, -1, err
+	}
+
+	if resp.Base.Code != errno.SuccessCode {
+		return nil, -1, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
+	}
+
+	return resp.MessageList, resp.Total, nil
+}
