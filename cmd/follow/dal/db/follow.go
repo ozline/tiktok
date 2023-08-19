@@ -23,11 +23,13 @@ type Follow struct {
 	ActionType int64 `gorm:"default:1"` //1-关注, 2-取消关注
 }
 
+var r = cache.RedisClient
+
 func FollowAction(ctx context.Context, follow *Follow) error {
 	if err := cache.Limit(ctx); err != nil {
 		return err
 	}
-	r := cache.RedisClient
+
 	followResp := new(Follow)
 
 	tid := strconv.FormatInt(follow.ToUserId, 10)
@@ -93,7 +95,6 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		return nil, err
 	}
 
-	r := cache.RedisClient
 	var followList []int64
 
 	key := cache.FollowListKey(uid)
@@ -128,7 +129,6 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		return nil, err
 	}
 
-	r := cache.RedisClient
 	var followerList []int64
 
 	key := cache.FollowerListKey(uid)
@@ -163,7 +163,6 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		return nil, err
 	}
 
-	r := cache.RedisClient
 	var tempList []int64
 	var friendList []int64
 
