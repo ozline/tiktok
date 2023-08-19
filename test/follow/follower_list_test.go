@@ -30,6 +30,7 @@ func BenchmarkFollowerList(b *testing.B) {
 		if err != nil {
 			b.Errorf("err: [%v] \n", err)
 		}
+
 		time.Sleep(100 * time.Millisecond) // Add a sleep to simulate some processing time
 	}
 }

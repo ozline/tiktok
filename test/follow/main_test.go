@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ozline/tiktok/cmd/chat/dal"
+	"github.com/ozline/tiktok/cmd/follow/dal"
 	"github.com/ozline/tiktok/cmd/follow/service"
 	"github.com/ozline/tiktok/config"
 )
