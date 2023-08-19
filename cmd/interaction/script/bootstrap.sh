@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 CURDIR=$(cd $(dirname $0); pwd)
-CONFIG_PATH=$(dirname $(dirname $(dirname $CURDIR)))/config
+CONFIG_PATH=$(dirname $(dirname $CURDIR))/config
 
 if [ "X$1" != "X" ]; then
     RUNTIME_ROOT=$1

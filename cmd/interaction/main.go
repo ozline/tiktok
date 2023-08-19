@@ -63,7 +63,7 @@ func main() {
 	}
 
 	svr := interaction.NewServer(
-		new(interactionServiceImpl),
+		new(InteractionServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 			ServiceName: constants.InteractionServiceName,
 		}),
