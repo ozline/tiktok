@@ -55,11 +55,20 @@ services:
         image: "quay.io/coreos/etcd:v3.5.5"
         restart: always
         ports:
-            - "2379:2379"
+            - 2379:2379
+            - 2380:2380
         environment:
             - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_API=3
+        networks:
+            - tiktok
+
+    etcd-keeper:
+        hostname: etcdkeeper
+        image: evildecay/etcdkeeper
+        ports:
+            - 8099:8080
         networks:
             - tiktok
 
@@ -113,7 +122,7 @@ services:
             - tiktok
 
     cadvisor:
-        image: google/cadvisor:latest
+        image: gcr.io/cadvisor/cadvisor
         container_name: cadvisor
         restart: always
         platform: linux/amd64
@@ -123,7 +132,7 @@ services:
             - /sys:/sys:ro
             - /var/lib/docker/:/var/lib/docker:ro
         ports:
-            - "8899:8080"
+            - 8899:8080
         networks:
             - tiktok
 
