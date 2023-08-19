@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
-	"strconv"
 	"time"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
@@ -11,18 +10,14 @@ import (
 )
 
 func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*[]db.Comment, error) {
-	videoId, err := strconv.ParseInt(req.VideoId, 10, 64)
-	if err != nil {
-		return nil, err
-	}
 
 	var comments []db.Comment
-	exist, err := cache.IsExistComment(s.ctx, videoId)
+	exist, err := cache.IsExistComment(s.ctx, req.VideoId)
 	if err != nil {
 		return nil, err
 	}
 	if exist == 1 {
-		rComments, err := cache.GetComments(s.ctx, videoId)
+		rComments, err := cache.GetComments(s.ctx, req.VideoId)
 		if err != nil {
 			return nil, err
 		}
@@ -38,7 +33,7 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*
 		return &comments, nil
 	}
 
-	comments, err = db.GetCommentsByVideoID(s.ctx, videoId)
+	comments, err = db.GetCommentsByVideoID(s.ctx, req.VideoId)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +45,7 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*
 		dates = append(dates, float64(comment.CreatedAt.Unix()))
 	}
 
-	err = cache.AddComments(s.ctx, videoId, &rComments, &dates)
+	err = cache.AddComments(s.ctx, req.VideoId, &rComments, &dates)
 	if err != nil {
 		return nil, err
 	}
