@@ -31,7 +31,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		HandlerType:     handlerType,
 		Methods:         methods,
 		PayloadCodec:    kitex.Thrift,
-		KiteXGenVersion: "v0.6.1",
+		KiteXGenVersion: "v0.6.2",
 		Extra:           extra,
 	}
 	return svcInfo
