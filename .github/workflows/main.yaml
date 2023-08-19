@@ -1,0 +1,67 @@
+name: Interface Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    breanches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [user]
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20.x'
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Build target
+        run: make ${{ matrix.service }}
+
+      - name: Archive production
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output-all
+          path: output
+
+  run-test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [user]
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Download production
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output-all
+
+      - name: Set up environment
+        uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "./docker-compose.ci.yml"
+
+      - name: Run local server
+        run: nohup sh ./output/${{ matrix.service }}/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
+
+      - name: Test interfaces
+        run: go test -v --cover ./test/${{ matrix.service }}/...

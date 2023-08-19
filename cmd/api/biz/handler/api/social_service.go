@@ -6,8 +6,11 @@ import (
 	"context"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
+	"github.com/ozline/tiktok/cmd/api/biz/pack"
+	"github.com/ozline/tiktok/cmd/api/biz/rpc"
+	"github.com/ozline/tiktok/kitex_gen/chat"
+	"github.com/ozline/tiktok/kitex_gen/follow"
 )
 
 // RelationAction .
@@ -17,13 +20,24 @@ func RelationAction(ctx context.Context, c *app.RequestContext) {
 	var req api.RelationActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.RelationActionResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	err = rpc.RelationAction(ctx, &follow.ActionRequest{
+		Token:      req.Token,
+		ToUserId:   req.ToUserID,
+		ActionType: req.ActionType,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	pack.SendResponse(c, resp)
 }
 
 // RelationFollowList .
@@ -33,13 +47,24 @@ func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 	var req api.RelationFollowListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.RelationFollowListResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	followList, err := rpc.FollowList(ctx, &follow.FollowListRequest{
+		UserId: req.UserID,
+		Token:  req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.UserList = pack.UserList(followList)
+	pack.SendResponse(c, resp)
 }
 
 // RelationFollowerList .
@@ -49,13 +74,24 @@ func RelationFollowerList(ctx context.Context, c *app.RequestContext) {
 	var req api.RelationFollowerListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
-	resp := new(api.RelationFollowerListResponse)
+	resp := new(api.RelationFollowListResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	followList, err := rpc.FollowerList(ctx, &follow.FollowerListRequest{
+		UserId: req.UserID,
+		Token:  req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.UserList = pack.UserList(followList)
+	pack.SendResponse(c, resp)
 }
 
 // RelationFriendList .
@@ -65,13 +101,24 @@ func RelationFriendList(ctx context.Context, c *app.RequestContext) {
 	var req api.RelationFriendListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.RelationFriendListResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	followList, err := rpc.FriendList(ctx, &follow.FriendListRequest{
+		UserId: req.UserID,
+		Token:  req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.UserList = pack.FriendList(followList)
+	pack.SendResponse(c, resp)
 }
 
 // MessageAction .
@@ -81,13 +128,24 @@ func MessageAction(ctx context.Context, c *app.RequestContext) {
 	var req api.MessageActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.MessageActionResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	// err = rpc.MessageAction(ctx, &chat.MessagePostRequest{
+	// 	Token:      req.Token,
+	// 	ToUserId:   req.ToUserID,
+	// 	ActionType: req.ActionType,
+	// })
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	pack.SendResponse(c, resp)
 }
 
 // MessageChat .
@@ -97,11 +155,22 @@ func MessageChat(ctx context.Context, c *app.RequestContext) {
 	var req api.MessageChatRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.SendFailResponse(c, err)
 		return
 	}
 
 	resp := new(api.MessageChatResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	messageList, _, err := rpc.MessageList(ctx, &chat.MessageListRequest{
+		Token:    req.Token,
+		ToUserId: req.ToUserID,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.MessageList = pack.MessageList(messageList)
+	pack.SendResponse(c, resp)
 }

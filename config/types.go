@@ -7,14 +7,14 @@ type server struct {
 }
 
 type snowflake struct {
-	WorkerID      int64 `yaml:"worker-id"`
-	DatancenterID int64 `yaml:"datancenter-id"`
+	WorkerID      int64 `mapstructure:"worker-id"`
+	DatancenterID int64 `mapstructure:"datancenter-id"`
 }
 
 type service struct {
 	Name     string
 	AddrList []string
-	LB       bool `yaml:"load-balance"`
+	LB       bool `mapstructure:"load-balance"`
 }
 
 type mySQL struct {
@@ -52,9 +52,8 @@ type redis struct {
 
 type oss struct {
 	Endpoint        string
-	AccessKeyID     string `yaml:"accessKey-id"`
-	AccessKeySecret string `yaml:"accessKey-secret"`
+	AccessKeyID     string `mapstructure:"accessKey-id"`
+	AccessKeySecret string `mapstructure:"accessKey-secret"`
 	BucketName      string
-	MainDirectory   string `yaml:"main-directory"`
-	DomainName      string `yaml:"domain-name"`
+	MainDirectory   string `mapstructure:"main-directory"`
 }

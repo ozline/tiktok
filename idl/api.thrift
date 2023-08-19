@@ -35,9 +35,19 @@ struct Comment {
 }
 
 struct FriendUser {
-    1: required User user,
-    2: optional string message,
-    3: required i64 msgType, // 0 => 当前请求用户接收的消息 1=>当前请求用户发送的消息
+    1: required i64 id,
+    2: required string name,
+    3: optional i64 follow_count,
+    4: optional i64 follower_count,
+    5: required bool is_follow,
+    6: optional string avatar,
+    7: optional string background_image,
+    8: optional string signature,
+    9: optional i64 total_favorited,
+    10: optional i64 work_count,
+    11: optional i64 favorite_count,
+    12: optional string message,
+    13: required i64 msgType, // 0 => 当前请求用户接收的消息 1=>当前请求用户发送的消息
 }
 
 struct Message {
@@ -45,7 +55,7 @@ struct Message {
     2: required i64 to_user_id,
     3: required i64 from_user_id,
     4: required string content,
-    5: optional string create_time,
+    5: required string create_time,
 }
 
 // Basic
@@ -119,7 +129,7 @@ struct PublishListResponse {
     3: required list<Video> video_list,
 }
 
-// Interactive
+// interaction
 
 struct FavoriteActionRequest {
     1: required string token,
@@ -194,7 +204,7 @@ struct RelationFollowListResponse {
 
 struct RelationFollowerListRequest {
     1: required i64 user_id,
-    2: required i64 token,
+    2: required string token,
 }
 
 struct RelationFollowerListResponse {
@@ -250,7 +260,7 @@ service BasicService {
     PublishListResponse PublishList(1: PublishListRequest req) (api.get="/douyin/publish/list")
 }
 
-service InteractiveService {
+service interactionService {
     FavoriteActionResponse FavoriteAction(1: FavoriteActionRequest req) (api.post="/douyin/favorite/action")
     FavoriteListResponse FavoriteList(1: FavoriteListRequest req) (api.get="/douyin/favorite/list")
 

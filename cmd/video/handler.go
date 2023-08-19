@@ -107,8 +107,8 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 				return nil
 			}
 			//保存到数据库
-			playUrl := fmt.Sprintf("%s/%s/%s", config.OSS.DomainName, config.OSS.MainDirectory, videoName)
-			coverUrl := fmt.Sprintf("%s/%s/%s", config.OSS.DomainName, config.OSS.MainDirectory, coverName)
+			playUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
+			coverUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
 
 			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
 			if err != nil {
