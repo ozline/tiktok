@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ozline/tiktok/config"
 	redis "github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )

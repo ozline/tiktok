@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/pkg/utils"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"gorm.io/gorm"
 )
@@ -44,7 +45,6 @@ func InitRabbitMQ() {
 		return
 	}
 	Rmq.conn = dial
-	return
 }
 
 func (r *RabbitMQ) destroy() {

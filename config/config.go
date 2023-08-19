@@ -22,6 +22,9 @@ func Init(path string, service string) {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(path)
 
+	// use etcd for config save
+	// viper.AddRemoteProvider("etcd", "http://127.0.0.1:2379", "/config/config.yaml")
+
 	klog.Infof("config path: %v\n", path)
 
 	if err := viper.ReadInConfig(); err != nil {

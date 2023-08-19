@@ -108,7 +108,7 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		// add some logs
 		klog.Info("err happen")
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, false, errors.New("User not found")
+			return nil, false, errors.New("user not found")
 		}
 		return nil, false, err
 	}
@@ -138,6 +138,10 @@ func convert(message *Message, tempMessage *MiddleMessage) (err error) {
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content
 	message.CreatedAt, err = time.Parse(time.RFC3339, tempMessage.CreatedAt)
+
+	if err != nil {
+		return err
+	}
 	message.UpdatedAt, err = time.Parse(time.RFC3339, tempMessage.UpdatedAt)
 	return
 }

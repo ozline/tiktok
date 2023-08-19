@@ -1,7 +1,6 @@
 package db
 
 import (
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/utils"
 	"gorm.io/driver/mysql"
