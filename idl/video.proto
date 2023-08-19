@@ -73,13 +73,17 @@ message GetFavoriteVideoInfoResponse{
 
 message GetPublishListRequest{
     string token = 1;
-    string user_id = 2 ;
-}message GetPublishListResponse{
+    int64 user_id = 2 ;
+}
+
+message GetPublishListResponse{
     BaseResp base = 1;
     repeated Video video_list = 2 ;
 }
+
 service VideoService {
     rpc Feed(FeedRequest) returns (FeedResponse){};
     rpc PutVideo(stream PutVideoRequest) returns (stream PutVideoResponse){};
     rpc GetFavoriteVideoInfo(GetFavoriteVideoInfoRequest)returns (GetFavoriteVideoInfoResponse){};
+    rpc GetPublishList(GetPublishListRequest)returns (GetPublishListResponse){};
 }

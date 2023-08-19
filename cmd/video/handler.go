@@ -53,6 +53,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		}
 	}
 	resp.Base = pack.BuildBaseResp(nil)
+	resp.NextTime = videoList[0].CreatedAt.Unix()
 	resp.VideoList = pack.VideoList(videoList, userList)
 	return
 }
@@ -165,10 +166,36 @@ func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.
 	resp.VideoList = pack.VideoLikedList(videoList, userList)
 	return
 }
-func hanlerPutVideoError(stream video.VideoService_PutVideoServer, err error) {
-	resp := new(video.PutVideoResponse)
-	resp.Base = pack.BuildBaseResp(err)
-	resp.State = 0
-	stream.Send(resp)
 
+// GetPublishList implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPublishListRequest) (resp *video.GetPublishListResponse, err error) {
+	resp = new(video.GetPublishListResponse)
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+	if req.UserId < 10000 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+	videoList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	//获取user信息
+	userList := make([]*user.User, len(videoList))
+	for i := 0; i < len(videoList); i++ {
+		userList[i], err = rpc.GetUser(ctx, &user.InfoRequest{
+			UserId: videoList[i].UserID,
+			Token:  req.Token,
+		})
+		if err != nil {
+			resp.Base = pack.BuildBaseResp(err)
+			return resp, nil
+		}
+	}
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.VideoList = pack.VideoLikedList(videoList, userList)
+	return
 }
