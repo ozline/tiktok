@@ -8,14 +8,15 @@ import (
 	"time"
 )
 
+//go:generate msgp -io=false -tests=false
 type Comment struct {
-	Id        int64 `json:"id"`
-	UserId    int64 `json:"user_id"`
-	VideoId   int64
-	Content   string `json:"content"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Id        int64          `msg:"i"`
+	UserId    int64          `msg:"u"`
+	VideoId   int64          `msg:"-"`
+	Content   string         `msg:"c"`
+	CreatedAt time.Time      `msg:"-"`
+	UpdatedAt time.Time      `msg:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" msg:"-"`
 }
 
 func CreateComment(ctx context.Context, comment *Comment) (*Comment, error) {

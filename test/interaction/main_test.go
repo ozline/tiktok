@@ -1,27 +1,43 @@
 package main
 
 import (
-	"github.com/cloudwego/kitex/client"
-	"github.com/ozline/tiktok/kitex_gen/interaction/interactionservice"
-	"github.com/ozline/tiktok/pkg/constants"
+	"context"
+	"github.com/ozline/tiktok/cmd/interaction/dal"
+	"github.com/ozline/tiktok/cmd/interaction/service"
+	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/utils"
 	"testing"
 )
 
-var conn interactionservice.Client
-var token string
+var (
+	videoId     string
+	token       string
+	commentText string
+	commentId   string
+
+	interactionService *service.InteractionService
+)
 
 func TestMain(m *testing.M) {
+	config.InitForTest()
+	dal.Init()
+
+	interactionService = service.NewInteractionService(context.Background())
+
 	token, _ = utils.CreateToken(10000)
-	// 连接服务器
-	c, err := interactionservice.NewClient("interactive",
-		client.WithHostPorts("0.0.0.0:10005"),
-		client.WithMuxConnection(constants.MuxConnection))
+	commentText = "发条评论看看"
+	videoId = "1"
 
-	if err != nil {
-		panic(err)
-	}
-
-	conn = c
 	m.Run()
+}
+
+func TestMainOrder(t *testing.T) {
+
+	t.Run("comment action", testCommentAction)
+
+	t.Run("comment list", testCommentList)
+
+	t.Run("comment count", testCommentCount)
+
+	t.Run("RPC Test", testRPC)
 }
