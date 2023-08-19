@@ -32,8 +32,6 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 	followResp := new(Follow)
 
-	//TODO:mysql的定时写入
-
 	tid := strconv.FormatInt(follow.ToUserId, 10)
 	uid := strconv.FormatInt(follow.UserId, 10)
 
@@ -59,7 +57,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 	}
 
 	//数据不存在，添加数据进行关注
-	err = r.SAdd(ctx, cache.FollowerListKey(follow.UserId), tid).Err() //自己的关注列表
+	err = r.SAdd(ctx, cache.FollowListKey(follow.UserId), tid).Err() //自己的关注列表
 	if err != nil {
 		return err
 	}
@@ -99,7 +97,6 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 
 	var followList []int64
 
-	//TODO:mysql的定时写入
 	key := cache.FollowListKey(uid)
 
 	idList, err := r.SMembers(ctx, key).Result()
@@ -117,8 +114,9 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 			return nil, err
 		}
 	} else {
-		for i, id := range idList {
-			followList[i], _ = strconv.ParseInt(id, 10, 64)
+		for _, id := range idList {
+			followId, _ := strconv.ParseInt(id, 10, 64)
+			followList = append(followList, followId)
 		}
 	}
 
@@ -132,7 +130,6 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	var followerList []int64
-	//TODO:mysql的定时写入
 
 	key := cache.FollowerListKey(uid)
 
@@ -151,8 +148,9 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 			return nil, err
 		}
 	} else {
-		for i, id := range idList {
-			followerList[i], _ = strconv.ParseInt(id, 10, 64)
+		for _, id := range idList {
+			followerId, _ := strconv.ParseInt(id, 10, 64)
+			followerList = append(followerList, followerId)
 		}
 	}
 
@@ -167,8 +165,6 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 
 	var tempList []int64
 	var friendList []int64
-
-	//TODO:mysql的定时写入
 
 	//先获取本人关注的列表
 	key := cache.FollowListKey(uid)
