@@ -158,7 +158,7 @@ func (x *User) fastReadField8(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *User) fastReadField9(buf []byte, _type int8) (offset int, err error) {
-	x.TotalFavorited, offset, err = fastpb.ReadString(buf, _type)
+	x.TotalFavorited, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -238,7 +238,7 @@ func (x *Video) fastReadField2(buf []byte, _type int8) (offset int, err error) {
 	if err != nil {
 		return offset, err
 	}
-	x.Anthor = &v
+	x.Author = &v
 	return offset, nil
 }
 
@@ -298,7 +298,7 @@ ReadFieldError:
 }
 
 func (x *FeedRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.LatestTime, offset, err = fastpb.ReadString(buf, _type)
+	x.LatestTime, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -348,7 +348,7 @@ func (x *FeedResponse) fastReadField1(buf []byte, _type int8) (offset int, err e
 }
 
 func (x *FeedResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.NextTime, offset, err = fastpb.ReadString(buf, _type)
+	x.NextTime, offset, err = fastpb.ReadInt64(buf, _type)
 	return offset, err
 }
 
@@ -576,6 +576,86 @@ func (x *GetFavoriteVideoInfoResponse) fastReadField2(buf []byte, _type int8) (o
 	return offset, nil
 }
 
+func (x *GetPublishListRequest) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetPublishListRequest[number], err)
+}
+
+func (x *GetPublishListRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Token, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *GetPublishListRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt64(buf, _type)
+	return offset, err
+}
+
+func (x *GetPublishListResponse) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetPublishListResponse[number], err)
+}
+
+func (x *GetPublishListResponse) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	var v BaseResp
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.Base = &v
+	return offset, nil
+}
+
+func (x *GetPublishListResponse) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	var v Video
+	offset, err = fastpb.ReadMessage(buf, _type, &v)
+	if err != nil {
+		return offset, err
+	}
+	x.VideoList = append(x.VideoList, &v)
+	return offset, nil
+}
+
 func (x *BaseResp) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -684,10 +764,10 @@ func (x *User) fastWriteField8(buf []byte) (offset int) {
 }
 
 func (x *User) fastWriteField9(buf []byte) (offset int) {
-	if x.TotalFavorited == "" {
+	if x.TotalFavorited == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 9, x.GetTotalFavorited())
+	offset += fastpb.WriteInt64(buf[offset:], 9, x.GetTotalFavorited())
 	return offset
 }
 
@@ -731,10 +811,10 @@ func (x *Video) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *Video) fastWriteField2(buf []byte) (offset int) {
-	if x.Anthor == nil {
+	if x.Author == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetAnthor())
+	offset += fastpb.WriteMessage(buf[offset:], 2, x.GetAuthor())
 	return offset
 }
 
@@ -796,10 +876,10 @@ func (x *FeedRequest) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *FeedRequest) fastWriteField1(buf []byte) (offset int) {
-	if x.LatestTime == "" {
+	if x.LatestTime == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 1, x.GetLatestTime())
+	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetLatestTime())
 	return offset
 }
 
@@ -830,10 +910,10 @@ func (x *FeedResponse) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *FeedResponse) fastWriteField2(buf []byte) (offset int) {
-	if x.NextTime == "" {
+	if x.NextTime == 0 {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 2, x.GetNextTime())
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetNextTime())
 	return offset
 }
 
@@ -999,6 +1079,58 @@ func (x *GetFavoriteVideoInfoResponse) fastWriteField2(buf []byte) (offset int) 
 	return offset
 }
 
+func (x *GetPublishListRequest) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetPublishListRequest) fastWriteField1(buf []byte) (offset int) {
+	if x.Token == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetToken())
+	return offset
+}
+
+func (x *GetPublishListRequest) fastWriteField2(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt64(buf[offset:], 2, x.GetUserId())
+	return offset
+}
+
+func (x *GetPublishListResponse) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	return offset
+}
+
+func (x *GetPublishListResponse) fastWriteField1(buf []byte) (offset int) {
+	if x.Base == nil {
+		return offset
+	}
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetBase())
+	return offset
+}
+
+func (x *GetPublishListResponse) fastWriteField2(buf []byte) (offset int) {
+	if x.VideoList == nil {
+		return offset
+	}
+	for i := range x.GetVideoList() {
+		offset += fastpb.WriteMessage(buf[offset:], 2, x.GetVideoList()[i])
+	}
+	return offset
+}
+
 func (x *BaseResp) Size() (n int) {
 	if x == nil {
 		return n
@@ -1107,10 +1239,10 @@ func (x *User) sizeField8() (n int) {
 }
 
 func (x *User) sizeField9() (n int) {
-	if x.TotalFavorited == "" {
+	if x.TotalFavorited == 0 {
 		return n
 	}
-	n += fastpb.SizeString(9, x.GetTotalFavorited())
+	n += fastpb.SizeInt64(9, x.GetTotalFavorited())
 	return n
 }
 
@@ -1154,10 +1286,10 @@ func (x *Video) sizeField1() (n int) {
 }
 
 func (x *Video) sizeField2() (n int) {
-	if x.Anthor == nil {
+	if x.Author == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(2, x.GetAnthor())
+	n += fastpb.SizeMessage(2, x.GetAuthor())
 	return n
 }
 
@@ -1219,10 +1351,10 @@ func (x *FeedRequest) Size() (n int) {
 }
 
 func (x *FeedRequest) sizeField1() (n int) {
-	if x.LatestTime == "" {
+	if x.LatestTime == 0 {
 		return n
 	}
-	n += fastpb.SizeString(1, x.GetLatestTime())
+	n += fastpb.SizeInt64(1, x.GetLatestTime())
 	return n
 }
 
@@ -1253,10 +1385,10 @@ func (x *FeedResponse) sizeField1() (n int) {
 }
 
 func (x *FeedResponse) sizeField2() (n int) {
-	if x.NextTime == "" {
+	if x.NextTime == 0 {
 		return n
 	}
-	n += fastpb.SizeString(2, x.GetNextTime())
+	n += fastpb.SizeInt64(2, x.GetNextTime())
 	return n
 }
 
@@ -1422,6 +1554,58 @@ func (x *GetFavoriteVideoInfoResponse) sizeField2() (n int) {
 	return n
 }
 
+func (x *GetPublishListRequest) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetPublishListRequest) sizeField1() (n int) {
+	if x.Token == "" {
+		return n
+	}
+	n += fastpb.SizeString(1, x.GetToken())
+	return n
+}
+
+func (x *GetPublishListRequest) sizeField2() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt64(2, x.GetUserId())
+	return n
+}
+
+func (x *GetPublishListResponse) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	return n
+}
+
+func (x *GetPublishListResponse) sizeField1() (n int) {
+	if x.Base == nil {
+		return n
+	}
+	n += fastpb.SizeMessage(1, x.GetBase())
+	return n
+}
+
+func (x *GetPublishListResponse) sizeField2() (n int) {
+	if x.VideoList == nil {
+		return n
+	}
+	for i := range x.GetVideoList() {
+		n += fastpb.SizeMessage(2, x.GetVideoList()[i])
+	}
+	return n
+}
+
 var fieldIDToName_BaseResp = map[int32]string{
 	1: "Code",
 	2: "Msg",
@@ -1443,7 +1627,7 @@ var fieldIDToName_User = map[int32]string{
 
 var fieldIDToName_Video = map[int32]string{
 	1: "Id",
-	2: "Anthor",
+	2: "Author",
 	3: "PlayUrl",
 	4: "CoverUrl",
 	5: "FavoriteCount",
@@ -1484,6 +1668,16 @@ var fieldIDToName_GetFavoriteVideoInfoRequest = map[int32]string{
 }
 
 var fieldIDToName_GetFavoriteVideoInfoResponse = map[int32]string{
+	1: "Base",
+	2: "VideoList",
+}
+
+var fieldIDToName_GetPublishListRequest = map[int32]string{
+	1: "Token",
+	2: "UserId",
+}
+
+var fieldIDToName_GetPublishListResponse = map[int32]string{
 	1: "Base",
 	2: "VideoList",
 }
