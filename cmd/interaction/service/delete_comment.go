@@ -4,19 +4,13 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
-
 	"strconv"
 )
 
 // DeleteComment delete comment
 func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest) (*db.Comment, error) {
 
-	commentId, err := strconv.ParseInt(*req.CommentId, 10, 64)
-	if err != nil {
-		return nil, err
-	}
-
-	comment, err := db.GetCommentByID(s.ctx, commentId)
+	comment, err := db.GetCommentByID(s.ctx, *req.CommentId)
 	if err != nil {
 		return nil, err
 	}
@@ -26,13 +20,13 @@ func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest
 		return nil, err
 	}
 
-	exist, err := cache.IsExistComment(s.ctx, comment.VideoId)
+	key := strconv.FormatInt(comment.VideoId, 10)
+	exist, err := cache.IsExistComment(s.ctx, key)
 	if err != nil {
 		return nil, err
 	}
 	if exist == 1 {
-		err = cache.DeleteComment(s.ctx, comment.VideoId,
-			&cache.Comment{Id: comment.Id, UserId: comment.UserId, Content: comment.Content})
+		err = cache.DeleteComment(s.ctx, key, comment)
 		if err != nil {
 			return nil, err
 		}
