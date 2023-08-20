@@ -109,6 +109,7 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		} else if err != nil {
 			return nil, err
 		}
+
 		//粉丝列表存在就直接添加这个id
 		friendList = append(friendList, id)
 	}
