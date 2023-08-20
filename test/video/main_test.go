@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ozline/tiktok/cmd/video/dal"
+	"github.com/ozline/tiktok/cmd/video/dal/cache"
 	"github.com/ozline/tiktok/cmd/video/service"
 	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -19,6 +20,7 @@ var (
 func TestMain(m *testing.M) {
 	config.InitForTest()
 	dal.Init()
+	cache.Init()
 	videoService = service.NewVideoService(context.Background())
 	token, _ = utils.CreateToken(10000)
 	m.Run()

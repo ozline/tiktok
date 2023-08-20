@@ -8,11 +8,11 @@ import (
 )
 
 type Video struct {
-	Id        int64
-	UserID    int64
-	PlayUrl   string
-	CoverUrl  string
-	Title     string
+	Id        int64  `json:"id"`
+	UserID    int64  `json:"user_id"`
+	PlayUrl   string `json:"play_url"`
+	CoverUrl  string `json:"cover_url"`
+	Title     string `json:"title"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
