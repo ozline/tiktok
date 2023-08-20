@@ -18,6 +18,7 @@ require (
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/spf13/viper v1.16.0
+	github.com/tinylib/msgp v1.1.8
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1
@@ -68,7 +69,6 @@ require (
 	github.com/tidwall/gjson v1.13.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
-	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
@@ -78,13 +78,11 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/arch v0.2.0 // indirect
-	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.1.0 // indirect
-	golang.org/x/tools v0.6.0 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.55.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

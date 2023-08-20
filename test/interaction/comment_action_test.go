@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"strconv"
 	"testing"
+
+	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
 func testCommentAction(t *testing.T) {
@@ -29,7 +29,7 @@ func testCommentAction(t *testing.T) {
 		t.Fail()
 	}
 
-	commentId = strconv.FormatInt(resp.Id, 10)
+	commentId = resp.Id
 	t.Logf("commentId: [%v] \n", commentId)
 
 	_, err = interactionService.DeleteComment(req)
