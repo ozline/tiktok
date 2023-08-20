@@ -2,6 +2,7 @@ package sensitive_words
 
 import (
 	"bufio"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"io"
 	"os"
 
@@ -11,9 +12,11 @@ import (
 var St *utils.SensitiveTrie
 
 func Init() {
+	St = utils.NewSensitiveTrie()
 	fileHandle, err := os.OpenFile("cmd/interaction/dal/sensitive_words/words.txt", os.O_RDONLY, 0666)
 	if err != nil {
-		panic(err)
+		klog.Warn(err)
+		return
 	}
 	defer fileHandle.Close()
 	reader := bufio.NewReader(fileHandle)
@@ -27,6 +30,6 @@ func Init() {
 		}
 		words = append(words, string(line))
 	}
-	St = utils.NewSensitiveTrie()
+
 	St.AddWords(words)
 }

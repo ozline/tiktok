@@ -28,7 +28,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		return resp, err
 	}
 
-	if req.ActionType != "1" && req.ActionType != "2" {
+	if req.ActionType != 1 && req.ActionType != 2 {
 		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
