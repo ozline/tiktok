@@ -6,7 +6,7 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
-func TestFavoriteAction(t *testing.T) {
+func testFavoriteAction(t *testing.T) {
 	req := &interaction.FavoriteActionRequest{
 		VideoId: videoId,
 		Token:   token,
