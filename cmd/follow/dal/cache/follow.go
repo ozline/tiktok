@@ -130,5 +130,6 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		}
 		friendList = append(friendList, id)
 	}
+
 	return &friendList, nil
 }
