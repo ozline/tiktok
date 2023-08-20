@@ -54,7 +54,6 @@ func configMapping(srv string) {
 	RabbitMQ = &c.RabbitMQ
 	Redis = &c.Redis
 	OSS = &c.OSS
-
 	Service = GetService(srv)
 }
 
