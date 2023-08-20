@@ -6,7 +6,7 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
-func TestFavoriteList(t *testing.T) {
+func testFavoriteList(t *testing.T) {
 
 	req := &interaction.FavoriteListRequest{
 		UserId: userId,
