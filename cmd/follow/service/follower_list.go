@@ -1,6 +1,9 @@
 package service
 
 import (
+	"errors"
+
+	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
 	"github.com/ozline/tiktok/cmd/follow/pack"
 	"github.com/ozline/tiktok/cmd/follow/rpc"
@@ -10,13 +13,27 @@ import (
 
 // FollowerList View fan list
 func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follow.User, error) {
-	var userList []*follow.User
-
-	followerList, err := db.FollowerListAction(s.ctx, req.UserId)
-	if err != nil {
+	//限流
+	if err := cache.Limit(s.ctx); err != nil {
 		return nil, err
 	}
 
+	var userList []*follow.User
+
+	//先查redis
+	followerList, err := cache.FollowListAction(s.ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	} else if len(*followerList) == 0 { //redis中查不到再查db
+		followerList, err = db.FollowListAction(s.ctx, req.UserId)
+		if errors.Is(err, db.RecordNotFound) { //db中也查不到
+			return nil, errors.New("you do not have any followers")
+		} else if err != nil {
+			return nil, err
+		}
+	}
+
+	//数据处理
 	for _, id := range *followerList {
 		user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
 			UserId: id,

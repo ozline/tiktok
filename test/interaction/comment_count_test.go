@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"testing"
+
+	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
 func testCommentCount(t *testing.T) {

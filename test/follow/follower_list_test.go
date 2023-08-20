@@ -20,7 +20,7 @@ func testFollowerList(t *testing.T) {
 	}
 }
 
-func BenchmarkFollowerList(b *testing.B) {
+func benchmarkFollowerList(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_, err := followService.FollowerList(&follow.FollowerListRequest{
 			UserId: id,

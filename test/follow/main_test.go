@@ -42,3 +42,14 @@ func TestMainOrder(t *testing.T) {
 
 	t.Run("RPC Test", testRPC)
 }
+
+func BenchmarkMainOrder(b *testing.B) {
+
+	b.Run("action", benchmarkAction)
+
+	b.Run("followList", benchmarkFollowList)
+
+	b.Run("followerList", benchmarkFollowerList)
+
+	b.Run("friendList", benchmarkFriendList)
+}

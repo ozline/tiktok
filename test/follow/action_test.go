@@ -23,7 +23,7 @@ func testAction(t *testing.T) {
 	}
 }
 
-func BenchmarkAction(b *testing.B) {
+func benchmarkAction(b *testing.B) {
 	token, _ = utils.CreateToken(id)
 	for i := 0; i < b.N; i++ {
 		err := followService.Action(&follow.ActionRequest{
