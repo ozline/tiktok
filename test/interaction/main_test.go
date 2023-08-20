@@ -24,13 +24,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	_, err := interactionservice.NewClient("interaction",
-		client.WithMuxConnection(constants.MuxConnection),
-		client.WithHostPorts("0.0.0.0:10005"))
-
-	if err != nil {
-		panic(err)
-	}
 
 	config.InitForTest()
 	dal.Init()
