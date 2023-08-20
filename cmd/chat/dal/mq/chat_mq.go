@@ -9,7 +9,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/chat/dal/cache"
 	"github.com/ozline/tiktok/cmd/chat/dal/db"
-	"github.com/redis/go-redis/v9"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -104,12 +103,11 @@ func (r *ChatMQ) Consumer() {
 		false,
 		nil,
 	)
-	klog.Info("chatMQ consuming sume")
 	if err != nil {
 		klog.Info(err)
 		return
 	}
-	klog.Info("chatMQ consuming sume")
+	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
 	go r.DealWithMessageToUser(msg)
 	//log.Printf("[*] Waiting for messages,To exit press CTRL+C")
 	forever := make(chan bool)
@@ -117,7 +115,6 @@ func (r *ChatMQ) Consumer() {
 }
 func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 	for req := range msg {
-		//
 		klog.Info("chatMQ consuming")
 		middle_message := new(MiddleMessage)
 		err := sonic.Unmarshal(req.Body, middle_message)
@@ -133,19 +130,14 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 			klog.Info(err)
 			continue
 		}
-		klog.Info("chatMQ consuming")
-
 		err = db.DB.Create(&message).Error
 		if err != nil {
 			klog.Info(err)
 			continue
 		}
+		klog.Info("chatMQ consuming")
 		key := strconv.FormatInt(message.FromUserId, 10) + "-" + strconv.FormatInt(message.ToUserId, 10)
-		klog.Info("chatMQ redis consuming")
-		err = cache.RedisDB.ZAdd(context.TODO(), key, redis.Z{
-			Score:  float64(message.CreatedAt.Unix()),
-			Member: string(req.Body),
-		}).Err()
+		err = cache.MessageInsert(context.TODO(), key, float64(message.CreatedAt.Unix()), string(req.Body))
 		if err != nil {
 			klog.Info(err)
 			continue
@@ -154,6 +146,7 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 }
 
 func convertForMysql(message *cache.Message, tempMessage *MiddleMessage) (err error) {
+	message.Id = tempMessage.Id
 	message.ToUserId = tempMessage.ToUserId
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content

@@ -26,11 +26,22 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 func TestMainOrder(t *testing.T) {
-	t.Run("getMessage", testGetMessage)
 
-	t.Run("postMessage", testPostMessage)
+	t.Run("rpc", testRpc)
+
+	t.Run("get_message", testGetMessage)
+
+	t.Run("post_message", testPostMessage)
 
 	t.Run("db", testDB)
 
 	t.Run("redis", testRedis)
+
+}
+
+func BenchmarkMainOrder(b *testing.B) {
+
+	b.Run("get_post_message", benchmarkGetAndPostMessage)
+
+	b.Run("post_message", benchmarkPostMessage)
 }
