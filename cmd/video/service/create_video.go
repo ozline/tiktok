@@ -7,12 +7,19 @@ import (
 	"github.com/ozline/tiktok/pkg/utils"
 )
 
-func (s *VideoService) CreateVideo(req *video.PutVideoRequest, playUrl string, coverUrl string) (*db.Video, error) {
+func (s *VideoService) CreateVideo(req *video.PutVideoRequest) (*db.Video, error) {
 	claim, err := utils.CheckToken(req.Token)
 	if err != nil {
 		return nil, errno.AuthorizationFailedError
 	}
-
+	playUrl, ok := s.ctx.Value("playUrl").(string)
+	if !ok {
+		return nil, errno.ServiceInternalError
+	}
+	coverUrl, ok := s.ctx.Value("coverUrl").(string)
+	if !ok {
+		return nil, errno.ServiceInternalError
+	}
 	videoModel := &db.Video{
 		UserID:   claim.UserId,
 		PlayUrl:  playUrl,
