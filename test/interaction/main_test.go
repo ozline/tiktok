@@ -14,26 +14,16 @@ import (
 )
 
 var (
+	userId      int64
 	videoId     int64
 	token       string
 	commentText string
 	commentId   int64
 
 	interactionService *service.InteractionService
-
-	conn interactionservice.Client
 )
 
 func TestMain(m *testing.M) {
-	c, err := interactionservice.NewClient("interaction",
-		client.WithMuxConnection(constants.MuxConnection),
-		client.WithHostPorts("0.0.0.0:10005"))
-
-	if err != nil {
-		panic(err)
-	}
-
-	conn = c
 
 	config.InitForTest()
 	dal.Init()
@@ -42,6 +32,7 @@ func TestMain(m *testing.M) {
 
 	token, _ = utils.CreateToken(10000)
 	commentText = "发条评论看看"
+	userId = 1
 	videoId = 1
 	m.Run()
 }
@@ -53,6 +44,12 @@ func TestMainOrder(t *testing.T) {
 	t.Run("comment list", testCommentList)
 
 	t.Run("comment count", testCommentCount)
+
+	t.Run("favorite action", testFavoriteAction)
+
+	t.Run("favorite list", testFavoriteList)
+
+	t.Run("favorite count", testFavoriteCount)
 
 	t.Run("RPC Test", testRPC)
 }
