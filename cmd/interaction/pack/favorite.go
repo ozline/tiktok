@@ -1,8 +1,6 @@
 package pack
 
 import (
-	"strconv"
-
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/user"
@@ -14,7 +12,6 @@ func BuildUser(data *video.User) *user.User {
 		return nil
 	}
 
-	totalFavorited, _ := strconv.ParseInt(data.TotalFavorited, 10, 64)
 	return &user.User{
 		Id:              data.Id,
 		Name:            data.Name,
@@ -26,7 +23,7 @@ func BuildUser(data *video.User) *user.User {
 		Signature:       data.Signature,
 		WorkCount:       data.WorkCount,
 		FavoritedCount:  data.FavoriteCount,
-		TotalFavorited:  totalFavorited,
+		TotalFavorited:  data.TotalFavorited,
 	}
 }
 
@@ -38,7 +35,7 @@ func BuildVideo(data *video.Video) *interaction.Video {
 
 	return &interaction.Video{
 		Id:            data.Id,
-		Author:        BuildUser(data.Anthor),
+		Author:        BuildUser(data.Author),
 		PlayUrl:       data.PlayUrl,
 		CoverUrl:      data.CoverUrl,
 		FavoriteCount: data.FavoriteCount,
