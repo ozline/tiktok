@@ -1,6 +1,7 @@
 package service
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
@@ -12,12 +13,13 @@ import (
 func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*[]db.Comment, error) {
 
 	var comments []db.Comment
-	exist, err := cache.IsExistComment(s.ctx, req.VideoId)
+	key := strconv.FormatInt(req.VideoId, 10)
+	exist, err := cache.IsExistComment(s.ctx, key)
 	if err != nil {
 		return nil, err
 	}
 	if exist == 1 {
-		rComments, err := cache.GetComments(s.ctx, req.VideoId)
+		rComments, err := cache.GetComments(s.ctx, key)
 		if err != nil {
 			return nil, err
 		}
@@ -39,7 +41,7 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*
 	}
 
 	if len(comments) != 0 {
-		err = cache.AddComments(s.ctx, req.VideoId, &comments)
+		err = cache.AddComments(s.ctx, key, &comments)
 		if err != nil {
 			return nil, err
 		}
