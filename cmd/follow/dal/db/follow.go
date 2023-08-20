@@ -208,6 +208,7 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	//查询redis中的粉丝列表
+
 	for _, id := range *tempList {
 		b, err := r.SIsMember(ctx, cache.FollowerListKey(uid), id).Result()
 		if err != nil {
