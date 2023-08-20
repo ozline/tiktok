@@ -13,7 +13,7 @@ import (
 func TestFavoriteCount(t *testing.T) {
 
 	req := &interaction.FavoriteCountRequest{
-		VideoId: "1",
+		VideoId: 1,
 		Token:   token,
 	}
 

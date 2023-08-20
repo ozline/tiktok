@@ -4,7 +4,6 @@ package api
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
@@ -28,8 +27,8 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 
 	err = rpc.FavoriteAction(ctx, &interaction.FavoriteActionRequest{
 		Token:      req.Token,
-		VideoId:    strconv.FormatInt(req.VideoID, 10),
-		ActionType: strconv.FormatInt(req.ActionType, 10),
+		VideoId:    req.VideoID,
+		ActionType: req.ActionType,
 	})
 
 	if err != nil {
@@ -54,7 +53,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	resp := new(api.FavoriteListResponse)
 
 	videoList, err := rpc.FavoriteList(ctx, &interaction.FavoriteListRequest{
-		UserId: strconv.FormatInt(req.UserID, 10),
+		UserId: req.UserID,
 		Token:  req.Token,
 	})
 
@@ -81,11 +80,10 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	resp := new(api.CommentActionResponse)
 
 	comment, err := rpc.CommentAction(ctx, &interaction.CommentActionRequest{
-		VideoId:     strconv.FormatInt(req.VideoID, 10),
-		ActionType:  strconv.FormatInt(req.ActionType, 10),
+		VideoId:     req.VideoID,
+		ActionType:  req.ActionType,
 		CommentText: &req.CommentText,
-		// CommentId: req.CommentID,
-		// TODO: fix type error
+		CommentId:   &req.CommentID,
 	})
 
 	if err != nil {
@@ -111,7 +109,7 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 	resp := new(api.CommentListResponse)
 
 	commentList, err := rpc.CommentList(ctx, &interaction.CommentListRequest{
-		VideoId: strconv.FormatInt(req.VideoID, 10),
+		VideoId: req.VideoID,
 		Token:   req.Token,
 	})
 
