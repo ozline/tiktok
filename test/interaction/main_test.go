@@ -45,11 +45,11 @@ func TestMainOrder(t *testing.T) {
 
 	t.Run("comment count", testCommentCount)
 
-	t.Run("favorite action", TestFavoriteAction)
+	t.Run("favorite action", testFavoriteAction)
 
-	t.Run("favorite list", TestFavoriteList)
+	t.Run("favorite list", testFavoriteList)
 
-	t.Run("favorite count", TestFavoriteCount)
+	t.Run("favorite count", testFavoriteCount)
 
 	t.Run("RPC Test", testRPC)
 }
