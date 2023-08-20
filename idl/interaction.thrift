@@ -7,7 +7,7 @@ struct BaseResp {
     2: optional string msg,
 }
 
-struct Video{
+struct Video {
     1: required i64 id,
     2: required user.User author,
     3: required string play_url,
@@ -18,16 +18,16 @@ struct Video{
     8: required string title,
 }
 
-struct Comment{
-    1: required i64 id
-    2: required user.User user
-    3: required string content
-    4: required string create_date
+struct Comment {
+    1: required i64 id,
+    2: required user.User user,
+    3: required string content,
+    4: required string create_date,
 }
 
 struct FavoriteActionRequest {
-    1: required string video_id,
-    2: required string action_type,
+    1: required i64 video_id,
+    2: required i64 action_type,
     3: required string token,
 }
 
@@ -36,7 +36,7 @@ struct FavoriteActionResponse {
 }
 
 struct FavoriteListRequest {
-    1: required string user_id,
+    1: required i64 user_id,
     2: required string token,
 }
 
@@ -46,7 +46,7 @@ struct FavoriteListResponse {
 }
 
 struct FavoriteCountRequest {
-    1: required string video_id,
+    1: required i64 video_id,
     2: required string token,
 }
 
@@ -56,36 +56,36 @@ struct FavoriteCountResponse {
 }
 
 struct CommentActionRequest {
-    1: required string video_id,
-    2: required string action_type,
+    1: required i64 video_id,
+    2: required i64 action_type,
     3: required string token,
     4: optional string comment_text,
-    5: optional string comment_id, 
+    5: optional i64 comment_id,
 }
 
 struct CommentActionResponse {
     1: required BaseResp base,
-    2: optional Comment comment
+    2: optional Comment comment,
 }
 
 struct CommentListRequest {
-    1: required string video_id,
+    1: required i64 video_id,
     2: required string token,
 }
 
 struct CommentListResponse {
     1: required BaseResp base,
-    2: required list<Comment> comment_list
+    2: required list<Comment> comment_list,
 }
 
 struct CommentCountRequest {
-    1: required string video_id,
+    1: required i64 video_id,
     2: optional string token,
 }
 
 struct CommentCountResponse {
     1: required BaseResp base,
-    2: required i64 comment_count
+    2: required i64 comment_count,
 }
 
 service InteractionService {

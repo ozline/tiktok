@@ -42,15 +42,15 @@ func InitVideoRPC() {
 	videoClient = c
 }
 
-func VideoFeed(ctx context.Context, req *video.FeedRequest) ([]*video.Video, string, error) {
+func VideoFeed(ctx context.Context, req *video.FeedRequest) ([]*video.Video, int64, error) {
 	resp, err := videoClient.Feed(ctx, req)
 
 	if err != nil {
-		return nil, "", err
+		return nil, -1, err
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return nil, "", errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
+		return nil, -1, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return resp.VideoList, resp.NextTime, nil

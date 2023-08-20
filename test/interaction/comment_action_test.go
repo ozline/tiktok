@@ -1,36 +1,63 @@
 package main
 
 import (
-	"context"
-	"github.com/cloudwego/kitex/client/callopt"
-	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/ozline/tiktok/pkg/errno"
 	"testing"
-	"time"
+
+	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
-func TestCommentAction(t *testing.T) {
-	content := "呜呜！！！"
-	id := "480406139545059328"
-	req := &interaction.CommentActionRequest{
-		VideoId:     "1",
-		ActionType:  "1",
-		CommentText: &content,
-		CommentId:   &id,
-		Token:       token,
-	}
-
-	resp, err := conn.CommentAction(context.Background(), req, callopt.WithRPCTimeout(3*time.Second))
-
+func testCommentAction(t *testing.T) {
+	_, err := interactionService.MatchSensitiveWords(commentText)
 	if err != nil {
+		t.Logf("err: [%v] \n", err)
 		t.Error(err)
 		t.Fail()
 	}
 
-	if resp.Base.Code != errno.SuccessCode {
-		t.Error(errno.NewErrNo(resp.Base.Code, *resp.Base.Msg))
+	req := &interaction.CommentActionRequest{
+		VideoId:     videoId,
+		CommentText: &commentText,
+		CommentId:   &commentId,
+		Token:       token,
+	}
+
+	resp, err := interactionService.CreateComment(req)
+
+	if err != nil {
+		t.Logf("err: [%v] \n", err)
+		t.Error(err)
 		t.Fail()
 	}
 
-	t.Logf("Resp:\n%v\n\n", resp)
+	commentId = resp.Id
+	t.Logf("commentId: [%v] \n", commentId)
+
+	_, err = interactionService.DeleteComment(req)
+
+	if err != nil {
+		t.Logf("err: [%v] \n", err)
+		t.Error(err)
+		t.Fail()
+	}
+	t.Log("------------testCommentAction success---------------")
+}
+
+func benchmarkCommentAction(b *testing.B) {
+	req := &interaction.CommentActionRequest{
+		VideoId:     videoId,
+		CommentText: &commentText,
+		CommentId:   &commentId,
+		Token:       token,
+	}
+
+	for i := 0; i < b.N; i++ {
+		//interactionService.MatchSensitiveWords(commentText)
+
+		resp, _ := interactionService.CreateComment(req)
+
+		commentId = resp.Id
+
+		interactionService.DeleteComment(req)
+
+	}
 }

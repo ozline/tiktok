@@ -16,6 +16,7 @@ type Client interface {
 	Feed(ctx context.Context, Req *video.FeedRequest, callOptions ...callopt.Option) (r *video.FeedResponse, err error)
 	PutVideo(ctx context.Context, callOptions ...callopt.Option) (stream VideoService_PutVideoClient, err error)
 	GetFavoriteVideoInfo(ctx context.Context, Req *video.GetFavoriteVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetFavoriteVideoInfoResponse, err error)
+	GetPublishList(ctx context.Context, Req *video.GetPublishListRequest, callOptions ...callopt.Option) (r *video.GetPublishListResponse, err error)
 }
 
 type VideoService_PutVideoClient interface {
@@ -68,4 +69,9 @@ func (p *kVideoServiceClient) PutVideo(ctx context.Context, callOptions ...callo
 func (p *kVideoServiceClient) GetFavoriteVideoInfo(ctx context.Context, Req *video.GetFavoriteVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetFavoriteVideoInfoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetFavoriteVideoInfo(ctx, Req)
+}
+
+func (p *kVideoServiceClient) GetPublishList(ctx context.Context, Req *video.GetPublishListRequest, callOptions ...callopt.Option) (r *video.GetPublishListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetPublishList(ctx, Req)
 }

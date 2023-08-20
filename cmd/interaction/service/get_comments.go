@@ -1,34 +1,31 @@
 package service
 
 import (
-	"encoding/json"
-	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"strconv"
 	"time"
+
+	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
 func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*[]db.Comment, error) {
-	videoId, err := strconv.ParseInt(req.VideoId, 10, 64)
-	if err != nil {
-		return nil, err
-	}
 
 	var comments []db.Comment
-	exist, err := cache.IsExistComment(s.ctx, videoId)
+	key := strconv.FormatInt(req.VideoId, 10)
+	exist, err := cache.IsExistComment(s.ctx, key)
 	if err != nil {
 		return nil, err
 	}
 	if exist == 1 {
-		rComments, err := cache.GetComments(s.ctx, videoId)
+		rComments, err := cache.GetComments(s.ctx, key)
 		if err != nil {
 			return nil, err
 		}
 		for _, rComment := range *rComments {
 			var comment db.Comment
-			err = json.Unmarshal([]byte((rComment.Member).(string)), &comment)
+			_, err = comment.UnmarshalMsg([]byte(rComment.Member.(string)))
 			if err != nil {
 				return nil, err
 			}
@@ -38,21 +35,17 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) (*
 		return &comments, nil
 	}
 
-	comments, err = db.GetCommentsByVideoID(s.ctx, videoId)
+	comments, err = db.GetCommentsByVideoID(s.ctx, req.VideoId)
 	if err != nil {
 		return nil, err
 	}
 
-	var rComments []cache.Comment
-	var dates []float64
-	for _, comment := range comments {
-		rComments = append(rComments, cache.Comment{Id: comment.Id, UserId: comment.UserId, Content: comment.Content})
-		dates = append(dates, float64(comment.CreatedAt.Unix()))
-	}
+	if len(comments) != 0 {
+		err = cache.AddComments(s.ctx, key, &comments)
+		if err != nil {
+			return nil, err
+		}
 
-	err = cache.AddComments(s.ctx, videoId, &rComments, &dates)
-	if err != nil {
-		return nil, err
 	}
 	return &comments, nil
 }

@@ -12,18 +12,13 @@ import (
 // CreateComment create comment
 func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest) (*db.Comment, error) {
 
-	videoId, err := strconv.ParseInt(req.VideoId, 10, 64)
-	if err != nil {
-		return nil, err
-	}
-
 	claim, err := utils.CheckToken(req.Token)
 	if err != nil {
 		return nil, errno.AuthorizationFailedError
 	}
 
 	commentModel := &db.Comment{
-		VideoId: videoId,
+		VideoId: req.VideoId,
 		UserId:  claim.UserId,
 		Content: *req.CommentText,
 	}
@@ -32,14 +27,14 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 		return nil, err
 	}
 
-	exist, err := cache.IsExistComment(s.ctx, videoId)
+	key := strconv.FormatInt(comment.VideoId, 10)
+	exist, err := cache.IsExistComment(s.ctx, key)
 	if err != nil {
 		return nil, err
 	}
+
 	if exist == 1 {
-		err = cache.AddComment(s.ctx, videoId,
-			&cache.Comment{Id: comment.Id, UserId: comment.UserId, Content: comment.Content},
-			float64(comment.CreatedAt.Unix()))
+		err = cache.AddComment(s.ctx, key, comment)
 		if err != nil {
 			return nil, err
 		}

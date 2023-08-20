@@ -2,8 +2,12 @@ package cache
 
 import "fmt"
 
-var keyPattern = "%s::%s"
+var keyPattern = "%s::%d"
 
-func GetVideoKey(videoId string) string {
-	return fmt.Sprintf(keyPattern, "video", videoId)
+func GetVideoKey(videoId int64) string {
+	return fmt.Sprintf(keyPattern, "like", videoId)
+}
+
+func GetUserKey(userId int64) string {
+	return fmt.Sprintf(keyPattern, "like", userId)
 }

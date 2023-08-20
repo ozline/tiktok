@@ -1,31 +1,32 @@
 package main
 
 import (
-	"context"
-	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/ozline/tiktok/pkg/constants"
-	"github.com/ozline/tiktok/pkg/errno"
 	"testing"
 )
 
-func TestCommentCount(t *testing.T) {
-
+func testCommentCount(t *testing.T) {
 	req := &interaction.CommentCountRequest{
-		VideoId: "1",
+		VideoId: 1,
 		Token:   &token,
 	}
-
-	resp, err := conn.CommentCount(context.Background(), req, callopt.WithRPCTimeout(constants.RPCTimeout))
+	_, err := interactionService.CountComments(req)
 	if err != nil {
+		t.Logf("err: [%v] \n", err)
 		t.Error(err)
 		t.Fail()
 	}
+	t.Log("------------testCommentCount success---------------")
+}
 
-	if resp.Base.Code != errno.SuccessCode {
-		t.Error(errno.NewErrNo(resp.Base.Code, *resp.Base.Msg))
-		t.Fail()
+func benchmarkCommentCount(b *testing.B) {
+	req := &interaction.CommentCountRequest{
+		VideoId: 1,
+		Token:   &token,
 	}
 
-	t.Logf("Resp:\n%v\n\n", resp)
+	for i := 0; i < b.N; i++ {
+
+		interactionService.CountComments(req)
+	}
 }
