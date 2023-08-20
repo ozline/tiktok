@@ -51,6 +51,5 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
