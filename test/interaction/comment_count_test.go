@@ -6,7 +6,6 @@ import (
 )
 
 func testCommentCount(t *testing.T) {
-
 	req := &interaction.CommentCountRequest{
 		VideoId: 1,
 		Token:   &token,
@@ -18,4 +17,16 @@ func testCommentCount(t *testing.T) {
 		t.Fail()
 	}
 	t.Log("------------testCommentCount success---------------")
+}
+
+func benchmarkCommentCount(b *testing.B) {
+	req := &interaction.CommentCountRequest{
+		VideoId: 1,
+		Token:   &token,
+	}
+
+	for i := 0; i < b.N; i++ {
+
+		interactionService.CountComments(req)
+	}
 }

@@ -20,3 +20,15 @@ func testCommentList(t *testing.T) {
 	}
 	t.Log("------------testCommentList success---------------")
 }
+
+func benchmarkCommentList(b *testing.B) {
+	req := &interaction.CommentListRequest{
+		VideoId: videoId,
+		Token:   token,
+	}
+
+	for i := 0; i < b.N; i++ {
+
+		interactionService.GetComments(req)
+	}
+}
