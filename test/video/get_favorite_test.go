@@ -7,7 +7,7 @@ import (
 )
 
 func testGetLikedVideo(t *testing.T) {
-	_, err := videoService.GetFavoriteVideoInfo(&video.GetFavoriteVideoInfoRequest{
+	_, _, err := videoService.GetFavoriteVideoInfo(&video.GetFavoriteVideoInfoRequest{
 		VideoId: videoId,
 		Token:   token,
 	})

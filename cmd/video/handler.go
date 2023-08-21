@@ -8,10 +8,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
-	"github.com/ozline/tiktok/cmd/video/rpc"
 	"github.com/ozline/tiktok/cmd/video/service"
 	"github.com/ozline/tiktok/config"
-	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
 )
@@ -35,22 +33,10 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
-	videoList, err := service.NewVideoService(ctx).FeedVideo(req)
+	videoList, userList, err := service.NewVideoService(ctx).FeedVideo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
-	}
-	//获取user信息
-	userList := make([]*user.User, len(videoList))
-	for i := 0; i < len(videoList); i++ {
-		userList[i], err = rpc.GetUser(ctx, &user.InfoRequest{
-			UserId: videoList[i].UserID,
-			Token:  req.Token,
-		})
-		if err != nil {
-			resp.Base = pack.BuildBaseResp(err)
-			return resp, nil
-		}
 	}
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.NextTime = videoList[0].CreatedAt.Unix()
@@ -145,22 +131,10 @@ func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
-	videoList, err := service.NewVideoService(ctx).GetFavoriteVideoInfo(req)
+	videoList, userList, err := service.NewVideoService(ctx).GetFavoriteVideoInfo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
-	}
-	//获取user信息
-	userList := make([]*user.User, len(videoList))
-	for i := 0; i < len(videoList); i++ {
-		userList[i], err = rpc.GetUser(ctx, &user.InfoRequest{
-			UserId: videoList[i].UserID,
-			Token:  req.Token,
-		})
-		if err != nil {
-			resp.Base = pack.BuildBaseResp(err)
-			return resp, nil
-		}
 	}
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.VideoList = pack.VideoLikedList(videoList, userList)
@@ -178,24 +152,12 @@ func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPub
 		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
-	videoList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
+	videoList, userList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
-	//获取user信息
-	userList := make([]*user.User, len(videoList))
-	for i := 0; i < len(videoList); i++ {
-		userList[i], err = rpc.GetUser(ctx, &user.InfoRequest{
-			UserId: videoList[i].UserID,
-			Token:  req.Token,
-		})
-		if err != nil {
-			resp.Base = pack.BuildBaseResp(err)
-			return resp, nil
-		}
-	}
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.VideoList = pack.VideoLikedList(videoList, userList)
+	resp.VideoList = pack.VideoList(videoList, userList)
 	return
 }
