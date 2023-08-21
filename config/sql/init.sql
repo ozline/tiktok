@@ -1,4 +1,4 @@
-create table tiktok.user
+create table tiktok.`user`
 (
     `id`               bigint auto_increment not null,
     `username`         varchar(255)                                                                 not null unique,
@@ -13,7 +13,7 @@ create table tiktok.user
         primary key (`id`)
 ) engine=InnoDB default charset=utf8mb4;
 
-create table tiktok.favorite
+create table tiktok.`favorite`
 (
     `id`         bigint auto_increment not null,
     `user_id`    bigint                              not null,
@@ -26,7 +26,7 @@ create table tiktok.favorite
         primary key (`id`)
 ) engine=InnoDB default charset=utf8mb4;
 
-create table tiktok.comment
+create table tiktok.`comment`
 (
     `id`         bigint auto_increment not null,
     `user_id`    bigint                              not null,
@@ -39,7 +39,7 @@ create table tiktok.comment
         primary key (`id`)
 ) engine=InnoDB default charset=utf8mb4;
 
-create table tiktok.video
+create table tiktok.`video`
 (
     `id`              bigint auto_increment               not null,
     `user_id`         bigint                              not null,
@@ -53,7 +53,7 @@ create table tiktok.video
         primary key (`id`)
 )engine=InnoDB default charset=utf8mb4;
 
-create table tiktok.follow
+create table tiktok.`follow`
 (
     `id`          bigint auto_increment               not null,
     `status`      bigint    default 1                 not null,
@@ -67,7 +67,7 @@ create table tiktok.follow
         primary key (`id`)
 ) engine=InnoDB default charset=utf8mb4;
 
-CREATE TABLE `message` (
+create table tiktok.`message` (
     `id`              bigint          not null,
     `to_user_id`      bigint          not null comment 'target user id',
     `from_user_id`    bigint          not null comment 'user id',
