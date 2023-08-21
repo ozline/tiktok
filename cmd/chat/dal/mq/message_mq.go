@@ -2,10 +2,10 @@ package mq
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/chat/dal/cache"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -120,15 +120,15 @@ func (r *MessageMQ) dealWithMessageToCache(msg <-chan amqp.Delivery) {
 		// 	continue
 		// }
 		message := make([]*MiddleMessage, 0)
-		err := json.Unmarshal(req.Body, &message)
+		err := sonic.Unmarshal(req.Body, &message)
 		if err != nil {
-			klog.Info("json error here")
+			klog.Info("sonic json error here")
 			klog.Info(err)
 			continue
 		}
 		klog.Info("message mq——----------------------->", message)
 		for _, val := range message {
-			mes, _ := json.Marshal(val)
+			mes, _ := sonic.Marshal(val)
 			key := strconv.FormatInt(val.FromUserId, 10) + "-" + strconv.FormatInt(val.ToUserId, 10)
 			cre_time, _ := time.ParseInLocation("2006-01-02T15:04:05Z", val.CreatedAt, time.Local)
 			err := cache.RedisDB.ZAdd(context.TODO(), key, redis.Z{

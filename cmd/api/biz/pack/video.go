@@ -20,10 +20,9 @@ func VideoList(list []*video.Video) []*api.Video {
 				Avatar:          &data.Author.Avatar,
 				BackgroundImage: &data.Author.BackgroundImage,
 				Signature:       &data.Author.Signature,
-				// TotalFavorited:  data.Anthor.TotalFavorited,
-				// TODO: fix type error
-				WorkCount:     &data.Author.WorkCount,
-				FavoriteCount: &data.Author.FavoriteCount,
+				TotalFavorited:  &data.Author.TotalFavorited,
+				WorkCount:       &data.Author.WorkCount,
+				FavoriteCount:   &data.Author.FavoriteCount,
 			},
 			PlayURL:       data.PlayUrl,
 			CoverURL:      data.CoverUrl,

@@ -9,14 +9,9 @@ create table tiktok.user
     `created_at`       timestamp    default current_timestamp                                       not null,
     `updated_at`       timestamp    default current_timestamp                                       not null on update current_timestamp comment 'update profile time',
     `deleted_at`       timestamp    default null null,
-    constraint id
-        primary key (id)
-) engine=InnoDB auto_increment=10000 default charset=utf8mb4;
-
-/*
-TODO: follow_count, follower_count, is_follow, work_count, favorite_count, total_favorited(string)
-很迷的, 我觉得很多东西不需要
-*/
+    constraint `id`
+        primary key (`id`)
+) engine=InnoDB default charset=utf8mb4;
 
 create table tiktok.favorite
 (
@@ -27,9 +22,9 @@ create table tiktok.favorite
     `created_at` timestamp default current_timestamp not null,
     `updated_at` timestamp default current_timestamp not null on update current_timestamp comment 'update profile time',
     `deleted_at` timestamp default null null,
-    constraint id
-        primary key (id)
-) engine=InnoDB auto_increment=10000 default charset=utf8mb4;
+    constraint `id`
+        primary key (`id`)
+) engine=InnoDB default charset=utf8mb4;
 
 create table tiktok.comment
 (
@@ -40,9 +35,9 @@ create table tiktok.comment
     `created_at` timestamp default current_timestamp not null,
     `updated_at` timestamp default current_timestamp not null on update current_timestamp comment 'update profile time',
     `deleted_at` timestamp default null null,
-    constraint id
-        primary key (id)
-) engine=InnoDB auto_increment=10000 default charset=utf8mb4;
+    constraint `id`
+        primary key (`id`)
+) engine=InnoDB default charset=utf8mb4;
 
 create table tiktok.video
 (
@@ -54,9 +49,9 @@ create table tiktok.video
     `created_at`      timestamp default current_timestamp not null,
     `updated_at`      timestamp default current_timestamp not null on update current_timestamp comment 'update profile time',
     `deleted_at`      timestamp default null null,
-    constraint id
-        primary key (id)
-)engine=InnoDB auto_increment=10000 default charset=utf8mb4;
+    constraint `id`
+        primary key (`id`)
+)engine=InnoDB default charset=utf8mb4;
 
 create table tiktok.follow
 (
@@ -68,16 +63,18 @@ create table tiktok.follow
     `created_at`  timestamp default current_timestamp not null,
     `updated_at`  timestamp default current_timestamp not null on update current_timestamp comment 'update profile time',
     `deleted_at`  timestamp default null null,
-    constraint id
-        primary key (id)
-) engine=InnoDB auto_increment=10000 default charset=utf8mb4;
+    constraint `id`
+        primary key (`id`)
+) engine=InnoDB default charset=utf8mb4;
 
-create table `tiktok`.`message`(
-    `id`                  bigint auto_increment NOT NULL
-    `to_user_id`          bigint NOT NULL
-    `from_user_id`        bigint NOT NULL
-    `content`             longtext NOT NULL
-    `created_at`          timestamp     default current_timestamp                                        not null,
-    `updated_at`          timestamp     default current_timestamp                                        not null on update current_timestamp comment 'update profile time',
-    `deleted_at`          timestamp     default null
-)engine=InnoDB auto_increment=10000 default charset=utf8mb4;
+CREATE TABLE `message` (
+    `id`              bigint          not null,
+    `to_user_id`      bigint          not null,
+    `from_user_id`    bigint          not null,
+    `content`         longtext        not null,
+    `created_at`      timestamp       not null        default current_timestamp,
+    `updated_at`      timestamp       not null        default current_timestamp on update current_timestamp,
+    `deleted_at`      timestamp       null            default null,
+    constraint `id`
+        primary key (`id`)
+) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_0900_ai_ci;
