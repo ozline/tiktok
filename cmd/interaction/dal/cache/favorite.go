@@ -7,13 +7,23 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
+func IsVideoLikeExist(ctx context.Context, videoId int64, userId int64) (bool, error) {
+	exist, err := RedisClient.SIsMember(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Result()
+	if err != nil {
+		return false, err
+	}
+	if !exist {
+		return false, nil
+	}
+	return true, nil
+}
+
 func AddVideoLikeCount(ctx context.Context, videoId int64, userId int64) error {
 	// add video like
 	if err := RedisClient.SAdd(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
-
 	// add user like
 	if err := RedisClient.SAdd(ctx, GetUserKey(userId), strconv.FormatInt(videoId, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
@@ -23,22 +33,12 @@ func AddVideoLikeCount(ctx context.Context, videoId int64, userId int64) error {
 }
 
 func ReduceVideoLikeCount(ctx context.Context, videoId int64, userId int64) error {
-	VideoExist, err := RedisClient.SIsMember(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Result()
-	if err != nil || !VideoExist {
-		klog.Infof("video no exist")
-		return err
-	}
-	if RedisClient.SRem(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Err(); err != nil {
+	// unlike the video
+	if err := RedisClient.SRem(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
-
-	userExist, err := RedisClient.SIsMember(ctx, GetUserKey(userId), strconv.FormatInt(videoId, 10)).Result()
-	if err != nil || !userExist {
-		klog.Infof("user no exist")
-		return err
-	}
-	if RedisClient.SRem(ctx, GetUserKey(userId), strconv.FormatInt(videoId, 10)).Err(); err != nil {
+	if err := RedisClient.SRem(ctx, GetUserKey(userId), strconv.FormatInt(videoId, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 	}
 	return nil
@@ -57,16 +57,26 @@ func GetUserFavoriteVideos(ctx context.Context, userId int64) ([]int64, error) {
 	items, err := RedisClient.SMembers(ctx, GetUserKey(userId)).Result()
 	if err != nil {
 		klog.Infof("err: %v", err)
+		return nil, err
 	}
 
-	videosId := make([]int64, 10)
+	//get favorite video id list
+	videoIdList := make([]int64, 10)
 	for _, item := range items {
 		videoId, err := strconv.ParseInt(item, 10, 64)
 		if err != nil {
 			klog.Infof("parseInt err")
 			return nil, err
 		}
-		videosId = append(videosId, videoId)
+		videoIdList = append(videoIdList, videoId)
 	}
-	return videosId, nil
+	return videoIdList, nil
+}
+
+func UpdateFavoriteVideoList(ctx context.Context, userId int64, videoIdList []int64) error {
+	err := RedisClient.SAdd(ctx, GetUserKey(userId), videoIdList).Err()
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -15,7 +15,10 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		return nil, err
 	}
 	if ok {
-		mq_message, _ := sonic.Marshal(messages)
+		mq_message, err := sonic.Marshal(messages)
+		if err != nil {
+			return nil, err
+		}
 		err = mq.MessageMQCli.Publish(c.ctx, string(mq_message))
 		if err != nil {
 			return messages, err

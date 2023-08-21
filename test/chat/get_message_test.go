@@ -5,56 +5,61 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/ozline/tiktok/pkg/utils"
 )
 
 func testGetMessage(t *testing.T) {
-	token, _ := utils.CreateToken(2)
+	t.Log("------------testGetMessage Start---------------")
+	token, err := utils.CreateToken(from_user_id)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
 	req := &chat.MessageListRequest{
 		Token:    token,
-		ToUserId: 3,
+		ToUserId: to_user_id,
 	}
-
-	resp, err := chatService.GetMessages(req, 2)
-
+	resp, err := chatService.GetMessages(req, from_user_id)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
 	for _, v := range resp {
-		klog.Info("-----------------------------")
-		klog.Info(v)
+		t.Log(("-----------------------------"))
+		t.Log(v)
 	}
-	t.Log("------------TestGet success---------------")
+	t.Log("------------testGetMessage End---------------")
 
 }
 
 func benchmarkGetAndPostMessage(b *testing.B) {
-	token, _ := utils.CreateToken(2)
+	b.Log("-----benchmarkGetAndPostMessage Start-----")
+	token, err := utils.CreateToken(from_user_id)
+	if err != nil {
+		b.Error(err)
+		b.Fail()
+	}
 	req := &chat.MessageListRequest{
 		Token:    token,
-		ToUserId: 3,
+		ToUserId: to_user_id,
 	}
-	b.Log("---------------------------------")
-	b.N = 1
+
+	// b.N = 1
 	for i := 0; i < b.N; i++ {
+		b.Logf("----epoch:%v ----", i)
 		for i := 0; i < 2000; i++ {
-			_, err := chatService.GetMessages(req, 2)
+			_, err := chatService.GetMessages(req, from_user_id)
 			if err != nil {
 				b.Error(err)
 				b.Fail()
 			}
-			if i%2000 == 0 {
-				b.Log("----------------input-----------------")
-			}
-			now := time.Now().Unix()
+			now := time.Now().Format("2006-01-02 15:04:05")
 			req_post := &chat.MessagePostRequest{
 				Token:      token,
-				FromUserId: 2,
-				ToUserId:   3,
-				Content:    "hello-->" + strconv.FormatInt(int64(i), 10),
+				FromUserId: from_user_id,
+				ToUserId:   to_user_id,
+				Content:    content_get + "-->" + strconv.FormatInt(int64(i), 10),
 				CreateTime: &now,
 			}
 			err = chatService.SendMessage(req_post)
@@ -65,5 +70,5 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 
 		}
 	}
-	b.Log("------------TestGet success---------------")
+	b.Log("-----benchmarkGetAndPostMessage End-----")
 }

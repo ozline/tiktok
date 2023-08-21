@@ -233,11 +233,11 @@ func (p *BaseResp) Field2DeepEqual(src string) bool {
 }
 
 type Message struct {
-	Id         int64  `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
-	ToUserId   int64  `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
-	FromUserId int64  `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
-	Content    string `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
-	CreateTime *int64 `thrift:"create_time,5,optional" frugal:"5,optional,i64" json:"create_time,omitempty"`
+	Id         int64   `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
+	ToUserId   int64   `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
+	FromUserId int64   `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
+	Content    string  `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
+	CreateTime *string `thrift:"create_time,5,optional" frugal:"5,optional,string" json:"create_time,omitempty"`
 }
 
 func NewMessage() *Message {
@@ -264,9 +264,9 @@ func (p *Message) GetContent() (v string) {
 	return p.Content
 }
 
-var Message_CreateTime_DEFAULT int64
+var Message_CreateTime_DEFAULT string
 
-func (p *Message) GetCreateTime() (v int64) {
+func (p *Message) GetCreateTime() (v string) {
 	if !p.IsSetCreateTime() {
 		return Message_CreateTime_DEFAULT
 	}
@@ -284,7 +284,7 @@ func (p *Message) SetFromUserId(val int64) {
 func (p *Message) SetContent(val string) {
 	p.Content = val
 }
-func (p *Message) SetCreateTime(val *int64) {
+func (p *Message) SetCreateTime(val *string) {
 	p.CreateTime = val
 }
 
@@ -368,7 +368,7 @@ func (p *Message) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 5:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -465,7 +465,7 @@ func (p *Message) ReadField4(iprot thrift.TProtocol) error {
 }
 
 func (p *Message) ReadField5(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
 		p.CreateTime = &v
@@ -588,10 +588,10 @@ WriteFieldEndError:
 
 func (p *Message) writeField5(oprot thrift.TProtocol) (err error) {
 	if p.IsSetCreateTime() {
-		if err = oprot.WriteFieldBegin("create_time", thrift.I64, 5); err != nil {
+		if err = oprot.WriteFieldBegin("create_time", thrift.STRING, 5); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteI64(*p.CreateTime); err != nil {
+		if err := oprot.WriteString(*p.CreateTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -664,25 +664,25 @@ func (p *Message) Field4DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *Message) Field5DeepEqual(src *int64) bool {
+func (p *Message) Field5DeepEqual(src *string) bool {
 
 	if p.CreateTime == src {
 		return true
 	} else if p.CreateTime == nil || src == nil {
 		return false
 	}
-	if *p.CreateTime != *src {
+	if strings.Compare(*p.CreateTime, *src) != 0 {
 		return false
 	}
 	return true
 }
 
 type MessagePostRequest struct {
-	Token      string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
-	ToUserId   int64  `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
-	FromUserId int64  `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
-	Content    string `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
-	CreateTime *int64 `thrift:"create_time,5,optional" frugal:"5,optional,i64" json:"create_time,omitempty"`
+	Token      string  `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
+	ToUserId   int64   `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
+	FromUserId int64   `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
+	Content    string  `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
+	CreateTime *string `thrift:"create_time,5,optional" frugal:"5,optional,string" json:"create_time,omitempty"`
 }
 
 func NewMessagePostRequest() *MessagePostRequest {
@@ -709,9 +709,9 @@ func (p *MessagePostRequest) GetContent() (v string) {
 	return p.Content
 }
 
-var MessagePostRequest_CreateTime_DEFAULT int64
+var MessagePostRequest_CreateTime_DEFAULT string
 
-func (p *MessagePostRequest) GetCreateTime() (v int64) {
+func (p *MessagePostRequest) GetCreateTime() (v string) {
 	if !p.IsSetCreateTime() {
 		return MessagePostRequest_CreateTime_DEFAULT
 	}
@@ -729,7 +729,7 @@ func (p *MessagePostRequest) SetFromUserId(val int64) {
 func (p *MessagePostRequest) SetContent(val string) {
 	p.Content = val
 }
-func (p *MessagePostRequest) SetCreateTime(val *int64) {
+func (p *MessagePostRequest) SetCreateTime(val *string) {
 	p.CreateTime = val
 }
 
@@ -813,7 +813,7 @@ func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 5:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -910,7 +910,7 @@ func (p *MessagePostRequest) ReadField4(iprot thrift.TProtocol) error {
 }
 
 func (p *MessagePostRequest) ReadField5(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
 		p.CreateTime = &v
@@ -1033,10 +1033,10 @@ WriteFieldEndError:
 
 func (p *MessagePostRequest) writeField5(oprot thrift.TProtocol) (err error) {
 	if p.IsSetCreateTime() {
-		if err = oprot.WriteFieldBegin("create_time", thrift.I64, 5); err != nil {
+		if err = oprot.WriteFieldBegin("create_time", thrift.STRING, 5); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteI64(*p.CreateTime); err != nil {
+		if err := oprot.WriteString(*p.CreateTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -1109,14 +1109,14 @@ func (p *MessagePostRequest) Field4DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *MessagePostRequest) Field5DeepEqual(src *int64) bool {
+func (p *MessagePostRequest) Field5DeepEqual(src *string) bool {
 
 	if p.CreateTime == src {
 		return true
 	} else if p.CreateTime == nil || src == nil {
 		return false
 	}
-	if *p.CreateTime != *src {
+	if strings.Compare(*p.CreateTime, *src) != 0 {
 		return false
 	}
 	return true

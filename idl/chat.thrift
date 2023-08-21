@@ -10,7 +10,7 @@ struct Message {
     2: required i64 to_user_id,
     3: required i64 from_user_id,
     4: required string content,
-    5: optional i64 create_time,
+    5: optional string create_time,
 }
 
 struct MessagePostRequest {
@@ -18,7 +18,7 @@ struct MessagePostRequest {
     2: required i64 to_user_id
     3: required i64 from_user_id,
     4: required string content,
-    5: optional i64 create_time,
+    5: optional string create_time,
 }
 
 struct MessagePostReponse {

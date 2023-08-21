@@ -11,13 +11,13 @@ import (
 )
 
 func testRedis(t *testing.T) {
-	t.Log("----------BEGIN------------")
+	t.Log("----------TestRedis BEGIN------------")
 	cache.Init()
 	res, err := cache.RedisDB.Exists(context.Background(), "key1").Result()
 	if res != 0 {
 		mem, err := cache.RedisDB.ZRevRangeByScore(context.Background(), "key1", &redis.ZRangeBy{
-			Min: strconv.Itoa(0),
-			Max: strconv.Itoa(int(time.Now().Unix())),
+			Min: "0",
+			Max: strconv.FormatInt(time.Now().Unix(), 10),
 		}).Result()
 		if err != nil {
 			t.Error(err)
@@ -28,5 +28,5 @@ func testRedis(t *testing.T) {
 		t.Error(err)
 		t.Fail()
 	}
-	t.Log("----------SUCCESS----------")
+	t.Log("----------TestRedis End----------")
 }

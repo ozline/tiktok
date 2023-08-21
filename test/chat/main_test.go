@@ -10,12 +10,11 @@ import (
 )
 
 var (
-	username string
-	password string
-	token    string
-	id       int64
-
-	chatService *service.ChatService
+	from_user_id int64  = 2
+	to_user_id   int64  = 3
+	content_get  string = "test get"
+	content_post string = "test post"
+	chatService  *service.ChatService
 )
 
 func TestMain(m *testing.M) {
@@ -36,7 +35,6 @@ func TestMainOrder(t *testing.T) {
 	t.Run("db", testDB)
 
 	t.Run("redis", testRedis)
-
 }
 
 func BenchmarkMainOrder(b *testing.B) {
