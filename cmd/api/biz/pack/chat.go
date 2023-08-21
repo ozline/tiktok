@@ -14,8 +14,7 @@ func MessageList(list []*chat.Message) []*api.Message {
 			ToUserID:   data.ToUserId,
 			FromUserID: data.FromUserId,
 			Content:    data.Content,
-			// CreateTime: strconv.FormatInt(data.CreateTime, 10),
-			// TODO: fix type error
+			CreateTime: *data.CreateTime,
 		})
 	}
 

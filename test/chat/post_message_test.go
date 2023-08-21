@@ -16,7 +16,7 @@ func testPostMessage(t *testing.T) {
 	if err != nil {
 		klog.Info(err)
 	}
-	now := time.Now().Unix()
+	now := time.Now().Format("2006-01-02 15:04:05")
 	req := &chat.MessagePostRequest{
 		Token:      token,
 		FromUserId: from_user_id,
@@ -40,10 +40,10 @@ func benchmarkPostMessage(b *testing.B) {
 		b.Error(err)
 		b.Fail()
 	}
-	b.N = 10
+	// b.N = 10
 	for i := 0; i < b.N; i++ {
 		for i := 0; i < 2000; i++ {
-			now := time.Now().Unix()
+			now := time.Now().Format("2006-01-02 15:04:05")
 			req := &chat.MessagePostRequest{
 				Token:      token,
 				FromUserId: from_user_id,

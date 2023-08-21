@@ -45,7 +45,7 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 		ToUserId: to_user_id,
 	}
 
-	b.N = 1
+	// b.N = 1
 	for i := 0; i < b.N; i++ {
 		b.Logf("----epoch:%v ----", i)
 		for i := 0; i < 2000; i++ {
@@ -54,7 +54,7 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 				b.Error(err)
 				b.Fail()
 			}
-			now := time.Now().Unix()
+			now := time.Now().Format("2006-01-02 15:04:05")
 			req_post := &chat.MessagePostRequest{
 				Token:      token,
 				FromUserId: from_user_id,

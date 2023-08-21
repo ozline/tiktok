@@ -14,7 +14,6 @@ var (
 	to_user_id   int64  = 3
 	content_get  string = "test get"
 	content_post string = "test post"
-	token        string
 	chatService  *service.ChatService
 )
 

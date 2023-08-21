@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"time"
 
 	"github.com/bytedance/sonic"
 	"github.com/ozline/tiktok/cmd/chat/dal/db"
@@ -20,7 +19,7 @@ func (c *ChatService) SendMessage(req *chat.MessagePostRequest) error {
 		ToUserId:   req.ToUserId,
 		FromUserId: req.FromUserId,
 		Content:    req.Content,
-		CreatedAt:  time.Unix(*req.CreateTime, 0).Format(time.RFC3339),
+		CreatedAt:  *req.CreateTime,
 	}
 	trans_message, err := sonic.Marshal(message)
 	if err != nil {
