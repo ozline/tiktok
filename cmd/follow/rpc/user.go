@@ -53,16 +53,3 @@ func GetUser(ctx context.Context, req *user.InfoRequest) (*user.User, error) {
 
 	return resp.User, nil
 }
-
-func GetUserId(ctx context.Context, req *user.InfoRequest) (int64, error) {
-	resp, err := userClient.Info(ctx, req)
-	if err != nil {
-		return -1, err
-	}
-
-	if resp.Base.Code != errno.SuccessCode {
-		return -1, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
-	}
-
-	return resp.User.Id, nil
-}

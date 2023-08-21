@@ -31,6 +31,11 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 		} else if err != nil {
 			return nil, err
 		}
+		//db中查到后写入redis
+		err := cache.UpdateFollowList(s.ctx, req.UserId, followList)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	//数据处理
@@ -45,5 +50,6 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 		follow := pack.User(user) //结构体转换
 		userList = append(userList, follow)
 	}
+
 	return &userList, nil
 }

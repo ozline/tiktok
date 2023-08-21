@@ -32,6 +32,13 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		} else if err != nil {
 			return nil, err
 		}
+		//db中查到后写入redis
+		followList, _ := db.FollowListAction(s.ctx, req.UserId)
+		followerList, _ := db.FollowerListAction(s.ctx, req.UserId)
+		err := cache.UpdateFriendList(s.ctx, req.UserId, followList, followerList)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	//数据处理

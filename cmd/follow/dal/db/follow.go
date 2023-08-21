@@ -72,6 +72,10 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		return nil, err
 	}
 
+	if len(followList) == 0 { //db中也查不到
+		return nil, RecordNotFound
+	}
+
 	return &followList, nil
 }
 
@@ -85,6 +89,10 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		Find(&followerList).Error
 	if err != nil {
 		return nil, err
+	}
+
+	if len(followerList) == 0 { //db中也查不到
+		return nil, RecordNotFound
 	}
 
 	return &followerList, nil
@@ -102,16 +110,22 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 
 	//查询db中的粉丝列表
 	for _, id := range *tempList {
+		var count int64
 		err = DB.WithContext(ctx).Model(&Follow{}).
-			Where("user_id = ? AND to_user_id = ? AND status = ?", id, uid, constants.FollowAction).Error
-		if errors.Is(err, gorm.ErrRecordNotFound) { //db中也不存在,说明只是单方面关注，不是好友
-			continue
-		} else if err != nil {
+			Where("user_id = ? AND to_user_id = ? AND status = ?", id, uid, constants.FollowAction).
+			Count(&count).Error
+		if err != nil {
 			return nil, err
+		} else if count == 0 { //查无此纪录，说明不是好友，只是单方面关注
+			continue
 		}
 
 		//粉丝列表存在就直接添加这个id
 		friendList = append(friendList, id)
+	}
+
+	if len(friendList) == 0 { //db中也查不到
+		return nil, RecordNotFound
 	}
 
 	return &friendList, nil
