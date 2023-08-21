@@ -21,14 +21,19 @@ func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follo
 	var userList []*follow.User
 
 	//先查redis
-	followerList, err := cache.FollowListAction(s.ctx, req.UserId)
+	followerList, err := cache.FollowerListAction(s.ctx, req.UserId)
 	if err != nil {
 		return nil, err
 	} else if len(*followerList) == 0 { //redis中查不到再查db
-		followerList, err = db.FollowListAction(s.ctx, req.UserId)
+		followerList, err = db.FollowerListAction(s.ctx, req.UserId)
 		if errors.Is(err, db.RecordNotFound) { //db中也查不到
 			return nil, errors.New("you do not have any followers")
 		} else if err != nil {
+			return nil, err
+		}
+		//db中查到后写入redis
+		err := cache.UpdateFollowerList(s.ctx, req.UserId, followerList)
+		if err != nil {
 			return nil, err
 		}
 	}

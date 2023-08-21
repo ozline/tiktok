@@ -89,6 +89,19 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	return &followList, nil
 }
 
+func UpdateFollowList(ctx context.Context, uid int64, followList *[]int64) error {
+	key := FollowListKey(uid)
+	idList := make([]interface{}, len(*followList))
+	for i, v := range *followList {
+		idList[i] = v
+	}
+	if err := RedisClient.SAdd(ctx, key, idList).Err(); err != nil {
+		klog.Infof("err: %v", err)
+		return err
+	}
+	return nil
+}
+
 func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	var followerList []int64
 
@@ -108,6 +121,19 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		followerList = append(followerList, followerId)
 	}
 	return &followerList, nil
+}
+
+func UpdateFollowerList(ctx context.Context, uid int64, followerList *[]int64) error {
+	key := FollowerListKey(uid)
+	idList := make([]interface{}, len(*followerList))
+	for i, v := range *followerList {
+		idList[i] = v
+	}
+	if err := RedisClient.SAdd(ctx, key, idList).Err(); err != nil {
+		klog.Infof("err: %v", err)
+		return err
+	}
+	return nil
 }
 
 func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
@@ -132,4 +158,19 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	return &friendList, nil
+}
+
+func UpdateFriendList(ctx context.Context, uid int64, followList, followerList *[]int64) error {
+	userList, _ := FollowListAction(ctx, uid)
+	if len(*userList) == 0 {
+		err := UpdateFollowList(ctx, uid, followList)
+		if err != nil {
+			return err
+		}
+	}
+	err := UpdateFollowerList(ctx, uid, followerList)
+	if err != nil {
+		return err
+	}
+	return nil
 }

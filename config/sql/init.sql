@@ -60,8 +60,7 @@ create table tiktok.video
 
 create table tiktok.follow
 (
-    `id`          bigint auto_increment               not null,
-    `status`      bigint    default 1                 not null,
+    `id`          bigint                              not null,
     `user_id`     bigint                              not null comment 'user id',
     `to_user_id`  bigint                              not null comment 'target user id',
     `status`      bigint    default 1                 not null comment 'status',
@@ -70,7 +69,7 @@ create table tiktok.follow
     `deleted_at`  timestamp default null null,
     constraint id
         primary key (id)
-) engine=InnoDB auto_increment=10000 default charset=utf8mb4;
+) engine=InnoDB default charset=utf8mb4;
 
 create table `tiktok`.`message`(
     `id`                  bigint auto_increment NOT NULL
