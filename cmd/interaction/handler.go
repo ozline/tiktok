@@ -34,13 +34,13 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	}
 
 	switch req.ActionType {
-	// 1 点赞
+	// 1 like
 	case constants.Like:
 		if err := service.NewInteractionService(ctx).Like(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, err
 		}
-	// 2 取消点赞
+	// 2 dislike
 	case constants.Dislike:
 		if err := service.NewInteractionService(ctx).Dislike(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
@@ -61,14 +61,14 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 		return resp, err
 	}
 
-	videosId, err := service.NewInteractionService(ctx).FavoriteList(req)
+	videoIdList, err := service.NewInteractionService(ctx).FavoriteList(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, err
 	}
 
 	videos, err := rpc.GetFavoriteVideoList(ctx, &video.GetFavoriteVideoInfoRequest{
-		VideoId: videosId,
+		VideoId: videoIdList,
 		Token:   req.Token,
 	})
 

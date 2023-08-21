@@ -59,4 +59,9 @@ func BenchmarkMainOrder(b *testing.B) {
 
 	b.Run("comment count", benchmarkCommentCount)
 
+	b.Run("favorite action", benchmarkFavoriteAction)
+
+	b.Run("favorite list", benchmarkFavoriteList)
+
+	b.Run("favorite count", benchmarkCommentCount)
 }

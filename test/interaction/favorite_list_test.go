@@ -21,3 +21,13 @@ func testFavoriteList(t *testing.T) {
 	}
 	t.Log("------------testFavoriteList success---------------")
 }
+
+func benchmarkFavoriteList(b *testing.B) {
+	req := &interaction.FavoriteListRequest{
+		UserId: userId,
+		Token:  token,
+	}
+	for n := 0; n < b.N; n++ {
+		interactionService.FavoriteList(req)
+	}
+}
