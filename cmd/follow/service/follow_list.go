@@ -50,5 +50,6 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 		follow := pack.User(user) //结构体转换
 		userList = append(userList, follow)
 	}
+
 	return &userList, nil
 }
