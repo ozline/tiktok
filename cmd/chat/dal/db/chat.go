@@ -44,7 +44,6 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		if err != nil {
 			return nil, false, err
 		}
-		klog.Info(mem)
 		//暂时用forrange
 		for _, val := range mem {
 			tempMessage := new(MiddleMessage)
@@ -94,7 +93,10 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 	//mysql
 
 	messageListFormMysql := make([]*Message, 0)
-	err := DB.WithContext(ctx).Where("(to_user_id=? AND from_user_id =?) OR (to_user_id=? AND from_user_id =?) ", to_user_id, from_user_id, from_user_id, to_user_id).Order("created_at desc").Find(&messageListFormMysql).Error
+	err := DB.WithContext(ctx).
+		Where("(to_user_id=? AND from_user_id =?) OR (to_user_id=? AND from_user_id =?) ", to_user_id, from_user_id, from_user_id, to_user_id).
+		Order("created_at desc").
+		Find(&messageListFormMysql).Error
 	if err != nil {
 		// add some logs
 		klog.Info("err happen")
@@ -129,10 +131,8 @@ func convert(message *Message, tempMessage *MiddleMessage) (err error) {
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content
 	message.CreatedAt, err = time.Parse(time.RFC3339, tempMessage.CreatedAt)
-
 	if err != nil {
 		return err
 	}
-	message.UpdatedAt, err = time.Parse(time.RFC3339, tempMessage.UpdatedAt)
 	return
 }

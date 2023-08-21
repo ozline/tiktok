@@ -18,5 +18,5 @@ func testRpc(t *testing.T) {
 		t.Error(err)
 		t.Fail()
 	}
-	t.Log("----------SUCCESS----------")
+	t.Log("----------End------------")
 }

@@ -69,9 +69,9 @@ create table tiktok.follow
 
 CREATE TABLE `message` (
     `id`              bigint          not null,
-    `to_user_id`      bigint          not null,
-    `from_user_id`    bigint          not null,
-    `content`         longtext        not null,
+    `to_user_id`      bigint          not null comment 'target user id',
+    `from_user_id`    bigint          not null comment 'user id',
+    `content`         longtext        not null comment 'message content',
     `created_at`      timestamp       not null        default current_timestamp,
     `updated_at`      timestamp       not null        default current_timestamp on update current_timestamp,
     `deleted_at`      timestamp       null            default null,
