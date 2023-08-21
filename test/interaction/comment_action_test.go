@@ -41,3 +41,23 @@ func testCommentAction(t *testing.T) {
 	}
 	t.Log("------------testCommentAction success---------------")
 }
+
+func benchmarkCommentAction(b *testing.B) {
+	req := &interaction.CommentActionRequest{
+		VideoId:     videoId,
+		CommentText: &commentText,
+		CommentId:   &commentId,
+		Token:       token,
+	}
+
+	for i := 0; i < b.N; i++ {
+		//interactionService.MatchSensitiveWords(commentText)
+
+		resp, _ := interactionService.CreateComment(req)
+
+		commentId = resp.Id
+
+		interactionService.DeleteComment(req)
+
+	}
+}

@@ -24,6 +24,11 @@ $(SERVICES):
 	mkdir -p output
 	cd $(CMD)/$(service) && sh build.sh
 	cd $(CMD)/$(service)/output && cp -r . $(OUTPUT_PATH)/$(service)
+	@echo "[Makefile] Build target completed"
+ifndef ci
+	@echo "[Makefile] Automatic run server"
+	sh $(OUTPUT_PATH)/$(service)/bootstrap.sh
+endif
 
 
 .PHONY: $(MOCKS)

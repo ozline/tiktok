@@ -7,10 +7,10 @@ import (
 )
 
 func testDB(t *testing.T) {
-	t.Log("----------BEGIN------------")
+	t.Log("----------TestDB BEGIN------------")
 	db.Init()
-	if db.DB==nil{
+	if db.DB == nil {
 		t.Fail()
 	}
-	t.Log("----------SUCCESS----------")
+	t.Log("------------TestDB End------------")
 }

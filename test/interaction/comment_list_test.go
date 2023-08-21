@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"testing"
+
+	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
 func testCommentList(t *testing.T) {
@@ -19,4 +20,16 @@ func testCommentList(t *testing.T) {
 		t.Fail()
 	}
 	t.Log("------------testCommentList success---------------")
+}
+
+func benchmarkCommentList(b *testing.B) {
+	req := &interaction.CommentListRequest{
+		VideoId: videoId,
+		Token:   token,
+	}
+
+	for i := 0; i < b.N; i++ {
+
+		interactionService.GetComments(req)
+	}
 }
