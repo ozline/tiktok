@@ -1,9 +1,12 @@
 name: golangci-lint
+
 on:
   push:
     branches:
       - main
   pull_request:
+    breanches:
+      - main
 
 permissions:
   contents: read
@@ -21,6 +24,6 @@ jobs:
           cache: false
 
       - name: golangci-lint
-        uases: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v3
         with:
           version: v1.54

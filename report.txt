@@ -1,93 +1,229 @@
-cmd/interaction/handler.go:88:2: commentFormatting: put a space between `//` and comment text (gocritic)
-	//1-发布评论
-	^
-cmd/interaction/handler.go:111:2: commentFormatting: put a space between `//` and comment text (gocritic)
-	//2-删除评论
-	^
-cmd/interaction/handler.go:152: File is not `gofumpt`-ed (gofumpt)
+cmd/user/service/check_user.go:12: File is not `gofumpt`-ed (gofumpt)
 
-cmd/interaction/main.go:42: File is not `gofumpt`-ed (gofumpt)
+cmd/user/service/get_user.go:10: File is not `gofumpt`-ed (gofumpt)
 
-cmd/interaction/main.go:60: File is not `gofumpt`-ed (gofumpt)
+cmd/user/service/get_user.go:13: File is not `gofumpt`-ed (gofumpt)
 
-cmd/interaction/handler.go:162:27: G601: Implicit memory aliasing in for loop. (gosec)
-		rComment = pack.Comment(&comment)
-		                        ^
-cmd/interaction/handler.go:64:2: var-naming: var videoIdList should be videoIDList (revive)
-	videoIdList, err := service.NewInteractionService(ctx).FavoriteList(req)
+cmd/user/service/get_user.go:9: unnecessary leading newline (whitespace)
+func (s *UserService) GetUser(req *user.InfoRequest) (*db.User, error) {
+
+cmd/user/service/service.go:6:2: found a struct that contains a context.Context field (containedctx)
+	ctx context.Context
 	^
-cmd/interaction/handler.go:52:2: return statements should not be cuddled if block has more than two lines (wsl)
-	return
+cmd/video/handler.go:76:15: Error return value of `stream.Send` is not checked (errcheck)
+			stream.Send(resp)
+			           ^
+cmd/video/handler.go:82:15: Error return value of `stream.Send` is not checked (errcheck)
+			stream.Send(resp)
+			           ^
+cmd/video/handler.go:98:16: Error return value of `stream.Send` is not checked (errcheck)
+				stream.Send(resp)
+				           ^
+cmd/video/handler.go:63: Function 'PutVideo' is too long (73 > 60) (funlen)
+func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
+cmd/video/handler.go:45:2: commentFormatting: put a space between `//` and comment text (gocritic)
+	//获取user信息
 	^
-cmd/interaction/handler.go:77:2: return statements should not be cuddled if block has more than two lines (wsl)
-	return
+cmd/video/handler.go:65:2: commentFormatting: put a space between `//` and comment text (gocritic)
+	//追加位置
 	^
-cmd/interaction/handler.go:100:3: if statements should only be cuddled with assignments (wsl)
-		if ok {
-		^
-cmd/interaction/handler.go:174:4: assignments should only be cuddled with other assignments (wsl)
-			rComment.User = userInfo
+cmd/video/handler.go:91:24: commentFormatting: put a space between `//` and comment text (gocritic)
+		if !req.IsFinished { //上传一部分视频
+		                     ^
+cmd/video/handler.go:115:4: var-naming: var playUrl should be playURL (revive)
+			playUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
 			^
-cmd/interaction/handler.go:160:2: only one cuddle assignment allowed before range statement (wsl)
-	for commentIndex, comment := range *commentsResp {
+cmd/video/handler.go:116:4: var-naming: var coverUrl should be coverURL (revive)
+			coverUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
+			^
+cmd/video/handler.go:92:20: context-keys-type: should not use basic type string as key in context.WithValue (revive)
+			uploadContext = context.WithValue(stream.Context(), "nextPos", nextPos)
+			                ^
+cmd/video/handler.go:93:20: context-keys-type: should not use basic type string as key in context.WithValue (revive)
+			uploadContext = context.WithValue(uploadContext, "videoName", videoName)
+			                ^
+cmd/video/handler.go:106:20: context-keys-type: should not use basic type string as key in context.WithValue (revive)
+			uploadContext = context.WithValue(stream.Context(), "coverName", coverName)
+			                ^
+cmd/video/handler.go:66:22: var-declaration: should drop = 0 from declaration of var nextPos; it is the zero value (revive)
+	var nextPos int64 = 0
+	                    ^
+cmd/video/handler.go:133: unnecessary trailing newline (whitespace)
+
+	}
+cmd/video/handler.go:25:2: if statements should only be cuddled with assignments used in the if statement itself (wsl)
+	if req.LatestTime == 0 {
 	^
-cmd/interaction/handler.go:185:2: return statements should not be cuddled if block has more than two lines (wsl)
+cmd/video/handler.go:28:2: if statements should only be cuddled with assignments (wsl)
+	if req.Token == "" {
+	^
+cmd/video/handler.go:57:2: assignments should only be cuddled with other assignments (wsl)
+	resp.Base = pack.BuildBaseResp(nil)
+	^
+cmd/video/handler.go:60:2: return statements should not be cuddled if block has more than two lines (wsl)
 	return
 	^
-cmd/interaction/handler.go:161:3: ineffectual assignment to rComment (ineffassign)
-		rComment := new(interaction.Comment)
+cmd/video/handler.go:67:2: declarations should never be cuddled (wsl)
+	var coverName string
+	^
+cmd/video/handler.go:68:2: declarations should never be cuddled (wsl)
+	var videoName string
+	^
+cmd/video/handler.go:69:2: declarations should never be cuddled (wsl)
+	var uploadContext context.Context
+	^
+cmd/video/handler.go:134:2: block should not end with a whitespace (or comment) (wsl)
+	}
+	^
+cmd/video/handler.go:77:4: return statements should not be cuddled if block has more than two lines (wsl)
+			return nil
+			^
+cmd/video/handler.go:83:4: return statements should not be cuddled if block has more than two lines (wsl)
+			return nil
+			^
+cmd/video/handler.go:79:3: if statements should only be cuddled with assignments (wsl)
+		if _, err := utils.CheckToken(req.Token); err != nil {
 		^
-cmd/interaction/handler.go:138:2: naked return in func `CommentAction` with 58 lines of code (nakedret)
-	return
+cmd/video/handler.go:85:3: if statements should only be cuddled with assignments (wsl)
+		if coverName == "" {
+		^
+cmd/video/handler.go:95:4: only one cuddle assignment allowed before if statement (wsl)
+			if err != nil {
+			^
+cmd/video/handler.go:101:4: assignments should only be cuddled with other assignments (wsl)
+			resp.Base = pack.BuildBaseResp(nil)
+			^
+cmd/video/handler.go:71:2: for statement without condition should never be cuddled (wsl)
+	for {
 	^
-cmd/interaction/main.go:41:2: variable name 'r' is too short for the scope of its usage (varnamelen)
-	r, err := etcd.NewEtcdRegistry([]string{config.Etcd.Addr})
+cmd/video/handler.go:150:2: assignments should only be cuddled with other assignments (wsl)
+	videoList, err := service.NewVideoService(ctx).GetFavoriteVideoInfo(req)
 	^
-test/video/main_test.go:16:2: var-naming: var videoId should be videoID (revive)
-	videoId      []int64
+cmd/video/handler.go:151:2: only one cuddle assignment allowed before if statement (wsl)
+	if err != nil {
 	^
-test/video/main_test.go:24:2: assignments should only be cuddled with other assignments (wsl)
-	videoService = service.NewVideoService(context.Background())
+cmd/video/handler.go:184:2: only one cuddle assignment allowed before if statement (wsl)
+	if err != nil {
 	^
-test/video/main_test.go:26:2: only cuddled expressions if assigning variable or using from line above (wsl)
-	m.Run()
+cmd/video/handler.go:29:38: mnd: Magic number: 10000, in <argument> detected (gomnd)
+		req.Token, err = utils.CreateToken(10000)
+		                                   ^
+cmd/chat/dal/db/chat.go:35: Function 'GetMessageList' has too many statements (46 > 40) (funlen)
+func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, bool, error) {
+cmd/chat/dal/db/init.go:12:6: exported: type name will be used as db.DBAction by other packages, and that stutters; consider calling this Action (revive)
+type DBAction struct {
+     ^
+cmd/chat/dal/db/chat.go:17:2: var-naming: struct field Id should be ID (revive)
+	Id         int64
 	^
-test/video/main_test.go:29:1: Function TestMainOrder missing the call to method parallel (paralleltest)
-func TestMainOrder(t *testing.T) {
-^
-test/video/main_test.go:30:2: Function TestMainOrder missing the call to method parallel in the test run (paralleltest)
-	t.Run("Feed", testFeed)
+cmd/chat/dal/db/chat.go:18:2: var-naming: struct field ToUserId should be ToUserID (revive)
+	ToUserId   int64
 	^
-test/video/main_test.go:31:2: Function TestMainOrder missing the call to method parallel in the test run (paralleltest)
-	t.Run("Get publish", testGetPublishVideo)
+cmd/chat/dal/db/chat.go:19:2: var-naming: struct field FromUserId should be FromUserID (revive)
+	FromUserId int64
 	^
-test/video/main_test.go:32:2: Function TestMainOrder missing the call to method parallel in the test run (paralleltest)
-	t.Run("Get favorite", testGetLikedVideo)
+cmd/chat/dal/db/chat.go:26:2: var-naming: struct field Id should be ID (revive)
+	Id         int64
 	^
-cmd/interaction/rpc/user.go:26:2: variable name 'c' is too short for the scope of its usage (varnamelen)
-	c, err := userservice.NewClient(
+cmd/chat/dal/db/chat.go:27:2: var-naming: struct field ToUserId should be ToUserID (revive)
+	ToUserId   int64
 	^
-cmd/interaction/rpc/video.go:20:2: variable name 'r' is too short for the scope of its usage (varnamelen)
-	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
+cmd/chat/dal/db/chat.go:28:2: var-naming: struct field FromUserId should be FromUserID (revive)
+	FromUserId int64
 	^
-cmd/interaction/rpc/video.go:26:2: variable name 'c' is too short for the scope of its usage (varnamelen)
-	c, err := videoservice.NewClient(
+cmd/chat/dal/db/chat.go:89:25: unnecessary conversion (unconvert)
+		sort.Sort(MessageArray(messageList))
+		                      ^
+cmd/chat/dal/db/chat.go:61:4: append only allowed to cuddle with appended value (wsl)
+			messageList = append(messageList, message)
+			^
+cmd/chat/dal/db/chat.go:84:4: append only allowed to cuddle with appended value (wsl)
+			messageList = append(messageList, message)
+			^
+cmd/chat/dal/db/init.go:44:2: expressions should not be cuddled with blocks (wsl)
+	sqlDB.SetMaxIdleConns(constants.MaxIdleConns)       // 最大闲置连接数
 	^
-cmd/interaction/rpc/user.go:20:2: variable name 'r' is too short for the scope of its usage (varnamelen)
-	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
+cmd/chat/dal/db/init.go:49:2: if statements should only be cuddled with assignments used in the if statement itself (wsl)
+	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
 	^
+cmd/chat/dal/db/chat.go:104:23: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"user not found\")" (goerr113)
+			return nil, false, errors.New("user not found")
+			                   ^
+cmd/chat/dal/db/init.go:18:2: variable name 'SF' is too short for the scope of its usage (varnamelen)
+	SF *utils.Snowflake
+	^
+cmd/chat/dal/db/init.go:17:2: variable name 'DB' is too short for the scope of its usage (varnamelen)
+	DB *gorm.DB
+	^
+cmd/follow/service/action.go:29:2: ifElseChain: rewrite if-else to switch statement (gocritic)
+	if req.ActionType == 1 {
+	^
+cmd/follow/service/follow_list.go:21:2: Consider pre-allocating `userList` (prealloc)
+	var userList []*follow.User
+	^
+cmd/follow/service/follower_list.go:21:2: Consider pre-allocating `userList` (prealloc)
+	var userList []*follow.User
+	^
+cmd/follow/service/friend_list.go:22:2: Consider pre-allocating `friendList` (prealloc)
+	var friendList []*follow.FriendUser
+	^
+cmd/follow/service/friend_list.go:63: unnecessary trailing newline (whitespace)
+
+	}
+cmd/follow/service/friend_list.go:64:2: block should not end with a whitespace (or comment) (wsl)
+	}
+	^
+cmd/follow/service/service.go:6:2: found a struct that contains a context.Context field (containedctx)
+	ctx context.Context
+	^
+cmd/follow/service/follow_list.go:30:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you are not following anyone\")" (goerr113)
+			return nil, errors.New("you are not following anyone")
+			            ^
+cmd/follow/service/follower_list.go:30:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you do not have any followers\")" (goerr113)
+			return nil, errors.New("you do not have any followers")
+			            ^
+cmd/follow/service/friend_list.go:31:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you do not have any friends\")" (goerr113)
+			return nil, errors.New("you do not have any friends")
+			            ^
+cmd/follow/service/action.go:38:30: mnd: Magic number: 2, in <condition> detected (gomnd)
+	} else if req.ActionType == 2 {
+	                            ^
+cmd/follow/service/friend_list.go:38:6: variable name 'id' is too short for the scope of its usage (varnamelen)
+	for _, id := range *userList {
+	    ^
+cmd/user/dal/db/user.go:13:2: var-naming: struct field Id should be ID (revive)
+	Id              int64
+	^
+cmd/user/dal/db/user.go:58:16: block should not start with a whitespace (wsl)
+	if err != nil {
+	              ^
+cmd/user/dal/db/user.go:75:16: block should not start with a whitespace (wsl)
+	if err != nil {
+	              ^
+cmd/user/dal/db/user.go:79:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"User not found\")" (goerr113)
+			return nil, errors.New("User not found")
+			            ^
+cmd/user/dal/db/init.go:14:5: variable name 'SF' is too short for the scope of its usage (varnamelen)
+var SF *utils.Snowflake
+    ^
 cmd/user/pack/user.go:23:1: block should not end with a whitespace (or comment) (wsl)
 }
 ^
-test/user/info_test.go:9: unnecessary leading newline (whitespace)
-func testGetUserInfo(t *testing.T) {
-
-test/user/login_test.go:10: unnecessary leading newline (whitespace)
-func testLogin(t *testing.T) {
-
-test/user/main_test.go:33:1: Function TestMainOrder missing the call to method parallel (paralleltest)
-func TestMainOrder(t *testing.T) {
-^
+cmd/follow/dal/db/follow.go:95:2: Consider pre-allocating `friendList` (prealloc)
+	var friendList []int64
+	^
+cmd/follow/dal/db/follow.go:14:2: var-naming: struct field UserId should be UserID (revive)
+	UserId    int64
+	^
+cmd/follow/dal/db/follow.go:15:2: var-naming: struct field ToUserId should be ToUserID (revive)
+	ToUserId  int64
+	^
+cmd/follow/dal/db/init.go:13:5: variable name 'SF' is too short for the scope of its usage (varnamelen)
+var SF *utils.Snowflake
+    ^
+cmd/follow/dal/db/follow.go:104:6: variable name 'id' is too short for the scope of its usage (varnamelen)
+	for _, id := range *tempList {
+	    ^
 cmd/interaction/dal/db/favorite.go:37:2: if-return: redundant if ...; err != nil check, just return error instead. (revive)
 	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).Create(fav).Error; err != nil {
 		return err
@@ -97,9 +233,6 @@ cmd/interaction/dal/db/favorite.go:44:2: if-return: redundant if ...; err != nil
 		Where("user_id = ? AND video_id = ?", userId, videoId).Update("status", status).Error; err != nil {
 		return err
 	}
-cmd/interaction/dal/db/comment.go:13:2: var-naming: struct field Id should be ID (revive)
-	Id        int64          `msg:"i"`
-	^
 cmd/interaction/dal/db/comment.go:14:2: var-naming: struct field UserId should be UserID (revive)
 	UserId    int64          `msg:"u"`
 	^
@@ -112,9 +245,6 @@ func GetCommentByID(ctx context.Context, commentId int64) (*Comment, error) {
 cmd/interaction/dal/db/comment.go:56:48: var-naming: func parameter videoId should be videoID (revive)
 func GetCommentsByVideoID(ctx context.Context, videoId int64) ([]Comment, error) {
                                                ^
-cmd/interaction/dal/db/favorite.go:13:2: var-naming: struct field Id should be ID (revive)
-	Id        int64
-	^
 cmd/interaction/dal/db/favorite.go:14:2: var-naming: struct field UserId should be UserID (revive)
 	UserId    int64
 	^
@@ -139,212 +269,70 @@ func GetVideoLikeCount(ctx context.Context, videoId int64) (int64, error) {
 cmd/interaction/dal/db/comment.go:22: unnecessary leading newline (whitespace)
 func CreateComment(ctx context.Context, comment *Comment) (*Comment, error) {
 
-cmd/interaction/dal/db/favorite.go:26:2: only one cuddle assignment allowed before if statement (wsl)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-	^
-cmd/interaction/dal/db/favorite.go:29:2: if statements should only be cuddled with assignments (wsl)
+cmd/interaction/dal/db/comment.go:45: unnecessary leading newline (whitespace)
 	if err != nil {
-	^
-cmd/interaction/dal/db/favorite.go:53:2: declarations should never be cuddled (wsl)
-	var favs []Favorite
-	^
-cmd/interaction/dal/db/favorite.go:54:2: only one cuddle assignment allowed before if statement (wsl)
-	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
-	^
-cmd/interaction/dal/db/init.go:45:1: block should not end with a whitespace (or comment) (wsl)
-}
-^
+
 cmd/interaction/dal/db/comment.go:48:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"comment not found\")" (goerr113)
 			return nil, errors.New("comment not found")
 			            ^
 cmd/interaction/dal/db/init.go:43:6: ineffectual assignment to err (ineffassign)
 	SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
 	    ^
-cmd/interaction/dal/db/init.go:14:5: variable name 'SF' is too short for the scope of its usage (varnamelen)
-var SF *utils.Snowflake
-    ^
-cmd/follow/dal/cache/follow.go:25:36: commentFormatting: put a space between `//` and comment text (gocritic)
-	b, err := IsFollow(ctx, uid, tid) //查询数据是否存在于redis中
-	                                  ^
-cmd/follow/dal/cache/follow.go:72:2: Consider pre-allocating `followList` (prealloc)
-	var followList []int64
+cmd/interaction/service/favorite_list.go:14:2: var-naming: var videoIdList should be videoIDList (revive)
+	videoIdList, err := cache.GetUserFavoriteVideos(s.ctx, req.UserId)
 	^
-cmd/follow/dal/cache/follow.go:93:2: Consider pre-allocating `followerList` (prealloc)
-	var followerList []int64
+cmd/interaction/service/count_comments.go:11:2: var-naming: var videoId should be videoID (revive)
+	videoId := req.VideoId
 	^
-cmd/follow/dal/cache/follow.go:114:2: Consider pre-allocating `friendList` (prealloc)
-	var friendList []int64
-	^
-cmd/follow/dal/cache/follow.go:13:41: var-naming: func parameter followId should be followID (revive)
-func IsFollow(ctx context.Context, uid, followId int64) (bool, error) {
-                                        ^
-cmd/follow/dal/cache/follow.go:86:3: var-naming: var followId should be followID (revive)
-		followId, _ := strconv.ParseInt(id, 10, 64)
+cmd/interaction/service/like.go:11:75: var-naming: method parameter userId should be userID (revive)
+func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userId int64) error {
+                                                                          ^
+cmd/interaction/service/dislike.go:11:78: var-naming: method parameter userId should be userID (revive)
+func (s *InteractionService) Dislike(req *interaction.FavoriteActionRequest, userId int64) error {
+                                                                             ^
+cmd/interaction/service/dislike.go:33:2: if-return: redundant if ...; err != nil check, just return error instead. (revive)
+	if err := db.UpdateFavoriteStatus(s.ctx, userId, req.VideoId, 0); err != nil {
+		return err
+	}
+cmd/interaction/service/get_comments.go:48: unnecessary trailing newline (whitespace)
+
+	}
+cmd/interaction/service/get_comments.go:26:3: only one cuddle assignment allowed before range statement (wsl)
+		for _, rComment := range *rComments {
 		^
-cmd/follow/dal/cache/follow.go:107:3: var-naming: var followerId should be followerID (revive)
-		followerId, _ := strconv.ParseInt(id, 10, 64)
-		^
-cmd/follow/dal/cache/follow.go:16:2: only one cuddle assignment allowed before if statement (wsl)
-	if err != nil {
+cmd/interaction/service/service.go:6:2: found a struct that contains a context.Context field (containedctx)
+	ctx context.Context
 	^
-cmd/follow/dal/cache/follow.go:131:3: append only allowed to cuddle with appended value (wsl)
-		friendList = append(friendList, id)
-		^
-cmd/follow/dal/cache/follow.go:78:5: comparing with == will fail on wrapped errors. Use errors.Is to check for a specific error (errorlint)
+cmd/interaction/service/favorite_list.go:15:5: comparing with == will fail on wrapped errors. Use errors.Is to check for a specific error (errorlint)
 	if err == redis.Nil {
 	   ^
-cmd/follow/dal/cache/follow.go:99:5: comparing with == will fail on wrapped errors. Use errors.Is to check for a specific error (errorlint)
+cmd/interaction/service/get_like_count.go:15:5: comparing with == will fail on wrapped errors. Use errors.Is to check for a specific error (errorlint)
 	if err == redis.Nil {
 	   ^
-cmd/follow/dal/cache/follow.go:29:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you already follow this user\")" (goerr113)
-		return errors.New("you already follow this user")
+cmd/interaction/service/dislike.go:17:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you did not like this video\")" (goerr113)
+		return errors.New("you did not like this video")
 		       ^
-cmd/follow/dal/cache/follow.go:52:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you are not following this user\")" (goerr113)
-		return errors.New("you are not following this user")
+cmd/interaction/service/dislike.go:30:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you did not like this video\")" (goerr113)
+		return errors.New("you did not like this video")
 		       ^
-cmd/follow/dal/cache/limiter.go:31:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"too many request\")" (goerr113)
-		return errors.New("too many request")
-		       ^
-cmd/follow/dal/cache/init.go:17:13: mnd: Magic number: 2, in <assign> detected (gomnd)
-		DB:       2,
+cmd/interaction/service/favorite_list.go:16:15: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you have no favorite video\")" (goerr113)
+		return nil, errors.New("you have no favorite video")
+		            ^
+cmd/interaction/service/favorite_list.go:31:23: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"update cache fail\")" (goerr113)
+		return videoIdList, errors.New("update cache fail")
+		                    ^
+cmd/interaction/service/get_like_count.go:16:13: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"this video has no like\")" (goerr113)
+		return 0, errors.New("this video has no like")
 		          ^
-cmd/follow/dal/cache/follow.go:123:6: variable name 'id' is too short for the scope of its usage (varnamelen)
-	for _, id := range *tempList {
-	    ^
-cmd/follow/dal/cache/follow.go:15:2: variable name 'b' is too short for the scope of its usage (varnamelen)
-	b, err := RedisClient.SIsMember(ctx, FollowListKey(uid), tid).Result()
+cmd/interaction/service/like.go:17:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you already like the video\")" (goerr113)
+		return errors.New("you already like the video")
+		       ^
+cmd/chat/main.go:41:2: variable name 'r' is too short for the scope of its usage (varnamelen)
+	r, err := etcd.NewEtcdRegistry([]string{config.Etcd.Addr})
 	^
-cmd/follow/dal/db/follow.go:95:2: Consider pre-allocating `friendList` (prealloc)
-	var friendList []int64
+cmd/follow/main.go:41:2: variable name 'r' is too short for the scope of its usage (varnamelen)
+	r, err := etcd.NewEtcdRegistry([]string{config.Etcd.Addr})
 	^
-cmd/follow/dal/db/follow.go:13:2: var-naming: struct field Id should be ID (revive)
-	Id        int64
-	^
-cmd/follow/dal/db/follow.go:14:2: var-naming: struct field UserId should be UserID (revive)
-	UserId    int64
-	^
-cmd/follow/dal/db/follow.go:15:2: var-naming: struct field ToUserId should be ToUserID (revive)
-	ToUserId  int64
-	^
-cmd/follow/dal/db/init.go:50:1: block should not end with a whitespace (or comment) (wsl)
-}
-^
-cmd/follow/dal/db/init.go:13:5: variable name 'SF' is too short for the scope of its usage (varnamelen)
-var SF *utils.Snowflake
-    ^
-cmd/follow/dal/db/follow.go:104:6: variable name 'id' is too short for the scope of its usage (varnamelen)
-	for _, id := range *tempList {
-	    ^
-cmd/user/service/service.go:6:2: found a struct that contains a context.Context field (containedctx)
-	ctx context.Context
-	^
-pkg/constants/constants.go:9:2: var-naming: don't use underscores in Go names; const ReidsDB_Chat should be ReidsDBChat (revive)
-	ReidsDB_Chat       = 1
-	^
-cmd/chat/dal/cache/init.go:1: File is not `gofmt`-ed with `-s` (gofmt)
-package cache
-
-import (
-	"errors"
-	"time"
-
-	"github.com/ozline/tiktok/config"
-	redis "github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
-)
-
-var (
-	RedisDB *redis.Client
-)
-
-type Message struct {
-	Id         int64
-	ToUserId   int64
-	FromUserId int64
-	Content    string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	DeletedAt  gorm.DeletedAt `gorm:"index"`
-}
-
-func Init() {
-	RedisDB = redis.NewClient(&redis.Options{
-		Addr:     config.Redis.Addr,
-		Password: config.Redis.Password, // no password set
-		DB:       1,                     // use default DB
-	})
-	//docker run -d --privileged=true -p 6379:6379 -v /usr/local/redis/conf/redis.conf:/etc/redis/redis.conf -v /usr/local/redis/data:/data --name redis-1 redis:latest redis-server /etc/redis/redis.conf --appendonly yes
-
-	if RedisDB == nil {
-		panic(errors.New("[redis init error]"))
-	}
-}
-cmd/chat/dal/cache/chat.go:13:2: `if ok != 0` has complex nested blocks (complexity: 5) (nestif)
-	if ok := MessageExist(ctx, key); ok != 0 {
-	^
-cmd/chat/dal/cache/init.go:18:2: var-naming: struct field ToUserId should be ToUserID (revive)
-	ToUserId   int64
-	^
-cmd/chat/dal/cache/init.go:19:2: var-naming: struct field FromUserId should be FromUserID (revive)
-	FromUserId int64
-	^
-cmd/chat/dal/cache/chat.go:32: unnecessary trailing newline (whitespace)
-
-	}
-cmd/chat/dal/cache/chat.go:21:3: assignments should only be cuddled with other assignments (wsl)
-		lastTime, err := RedisDB.TTL(ctx, key).Result()
-		^
-cmd/chat/dal/cache/chat.go:25:3: if statements should only be cuddled with assignments (wsl)
-		if lastTime.Seconds() < 60*60*24*10 {
-		^
-cmd/chat/dal/cache/init.go:35:9: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"[redis init error]\")" (goerr113)
-		panic(errors.New("[redis init error]"))
-		      ^
-cmd/chat/dal/cache/chat.go:26:48: mnd: Magic number: 30, in <argument> detected (gomnd)
-			err = RedisDB.Expire(ctx, key, time.Hour*24*30).Err()
-			                                            ^
-cmd/follow/service/action.go:29:2: ifElseChain: rewrite if-else to switch statement (gocritic)
-	if req.ActionType == 1 {
-	^
-cmd/follow/service/follow_list.go:21:2: Consider pre-allocating `userList` (prealloc)
-	var userList []*follow.User
-	^
-cmd/follow/service/follower_list.go:21:2: Consider pre-allocating `userList` (prealloc)
-	var userList []*follow.User
-	^
-cmd/follow/service/friend_list.go:22:2: Consider pre-allocating `friendList` (prealloc)
-	var friendList []*follow.FriendUser
-	^
-cmd/follow/service/friend_list.go:63: unnecessary trailing newline (whitespace)
-
-	}
-cmd/follow/service/service.go:6:2: found a struct that contains a context.Context field (containedctx)
-	ctx context.Context
-	^
-cmd/follow/service/follow_list.go:30:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you are not following anyone\")" (goerr113)
-			return nil, errors.New("you are not following anyone")
-			            ^
-cmd/follow/service/follower_list.go:30:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you do not have any followers\")" (goerr113)
-			return nil, errors.New("you do not have any followers")
-			            ^
-cmd/follow/service/friend_list.go:31:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you do not have any friends\")" (goerr113)
-			return nil, errors.New("you do not have any friends")
-			            ^
-cmd/follow/service/action.go:38:30: mnd: Magic number: 2, in <condition> detected (gomnd)
-	} else if req.ActionType == 2 {
-	                            ^
-cmd/follow/service/friend_list.go:38:6: variable name 'id' is too short for the scope of its usage (varnamelen)
-	for _, id := range *userList {
-	    ^
-pkg/middleware/common.go:16:3: variable name 'ri' is too short for the scope of its usage (varnamelen)
-		ri := rpcinfo.GetRPCInfo(ctx)
-		^
-cmd/video/pack/video.go:83:24: captLocal: `UserId' should not be capitalized (gocritic)
-func GenerateVideoName(UserId int64) string {
-                       ^
-cmd/video/pack/video.go:90:24: captLocal: `UserId' should not be capitalized (gocritic)
-func GenerateCoverName(UserId int64) string {
-                       ^
 pkg/utils/sensitive_words.go:30:9: wrapperFunc: use strings.ReplaceAll method in `strings.Replace(text, " ", "", -1)` (gocritic)
 	text = strings.Replace(text, " ", "", -1) // 去除空格
 	       ^
@@ -399,76 +387,228 @@ pkg/utils/sensitive_words.go:73:3: variable name 'j' is too short for the scope 
 pkg/utils/utils.go:32:2: variable name 'l' is too short for the scope of its usage (varnamelen)
 	l, err := net.Listen("tcp", addr)
 	^
-cmd/chat/service/send_message.go:1: File is not `gofmt`-ed with `-s` (gofmt)
-package service
+cmd/interaction/dal/cache/comment.go:32:15: underef: could simplify (*comment).MarshalMsg to comment.MarshalMsg (gocritic)
+	data, err := (*comment).MarshalMsg(nil)
+	             ^
+cmd/interaction/dal/cache/comment.go:71:15: underef: could simplify (*comment).MarshalMsg to comment.MarshalMsg (gocritic)
+	data, err := (*comment).MarshalMsg(nil)
+	             ^
+cmd/interaction/dal/cache/comment.go:47:2: Consider pre-allocating `zComments` (prealloc)
+	var zComments []redis.Z
+	^
+cmd/interaction/dal/cache/favorite.go:64:2: var-naming: var videoIdList should be videoIDList (revive)
+	videoIdList := make([]int64, 10)
+	^
+cmd/interaction/dal/cache/favorite.go:66:3: var-naming: var videoId should be videoID (revive)
+		videoId, err := strconv.ParseInt(item, 10, 64)
+		^
+cmd/interaction/dal/cache/comment.go:27:2: expressions should not be cuddled with blocks (wsl)
+	klog.Infof("Get comments : videoId %v: %v\n", key, rComments)
+	^
+cmd/interaction/dal/cache/comment.go:54:3: append only allowed to cuddle with appended value (wsl)
+		zComments = append(zComments, redis.Z{Score: float64(comment.CreatedAt.Unix()), Member: data})
+		^
+cmd/interaction/dal/cache/comment.go:48:2: ranges should only be cuddled with assignments used in the iteration (wsl)
+	for _, comment := range *comments {
+	^
+cmd/interaction/dal/cache/favorite.go:65:2: ranges should only be cuddled with assignments used in the iteration (wsl)
+	for _, item := range items {
+	^
+cmd/video/rpc/user.go:19:2: variable name 'r' is too short for the scope of its usage (varnamelen)
+	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
+	^
+cmd/video/rpc/user.go:25:2: variable name 'c' is too short for the scope of its usage (varnamelen)
+	c, err := userservice.NewClient(
+	^
+test/chat/get_message_test.go:1: File is not `gofmt`-ed with `-s` (gofmt)
+package test
 
 import (
-	"errors"
+	"strconv"
+	"testing"
+	"time"
 
-	"github.com/bytedance/sonic"
-	"github.com/ozline/tiktok/cmd/chat/dal/db"
-	"github.com/ozline/tiktok/cmd/chat/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/chat"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
-func (c *ChatService) SendMessage(req *chat.MessagePostRequest) error {
+func testGetMessage(t *testing.T) {
+	t.Log("------------testGetMessage Start---------------")
+	token, err := utils.CreateToken(from_user_id)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	req := &chat.MessageListRequest{
+		Token:    token,
+		ToUserId: to_user_id,
+	}
+	resp, err := chatService.GetMessages(req, from_user_id)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	for _, v := range resp {
+		t.Log(("-----------------------------"))
+		t.Log(v)
+	}
+	t.Log("------------testGetMessage End---------------")
 
-	if len(req.Content) == 0 || len(req.Content) > 1000 {
-		return errors.New("character limit error")
-	}
-	message := &mq.MiddleMessage{
-		Id:         db.SF.NextVal(),
-		ToUserId:   req.ToUserId,
-		FromUserId: req.FromUserId,
-		Content:    req.Content,
-		CreatedAt:  *req.CreateTime,
-	}
-	trans_message, err := sonic.Marshal(message)
-	if err != nil {
-		return err
-	}
-	err = mq.ChatMQCli.Publish(c.ctx, string(trans_message))
-	if err != nil {
-		return err
-	}
-	return nil
 }
-cmd/chat/service/service.go:5: File is not `gofmt`-ed with `-s` (gofmt)
-type ChatService struct{
-    ctx context.Context   
-cmd/chat/service/send_message.go:24:2: var-naming: don't use underscores in Go names; var trans_message should be transMessage (revive)
-	trans_message, err := sonic.Marshal(message)
+
+func benchmarkGetAndPostMessage(b *testing.B) {
+	b.Log("-----benchmarkGetAndPostMessage Start-----")
+	token, err := utils.CreateToken(from_user_id)
+	if err != nil {
+		b.Error(err)
+		b.Fail()
+	}
+	req := &chat.MessageListRequest{
+		Token:    token,
+		ToUserId: to_user_id,
+	}
+
+	// b.N = 1
+	for i := 0; i < b.N; i++ {
+		b.Logf("----epoch:%v ----", i)
+		for i := 0; i < 2000; i++ {
+			_, err := chatService.GetMessages(req, from_user_id)
+			if err != nil {
+				b.Error(err)
+				b.Fail()
+			}
+			now := time.Now().Format("2006-01-02 15:04:05")
+			req_post := &chat.MessagePostRequest{
+				Token:      token,
+				FromUserId: from_user_id,
+				ToUserId:   to_user_id,
+				Content:    content_get + "-->" + strconv.FormatInt(int64(i), 10),
+				CreateTime: &now,
+			}
+			err = chatService.SendMessage(req_post)
+			if err != nil {
+				b.Error(err)
+				b.Fail()
+			}
+
+		}
+	}
+	b.Log("-----benchmarkGetAndPostMessage End-----")
+}
+test/chat/post_message_test.go:1: File is not `gofmt`-ed with `-s` (gofmt)
+package test
+
+import (
+	"strconv"
+	"testing"
+	"time"
+
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/kitex_gen/chat"
+	"github.com/ozline/tiktok/pkg/utils"
+)
+
+func testPostMessage(t *testing.T) {
+	t.Log("------------testPostMessage Start---------------")
+	token, err := utils.CreateToken(from_user_id)
+	if err != nil {
+		klog.Info(err)
+	}
+	now := time.Now().Format("2006-01-02 15:04:05")
+	req := &chat.MessagePostRequest{
+		Token:      token,
+		FromUserId: from_user_id,
+		ToUserId:   to_user_id,
+		Content:    content_post,
+		CreateTime: &now,
+	}
+	err = chatService.SendMessage(req)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	time.Sleep(time.Second * 4)
+	t.Log("------------testPostMessage End---------------")
+}
+
+func benchmarkPostMessage(b *testing.B) {
+	b.Log("------------benchmarkPostMessage Start---------------")
+	token, err := utils.CreateToken(from_user_id)
+	if err != nil {
+		b.Error(err)
+		b.Fail()
+	}
+	// b.N = 10
+	for i := 0; i < b.N; i++ {
+		for i := 0; i < 2000; i++ {
+			now := time.Now().Format("2006-01-02 15:04:05")
+			req := &chat.MessagePostRequest{
+				Token:      token,
+				FromUserId: from_user_id,
+				ToUserId:   to_user_id,
+				Content:    content_post + "-->" + strconv.FormatInt(int64(i), 10),
+				CreateTime: &now,
+			}
+			err = chatService.SendMessage(req)
+			if err != nil {
+				b.Error(err)
+				b.Fail()
+			}
+		}
+	}
+	b.Log("------------benchmarkPostMessage End---------------")
+}
+test/chat/main_test.go:13:2: var-naming: don't use underscores in Go names; var from_user_id should be fromUserID (revive)
+	from_user_id int64  = 2
 	^
-cmd/chat/service/get_message.go:11:65: var-naming: don't use underscores in Go names; method parameter user_id should be userID (revive)
-func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) ([]*db.Message, error) {
-                                                                ^
-cmd/chat/service/get_message.go:18:3: var-naming: don't use underscores in Go names; var mq_message should be mqMessage (revive)
-		mq_message, err := sonic.Marshal(messages)
-		^
-cmd/chat/service/service.go:6:5: found a struct that contains a context.Context field (containedctx)
-    ctx context.Context   
-    ^
-cmd/chat/service/send_message.go:15:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"character limit error\")" (goerr113)
-		return errors.New("character limit error")
-		       ^
-cmd/follow/rpc/chat.go:62:3: ifElseChain: rewrite if-else to switch statement (gocritic)
-		if messageList[i].FromUserId == uid && messageList[i].ToUserId == tid {
-		^
-cmd/follow/rpc/chat.go:59:2: redefines-builtin-id: redefinition of the built-in function len (revive)
-	len := len(messageList)
+test/chat/main_test.go:14:2: var-naming: don't use underscores in Go names; var to_user_id should be toUserID (revive)
+	to_user_id   int64  = 3
 	^
-cmd/follow/rpc/user.go:57:6: var-naming: func GetUserId should be GetUserID (revive)
-func GetUserId(ctx context.Context, req *user.InfoRequest) (int64, error) {
+test/chat/main_test.go:15:2: var-naming: don't use underscores in Go names; var content_get should be contentGet (revive)
+	content_get  string = "test get"
+	^
+test/chat/get_message_test.go:58:4: var-naming: don't use underscores in Go names; var req_post should be reqPost (revive)
+			req_post := &chat.MessagePostRequest{
+			^
+test/chat/main_test.go:16:2: var-naming: don't use underscores in Go names; var content_post should be contentPost (revive)
+	content_post string = "test post"
+	^
+test/chat/rpc_test.go:11:6: var-naming: func testRpc should be testRPC (revive)
+func testRpc(t *testing.T) {
      ^
-cmd/follow/rpc/chat.go:29:2: variable name 'c' is too short for the scope of its usage (varnamelen)
-	c, err := messageservice.NewClient(
+test/chat/db_test.go:15:2: expressions should not be cuddled with blocks (wsl)
+	t.Log("------------TestDB End------------")
 	^
-test/follow/follow_list_test.go:33:3: expressions should not be cuddled with blocks (wsl)
-		time.Sleep(100 * time.Millisecond) // Add a sleep to simulate some processing time
+test/chat/get_message_test.go:28:2: only one cuddle assignment allowed before range statement (wsl)
+	for _, v := range resp {
+	^
+test/chat/get_message_test.go:51:3: for statements should only be cuddled with assignments used in the iteration (wsl)
+		for i := 0; i < 2000; i++ {
 		^
-test/follow/main_test.go:34:1: Function TestMainOrder missing the call to method parallel (paralleltest)
-func TestMainOrder(t *testing.T) {
-^
+test/chat/main_test.go:25:2: only cuddled expressions if assigning variable or using from line above (wsl)
+	m.Run()
+	^
+test/chat/main_test.go:29:2: Function TestMainOrder missing the call to method parallel in the test run (paralleltest)
+	t.Run("rpc", testRpc)
+	^
+test/chat/main_test.go:31:2: Function TestMainOrder missing the call to method parallel in the test run (paralleltest)
+	t.Run("get_message", testGetMessage)
+	^
+test/chat/main_test.go:33:2: Function TestMainOrder missing the call to method parallel in the test run (paralleltest)
+	t.Run("post_message", testPostMessage)
+	^
+test/chat/db_test.go:1:9: package should be `test_test` instead of `test` (testpackage)
+package test
+        ^
+test/chat/main_test.go:1:9: package should be `test_test` instead of `test` (testpackage)
+package test
+        ^
+test/chat/redis_test.go:1:9: package should be `test_test` instead of `test` (testpackage)
+package test
+        ^
+test/chat/post_message_test.go:45:7: variable name 'i' is too short for the scope of its usage (varnamelen)
+		for i := 0; i < 2000; i++ {
+		    ^
 pkg/errno/default.go:7:2: the variable name `Success` should conform to the `ErrXxx` format (errname)
 	Success = NewErrNo(SuccessCode, "Success")
 	^
@@ -499,19 +639,190 @@ pkg/errno/default.go:20:2: the variable name `SensitiveWordsError` should confor
 pkg/errno/default.go:21:2: the variable name `SensitiveWordsHTTPError` should conform to the `ErrXxx` format (errname)
 	SensitiveWordsHTTPError = NewErrNo(ServiceErrorCode, "sensitive-words api error")
 	^
+config/config.go:60:33: unexported-return: exported func GetService returns unexported type *config.service, which can be annoying to use (revive)
+func GetService(srvname string) *service {
+                                ^
+config/config.go:31:15: type assertion on error will fail on wrapped errors. Use errors.As to check for specific errors (errorlint)
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+		            ^
+config/config.go:43:2: variable name 'c' is too short for the scope of its usage (varnamelen)
+	c := new(config)
+	^
+cmd/video/pack/video.go:83:24: captLocal: `UserId' should not be capitalized (gocritic)
+func GenerateVideoName(UserId int64) string {
+                       ^
+cmd/video/pack/video.go:90:24: captLocal: `UserId' should not be capitalized (gocritic)
+func GenerateCoverName(UserId int64) string {
+                       ^
+pkg/constants/constants.go:9:2: var-naming: don't use underscores in Go names; const ReidsDB_Chat should be ReidsDBChat (revive)
+	ReidsDB_Chat       = 1
+	^
+cmd/chat/dal/mq/chat_mq.go:1: File is not `gofmt`-ed with `-s` (gofmt)
+package mq
+
+import (
+	"context"
+	"strconv"
+	"time"
+
+	"github.com/bytedance/sonic"
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/cmd/chat/dal/cache"
+	"github.com/ozline/tiktok/cmd/chat/dal/db"
+
+	amqp "github.com/rabbitmq/amqp091-go"
+)
+
+var ChatMQCli *ChatMQ
+
+type ChatMQ struct {
+	RabbitMQ
+	channel   *amqp.Channel
+	exchange  string
+	queueName string
+}
+
+func NewChatMQ(queueName string) *ChatMQ {
+	ChatMQCli := &ChatMQ{
+		RabbitMQ:  *Rmq,
+		queueName: queueName, //friendQue groupQue
+	}
+
+	ch, err := ChatMQCli.conn.Channel()
+	if err != nil {
+
+		return nil
+	}
+	ChatMQCli.channel = ch
+	return ChatMQCli
+}
+
+func InitChatMQ() {
+	ChatMQCli = NewChatMQ("chatQueue")
+	go ChatMQCli.Consumer()
+}
+
+func (c *ChatMQ) Publish(ctx context.Context, message string) error {
+
+	klog.Info("queueName ->:", c.queueName)
+	_, err := c.channel.QueueDeclare(
+		c.queueName,
+		//是否持久化
+		false,
+		//是否为自动删除
+		false,
+		//是否具有排他性
+		false,
+		//是否阻塞
+		false,
+		//额外属性
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+	//json.marshal 可序列化结构体为二进制byte类型
+	//然后就可以通过消息队列进行传参，
+	//在消费者方面只需要通过unmarshal进行反序列化就可以得到结构体
+
+	err = c.channel.PublishWithContext(ctx,
+		c.exchange,
+		c.queueName,
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(message),
+		})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *ChatMQ) Consumer() {
+	defer r.destroy()
+	_, err := r.channel.QueueDeclare(r.queueName, false, false, false, false, nil)
+
+	if err != nil {
+		return
+	}
+	klog.Info("consume queuename--->", r.queueName)
+	//2、接收消息
+	msg, err := r.channel.Consume(
+		r.queueName,
+		//用来区分多个消费者
+		"",
+		//是否自动应答
+		true,
+		//是否具有排他性
+		false,
+		//如果设置为true，表示不能将同一个connection中发送的消息传递给这个connection中的消费者
+		false,
+		//消息队列是否阻塞
+		false,
+		nil,
+	)
+	if err != nil {
+		klog.Info(err)
+		return
+	}
+	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
+	go r.DealWithMessageToUser(msg)
+	//log.Printf("[*] Waiting for messages,To exit press CTRL+C")
+	forever := make(chan bool)
+	<-forever
+}
+func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
+	for req := range msg {
+		klog.Info("chatMQ consuming")
+		middle_message := new(MiddleMessage)
+		err := sonic.Unmarshal(req.Body, middle_message)
+		if err != nil {
+			klog.Info(err)
+			continue
+		}
+		//先存mysql，然后存redis
+		klog.Info("chatMQ consuming")
+		message := new(cache.Message)
+		err = convertForMysql(message, middle_message)
+		if err != nil {
+			klog.Info(err)
+			continue
+		}
+		err = db.DB.Create(&message).Error
+		if err != nil {
+			klog.Info(err)
+			continue
+		}
+		klog.Info("chatMQ consuming")
+		key := strconv.FormatInt(message.FromUserId, 10) + "-" + strconv.FormatInt(message.ToUserId, 10)
+		err = cache.MessageInsert(context.TODO(), key, float64(message.CreatedAt.Unix()), string(req.Body))
+		if err != nil {
+			klog.Info(err)
+			continue
+		}
+	}
+}
+
+func convertForMysql(message *cache.Message, tempMessage *MiddleMessage) (err error) {
+	message.Id = tempMessage.Id
+	message.ToUserId = tempMessage.ToUserId
+	message.FromUserId = tempMessage.FromUserId
+	message.Content = tempMessage.Content
+	message.CreatedAt, err = time.ParseInLocation(time.RFC3339, tempMessage.CreatedAt, time.Local)
+	if err != nil {
+		return err
+	}
+	return
+}
 cmd/chat/dal/mq/message_mq.go:133:4: var-naming: don't use underscores in Go names; var cre_time should be creTime (revive)
 			cre_time, _ := time.ParseInLocation("2006-01-02T15:04:05Z", val.CreatedAt, time.Local)
 			^
 cmd/chat/dal/mq/chat_mq.go:119:3: var-naming: don't use underscores in Go names; var middle_message should be middleMessage (revive)
 		middle_message := new(MiddleMessage)
 		^
-cmd/chat/dal/mq/init.go:14:2: var-naming: struct field ToUserId should be ToUserID (revive)
-	ToUserId   int64
-	^
 cmd/chat/dal/mq/init.go:15:2: var-naming: struct field FromUserId should be FromUserID (revive)
-	FromUserId int64
-	^
-cmd/chat/dal/mq/init.go:24:2: var-naming: struct field FromUserId should be FromUserID (revive)
 	FromUserId int64
 	^
 cmd/chat/dal/mq/message_mq.go:82:1: receiver-naming: receiver name r should be consistent with previous receiver name c for MessageMQ (revive)
@@ -546,78 +857,6 @@ func (r *MessageMQ) Consumer() {
 	forever := make(chan bool)
 	<-forever
 }
-cmd/chat/dal/mq/message_mq.go:114:1: receiver-naming: receiver name r should be consistent with previous receiver name c for MessageMQ (revive)
-func (r *MessageMQ) dealWithMessageToCache(msg <-chan amqp.Delivery) {
-	for req := range msg {
-
-		klog.Info("messageMQ consuming")
-		// if err != nil {
-		// 	klog.Info(err)
-		// 	continue
-		// }
-		message := make([]*MiddleMessage, 0)
-		err := sonic.Unmarshal(req.Body, &message)
-		if err != nil {
-			klog.Info("sonic json error here")
-			klog.Info(err)
-			continue
-		}
-		klog.Info("message mq——----------------------->", message)
-		for _, val := range message {
-			mes, _ := sonic.Marshal(val)
-			key := strconv.FormatInt(val.FromUserId, 10) + "-" + strconv.FormatInt(val.ToUserId, 10)
-			cre_time, _ := time.ParseInLocation("2006-01-02T15:04:05Z", val.CreatedAt, time.Local)
-			err := cache.RedisDB.ZAdd(context.TODO(), key, redis.Z{
-				Score:  float64(cre_time.Unix()),
-				Member: mes,
-			}).Err()
-			if err != nil {
-				klog.Info(err)
-				continue
-			}
-		}
-	}
-}
-cmd/chat/dal/mq/chat_mq.go:83:1: receiver-naming: receiver name r should be consistent with previous receiver name c for ChatMQ (revive)
-func (r *ChatMQ) Consumer() {
-	defer r.destroy()
-	_, err := r.channel.QueueDeclare(r.queueName, false, false, false, false, nil)
-
-	if err != nil {
-		return
-	}
-	klog.Info("consume queuename--->", r.queueName)
-	//2、接收消息
-	msg, err := r.channel.Consume(
-		r.queueName,
-		//用来区分多个消费者
-		"",
-		//是否自动应答
-		true,
-		//是否具有排他性
-		false,
-		//如果设置为true，表示不能将同一个connection中发送的消息传递给这个connection中的消费者
-		false,
-		//消息队列是否阻塞
-		false,
-		nil,
-	)
-	if err != nil {
-		klog.Info(err)
-		return
-	}
-	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
-	go r.DealWithMessageToUser(msg)
-	//log.Printf("[*] Waiting for messages,To exit press CTRL+C")
-	forever := make(chan bool)
-	<-forever
-}
-cmd/chat/dal/mq/chat_mq.go:90:2: expressions should not be cuddled with blocks (wsl)
-	klog.Info("consume queuename--->", r.queueName)
-	^
-cmd/chat/dal/mq/chat_mq.go:110:2: expressions should not be cuddled with blocks (wsl)
-	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
-	^
 cmd/chat/dal/mq/chat_mq.go:111:2: only one cuddle assignment allowed before go statement (wsl)
 	go r.DealWithMessageToUser(msg)
 	^
@@ -627,48 +866,104 @@ cmd/chat/dal/mq/message_mq.go:108:2: only one cuddle assignment allowed before g
 cmd/chat/dal/mq/message_mq.go:127:4: branch statements should not be cuddled if block has more than two lines (wsl)
 			continue
 			^
-cmd/chat/dal/mq/message_mq.go:130:3: only one cuddle assignment allowed before range statement (wsl)
-		for _, val := range message {
+cmd/video/service/feed_video.go:21:24: Error return value of `cache.AddVideoList` is not checked (errcheck)
+		go cache.AddVideoList(s.ctx, videoList, req.LatestTime)
+		                     ^
+cmd/video/service/upload_video.go:13:2: variable name 'ok' is too short for the scope of its usage (varnamelen)
+	videoName, ok := s.ctx.Value("videoName").(string)
+	^
+cmd/follow/dal/cache/follow.go:72:2: Consider pre-allocating `followList` (prealloc)
+	var followList []int64
+	^
+cmd/follow/dal/cache/follow.go:93:2: Consider pre-allocating `followerList` (prealloc)
+	var followerList []int64
+	^
+cmd/follow/dal/cache/follow.go:114:2: Consider pre-allocating `friendList` (prealloc)
+	var friendList []int64
+	^
+cmd/follow/dal/cache/follow.go:78:5: comparing with == will fail on wrapped errors. Use errors.Is to check for a specific error (errorlint)
+	if err == redis.Nil {
+	   ^
+cmd/follow/dal/cache/follow.go:29:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you already follow this user\")" (goerr113)
+		return errors.New("you already follow this user")
+		       ^
+cmd/follow/dal/cache/follow.go:52:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you are not following this user\")" (goerr113)
+		return errors.New("you are not following this user")
+		       ^
+cmd/follow/dal/cache/limiter.go:31:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"too many request\")" (goerr113)
+		return errors.New("too many request")
+		       ^
+cmd/follow/dal/cache/init.go:17:13: mnd: Magic number: 2, in <assign> detected (gomnd)
+		DB:       2,
+		          ^
+cmd/follow/dal/cache/follow.go:123:6: variable name 'id' is too short for the scope of its usage (varnamelen)
+	for _, id := range *tempList {
+	    ^
+cmd/follow/dal/cache/follow.go:15:2: variable name 'b' is too short for the scope of its usage (varnamelen)
+	b, err := RedisClient.SIsMember(ctx, FollowListKey(uid), tid).Result()
+	^
+cmd/user/dal/cache/init.go:38:2: ifElseChain: rewrite if-else to switch statement (gocritic)
+	if err == redis.Nil {
+	^
+cmd/chat/dal/cache/chat.go:13:2: `if ok != 0` has complex nested blocks (complexity: 5) (nestif)
+	if ok := MessageExist(ctx, key); ok != 0 {
+	^
+cmd/chat/dal/cache/init.go:35:9: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"[redis init error]\")" (goerr113)
+		panic(errors.New("[redis init error]"))
+		      ^
+cmd/chat/dal/cache/chat.go:26:48: mnd: Magic number: 30, in <argument> detected (gomnd)
+			err = RedisDB.Expire(ctx, key, time.Hour*24*30).Err()
+			                                            ^
+cmd/interaction/rpc/user.go:26:2: variable name 'c' is too short for the scope of its usage (varnamelen)
+	c, err := userservice.NewClient(
+	^
+test/follow/main_test.go:34:1: Function TestMainOrder missing the call to method parallel (paralleltest)
+func TestMainOrder(t *testing.T) {
+^
+cmd/video/dal/cache/video.go:32:2: use of `fmt.Println` forbidden by pattern `^(fmt\.Print(|f|ln)|print|println)$` (forbidigo)
+	fmt.Println(strconv.FormatInt(latestTime, 10))
+	^
+test/user/main_test.go:33:1: Function TestMainOrder missing the call to method parallel (paralleltest)
+func TestMainOrder(t *testing.T) {
+^
+pkg/middleware/common.go:16:3: variable name 'ri' is too short for the scope of its usage (varnamelen)
+		ri := rpcinfo.GetRPCInfo(ctx)
 		^
-test/chat/main_test.go:13:2: var-naming: don't use underscores in Go names; var from_user_id should be fromUserID (revive)
-	from_user_id int64  = 2
+cmd/interaction/handler.go:162:27: G601: Implicit memory aliasing in for loop. (gosec)
+		rComment = pack.Comment(&comment)
+		                        ^
+cmd/interaction/handler.go:161:3: ineffectual assignment to rComment (ineffassign)
+		rComment := new(interaction.Comment)
+		^
+cmd/interaction/handler.go:138:2: naked return in func `CommentAction` with 58 lines of code (nakedret)
+	return
 	^
-test/chat/main_test.go:14:2: var-naming: don't use underscores in Go names; var to_user_id should be toUserID (revive)
-	to_user_id   int64  = 3
+cmd/user/dal/mq/init.go:42:59: mnd: Magic number: 5, in <argument> detected (gomnd)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	                                                         ^
+cmd/user/dal/mq/init.go:21:2: variable name 'ch' is too short for the scope of its usage (varnamelen)
+	ch, err := conn.Channel()
 	^
-test/chat/main_test.go:15:2: var-naming: don't use underscores in Go names; var content_get should be contentGet (revive)
-	content_get  string = "test get"
+cmd/user/dal/mq/init.go:29:2: variable name 'q' is too short for the scope of its usage (varnamelen)
+	q, err := ch.QueueDeclare(
 	^
-test/chat/get_message_test.go:58:4: var-naming: don't use underscores in Go names; var req_post should be reqPost (revive)
-			req_post := &chat.MessagePostRequest{
-			^
-test/chat/main_test.go:16:2: var-naming: don't use underscores in Go names; var content_post should be contentPost (revive)
-	content_post string = "test post"
-	^
-test/chat/rpc_test.go:11:6: var-naming: func testRpc should be testRPC (revive)
-func testRpc(t *testing.T) {
-     ^
-test/chat/get_message_test.go:33: unnecessary trailing newline (whitespace)
+cmd/user/handler.go:81:18: mnd: Magic number: 10000, in <condition> detected (gomnd)
+	if req.UserId < 10000 {
+	                ^
+cmd/follow/rpc/chat.go:62:3: ifElseChain: rewrite if-else to switch statement (gocritic)
+		if messageList[i].FromUserId == uid && messageList[i].ToUserId == tid {
+		^
+cmd/interaction/dal/sensitive_words/init.go:8: File is not `goimports`-ed (goimports)
 
-}
-test/chat/get_message_test.go:51:3: for statements should only be cuddled with assignments used in the iteration (wsl)
-		for i := 0; i < 2000; i++ {
-		^
-test/chat/main_test.go:25:2: only cuddled expressions if assigning variable or using from line above (wsl)
+cmd/interaction/dal/sensitive_words/init.go:12:5: variable name 'St' is too short for the scope of its usage (varnamelen)
+var St *utils.SensitiveTrie
+    ^
+test/video/main_test.go:26:2: only cuddled expressions if assigning variable or using from line above (wsl)
 	m.Run()
 	^
-test/chat/db_test.go:1:9: package should be `test_test` instead of `test` (testpackage)
-package test
-        ^
-test/chat/main_test.go:1:9: package should be `test_test` instead of `test` (testpackage)
-package test
-        ^
-test/chat/redis_test.go:1:9: package should be `test_test` instead of `test` (testpackage)
-package test
-        ^
-test/chat/post_message_test.go:45:7: variable name 'i' is too short for the scope of its usage (varnamelen)
-		for i := 0; i < 2000; i++ {
-		    ^
+test/video/main_test.go:29:1: Function TestMainOrder missing the call to method parallel (paralleltest)
+func TestMainOrder(t *testing.T) {
+^
 cmd/interaction/pack/comment.go:26:22: G601: Implicit memory aliasing in for loop. (gosec)
 		comment := Comment(&item)
 		                   ^
@@ -681,144 +976,6 @@ cmd/interaction/pack/comment.go:25:2: ranges should only be cuddled with assignm
 cmd/interaction/pack/favorite.go:54:39: mnd: Magic number: 5, in <argument> detected (gomnd)
 	videos := make([]*interaction.Video, 5, 10)
 	                                     ^
-cmd/video/handler.go:76:15: Error return value of `stream.Send` is not checked (errcheck)
-			stream.Send(resp)
-			           ^
-cmd/video/handler.go:82:15: Error return value of `stream.Send` is not checked (errcheck)
-			stream.Send(resp)
-			           ^
-cmd/video/handler.go:98:16: Error return value of `stream.Send` is not checked (errcheck)
-				stream.Send(resp)
-				           ^
-cmd/video/handler.go:63: Function 'PutVideo' is too long (73 > 60) (funlen)
-func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
-cmd/video/handler.go:115:4: var-naming: var playUrl should be playURL (revive)
-			playUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
-			^
-cmd/video/handler.go:116:4: var-naming: var coverUrl should be coverURL (revive)
-			coverUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
-			^
-cmd/video/handler.go:92:20: context-keys-type: should not use basic type string as key in context.WithValue (revive)
-			uploadContext = context.WithValue(stream.Context(), "nextPos", nextPos)
-			                ^
-cmd/video/handler.go:25:2: if statements should only be cuddled with assignments used in the if statement itself (wsl)
-	if req.LatestTime == 0 {
-	^
-cmd/video/handler.go:67:2: declarations should never be cuddled (wsl)
-	var coverName string
-	^
-cmd/video/handler.go:68:2: declarations should never be cuddled (wsl)
-	var videoName string
-	^
-cmd/video/handler.go:71:2: for statement without condition should never be cuddled (wsl)
-	for {
-	^
-cmd/video/handler.go:29:38: mnd: Magic number: 10000, in <argument> detected (gomnd)
-		req.Token, err = utils.CreateToken(10000)
-		                                   ^
-config/config.go:31:15: type assertion on error will fail on wrapped errors. Use errors.As to check for specific errors (errorlint)
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-		            ^
-cmd/interaction/service/favorite_list.go:15:5: comparing with == will fail on wrapped errors. Use errors.Is to check for a specific error (errorlint)
-	if err == redis.Nil {
-	   ^
-cmd/interaction/service/dislike.go:17:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you did not like this video\")" (goerr113)
-		return errors.New("you did not like this video")
-		       ^
-cmd/interaction/service/dislike.go:30:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you did not like this video\")" (goerr113)
-		return errors.New("you did not like this video")
-		       ^
-cmd/interaction/service/favorite_list.go:16:15: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you have no favorite video\")" (goerr113)
-		return nil, errors.New("you have no favorite video")
-		            ^
-cmd/interaction/service/favorite_list.go:31:23: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"update cache fail\")" (goerr113)
-		return videoIdList, errors.New("update cache fail")
-		                    ^
-cmd/interaction/service/get_like_count.go:16:13: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"this video has no like\")" (goerr113)
-		return 0, errors.New("this video has no like")
-		          ^
-cmd/interaction/service/like.go:17:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"you already like the video\")" (goerr113)
-		return errors.New("you already like the video")
-		       ^
-cmd/user/dal/mq/init.go:42:59: mnd: Magic number: 5, in <argument> detected (gomnd)
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	                                                         ^
-cmd/user/dal/mq/init.go:21:2: variable name 'ch' is too short for the scope of its usage (varnamelen)
-	ch, err := conn.Channel()
-	^
-cmd/user/dal/mq/init.go:29:2: variable name 'q' is too short for the scope of its usage (varnamelen)
-	q, err := ch.QueueDeclare(
-	^
-cmd/user/dal/db/user.go:58:16: block should not start with a whitespace (wsl)
-	if err != nil {
-	              ^
-cmd/user/dal/db/user.go:75:16: block should not start with a whitespace (wsl)
-	if err != nil {
-	              ^
-cmd/user/dal/db/user.go:79:16: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"User not found\")" (goerr113)
-			return nil, errors.New("User not found")
-			            ^
-cmd/user/dal/db/init.go:14:5: variable name 'SF' is too short for the scope of its usage (varnamelen)
-var SF *utils.Snowflake
-    ^
-cmd/video/dal/cache/video.go:32:2: use of `fmt.Println` forbidden by pattern `^(fmt\.Print(|f|ln)|print|println)$` (forbidigo)
-	fmt.Println(strconv.FormatInt(latestTime, 10))
-	^
-cmd/chat/pack/chat.go:14:2: ranges should only be cuddled with assignments used in the iteration (wsl)
-	for _, val := range data {
-	^
-cmd/video/dal/db/video.go:37:98: mnd: Magic number: 30, in <argument> detected (gomnd)
-	if err := DB.WithContext(ctx).Where("created_at < ?", latestTime).Order("created_at ASC").Limit(30).Find(&videoResp).Error; err != nil {
-	                                                                                                ^
-cmd/chat/dal/db/chat.go:35: Function 'GetMessageList' has too many statements (46 > 40) (funlen)
-func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, bool, error) {
-cmd/chat/dal/db/chat.go:89:25: unnecessary conversion (unconvert)
-		sort.Sort(MessageArray(messageList))
-		                      ^
-cmd/chat/dal/db/chat.go:61:4: append only allowed to cuddle with appended value (wsl)
-			messageList = append(messageList, message)
-			^
-cmd/chat/dal/db/chat.go:84:4: append only allowed to cuddle with appended value (wsl)
-			messageList = append(messageList, message)
-			^
-cmd/chat/dal/db/init.go:49:2: if statements should only be cuddled with assignments used in the if statement itself (wsl)
-	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
-	^
-cmd/chat/dal/db/chat.go:104:23: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"user not found\")" (goerr113)
-			return nil, false, errors.New("user not found")
-			                   ^
-cmd/chat/dal/db/init.go:17:2: variable name 'DB' is too short for the scope of its usage (varnamelen)
-	DB *gorm.DB
-	^
-cmd/interaction/dal/sensitive_words/init.go:8: File is not `goimports`-ed (goimports)
-
-cmd/interaction/dal/sensitive_words/init.go:12:5: variable name 'St' is too short for the scope of its usage (varnamelen)
-var St *utils.SensitiveTrie
-    ^
-cmd/interaction/dal/cache/comment.go:32:15: underef: could simplify (*comment).MarshalMsg to comment.MarshalMsg (gocritic)
-	data, err := (*comment).MarshalMsg(nil)
-	             ^
-cmd/interaction/dal/cache/comment.go:71:15: underef: could simplify (*comment).MarshalMsg to comment.MarshalMsg (gocritic)
-	data, err := (*comment).MarshalMsg(nil)
-	             ^
-cmd/interaction/dal/cache/comment.go:47:2: Consider pre-allocating `zComments` (prealloc)
-	var zComments []redis.Z
-	^
-cmd/interaction/dal/cache/comment.go:48:2: ranges should only be cuddled with assignments used in the iteration (wsl)
-	for _, comment := range *comments {
-	^
-cmd/user/dal/cache/init.go:38:2: ifElseChain: rewrite if-else to switch statement (gocritic)
-	if err == redis.Nil {
-	^
-cmd/user/handler.go:81:18: mnd: Magic number: 10000, in <condition> detected (gomnd)
-	if req.UserId < 10000 {
-	                ^
-cmd/video/service/feed_video.go:21:24: Error return value of `cache.AddVideoList` is not checked (errcheck)
-		go cache.AddVideoList(s.ctx, videoList, req.LatestTime)
-		                     ^
-cmd/video/service/upload_video.go:13:2: variable name 'ok' is too short for the scope of its usage (varnamelen)
-	videoName, ok := s.ctx.Value("videoName").(string)
-	^
 test/interaction/comment_action_test.go:60:35: Error return value of `interactionService.DeleteComment` is not checked (errcheck)
 		interactionService.DeleteComment(req)
 		                                ^
@@ -849,3 +1006,9 @@ test/interaction/main_test.go:34:2: only cuddled expressions if assigning variab
 test/interaction/favorite_count_test.go:25:6: test helper function should start from b.Helper() (thelper)
 func benchmarkFavoriteCount(b *testing.B) {
      ^
+cmd/chat/service/send_message.go:15:10: err113: do not define dynamic errors, use wrapped static errors instead: "errors.New(\"character limit error\")" (goerr113)
+		return errors.New("character limit error")
+		       ^
+cmd/video/dal/db/video.go:37:98: mnd: Magic number: 30, in <argument> detected (gomnd)
+	if err := DB.WithContext(ctx).Where("created_at < ?", latestTime).Order("created_at ASC").Limit(30).Find(&videoResp).Error; err != nil {
+	                                                                                                ^
