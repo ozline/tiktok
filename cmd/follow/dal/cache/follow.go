@@ -168,9 +168,11 @@ func UpdateFriendList(ctx context.Context, uid int64, followList, followerList *
 			return err
 		}
 	}
+
 	err := UpdateFollowerList(ctx, uid, followerList)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
