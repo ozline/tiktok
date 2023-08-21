@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"github.com/ozline/tiktok/cmd/video/dal/db"
@@ -29,7 +28,7 @@ func GetVideoList(ctx context.Context, latestTime int64) (videoList []db.Video, 
 	return
 }
 func IsExistVideoInfo(ctx context.Context, latestTime int64) (exist int64, err error) {
-	fmt.Println(strconv.FormatInt(latestTime, 10))
+
 	exist, err = RedisClient.Exists(ctx, strconv.FormatInt(latestTime, 10)).Result()
 	return
 }
