@@ -4,22 +4,15 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/ozline/tiktok/pkg/errno"
-	"github.com/ozline/tiktok/pkg/utils"
 	"strconv"
 )
 
 // CreateComment create comment
-func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest) (*db.Comment, error) {
-
-	claim, err := utils.CheckToken(req.Token)
-	if err != nil {
-		return nil, errno.AuthorizationFailedError
-	}
+func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest, userId int64) (*db.Comment, error) {
 
 	commentModel := &db.Comment{
 		VideoId: req.VideoId,
-		UserId:  claim.UserId,
+		UserId:  userId,
 		Content: *req.CommentText,
 	}
 	comment, err := db.CreateComment(s.ctx, commentModel)
