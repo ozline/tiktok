@@ -12,7 +12,7 @@ func BuildMessage(data []*db.Message) []*chat.Message {
 
 	res := make([]*chat.Message, len(data))
 	for _, val := range data {
-		create_time := val.CreatedAt.Unix()
+		create_time := val.CreatedAt.Format("2006-01-02 15:04:05")
 		message := &chat.Message{
 			Id:         val.Id,
 			ToUserId:   val.ToUserId,
