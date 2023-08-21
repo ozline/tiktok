@@ -2,15 +2,14 @@ package db
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"sort"
 	"strconv"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/chat/dal/cache"
-	redis "github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
@@ -39,22 +38,17 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 	//RedisDB.WithContext(ctx)
 	key := strconv.FormatInt(to_user_id, 10) + "-" + strconv.FormatInt(from_user_id, 10)
 	revkey := strconv.FormatInt(from_user_id, 10) + "-" + strconv.FormatInt(to_user_id, 10)
-	if ok, _ := cache.RedisDB.Exists(ctx, key).Result(); ok != 0 {
+	if ok := cache.MessageExist(ctx, key); ok != 0 {
 		//查询 a->b的消息
-
-		mem, err := cache.RedisDB.ZRevRangeByScore(ctx, key, &redis.ZRangeBy{
-			Min: strconv.Itoa(0),
-			Max: strconv.Itoa(int(time.Now().Unix())),
-		}).Result()
+		mem, err := cache.MessageGet(ctx, key)
 		if err != nil {
 			return nil, false, err
 		}
-		klog.Info(mem)
 		//暂时用forrange
 		for _, val := range mem {
 			tempMessage := new(MiddleMessage)
 			message := new(Message)
-			err = json.Unmarshal([]byte(val), &tempMessage)
+			err = sonic.Unmarshal([]byte(val), &tempMessage)
 			if err != nil {
 				klog.Info(err)
 				return nil, false, err
@@ -66,14 +60,10 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 			}
 			messageList = append(messageList, message)
 		}
-		//messageMember, _ := json.Marshal(temp)
 	}
 
-	if ok, _ := cache.RedisDB.Exists(ctx, revkey).Result(); ok != 0 {
-		mem, err := cache.RedisDB.ZRevRangeByScore(ctx, revkey, &redis.ZRangeBy{
-			Min: strconv.FormatInt(0, 10),
-			Max: strconv.FormatInt(time.Now().Unix(), 10),
-		}).Result()
+	if ok := cache.MessageExist(ctx, revkey); ok != 0 {
+		mem, err := cache.MessageGet(ctx, revkey)
 		if err != nil {
 			return nil, false, err
 		}
@@ -81,7 +71,7 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		for _, val := range mem {
 			tempMessage := new(MiddleMessage)
 			message := new(Message)
-			err = json.Unmarshal([]byte(val), &tempMessage)
+			err = sonic.Unmarshal([]byte(val), &tempMessage)
 			if err != nil {
 				klog.Info(err)
 				return nil, false, err
@@ -103,7 +93,10 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 	//mysql
 
 	messageListFormMysql := make([]*Message, 0)
-	err := DB.WithContext(ctx).Where("(to_user_id=? AND from_user_id =?) OR (to_user_id=? AND from_user_id =?) ", to_user_id, from_user_id, from_user_id, to_user_id).Order("created_at desc").Find(&messageListFormMysql).Error
+	err := DB.WithContext(ctx).
+		Where("(to_user_id=? AND from_user_id =?) OR (to_user_id=? AND from_user_id =?) ", to_user_id, from_user_id, from_user_id, to_user_id).
+		Order("created_at desc").
+		Find(&messageListFormMysql).Error
 	if err != nil {
 		// add some logs
 		klog.Info("err happen")
@@ -138,10 +131,8 @@ func convert(message *Message, tempMessage *MiddleMessage) (err error) {
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content
 	message.CreatedAt, err = time.Parse(time.RFC3339, tempMessage.CreatedAt)
-
 	if err != nil {
 		return err
 	}
-	message.UpdatedAt, err = time.Parse(time.RFC3339, tempMessage.UpdatedAt)
 	return
 }

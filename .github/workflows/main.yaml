@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [user]
+        service: [user, video, chat]
     steps:
 
       - name: Checkout code
@@ -28,7 +28,7 @@ jobs:
         run: go mod tidy
 
       - name: Build target
-        run: make ${{ matrix.service }}
+        run: make ${{ matrix.service }} ci=true
 
       - name: Archive production
         uses: actions/upload-artifact@v3
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [user]
+        service: [user, video, chat]
     steps:
 
       - name: Checkout code
@@ -64,4 +64,4 @@ jobs:
         run: nohup sh ./output/${{ matrix.service }}/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
 
       - name: Test interfaces
-        run: go test -v --cover ./test/${{ matrix.service }}/...
+        run: go test -v ./test/${{ matrix.service }}/...
