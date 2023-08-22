@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -138,6 +139,16 @@ func IsExistComment(ctx context.Context, key string) (exist int64, err error) {
 		klog.Error(err)
 	} else {
 		klog.Infof("Is exist comment: videoId %v exist %v \n", key, exist)
+	}
+	return
+}
+
+func DeleteComments(ctx context.Context, key string) (err error) {
+	err = RedisClient.Del(ctx, key).Err()
+	if err != nil {
+		klog.Error(err)
+	} else {
+		klog.Infof("Delete comments: videoId %v \n", key)
 	}
 	return
 }
