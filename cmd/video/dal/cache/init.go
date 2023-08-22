@@ -15,7 +15,7 @@ func Init() {
 	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     config.Redis.Addr,
 		Password: config.Redis.Password,
-		DB:       constants.RedisDBInteraction,
+		DB:       constants.RedisDB_Video,
 	})
 	_, err := RedisClient.Ping(context.TODO()).Result()
 	if err != nil {
