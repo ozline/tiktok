@@ -50,21 +50,19 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 	var nextPos int64 = 0
 	var coverName string
 	var videoName string
-	var uploadContext context.Context
-	var createContext context.Context
 	for {
 		req, err := stream.Recv()
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			resp.State = 0
-			stream.Send(resp)
-			return nil
+			err = stream.Send(resp)
+			return err
 		}
 		if _, err := utils.CheckToken(req.Token); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			resp.State = 0
-			stream.Send(resp)
-			return nil
+			err = stream.Send(resp)
+			return err
 		}
 		if coverName == "" {
 			coverName = pack.GenerateCoverName(req.UserId)
@@ -73,44 +71,42 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			videoName = pack.GenerateVideoName(req.UserId)
 		}
 		if !req.IsFinished { //上传一部分视频
-			uploadContext = context.WithValue(stream.Context(), "nextPos", nextPos)
-			uploadContext = context.WithValue(uploadContext, "videoName", videoName)
-			nextPos, err = service.NewVideoService(uploadContext).UploadVideo(req)
+			nextPos, err = service.NewVideoService(stream.Context()).UploadVideo(req, videoName, nextPos)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
 				resp.State = 0
-				stream.Send(resp)
-				return nil
+				err = stream.Send(resp)
+				return err
 			}
 			resp.Base = pack.BuildBaseResp(nil)
 			resp.State = 1
-			stream.Send(resp)
+			err = stream.Send(resp)
+			if err != nil {
+				return err
+			}
 		} else { //当视频全部上传完成后，开始封面的上传和持久化处理
 			//上传封面
-			uploadContext = context.WithValue(stream.Context(), "coverName", coverName)
-			err = service.NewVideoService(uploadContext).UploadCover(req)
+			err = service.NewVideoService(stream.Context()).UploadCover(req, coverName)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
 				resp.State = 0
-				stream.Send(resp)
-				return nil
+				err = stream.Send(resp)
+				return err
 			}
 			//保存到数据库
 			playUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
 			coverUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
-			createContext = context.WithValue(stream.Context(), "playUrl", playUrl)
-			createContext = context.WithValue(createContext, "coverUrl", coverUrl)
-			_, err = service.NewVideoService(createContext).CreateVideo(req)
+			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
 				resp.State = 0
-				stream.Send(resp)
-				return nil
+				err = stream.Send(resp)
+				return err
 			}
 			klog.Infof("视频全部传输完成")
 			resp.Base = pack.BuildBaseResp(nil)
 			resp.State = 2
-			stream.Send(resp)
+			err = stream.Send(resp)
 			//结束循环停止接收
 			break
 		}
