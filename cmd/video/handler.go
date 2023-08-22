@@ -33,23 +33,25 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
-	videoList, userList, err := service.NewVideoService(ctx).FeedVideo(req)
+	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).FeedVideo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.NextTime = videoList[0].CreatedAt.Unix()
-	resp.VideoList = pack.VideoList(videoList, userList)
+	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList)
+
 	return
 }
 
 func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
 	resp := new(video.PutVideoResponse)
 	//追加位置
-	var nextPos int64 = 0
+	var nextPos int64
 	var coverName string
 	var videoName string
+
 	for {
 		req, err := stream.Recv()
 		if err != nil {
@@ -94,9 +96,9 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 				return err
 			}
 			//保存到数据库
-			playUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
-			coverUrl := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
-			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playUrl, coverUrl)
+			playURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
+			coverURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
+			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playURL, coverURL)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
 				resp.State = 0
@@ -110,9 +112,9 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			//结束循环停止接收
 			break
 		}
-
 	}
 	stream.Close()
+
 	return
 }
 
@@ -127,13 +129,14 @@ func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
-	videoList, userList, err := service.NewVideoService(ctx).GetFavoriteVideoInfo(req)
+	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).GetFavoriteVideoInfo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.VideoList = pack.VideoLikedList(videoList, userList)
+	resp.VideoList = pack.VideoLikedList(videoList, userList, favoriteCountList, commentCountList)
+
 	return
 }
 
@@ -148,12 +151,13 @@ func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPub
 		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
-	videoList, userList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
+	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.VideoList = pack.VideoList(videoList, userList)
+	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList)
+
 	return
 }
