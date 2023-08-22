@@ -9,7 +9,6 @@ import (
 )
 
 func testRpc(t *testing.T) {
-	t.Log("----------BEGIN------------")
 	_, err := messageservice.NewClient("chat",
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithHostPorts("0.0.0.0:10003"))
@@ -18,5 +17,4 @@ func testRpc(t *testing.T) {
 		t.Error(err)
 		t.Fail()
 	}
-	t.Log("----------End------------")
 }
