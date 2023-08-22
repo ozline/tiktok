@@ -3,19 +3,21 @@ package cache
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strconv"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/dal/db"
 )
 
-func AddVideoList(ctx context.Context, videoList []db.Video, latestTime int64) (err error) {
+func AddVideoList(ctx context.Context, videoList []db.Video, latestTime int64) {
 	videoJson, err := json.Marshal(videoList)
 	if err != nil {
-		return
+		klog.Infof(err.Error())
 	}
 	err = RedisClient.Set(ctx, strconv.FormatInt(latestTime, 10), videoJson, 0).Err()
-	return
+	if err != nil {
+		klog.Infof(err.Error())
+	}
 }
 func GetVideoList(ctx context.Context, latestTime int64) (videoList []db.Video, err error) {
 	data, err := RedisClient.Get(ctx, strconv.FormatInt(latestTime, 10)).Result()
@@ -29,7 +31,7 @@ func GetVideoList(ctx context.Context, latestTime int64) (videoList []db.Video, 
 	return
 }
 func IsExistVideoInfo(ctx context.Context, latestTime int64) (exist int64, err error) {
-	fmt.Println(strconv.FormatInt(latestTime, 10))
+
 	exist, err = RedisClient.Exists(ctx, strconv.FormatInt(latestTime, 10)).Result()
 	return
 }

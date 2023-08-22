@@ -41,7 +41,7 @@ create table tiktok.`comment`
 
 create table tiktok.`video`
 (
-    `id`              bigint auto_increment               not null,
+    `id`              bigint                              not null,
     `user_id`         bigint                              not null,
     `play_url`        varchar(255)                        not null comment 'url',
     `cover_url`       varchar(255)                        not null comment 'url',
