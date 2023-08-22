@@ -57,7 +57,10 @@ func benchmarkCommentAction(b *testing.B) {
 
 		commentId = resp.Id
 
-		interactionService.DeleteComment(req, userId)
+		_, err := interactionService.DeleteComment(req, userId)
+		if err != nil {
+			b.Error(err)
+		}
 
 	}
 }

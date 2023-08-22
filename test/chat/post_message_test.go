@@ -11,12 +11,11 @@ import (
 )
 
 func testPostMessage(t *testing.T) {
-	t.Log("------------testPostMessage Start---------------")
 	token, err := utils.CreateToken(from_user_id)
 	if err != nil {
 		klog.Info(err)
 	}
-	now := time.Now().Format("2006-01-02 15:04:05")
+	now := time.Now().Format(time.DateTime)
 	req := &chat.MessagePostRequest{
 		Token:      token,
 		FromUserId: from_user_id,
@@ -30,11 +29,9 @@ func testPostMessage(t *testing.T) {
 		t.Fail()
 	}
 	time.Sleep(time.Second * 4)
-	t.Log("------------testPostMessage End---------------")
 }
 
 func benchmarkPostMessage(b *testing.B) {
-	b.Log("------------benchmarkPostMessage Start---------------")
 	token, err := utils.CreateToken(from_user_id)
 	if err != nil {
 		b.Error(err)
@@ -43,7 +40,7 @@ func benchmarkPostMessage(b *testing.B) {
 	// b.N = 10
 	for i := 0; i < b.N; i++ {
 		for i := 0; i < 2000; i++ {
-			now := time.Now().Format("2006-01-02 15:04:05")
+			now := time.Now().Format(time.DateTime)
 			req := &chat.MessagePostRequest{
 				Token:      token,
 				FromUserId: from_user_id,
@@ -58,5 +55,4 @@ func benchmarkPostMessage(b *testing.B) {
 			}
 		}
 	}
-	b.Log("------------benchmarkPostMessage End---------------")
 }

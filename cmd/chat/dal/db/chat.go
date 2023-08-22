@@ -3,13 +3,9 @@ package db
 import (
 	"context"
 	"errors"
-	"sort"
-	"strconv"
 	"time"
 
-	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/ozline/tiktok/cmd/chat/dal/cache"
 	"gorm.io/gorm"
 )
 
@@ -33,63 +29,6 @@ type MiddleMessage struct {
 type MessageArray []*Message
 
 func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, bool, error) {
-	messageList := make(MessageArray, 0)
-	//redis  ZSET
-	//RedisDB.WithContext(ctx)
-	key := strconv.FormatInt(to_user_id, 10) + "-" + strconv.FormatInt(from_user_id, 10)
-	revkey := strconv.FormatInt(from_user_id, 10) + "-" + strconv.FormatInt(to_user_id, 10)
-	if ok := cache.MessageExist(ctx, key); ok != 0 {
-		//查询 a->b的消息
-		mem, err := cache.MessageGet(ctx, key)
-		if err != nil {
-			return nil, false, err
-		}
-		//暂时用forrange
-		for _, val := range mem {
-			tempMessage := new(MiddleMessage)
-			message := new(Message)
-			err = sonic.Unmarshal([]byte(val), &tempMessage)
-			if err != nil {
-				klog.Info(err)
-				return nil, false, err
-			}
-			err = convert(message, tempMessage)
-			if err != nil {
-				klog.Info(err)
-				return nil, false, err
-			}
-			messageList = append(messageList, message)
-		}
-	}
-
-	if ok := cache.MessageExist(ctx, revkey); ok != 0 {
-		mem, err := cache.MessageGet(ctx, revkey)
-		if err != nil {
-			return nil, false, err
-		}
-		//暂时用forrange
-		for _, val := range mem {
-			tempMessage := new(MiddleMessage)
-			message := new(Message)
-			err = sonic.Unmarshal([]byte(val), &tempMessage)
-			if err != nil {
-				klog.Info(err)
-				return nil, false, err
-			}
-			err = convert(message, tempMessage)
-			if err != nil {
-				klog.Info(err)
-				return nil, false, err
-			}
-			messageList = append(messageList, message)
-		}
-	}
-	if len(messageList) > 0 {
-		//合并排序
-		sort.Sort(MessageArray(messageList))
-		return messageList, false, nil
-	}
-
 	//mysql
 
 	messageListFormMysql := make([]*Message, 0)
@@ -125,7 +64,7 @@ func (array MessageArray) Less(i, j int) bool {
 func (array MessageArray) Swap(i, j int) {
 	array[i], array[j] = array[j], array[i]
 }
-func convert(message *Message, tempMessage *MiddleMessage) (err error) {
+func Convert(message *Message, tempMessage *MiddleMessage) (err error) {
 	message.Id = tempMessage.Id
 	message.ToUserId = tempMessage.ToUserId
 	message.FromUserId = tempMessage.FromUserId
