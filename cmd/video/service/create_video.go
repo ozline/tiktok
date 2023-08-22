@@ -7,7 +7,7 @@ import (
 	"github.com/ozline/tiktok/pkg/utils"
 )
 
-func (s *VideoService) CreateVideo(req *video.PutVideoRequest) (*db.Video, error) {
+func (s *VideoService) CreateVideo(req *video.PutVideoRequest, playURL string, coverURL string) (*db.Video, error) {
 	claim, err := utils.CheckToken(req.Token)
 	if err != nil {
 		return nil, errno.AuthorizationFailedError
