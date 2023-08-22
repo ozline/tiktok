@@ -21,3 +21,13 @@ func testFavoriteCount(t *testing.T) {
 	}
 	t.Log("------------testFavoriteCount success---------------")
 }
+
+func benchmarkFavoriteCount(b *testing.B) {
+	req := &interaction.FavoriteCountRequest{
+		VideoId: videoId,
+		Token:   token,
+	}
+	for n := 0; n < b.N; n++ {
+		interactionService.GetLikeCount(req)
+	}
+}

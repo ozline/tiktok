@@ -27,3 +27,14 @@ func testFavoriteAction(t *testing.T) {
 	}
 	t.Log("------------testFavoriteAction success---------------")
 }
+
+func benchmarkFavoriteAction(b *testing.B) {
+	req := &interaction.FavoriteActionRequest{
+		VideoId: videoId,
+		Token:   token,
+	}
+	for n := 0; n < b.N; n++ {
+		interactionService.Like(req, userId)
+		interactionService.Dislike(req, userId)
+	}
+}

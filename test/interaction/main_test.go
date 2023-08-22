@@ -27,9 +27,10 @@ func TestMain(m *testing.M) {
 
 	interactionService = service.NewInteractionService(context.Background())
 
-	token, _ = utils.CreateToken(10000)
+	userId = 10000
+	token, _ = utils.CreateToken(userId)
 	commentText = "发条评论看看"
-	userId = 1
+
 	videoId = 1
 	m.Run()
 }
@@ -59,4 +60,9 @@ func BenchmarkMainOrder(b *testing.B) {
 
 	b.Run("comment count", benchmarkCommentCount)
 
+	b.Run("favorite action", benchmarkFavoriteAction)
+
+	b.Run("favorite list", benchmarkFavoriteList)
+
+	b.Run("favorite count", benchmarkCommentCount)
 }

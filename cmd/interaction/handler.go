@@ -34,13 +34,13 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	}
 
 	switch req.ActionType {
-	// 1 点赞
+	// 1 like
 	case constants.Like:
 		if err := service.NewInteractionService(ctx).Like(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, err
 		}
-	// 2 取消点赞
+	// 2 dislike
 	case constants.Dislike:
 		if err := service.NewInteractionService(ctx).Dislike(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
@@ -61,14 +61,14 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 		return resp, err
 	}
 
-	videosId, err := service.NewInteractionService(ctx).FavoriteList(req)
+	videoIdList, err := service.NewInteractionService(ctx).FavoriteList(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, err
 	}
 
 	videos, err := rpc.GetFavoriteVideoList(ctx, &video.GetFavoriteVideoInfoRequest{
-		VideoId: videosId,
+		VideoId: videoIdList,
 		Token:   req.Token,
 	})
 
@@ -84,10 +84,26 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 	commentResp := new(db.Comment)
 	commentService := service.NewInteractionService(ctx)
 
+	claim, err := utils.CheckToken(req.Token)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+	userId := claim.UserId
+	userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
+		UserId: userId,
+		Token:  req.Token,
+	})
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
 	switch req.ActionType {
 	//1-发布评论
 	case constants.AddComment:
-		if len(*req.CommentText) == 0 {
+
+		if req.CommentText == nil || len(*req.CommentText) == 0 || len(*req.CommentText) > 255 {
 			resp.Base = pack.BuildBaseResp(errno.ParamError)
 			return resp, nil
 		}
@@ -102,7 +118,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return resp, nil
 		}
 
-		commentResp, err = commentService.CreateComment(req)
+		commentResp, err = commentService.CreateComment(req, userId)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
@@ -110,7 +126,13 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		}
 	//2-删除评论
 	case constants.DeleteComment:
-		commentResp, err = commentService.DeleteComment(req)
+
+		if req.CommentId == nil {
+			resp.Base = pack.BuildBaseResp(errno.ParamError)
+			return resp, nil
+		}
+
+		commentResp, err = commentService.DeleteComment(req, userId)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
@@ -119,15 +141,6 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 	default:
 		resp.Base = pack.BuildBaseResp(errno.UnexpectedTypeError)
-		return resp, nil
-	}
-
-	userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
-		UserId: commentResp.UserId,
-		Token:  req.Token,
-	})
-	if err != nil {
-		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 
