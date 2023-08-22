@@ -31,10 +31,12 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 			resp.Base = pack.BuildBaseResp(errno.ParamError)
 		}
 	}
+
 	if _, err := utils.CheckToken(req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
+
 	videoList, err := service.NewVideoService(ctx).FeedVideo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)

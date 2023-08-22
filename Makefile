@@ -35,3 +35,8 @@ endif
 $(MOCKS):
 	@mkdir -p mocks
 	mockgen -source=./idl/$(mock).go -destination=./mocks/$(mock).go -package=mocks
+
+
+.PHONY: clean
+clean:
+	@find . -type d -name "output" -exec rm -rf {} + -print
