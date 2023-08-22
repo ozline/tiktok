@@ -69,7 +69,7 @@ func Convert(message *Message, tempMessage *MiddleMessage) (err error) {
 	message.ToUserId = tempMessage.ToUserId
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content
-	message.CreatedAt, err = time.Parse(time.DateTime, tempMessage.CreatedAt)
+	message.CreatedAt, err = time.Parse(time.RFC3339, tempMessage.CreatedAt)
 	if err != nil {
 		return err
 	}
