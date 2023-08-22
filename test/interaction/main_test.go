@@ -64,5 +64,5 @@ func BenchmarkMainOrder(b *testing.B) {
 
 	b.Run("favorite list", benchmarkFavoriteList)
 
-	b.Run("favorite count", benchmarkCommentCount)
+	b.Run("favorite count", benchmarkFavoriteCount)
 }
