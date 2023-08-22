@@ -17,8 +17,7 @@ services:
             - MYSQL_PASSWORD=tiktok
             - TZ=Asia/Shanghai
         volumes:
-            - ./config/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-            - ./config/sql/user.sql:/docker-entrypoint-initdb.d/user.sql
+            - ./config/sql:/docker-entrypoint-initdb.d/
         ports:
             - "3306:3306"
         networks:
@@ -122,20 +121,20 @@ services:
         networks:
             - tiktok
 
-    # cadvisor:
-    #     image: gcr.io/cadvisor/cadvisor
-    #     container_name: cadvisor
-    #     restart: always
-    #     platform: linux/amd64
-    #     volumes:
-    #         - /:/rootfs:ro
-    #         - /var/run:/var/run:rw
-    #         - /sys:/sys:ro
-    #         - /var/lib/docker/:/var/lib/docker:ro
-    #     ports:
-    #         - 8899:8080
-    #     networks:
-    #         - tiktok
+    cadvisor:
+        image: gcr.io/cadvisor/cadvisor
+        container_name: cadvisor
+        restart: always
+        platform: linux/amd64
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:rw
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+        ports:
+            - 8899:8080
+        networks:
+            - tiktok
 
     redis-exporter:
         image: oliver006/redis_exporter
