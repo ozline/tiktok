@@ -41,5 +41,7 @@ func Init() {
 	sqlDB.SetConnMaxLifetime(constants.ConnMaxLifetime) // 最大可复用时间
 
 	SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID)
-
+	if err != nil {
+		panic(err)
+	}
 }
