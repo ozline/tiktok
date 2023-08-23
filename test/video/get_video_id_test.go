@@ -7,7 +7,7 @@ import (
 )
 
 func testGetVideoIDByUid(t *testing.T) {
-	_, err := videoService.GetGetVideoIDByUid(&video.GetVideoIDByUidRequset{
+	_, err := videoService.GetVideoIDByUid(&video.GetVideoIDByUidRequset{
 		UserId: 10000,
 		Token:  token,
 	})
