@@ -31,5 +31,6 @@ func TestMainOrder(t *testing.T) {
 	t.Run("Get publish", testGetPublishVideo)
 	t.Run("Get favorite", testGetFavoriteVideo)
 	t.Run("Get work count", testWorkCount)
+	t.Run("Get video id by uid", testGetVideoIDByUid)
 	t.Run("RPC Test", testRPC)
 }

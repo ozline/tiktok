@@ -27,6 +27,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"GetFavoriteVideoInfo": kitex.NewMethodInfo(getFavoriteVideoInfoHandler, newGetFavoriteVideoInfoArgs, newGetFavoriteVideoInfoResult, false),
 		"GetPublishList":       kitex.NewMethodInfo(getPublishListHandler, newGetPublishListArgs, newGetPublishListResult, false),
 		"GetWorkCount":         kitex.NewMethodInfo(getWorkCountHandler, newGetWorkCountArgs, newGetWorkCountResult, false),
+		"GetVideoIDByUid":      kitex.NewMethodInfo(getVideoIDByUidHandler, newGetVideoIDByUidArgs, newGetVideoIDByUidResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -814,6 +815,159 @@ func (p *GetWorkCountResult) GetResult() interface{} {
 	return p.Success
 }
 
+func getVideoIDByUidHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(video.GetVideoIDByUidRequset)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(video.VideoService).GetVideoIDByUid(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetVideoIDByUidArgs:
+		success, err := handler.(video.VideoService).GetVideoIDByUid(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetVideoIDByUidResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetVideoIDByUidArgs() interface{} {
+	return &GetVideoIDByUidArgs{}
+}
+
+func newGetVideoIDByUidResult() interface{} {
+	return &GetVideoIDByUidResult{}
+}
+
+type GetVideoIDByUidArgs struct {
+	Req *video.GetVideoIDByUidRequset
+}
+
+func (p *GetVideoIDByUidArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(video.GetVideoIDByUidRequset)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetVideoIDByUidArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetVideoIDByUidArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetVideoIDByUidArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetVideoIDByUidArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetVideoIDByUidArgs) Unmarshal(in []byte) error {
+	msg := new(video.GetVideoIDByUidRequset)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetVideoIDByUidArgs_Req_DEFAULT *video.GetVideoIDByUidRequset
+
+func (p *GetVideoIDByUidArgs) GetReq() *video.GetVideoIDByUidRequset {
+	if !p.IsSetReq() {
+		return GetVideoIDByUidArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetVideoIDByUidArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetVideoIDByUidArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetVideoIDByUidResult struct {
+	Success *video.GetVideoIDByUidResponse
+}
+
+var GetVideoIDByUidResult_Success_DEFAULT *video.GetVideoIDByUidResponse
+
+func (p *GetVideoIDByUidResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(video.GetVideoIDByUidResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetVideoIDByUidResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetVideoIDByUidResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetVideoIDByUidResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetVideoIDByUidResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetVideoIDByUidResult) Unmarshal(in []byte) error {
+	msg := new(video.GetVideoIDByUidResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetVideoIDByUidResult) GetSuccess() *video.GetVideoIDByUidResponse {
+	if !p.IsSetSuccess() {
+		return GetVideoIDByUidResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetVideoIDByUidResult) SetSuccess(x interface{}) {
+	p.Success = x.(*video.GetVideoIDByUidResponse)
+}
+
+func (p *GetVideoIDByUidResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetVideoIDByUidResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -873,6 +1027,16 @@ func (p *kClient) GetWorkCount(ctx context.Context, Req *video.GetWorkCountReque
 	_args.Req = Req
 	var _result GetWorkCountResult
 	if err = p.c.Call(ctx, "GetWorkCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetVideoIDByUid(ctx context.Context, Req *video.GetVideoIDByUidRequset) (r *video.GetVideoIDByUidResponse, err error) {
+	var _args GetVideoIDByUidArgs
+	_args.Req = Req
+	var _result GetVideoIDByUidResult
+	if err = p.c.Call(ctx, "GetVideoIDByUid", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

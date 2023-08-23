@@ -192,3 +192,27 @@ func (s *VideoServiceImpl) GetWorkCount(ctx context.Context, req *video.GetWorkC
 
 	return
 }
+
+// GetGetVideoIDByUid implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetVideoIDByUid(ctx context.Context, req *video.GetVideoIDByUidRequset) (resp *video.GetVideoIDByUidResponse, err error) {
+	resp = new(video.GetVideoIDByUidResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	if req.UserId < 10000 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+
+	videoIDList, err := service.NewVideoService(ctx).GetGetVideoIDByUid(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.VideoId = videoIDList
+	return
+}
