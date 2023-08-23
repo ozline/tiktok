@@ -26,6 +26,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"PutVideo":             kitex.NewMethodInfo(putVideoHandler, newPutVideoArgs, newPutVideoResult, false),
 		"GetFavoriteVideoInfo": kitex.NewMethodInfo(getFavoriteVideoInfoHandler, newGetFavoriteVideoInfoArgs, newGetFavoriteVideoInfoResult, false),
 		"GetPublishList":       kitex.NewMethodInfo(getPublishListHandler, newGetPublishListArgs, newGetPublishListResult, false),
+		"GetWorkCount":         kitex.NewMethodInfo(getWorkCountHandler, newGetWorkCountArgs, newGetWorkCountResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -660,6 +661,159 @@ func (p *GetPublishListResult) GetResult() interface{} {
 	return p.Success
 }
 
+func getWorkCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(video.GetWorkCountRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(video.VideoService).GetWorkCount(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *GetWorkCountArgs:
+		success, err := handler.(video.VideoService).GetWorkCount(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetWorkCountResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newGetWorkCountArgs() interface{} {
+	return &GetWorkCountArgs{}
+}
+
+func newGetWorkCountResult() interface{} {
+	return &GetWorkCountResult{}
+}
+
+type GetWorkCountArgs struct {
+	Req *video.GetWorkCountRequest
+}
+
+func (p *GetWorkCountArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(video.GetWorkCountRequest)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetWorkCountArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetWorkCountArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetWorkCountArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in GetWorkCountArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetWorkCountArgs) Unmarshal(in []byte) error {
+	msg := new(video.GetWorkCountRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetWorkCountArgs_Req_DEFAULT *video.GetWorkCountRequest
+
+func (p *GetWorkCountArgs) GetReq() *video.GetWorkCountRequest {
+	if !p.IsSetReq() {
+		return GetWorkCountArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetWorkCountArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetWorkCountArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetWorkCountResult struct {
+	Success *video.GetWorkCountResponse
+}
+
+var GetWorkCountResult_Success_DEFAULT *video.GetWorkCountResponse
+
+func (p *GetWorkCountResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(video.GetWorkCountResponse)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetWorkCountResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetWorkCountResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetWorkCountResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in GetWorkCountResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetWorkCountResult) Unmarshal(in []byte) error {
+	msg := new(video.GetWorkCountResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetWorkCountResult) GetSuccess() *video.GetWorkCountResponse {
+	if !p.IsSetSuccess() {
+		return GetWorkCountResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetWorkCountResult) SetSuccess(x interface{}) {
+	p.Success = x.(*video.GetWorkCountResponse)
+}
+
+func (p *GetWorkCountResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetWorkCountResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -709,6 +863,16 @@ func (p *kClient) GetPublishList(ctx context.Context, Req *video.GetPublishListR
 	_args.Req = Req
 	var _result GetPublishListResult
 	if err = p.c.Call(ctx, "GetPublishList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetWorkCount(ctx context.Context, Req *video.GetWorkCountRequest) (r *video.GetWorkCountResponse, err error) {
+	var _args GetWorkCountArgs
+	_args.Req = Req
+	var _result GetWorkCountResult
+	if err = p.c.Call(ctx, "GetWorkCount", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

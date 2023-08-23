@@ -47,7 +47,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 
 func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
 	resp := new(video.PutVideoResponse)
-	//追加位置
+	// 追加位置
 	var nextPos int64
 	var coverName string
 	var videoName string
@@ -145,21 +145,50 @@ func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.
 // GetPublishList implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPublishListRequest) (resp *video.GetPublishListResponse, err error) {
 	resp = new(video.GetPublishListResponse)
+
 	if _, err := utils.CheckToken(req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
+
 	if req.UserId < 10000 {
 		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
+
 	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
+
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList)
+
+	return
+}
+
+// GetWorkCount implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetWorkCount(ctx context.Context, req *video.GetWorkCountRequest) (resp *video.GetWorkCountResponse, err error) {
+	resp = new(video.GetWorkCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	if req.UserId < 10000 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+
+	workCount, err := service.NewVideoService(ctx).GetWorkCount(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.WorkCount = workCount
 
 	return
 }

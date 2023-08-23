@@ -46,3 +46,9 @@ func GetVideoInfoByUid(ctx context.Context, uid int64) ([]Video, error) {
 	}
 	return videoResp, nil
 }
+func GetWorkCountByUid(ctx context.Context, uid int64) (workCount int64, err error) {
+	if err = DB.WithContext(ctx).Where("user_id = ?", uid).Count(&workCount).Error; err != nil {
+		return 0, err
+	}
+	return
+}

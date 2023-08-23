@@ -30,5 +30,6 @@ func TestMainOrder(t *testing.T) {
 	t.Run("Feed", testFeed)
 	t.Run("Get publish", testGetPublishVideo)
 	t.Run("Get favorite", testGetFavoriteVideo)
+	t.Run("Get work count", testWorkCount)
 	t.Run("RPC Test", testRPC)
 }

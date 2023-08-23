@@ -82,17 +82,17 @@ func VideoLikedList(data []db.Video, userList []*user.User, favoriteCountList []
 
 	return videoList
 }
-func GenerateVideoName(UserId int64) string {
+func GenerateVideoName(UserID int64) string {
 	currentTime := time.Now()
 	// 获取年月日和小时分钟
 	year, month, day := currentTime.Date()
 	hour, minute := currentTime.Hour(), currentTime.Minute()
-	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_video.mp4", UserId, year, month, day, hour, minute)
+	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_video.mp4", UserID, year, month, day, hour, minute)
 }
-func GenerateCoverName(UserId int64) string {
+func GenerateCoverName(UserID int64) string {
 	currentTime := time.Now()
 	// 获取年月日和小时分钟
 	year, month, day := currentTime.Date()
 	hour, minute := currentTime.Hour(), currentTime.Minute()
-	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_cover.jpg", UserId, year, month, day, hour, minute)
+	return fmt.Sprintf("%v_%d%02d%02d_%02d%02d_cover.jpg", UserID, year, month, day, hour, minute)
 }
