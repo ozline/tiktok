@@ -29,7 +29,6 @@ func MessageInsert(ctx context.Context, key string, score float64, member string
 			}
 			return nil
 		}
-
 	}
 	// 不存在则直接add然后加时间
 	err := RedisDB.ZAdd(context.TODO(), key, redis.Z{

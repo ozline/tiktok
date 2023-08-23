@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/ozline/tiktok/cmd/interaction/pack"
-	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/cmd/interaction/service"
 	interaction "github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -83,7 +82,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 	userId := claim.UserId
 
 	switch req.ActionType {
-	//1-发布评论
+	// 1-发布评论
 	case constants.AddComment:
 
 		if req.CommentText == nil || len(*req.CommentText) == 0 || len(*req.CommentText) > 255 {
@@ -110,7 +109,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 		resp.Comment = commentResp
 
-	//2-删除评论
+	// 2-删除评论
 	case constants.DeleteComment:
 
 		if req.CommentId == nil {
@@ -230,6 +229,14 @@ func (s *InteractionServiceImpl) UserTotalFavorited(ctx context.Context, req *in
 		return resp, nil
 	}
 
-	service.NewInteractionService(ctx).GetUserTotalFavorited(req)
-	return
+	total, err := service.NewInteractionService(ctx).GetUserTotalFavorited(req)
+
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.TotalFavorited = total
+	return resp, nil
 }

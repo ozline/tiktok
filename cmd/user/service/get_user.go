@@ -7,7 +7,6 @@ import (
 
 // GetUser check token and get user's info
 func (s *UserService) GetUser(req *user.InfoRequest) (*db.User, error) {
-
 	// 获取用户信息
 	userModel, err := db.GetUserByID(s.ctx, req.UserId)
 

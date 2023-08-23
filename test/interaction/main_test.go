@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"testing"
+
+	"github.com/ozline/tiktok/cmd/interaction/rpc"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal"
 	"github.com/ozline/tiktok/cmd/interaction/service"
@@ -22,7 +23,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-
 	config.InitForTest()
 	dal.Init()
 	rpc.Init()
@@ -37,7 +37,6 @@ func TestMain(m *testing.M) {
 }
 
 func TestMainOrder(t *testing.T) {
-
 	t.Run("comment action", testCommentAction)
 
 	t.Run("comment list", testCommentList)
@@ -48,13 +47,12 @@ func TestMainOrder(t *testing.T) {
 
 	t.Run("favorite list", testFavoriteList)
 
-	t.Run("favorite count", testFavoriteCount)
+	t.Run("favorite count", testVideoFavoriteCount)
 
 	t.Run("RPC Test", testRPC)
 }
 
 func BenchmarkMainOrder(b *testing.B) {
-
 	b.Run("comment action", benchmarkCommentAction)
 
 	b.Run("comment list", benchmarkCommentList)
@@ -65,5 +63,5 @@ func BenchmarkMainOrder(b *testing.B) {
 
 	b.Run("favorite list", benchmarkFavoriteList)
 
-	b.Run("favorite count", benchmarkFavoriteCount)
+	b.Run("favorite count", benchmarkFavoriteVideoCount)
 }

@@ -43,7 +43,7 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 		}
 	}
 
-	//数据处理
+	// 数据处理
 	for _, id := range *followList {
 		wg.Add(1)
 		go func(id int64, req *follow.FollowListRequest, userList *[]*follow.User, wg *sync.WaitGroup, mu *sync.Mutex) {

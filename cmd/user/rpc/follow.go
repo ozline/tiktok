@@ -42,58 +42,44 @@ func InitFollowRPC() {
 	followClient = c
 }
 
-func RelationAction(ctx context.Context, req *follow.ActionRequest) error {
-	resp, err := followClient.Action(ctx, req)
+func GetFollowCount(ctx context.Context, req *follow.FollowCountRequest) (int64, error) {
+	resp, err := followClient.FollowCount(ctx, req)
 
 	if err != nil {
-		return err
+		return -1, err
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return -1, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
 	}
 
-	return nil
+	return *resp.FollowCount, nil
 }
 
-func FollowList(ctx context.Context, req *follow.FollowListRequest) ([]*follow.User, error) {
-	resp, err := followClient.FollowList(ctx, req)
+func GetFollowerCount(ctx context.Context, req *follow.FollowerCountRequest) (int64, error) {
+	resp, err := followClient.FollowerCount(ctx, req)
 
 	if err != nil {
-		return nil, err
+		return -1, err
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return -1, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
 	}
 
-	return resp.UserList, nil
+	return *resp.FollowerCount, nil
 }
 
-func FollowerList(ctx context.Context, req *follow.FollowerListRequest) ([]*follow.User, error) {
-	resp, err := followClient.FollowerList(ctx, req)
+func IsFollow(ctx context.Context, req *follow.IsFollowRequest) (bool, error) {
+	resp, err := followClient.IsFollow(ctx, req)
 
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return false, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
 	}
 
-	return resp.UserList, nil
-}
-
-func FriendList(ctx context.Context, req *follow.FriendListRequest) ([]*follow.FriendUser, error) {
-	resp, err := followClient.FriendList(ctx, req)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.Base.Code != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
-	}
-
-	return resp.UserList, nil
+	return resp.IsFollow, nil
 }

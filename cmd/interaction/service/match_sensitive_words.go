@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/ozline/tiktok/cmd/interaction/dal/sensitive_words"
 	"io"
 	"net/http"
+
+	"github.com/ozline/tiktok/cmd/interaction/dal/sensitive_words"
 )
 
 type ResponseBody struct {
@@ -16,7 +17,6 @@ type ResponseBody struct {
 }
 
 func (s *InteractionService) MatchSensitiveWords(text string) (bool, error) {
-
 	ok := sensitive_words.St.Match(text)
 	if ok {
 		return ok, nil
@@ -38,5 +38,4 @@ func (s *InteractionService) MatchSensitiveWords(text string) (bool, error) {
 		return false, err
 	}
 	return !res.IsPass, nil
-
 }

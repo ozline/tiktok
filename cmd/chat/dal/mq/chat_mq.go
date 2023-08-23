@@ -25,12 +25,11 @@ type ChatMQ struct {
 func NewChatMQ(queueName string) *ChatMQ {
 	ChatMQCli := &ChatMQ{
 		RabbitMQ:  *Rmq,
-		queueName: queueName, //friendQue groupQue
+		queueName: queueName, // friendQue groupQue
 	}
 
 	ch, err := ChatMQCli.conn.Channel()
 	if err != nil {
-
 		return nil
 	}
 	ChatMQCli.channel = ch
@@ -45,23 +44,23 @@ func InitChatMQ() {
 func (c *ChatMQ) Publish(ctx context.Context, message string) error {
 	_, err := c.channel.QueueDeclare(
 		c.queueName,
-		//是否持久化
+		// 是否持久化
 		false,
-		//是否为自动删除
+		// 是否为自动删除
 		false,
-		//是否具有排他性
+		// 是否具有排他性
 		false,
-		//是否阻塞
+		// 是否阻塞
 		false,
-		//额外属性
+		// 额外属性
 		nil,
 	)
 	if err != nil {
 		return err
 	}
-	//json.marshal 可序列化结构体为二进制byte类型
-	//然后就可以通过消息队列进行传参，
-	//在消费者方面只需要通过unmarshal进行反序列化就可以得到结构体
+	// json.marshal 可序列化结构体为二进制byte类型
+	// 然后就可以通过消息队列进行传参，
+	// 在消费者方面只需要通过unmarshal进行反序列化就可以得到结构体
 
 	err = c.channel.PublishWithContext(ctx,
 		c.exchange,
@@ -85,18 +84,17 @@ func (r *ChatMQ) Consumer() {
 	if err != nil {
 		return
 	}
-	//2、接收消息
 	msg, err := r.channel.Consume(
 		r.queueName,
-		//用来区分多个消费者
+		// 用来区分多个消费者
 		"",
-		//是否自动应答
+		// 是否自动应答
 		true,
-		//是否具有排他性
+		// 是否具有排他性
 		false,
-		//如果设置为true，表示不能将同一个connection中发送的消息传递给这个connection中的消费者
+		// 如果设置为true，表示不能将同一个connection中发送的消息传递给这个connection中的消费者
 		false,
-		//消息队列是否阻塞
+		// 消息队列是否阻塞
 		false,
 		nil,
 	)
@@ -106,7 +104,6 @@ func (r *ChatMQ) Consumer() {
 	}
 	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
 	go r.DealWithMessageToUser(msg)
-	//log.Printf("[*] Waiting for messages,To exit press CTRL+C")
 	forever := make(chan bool)
 	<-forever
 }
@@ -118,7 +115,6 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 			klog.Info(err)
 			continue
 		}
-		//先存mysql，然后存redis
 		message := new(cache.Message)
 		err = convertForMysql(message, middle_message)
 		if err != nil {
