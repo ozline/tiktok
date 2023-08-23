@@ -1,34 +1,37 @@
 package service
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
+	"github.com/ozline/tiktok/cmd/interaction/rpc"
+	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/redis/go-redis/v9"
 )
 
-func (s *InteractionService) FavoriteList(req *interaction.FavoriteListRequest) ([]int64, error) {
+func (s *InteractionService) FavoriteList(req *interaction.FavoriteListRequest) ([]*video.Video, error) {
 	// read from redis
-	videoIdList, err := cache.GetUserFavoriteVideos(s.ctx, req.UserId)
-	if err == redis.Nil {
-		return nil, errors.New("you have no favorite video")
-	}
+	videoIDList, err := cache.GetUserFavoriteVideos(s.ctx, req.UserId)
 	if err != nil {
 		return nil, err
 	}
-	if len(videoIdList) != 0 {
-		return videoIdList, nil
+	if len(videoIDList) != 0 {
+		return nil, nil
 	}
+
 	// read from mysql
-	videoIdList, err = db.GetVideosByUserId(s.ctx, req.UserId)
+	videoIDList, err = db.GetVideosByUserId(s.ctx, req.UserId)
 	if err != nil {
 		return nil, err
 	}
-	err = cache.UpdateFavoriteVideoList(s.ctx, req.UserId, videoIdList)
+	err = cache.UpdateFavoriteVideoList(s.ctx, req.UserId, videoIDList)
 	if err != nil {
-		return videoIdList, errors.New("update cache fail")
+		return nil, fmt.Errorf("err: %w", err)
 	}
-	return videoIdList, nil
+
+	return rpc.GetFavoriteVideoList(s.ctx, &video.GetFavoriteVideoInfoRequest{
+		VideoId: videoIDList,
+		Token:   req.Token,
+	})
 }

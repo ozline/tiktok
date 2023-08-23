@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/ozline/tiktok/pkg/constants"
@@ -10,63 +9,50 @@ import (
 )
 
 type Favorite struct {
-	Id        int64
-	UserId    int64
-	VideoId   int64
+	ID        int64
+	UserID    int64
+	VideoID   int64
 	Status    int64
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-func IsFavoriteExist(ctx context.Context, userId int64, videoId int64) (bool, error) {
-	var fav *Favorite
-	err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
-		Where("user_id = ? AND video_id = ?", userId, videoId).First(&fav).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return false, nil
-	}
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+func IsFavoriteExist(ctx context.Context, userID int64, videoID int64) error {
+	var fav Favorite
+	return DB.Table(constants.FavoriteTableName).WithContext(ctx).
+		Where("user_id = ? AND video_id = ?", userID, videoID).First(&fav).Error
 }
 
 func FavoriteCreate(ctx context.Context, fav *Favorite) error {
-	fav.Id = SF.NextVal()
-	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).Create(fav).Error; err != nil {
-		return err
-	}
-	return nil
+	fav.ID = SF.NextVal()
+	return DB.Table(constants.FavoriteTableName).WithContext(ctx).Create(fav).Error
 }
 
-func UpdateFavoriteStatus(ctx context.Context, userId int64, videoId int64, status int64) error {
-	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
-		Where("user_id = ? AND video_id = ?", userId, videoId).Update("status", status).Error; err != nil {
-		return err
-	}
-	return nil
+func UpdateFavoriteStatus(ctx context.Context, userID int64, videoID int64, status int64) error {
+	return DB.Table(constants.FavoriteTableName).WithContext(ctx).
+		Where("user_id = ? AND video_id = ?", userID, videoID).Update("status", status).Error
 }
 
-func GetVideosByUserId(ctx context.Context, userId int64) ([]int64, error) {
-	videos := make([]int64, 0)
+func GetVideosByUserId(ctx context.Context, userID int64) ([]int64, error) {
+	videos := make([]int64, 0, 10)
 	var favs []Favorite
 	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
-		Where("user_id = ? AND status", userId, 1).Find(&favs).Error; err != nil {
+		Where("user_id = ? AND status = 1", userID).Find(&favs).Error; err != nil {
 		return nil, err
 	}
 
-	for _, item := range favs {
-		videos = append(videos, item.VideoId)
+	for _, fav := range favs {
+		videos = append(videos, fav.VideoID)
 	}
 
 	return videos, nil
 }
 
-func GetVideoLikeCount(ctx context.Context, videoId int64) (int64, error) {
+func GetVideoLikeCount(ctx context.Context, videoID int64) (int64, error) {
 	var count int64
 	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
-		Where("video_id = ? AND status = 1", videoId).Count(&count).Error; err != nil {
+		Where("video_id = ? AND status = 1", videoID).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil

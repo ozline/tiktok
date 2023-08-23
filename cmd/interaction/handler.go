@@ -6,7 +6,6 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/pack"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/cmd/interaction/service"
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	interaction "github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -24,7 +23,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	claims, err := utils.CheckToken(req.Token)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
-		return resp, err
+		return resp, nil
 	}
 
 	if req.ActionType != 1 && req.ActionType != 2 {
@@ -37,13 +36,13 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	case constants.Like:
 		if err := service.NewInteractionService(ctx).Like(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
-			return resp, err
+			return resp, nil
 		}
 	// 2 dislike
 	case constants.Dislike:
 		if err := service.NewInteractionService(ctx).Dislike(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
-			return resp, err
+			return resp, nil
 		}
 	}
 
@@ -57,22 +56,17 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 
 	if _, err := utils.CheckToken(req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
-		return resp, err
+		return resp, nil
 	}
 
-	videoIdList, err := service.NewInteractionService(ctx).FavoriteList(req)
+	videoList, err := service.NewInteractionService(ctx).FavoriteList(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
-		return resp, err
+		return resp, nil
 	}
 
-	videos, err := rpc.GetFavoriteVideoList(ctx, &video.GetFavoriteVideoInfoRequest{
-		VideoId: videoIdList,
-		Token:   req.Token,
-	})
-
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.VideoList = pack.BuildVideos(videos)
+	resp.VideoList = pack.BuildVideos(videoList)
 	return
 }
 
@@ -204,13 +198,13 @@ func (s *InteractionServiceImpl) FavoriteCount(ctx context.Context, req *interac
 
 	if _, err := utils.CheckToken(req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
-		return resp, err
+		return resp, nil
 	}
 
 	likeCount, err := service.NewInteractionService(ctx).GetLikeCount(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
-		return resp, err
+		return resp, nil
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)

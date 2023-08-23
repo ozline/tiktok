@@ -2,10 +2,12 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"gorm.io/gorm"
 )
 
 func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userId int64) error {
@@ -14,7 +16,7 @@ func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userId
 		return err
 	}
 	if exist {
-		return errors.New("you already like the video")
+		return fmt.Errorf("error: you already like this video")
 	}
 
 	if err := cache.AddVideoLikeCount(s.ctx, req.VideoId, userId); err != nil {
@@ -22,18 +24,19 @@ func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userId
 	}
 
 	// write into mysql
-	exist, err = db.IsFavoriteExist(s.ctx, userId, req.VideoId)
-	if err != nil {
-		return err
-	}
+	err = db.IsFavoriteExist(s.ctx, userId, req.VideoId)
 	// no exist
-	if !exist {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		fav := &db.Favorite{
-			VideoId: req.VideoId,
-			UserId:  userId,
+			VideoID: req.VideoId,
+			UserID:  userId,
 			Status:  1,
 		}
 		return db.FavoriteCreate(s.ctx, fav)
+	}
+	// not gorm.ErrRecordNotFound error
+	if err != nil {
+		return err
 	}
 	//exist
 	return db.UpdateFavoriteStatus(s.ctx, userId, req.VideoId, 1)
