@@ -108,7 +108,9 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			klog.Infof("视频全部传输完成")
 			resp.Base = pack.BuildBaseResp(nil)
 			resp.State = 2
-			err = stream.Send(resp)
+			if err = stream.Send(resp); err != nil {
+				return err
+			}
 			//结束循环停止接收
 			break
 		}
