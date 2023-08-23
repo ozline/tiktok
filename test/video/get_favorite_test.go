@@ -6,8 +6,8 @@ import (
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 )
 
-func testGetLikedVideo(t *testing.T) {
-	_, err := videoService.GetFavoriteVideoInfo(&video.GetFavoriteVideoInfoRequest{
+func testGetFavoriteVideo(t *testing.T) {
+	_, _, _, _, err := videoService.GetFavoriteVideoInfo(&video.GetFavoriteVideoInfoRequest{
 		VideoId: videoId,
 		Token:   token,
 	})
