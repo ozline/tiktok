@@ -8,7 +8,6 @@ import (
 )
 
 func testLogin(t *testing.T) {
-
 	resp, err := userService.CheckUser(&user.LoginRequest{
 		Username: username,
 		Password: password,
