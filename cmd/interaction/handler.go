@@ -192,26 +192,6 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 	return
 }
 
-// FavoriteCount implements the interactionServiceImpl interface.
-func (s *InteractionServiceImpl) FavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest) (resp *interaction.FavoriteCountResponse, err error) {
-	resp = new(interaction.FavoriteCountResponse)
-
-	if _, err := utils.CheckToken(req.Token); err != nil {
-		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
-		return resp, nil
-	}
-
-	likeCount, err := service.NewInteractionService(ctx).GetLikeCount(req)
-	if err != nil {
-		resp.Base = pack.BuildBaseResp(err)
-		return resp, nil
-	}
-
-	resp.Base = pack.BuildBaseResp(nil)
-	resp.LikeCount = likeCount
-	return
-}
-
 // CommentCount implements the interactionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentCount(ctx context.Context, req *interaction.CommentCountRequest) (resp *interaction.CommentCountResponse, err error) {
 	resp = new(interaction.CommentCountResponse)
@@ -232,5 +212,58 @@ func (s *InteractionServiceImpl) CommentCount(ctx context.Context, req *interact
 
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.CommentCount = count
+	return
+}
+
+// VideoFavoritedCount implements the InteractionServiceImpl interface.
+func (s *InteractionServiceImpl) VideoFavoritedCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest) (resp *interaction.VideoFavoritedCountResponse, err error) {
+	resp = new(interaction.VideoFavoritedCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	likeCount, err := service.NewInteractionService(ctx).GetVideoFavoritedCount(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.LikeCount = likeCount
+	return
+}
+
+// UserFavoriteCount implements the InteractionServiceImpl interface.
+func (s *InteractionServiceImpl) UserFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountRequest) (resp *interaction.UserFavoriteCountResponse, err error) {
+	resp = new(interaction.UserFavoriteCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	likeCount, err := service.NewInteractionService(ctx).GetUserFavoriteCount(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.LikeCount = likeCount
+	return
+}
+
+// UserTotalFavorited implements the InteractionServiceImpl interface.
+func (s *InteractionServiceImpl) UserTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest) (resp *interaction.UserTotalFavoritedResponse, err error) {
+	resp = new(interaction.UserTotalFavoritedResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	service.NewInteractionService(ctx).GetUserTotalFavorited(req)
 	return
 }

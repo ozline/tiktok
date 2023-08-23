@@ -1,11 +1,10 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"github.com/ozline/tiktok/pkg/errno"
 )
 
 func (s *InteractionService) Dislike(req *interaction.FavoriteActionRequest, userID int64) error {
@@ -14,7 +13,7 @@ func (s *InteractionService) Dislike(req *interaction.FavoriteActionRequest, use
 		return err
 	}
 	if !exist {
-		return fmt.Errorf("error: you did not like this video")
+		return errno.LikeNoExistError
 	}
 
 	if err := cache.ReduceVideoLikeCount(s.ctx, req.VideoId, userID); err != nil {

@@ -2,11 +2,11 @@ package service
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"github.com/ozline/tiktok/pkg/errno"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +16,7 @@ func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userId
 		return err
 	}
 	if exist {
-		return fmt.Errorf("error: you already like this video")
+		return errno.LikeAlreadyExistError
 	}
 
 	if err := cache.AddVideoLikeCount(s.ctx, req.VideoId, userId); err != nil {

@@ -1,8 +1,6 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
@@ -27,7 +25,7 @@ func (s *InteractionService) FavoriteList(req *interaction.FavoriteListRequest) 
 	}
 	err = cache.UpdateFavoriteVideoList(s.ctx, req.UserId, videoIDList)
 	if err != nil {
-		return nil, fmt.Errorf("err: %w", err)
+		return nil, err
 	}
 
 	return rpc.GetFavoriteVideoList(s.ctx, &video.GetFavoriteVideoInfoRequest{
