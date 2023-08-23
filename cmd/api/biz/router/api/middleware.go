@@ -4,6 +4,7 @@ package api
 
 import (
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/ozline/tiktok/cmd/api/biz/middleware"
 )
 
 func rootMw() []app.HandlerFunc {
@@ -23,7 +24,9 @@ func _feedMw() []app.HandlerFunc {
 
 func _userinfoMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _commentMw() []app.HandlerFunc {
