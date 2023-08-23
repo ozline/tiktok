@@ -7,7 +7,7 @@ import (
 )
 
 func testFeed(t *testing.T) {
-	_, err := videoService.FeedVideo(&video.FeedRequest{
+	_, _, _, _, err := videoService.FeedVideo(&video.FeedRequest{
 		LatestTime: 1692472274,
 	})
 	if err != nil {

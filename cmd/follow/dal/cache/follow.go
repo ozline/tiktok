@@ -12,20 +12,20 @@ import (
 // 判断关注数据是否存在于redis
 func IsFollow(ctx context.Context, uid, followId int64) (bool, error) {
 	tid := strconv.FormatInt(followId, 10)
-	b, err := RedisClient.SIsMember(ctx, FollowListKey(uid), tid).Result()
+	exist, err := RedisClient.SIsMember(ctx, FollowListKey(uid), tid).Result()
 	if err != nil {
 		klog.Infof("err: %v", err)
-		return b, err
+		return exist, err
 	}
 
-	return b, nil
+	return exist, nil
 }
 
 func FollowAction(ctx context.Context, uid, tid int64) error {
-	b, err := IsFollow(ctx, uid, tid) //查询数据是否存在于redis中
+	exist, err := IsFollow(ctx, uid, tid) //查询数据是否存在于redis中
 	if err != nil {
 		return err
-	} else if b { //存在说明已关注
+	} else if exist { //存在说明已关注
 		return errors.New("you already follow this user")
 	}
 
@@ -45,10 +45,10 @@ func FollowAction(ctx context.Context, uid, tid int64) error {
 }
 
 func UnFollowAction(ctx context.Context, uid, tid int64) error {
-	b, err := IsFollow(ctx, uid, tid) //查询数据是否存在于redis中
+	exist, err := IsFollow(ctx, uid, tid) //查询数据是否存在于redis中
 	if err != nil {
 		return err
-	} else if !b { //redis中不存在,说明并未关注
+	} else if !exist { //redis中不存在,说明并未关注
 		return errors.New("you are not following this user")
 	}
 
@@ -69,13 +69,13 @@ func UnFollowAction(ctx context.Context, uid, tid int64) error {
 }
 
 func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
-	var followList []int64
+	followList := make([]int64, 0, 10)
 
 	key := FollowListKey(uid)
 
 	//查询redis
 	idList, err := RedisClient.SMembers(ctx, key).Result()
-	if err == redis.Nil {
+	if errors.Is(err, redis.Nil) {
 		klog.Info("Not found followList")
 	} else if err != nil {
 		klog.Infof("err: %v", err)
@@ -89,8 +89,21 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	return &followList, nil
 }
 
+func UpdateFollowList(ctx context.Context, uid int64, followList *[]int64) error {
+	key := FollowListKey(uid)
+	idList := make([]interface{}, len(*followList))
+	for i, v := range *followList {
+		idList[i] = v
+	}
+	if err := RedisClient.SAdd(ctx, key, idList).Err(); err != nil {
+		klog.Infof("err: %v", err)
+		return err
+	}
+	return nil
+}
+
 func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
-	var followerList []int64
+	followerList := make([]int64, 0, 10)
 
 	key := FollowerListKey(uid)
 
@@ -110,8 +123,21 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	return &followerList, nil
 }
 
+func UpdateFollowerList(ctx context.Context, uid int64, followerList *[]int64) error {
+	key := FollowerListKey(uid)
+	idList := make([]interface{}, len(*followerList))
+	for i, v := range *followerList {
+		idList[i] = v
+	}
+	if err := RedisClient.SAdd(ctx, key, idList).Err(); err != nil {
+		klog.Infof("err: %v", err)
+		return err
+	}
+	return nil
+}
+
 func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
-	var friendList []int64
+	friendList := make([]int64, 0, 10)
 	//先获取本人的关注列表
 	tempList, err := FollowListAction(ctx, uid)
 	if err != nil {
@@ -120,16 +146,33 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	//查询redis中的粉丝列表
-	for _, id := range *tempList {
-		b, err := RedisClient.SIsMember(ctx, FollowerListKey(uid), id).Result()
+	for _, followID := range *tempList {
+		b, err := RedisClient.SIsMember(ctx, FollowerListKey(uid), followID).Result()
 		if err != nil {
 			klog.Infof("err: %v", err)
 			return nil, err
 		} else if !b { //粉丝列表不存在，说明只是单方面关注，不是好友
 			continue
 		}
-		friendList = append(friendList, id)
+		friendList = append(friendList, followID)
 	}
 
 	return &friendList, nil
+}
+
+func UpdateFriendList(ctx context.Context, uid int64, followList, followerList *[]int64) error {
+	userList, _ := FollowListAction(ctx, uid)
+	if len(*userList) == 0 {
+		err := UpdateFollowList(ctx, uid, followList)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := UpdateFollowerList(ctx, uid, followerList)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

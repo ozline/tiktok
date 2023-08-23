@@ -29,6 +29,6 @@ func TestMain(m *testing.M) {
 func TestMainOrder(t *testing.T) {
 	t.Run("Feed", testFeed)
 	t.Run("Get publish", testGetPublishVideo)
-	t.Run("Get favorite", testGetLikedVideo)
+	t.Run("Get favorite", testGetFavoriteVideo)
 	t.Run("RPC Test", testRPC)
 }

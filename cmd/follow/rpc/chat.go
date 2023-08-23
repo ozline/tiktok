@@ -15,10 +15,6 @@ import (
 	"github.com/ozline/tiktok/pkg/middleware"
 )
 
-var (
-	chatClient messageservice.Client
-)
-
 func InitChatRPC() {
 	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
 

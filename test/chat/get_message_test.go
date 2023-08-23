@@ -10,7 +10,6 @@ import (
 )
 
 func testGetMessage(t *testing.T) {
-	t.Log("------------testGetMessage Start---------------")
 	token, err := utils.CreateToken(from_user_id)
 	if err != nil {
 		t.Error(err)
@@ -26,15 +25,11 @@ func testGetMessage(t *testing.T) {
 		t.Fail()
 	}
 	for _, v := range resp {
-		t.Log(("-----------------------------"))
 		t.Log(v)
 	}
-	t.Log("------------testGetMessage End---------------")
-
 }
 
 func benchmarkGetAndPostMessage(b *testing.B) {
-	b.Log("-----benchmarkGetAndPostMessage Start-----")
 	token, err := utils.CreateToken(from_user_id)
 	if err != nil {
 		b.Error(err)
@@ -44,8 +39,6 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 		Token:    token,
 		ToUserId: to_user_id,
 	}
-
-	// b.N = 1
 	for i := 0; i < b.N; i++ {
 		b.Logf("----epoch:%v ----", i)
 		for i := 0; i < 2000; i++ {
@@ -54,7 +47,7 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 				b.Error(err)
 				b.Fail()
 			}
-			now := time.Now().Format("2006-01-02 15:04:05")
+			now := time.Now().Format(time.DateTime)
 			req_post := &chat.MessagePostRequest{
 				Token:      token,
 				FromUserId: from_user_id,
@@ -70,5 +63,4 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 
 		}
 	}
-	b.Log("-----benchmarkGetAndPostMessage End-----")
 }

@@ -11,8 +11,8 @@ import (
 
 type Follow struct {
 	Id        int64
-	UserId    int64
-	ToUserId  int64
+	UserID    int64
+	ToUserID  int64
 	Status    int64 //1-关注, 2-取消关注
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -26,7 +26,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 	//查询db中是否存在记录(判断是否是第一次操作)
 	err := DB.WithContext(ctx).Model(&Follow{}).
-		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
+		Where("user_id= ? AND to_user_id = ?", follow.UserID, follow.ToUserID).
 		First(&followResp).Error
 
 	//db中查询不到,创建关注
@@ -39,7 +39,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 	//db中存在,修改Status
 	err = DB.WithContext(ctx).Model(&Follow{}).
-		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
+		Where("user_id= ? AND to_user_id = ?", follow.UserID, follow.ToUserID).
 		Update("status", constants.FollowAction).Error
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 func UnFollowAction(ctx context.Context, follow *Follow) error {
 	//修改db中的status
 	err := DB.WithContext(ctx).Model(&Follow{}).
-		Where("user_id= ? AND to_user_id = ?", follow.UserId, follow.ToUserId).
+		Where("user_id= ? AND to_user_id = ?", follow.UserID, follow.ToUserID).
 		Update("status", constants.UnFollowAction).Error
 	if err != nil {
 		return err
@@ -72,6 +72,10 @@ func FollowListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		return nil, err
 	}
 
+	if len(followList) == 0 { //db中也查不到
+		return nil, RecordNotFound
+	}
+
 	return &followList, nil
 }
 
@@ -87,13 +91,16 @@ func FollowerListAction(ctx context.Context, uid int64) (*[]int64, error) {
 		return nil, err
 	}
 
+	if len(followerList) == 0 { //db中也查不到
+		return nil, RecordNotFound
+	}
+
 	return &followerList, nil
 }
 
 // 好友列表(先获取to_user_id的列表)
 func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
-	var friendList []int64
-
+	friendList := make([]int64, 0, 10)
 	//先获取本人的关注列表
 	tempList, err := FollowListAction(ctx, uid)
 	if err != nil {
@@ -101,17 +108,23 @@ func FriendListAction(ctx context.Context, uid int64) (*[]int64, error) {
 	}
 
 	//查询db中的粉丝列表
-	for _, id := range *tempList {
+	for _, followID := range *tempList {
+		var count int64
 		err = DB.WithContext(ctx).Model(&Follow{}).
-			Where("user_id = ? AND to_user_id = ? AND status = ?", id, uid, constants.FollowAction).Error
-		if errors.Is(err, gorm.ErrRecordNotFound) { //db中也不存在,说明只是单方面关注，不是好友
-			continue
-		} else if err != nil {
+			Where("user_id = ? AND to_user_id = ? AND status = ?", followID, uid, constants.FollowAction).
+			Count(&count).Error
+		if err != nil {
 			return nil, err
+		} else if count == 0 { //查无此纪录，说明不是好友，只是单方面关注
+			continue
 		}
 
 		//粉丝列表存在就直接添加这个id
-		friendList = append(friendList, id)
+		friendList = append(friendList, followID)
+	}
+
+	if len(friendList) == 0 { //db中也查不到
+		return nil, RecordNotFound
 	}
 
 	return &friendList, nil

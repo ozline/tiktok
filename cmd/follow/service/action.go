@@ -4,6 +4,7 @@ import (
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/follow"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
 )
@@ -22,29 +23,30 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 	}
 
 	action := &db.Follow{
-		UserId:   claim.UserId,
-		ToUserId: req.ToUserId,
+		UserID:   claim.UserId,
+		ToUserID: req.ToUserId,
 	}
 
-	if req.ActionType == 1 {
+	switch req.ActionType {
+	case constants.FollowAction:
 		//数据写入redis
-		if err := cache.FollowAction(s.ctx, action.UserId, action.ToUserId); err != nil {
+		if err := cache.FollowAction(s.ctx, action.UserID, action.ToUserID); err != nil {
 			return err
 		}
 		//数据写入db/更改db数据
 		if err = db.FollowAction(s.ctx, action); err != nil {
 			return err
 		}
-	} else if req.ActionType == 2 {
+	case constants.UnFollowAction:
 		//删除redis中的数据
-		if err = cache.UnFollowAction(s.ctx, action.UserId, action.ToUserId); err != nil {
+		if err = cache.UnFollowAction(s.ctx, action.UserID, action.ToUserID); err != nil {
 			return err
 		}
 		//更改db数据
 		if err = db.UnFollowAction(s.ctx, action); err != nil {
 			return err
 		}
-	} else {
+	default:
 		return errno.UnexpectedTypeError
 	}
 

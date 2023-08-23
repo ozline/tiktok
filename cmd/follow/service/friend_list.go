@@ -19,7 +19,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		return nil, err
 	}
 
-	var friendList []*follow.FriendUser
+	friendList := make([]*follow.FriendUser, 0, 10)
 
 	//先查redis
 	userList, err := cache.FriendListAction(s.ctx, req.UserId)
@@ -32,12 +32,19 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		} else if err != nil {
 			return nil, err
 		}
+		//db中查到后写入redis
+		followList, _ := db.FollowListAction(s.ctx, req.UserId)
+		followerList, _ := db.FollowerListAction(s.ctx, req.UserId)
+		err := cache.UpdateFriendList(s.ctx, req.UserId, followList, followerList)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	//数据处理
-	for _, id := range *userList {
+	for _, userId := range *userList {
 		user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
-			UserId: id,
+			UserId: userId,
 			Token:  req.Token,
 		})
 		if err != nil {
@@ -48,7 +55,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		message, msgType, err := rpc.GetMessage(s.ctx, &chat.MessageListRequest{
 			Token:    req.Token,
 			ToUserId: req.UserId,
-		}, req.UserId, id)
+		}, req.UserId, userId)
 
 		if err != nil {
 			return nil, err
@@ -60,7 +67,6 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 			MsgType: msgType,
 		}
 		friendList = append(friendList, friendUser)
-
 	}
 	return &friendList, nil
 }
