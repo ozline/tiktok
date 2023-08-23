@@ -45,12 +45,32 @@ struct FavoriteListResponse {
     2: required list<Video> video_list,
 }
 
-struct FavoriteCountRequest {
+struct VideoFavoritedCountRequest {
     1: required i64 video_id,
     2: required string token,
 }
 
-struct FavoriteCountResponse {
+struct VideoFavoritedCountResponse {
+    1: required BaseResp base,
+    2: required i64 like_count,
+}
+
+struct UserTotalFavoritedRequest {
+    1: required string token,
+    2: required i64 user_id,
+}
+
+struct UserTotalFavoritedResponse {
+    1: required BaseResp base,
+    2: required i64 TotalFavorited,
+}
+
+struct UserFavoriteCountRequest {
+    1: required i64 user_id,
+    2: required string token,
+}
+
+struct UserFavoriteCountResponse {
     1: required BaseResp base,
     2: required i64 like_count,
 }
@@ -91,7 +111,9 @@ struct CommentCountResponse {
 service InteractionService {
     FavoriteActionResponse FavoriteAction(1: FavoriteActionRequest req)
     FavoriteListResponse FavoriteList(1 : FavoriteListRequest req)
-    FavoriteCountResponse FavoriteCount(1 : FavoriteCountRequest req)
+    VideoFavoritedCountResponse VideoFavoritedCount(1 : VideoFavoritedCountRequest req)
+    UserFavoriteCountResponse UserFavoriteCount(1 : UserFavoriteCountRequest req)
+    UserTotalFavoritedResponse UserTotalFavorited(1 : UserTotalFavoritedRequest req)
     CommentActionResponse CommentAction(1 : CommentActionRequest req)
     CommentListResponse CommentList(1 : CommentListRequest req)
     CommentCountResponse CommentCount(1 : CommentCountRequest req)
