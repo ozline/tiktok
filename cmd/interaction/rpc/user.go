@@ -6,14 +6,13 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/kitex_gen/user/userservice"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/middleware"
-
-	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 func InitUserRPC() {
