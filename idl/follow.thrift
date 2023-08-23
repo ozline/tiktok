@@ -65,9 +65,43 @@ struct FriendListResponse {
     2: optional list<FriendUser> user_list
 }
 
+struct FollowCountRequest {
+    1: required i64 user_id
+    2: required string token
+}
+
+struct FollowCountResponse {
+    1: required BaseResp base
+    2: optional i64 follow_count
+}
+
+struct FollowerCountRequest {
+    1: required i64 user_id
+    2: required string token
+}
+
+struct FollowerCountResponse {
+    1: required BaseResp base
+    2: optional i64 follower_count
+}
+
+struct IsFollowRequest {
+    1: required i64 user_id
+    2: required i64 to_user_id
+    3: required string token
+}
+
+struct IsFollowResponse {
+    1: required BaseResp base
+    2: required bool is_follow
+}
+
 service FollowService {
     ActionResponse Action(1:ActionRequest req)
     FollowListResponse FollowList(1:FollowListRequest req)
     FollowerListResponse FollowerList(1:FollowerListRequest req)
     FriendListResponse FriendList(1:FriendListRequest req)
+    FollowCountResponse FollowCount(1:FollowCountRequest req)
+    FollowerCountResponse FollowerCount(1:FollowerCountRequest req)
+    IsFollowResponse IsFollow(1:IsFollowRequest req)
 }

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/follow"
@@ -11,7 +13,7 @@ import (
 
 // Action Function for the follow/close operation
 func (s *FollowService) Action(req *follow.ActionRequest) error {
-	//限流
+	// 限流
 	if err := cache.Limit(s.ctx); err != nil {
 		return err
 	}
@@ -29,21 +31,22 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 
 	switch req.ActionType {
 	case constants.FollowAction:
-		//数据写入redis
+		// 数据写入redis
 		if err := cache.FollowAction(s.ctx, action.UserID, action.ToUserID); err != nil {
 			return err
 		}
-		//数据写入db/更改db数据
+		// 数据写入db/更改db数据
 		if err = db.FollowAction(s.ctx, action); err != nil {
 			return err
 		}
 	case constants.UnFollowAction:
-		//删除redis中的数据
-		if err = cache.UnFollowAction(s.ctx, action.UserID, action.ToUserID); err != nil {
+		// 更改db数据
+		if err = db.UnFollowAction(s.ctx, action); err != nil {
 			return err
 		}
-		//更改db数据
-		if err = db.UnFollowAction(s.ctx, action); err != nil {
+		time.Sleep(10 * time.Millisecond) // 延迟删除缓存中的数据
+		// 删除redis中的数据
+		if err = cache.UnFollowAction(s.ctx, action.UserID, action.ToUserID); err != nil {
 			return err
 		}
 	default:
