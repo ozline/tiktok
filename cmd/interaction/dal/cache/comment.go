@@ -47,7 +47,7 @@ func GetComments(ctx context.Context, key string) (comments *[]redis.Z, err erro
 }
 
 func AddComment(ctx context.Context, key string, comment *db.Comment) (err error) {
-	data, err := (*comment).MarshalMsg(nil)
+	data, err := comment.MarshalMsg(nil)
 	if err != nil {
 		klog.Error(err)
 		return
@@ -95,11 +95,11 @@ func AddComments(ctx context.Context, key string, comments *[]db.Comment) (err e
 		}
 	}
 	klog.Infof("Add comments: videoId %v \n", key)
-	return
+	return err
 }
 
 func DeleteComment(ctx context.Context, key string, comment *db.Comment) (err error) {
-	data, err := (*comment).MarshalMsg(nil)
+	data, err := comment.MarshalMsg(nil)
 	if err != nil {
 		klog.Error(err)
 		return
