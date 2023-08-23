@@ -13,7 +13,7 @@ type ErrNo struct {
 }
 
 func (e ErrNo) Error() string {
-	return fmt.Sprintf("error code: %d, error msg: %s", e.ErrorCode, e.ErrorMsg)
+	return fmt.Sprintf("[%d] %s", e.ErrorCode, e.ErrorMsg)
 }
 
 func NewErrNo(code int64, msg string) ErrNo {
