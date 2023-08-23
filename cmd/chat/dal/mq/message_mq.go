@@ -43,7 +43,6 @@ func InitMessageMQ() {
 
 func (c *MessageMQ) Publish(ctx context.Context, message string) error {
 
-	klog.Info("queueName ->:", c.queueName)
 	_, err := c.channel.QueueDeclare(
 		c.queueName,
 		//是否持久化
@@ -113,20 +112,11 @@ func (r *MessageMQ) Consumer() {
 
 func (r *MessageMQ) dealWithMessageToCache(msg <-chan amqp.Delivery) {
 	for req := range msg {
-
-		klog.Info("messageMQ consuming")
-		// if err != nil {
-		// 	klog.Info(err)
-		// 	continue
-		// }
 		message := make([]*MiddleMessage, 0)
 		err := sonic.Unmarshal(req.Body, &message)
 		if err != nil {
-			klog.Info("sonic json error here")
-			klog.Info(err)
 			continue
 		}
-		klog.Info("message mq——----------------------->", message)
 		for _, val := range message {
 			mes, _ := sonic.Marshal(val)
 			key := strconv.FormatInt(val.FromUserId, 10) + "-" + strconv.FormatInt(val.ToUserId, 10)

@@ -43,8 +43,6 @@ func InitChatMQ() {
 }
 
 func (c *ChatMQ) Publish(ctx context.Context, message string) error {
-
-	klog.Info("queueName ->:", c.queueName)
 	_, err := c.channel.QueueDeclare(
 		c.queueName,
 		//是否持久化
@@ -87,7 +85,6 @@ func (r *ChatMQ) Consumer() {
 	if err != nil {
 		return
 	}
-	klog.Info("consume queuename--->", r.queueName)
 	//2、接收消息
 	msg, err := r.channel.Consume(
 		r.queueName,
@@ -115,7 +112,6 @@ func (r *ChatMQ) Consumer() {
 }
 func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 	for req := range msg {
-		klog.Info("chatMQ consuming")
 		middle_message := new(MiddleMessage)
 		err := sonic.Unmarshal(req.Body, middle_message)
 		if err != nil {
@@ -123,7 +119,6 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 			continue
 		}
 		//先存mysql，然后存redis
-		klog.Info("chatMQ consuming")
 		message := new(cache.Message)
 		err = convertForMysql(message, middle_message)
 		if err != nil {
@@ -135,7 +130,6 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 			klog.Info(err)
 			continue
 		}
-		klog.Info("chatMQ consuming")
 		key := strconv.FormatInt(message.FromUserId, 10) + "-" + strconv.FormatInt(message.ToUserId, 10)
 		err = cache.MessageInsert(context.TODO(), key, float64(message.CreatedAt.Unix()), string(req.Body))
 		if err != nil {
