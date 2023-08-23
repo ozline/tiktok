@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
@@ -20,6 +21,8 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 	}
 
 	userList := make([]*follow.User, 0, 10)
+	var wg sync.WaitGroup
+	var mu sync.Mutex
 
 	// 先查redis
 	followList, err := cache.FollowListAction(s.ctx, req.UserId)
@@ -40,18 +43,29 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 		}
 	}
 
-	// 数据处理
+	//数据处理
 	for _, id := range *followList {
-		user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
-			UserId: id,
-			Token:  req.Token,
-		})
-		if err != nil {
-			return nil, err
-		}
-		follow := pack.User(user) // 结构体转换
-		userList = append(userList, follow)
+		wg.Add(1)
+		go func(id int64, req *follow.FollowListRequest, userList *[]*follow.User, wg *sync.WaitGroup, mu *sync.Mutex) {
+			defer wg.Done()
+
+			user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
+				UserId: id,
+				Token:  req.Token,
+			})
+			if err != nil {
+				return
+			}
+
+			follow := pack.User(user) // 结构体转换
+
+			mu.Lock()
+			*userList = append(*userList, follow)
+			mu.Unlock()
+		}(id, req, &userList, &wg, &mu)
 	}
+
+	wg.Wait()
 
 	return &userList, nil
 }

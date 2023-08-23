@@ -31,13 +31,13 @@ func FollowAction(ctx context.Context, uid, tid int64) error {
 	}
 
 	// 不存在，进行关注操作
-	err = RedisClient.SAdd(ctx, FollowListKey(uid), strconv.FormatInt(tid, 10)).Err() //自己的关注列表
+	err = RedisClient.SAdd(ctx, FollowListKey(uid), strconv.FormatInt(tid, 10)).Err() // 自己的关注列表
 	if err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
 
-	err = RedisClient.SAdd(ctx, FollowerListKey(tid), strconv.FormatInt(uid, 10)).Err() //对方的粉丝列表
+	err = RedisClient.SAdd(ctx, FollowerListKey(tid), strconv.FormatInt(uid, 10)).Err() // 对方的粉丝列表
 	if err != nil {
 		klog.Infof("err: %v", err)
 		return err

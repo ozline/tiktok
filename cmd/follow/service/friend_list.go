@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
@@ -21,6 +22,8 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 	}
 
 	friendList := make([]*follow.FriendUser, 0, 10)
+	var wg sync.WaitGroup
+	var mu sync.Mutex
 
 	// 先查redis
 	userList, err := cache.FriendListAction(s.ctx, req.UserId)
@@ -44,31 +47,41 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 	}
 
 	// 数据处理
-	for _, userId := range *userList {
-		user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
-			UserId: userId,
-			Token:  req.Token,
-		})
-		if err != nil {
-			return nil, err
-		}
-		friend := pack.User(user) // 结构体转换
+	for _, userID := range *userList {
+		wg.Add(1)
+		go func(id int64, req *follow.FriendListRequest, userList *[]*follow.FriendUser, wg *sync.WaitGroup, mu *sync.Mutex) {
+			defer wg.Done()
 
-		message, msgType, err := rpc.GetMessage(s.ctx, &chat.MessageListRequest{
-			Token:    req.Token,
-			ToUserId: req.UserId,
-		}, req.UserId, userId)
+			user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
+				UserId: id,
+				Token:  req.Token,
+			})
+			if err != nil {
+				return
+			}
+			friend := pack.User(user) // 结构体转换
 
-		if err != nil {
-			return nil, err
-		}
+			message, msgType, err := rpc.GetMessage(s.ctx, &chat.MessageListRequest{
+				Token:    req.Token,
+				ToUserId: req.UserId,
+			}, req.UserId, id)
+			if err != nil {
+				return
+			}
 
-		friendUser := &follow.FriendUser{
-			User:    friend,
-			Message: &message,
-			MsgType: msgType,
-		}
-		friendList = append(friendList, friendUser)
+			friendUser := &follow.FriendUser{
+				User:    friend,
+				Message: &message,
+				MsgType: msgType,
+			}
+
+			mu.Lock()
+			*userList = append(*userList, friendUser)
+			mu.Unlock()
+		}(userID, req, &friendList, &wg, &mu)
 	}
+
+	wg.Wait()
+
 	return &friendList, nil
 }
