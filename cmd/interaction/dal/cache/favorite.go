@@ -68,5 +68,21 @@ func GetUserFavoriteVideos(ctx context.Context, userID int64) ([]int64, error) {
 }
 
 func UpdateFavoriteVideoList(ctx context.Context, userID int64, videoIDList []int64) error {
-	return RedisClient.SAdd(ctx, GetUserKey(userID), videoIDList).Err()
+	var err error
+	for _, videoID := range videoIDList {
+		err = RedisClient.SAdd(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err()
+		if err != nil {
+			klog.Infof("err: %v", err)
+		}
+	}
+	return err
+}
+
+func GetUserFavoriteCount(ctx context.Context, userID int64) (int64, error) {
+	count, err := RedisClient.SCard(ctx, GetUserKey(userID)).Result()
+	if err != nil {
+		klog.Infof("err: %v", err)
+		return 0, err
+	}
+	return count, nil
 }

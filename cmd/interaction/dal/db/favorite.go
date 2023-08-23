@@ -57,3 +57,12 @@ func GetVideoLikeCount(ctx context.Context, videoID int64) (int64, error) {
 	}
 	return count, nil
 }
+
+func GetUserFavoriteCount(ctx context.Context, userID int64) (int64, error) {
+	var count int64
+	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
+		Where("user_id = ? AND status = 1", userID).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
