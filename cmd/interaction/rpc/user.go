@@ -16,20 +16,20 @@ import (
 )
 
 func InitUserRPC() {
-	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
+	resolver, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
 
 	if err != nil {
 		panic(err)
 	}
 
-	c, err := userservice.NewClient(
+	client, err := userservice.NewClient(
 		constants.UserServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),
 		client.WithConnectTimeout(constants.ConnectTimeout),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
-		client.WithResolver(r),
+		client.WithResolver(resolver),
 		client.WithSuite(trace.NewDefaultClientSuite()),
 	)
 
@@ -37,7 +37,7 @@ func InitUserRPC() {
 		panic(err)
 	}
 
-	userClient = c
+	userClient = client
 }
 
 func UserInfo(ctx context.Context, req *user.InfoRequest) (*user.User, error) {

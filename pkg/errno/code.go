@@ -17,4 +17,6 @@ const (
 	UnexpectedTypeErrorCode    = 10004 // 未知类型
 	NotImplementErrorCode      = 10005 // 未实装
 	SensitiveWordsErrorCode    = 10006 // 敏感词错误
+	LikeAlreadyExistErrorCode  = 10007 // 已点赞错误
+	LikeNoExistErrorCode       = 10008 // 未点赞错误
 )

@@ -19,12 +19,14 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "InteractionService"
 	handlerType := (*interaction.InteractionService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"FavoriteAction": kitex.NewMethodInfo(favoriteActionHandler, newInteractionServiceFavoriteActionArgs, newInteractionServiceFavoriteActionResult, false),
-		"FavoriteList":   kitex.NewMethodInfo(favoriteListHandler, newInteractionServiceFavoriteListArgs, newInteractionServiceFavoriteListResult, false),
-		"FavoriteCount":  kitex.NewMethodInfo(favoriteCountHandler, newInteractionServiceFavoriteCountArgs, newInteractionServiceFavoriteCountResult, false),
-		"CommentAction":  kitex.NewMethodInfo(commentActionHandler, newInteractionServiceCommentActionArgs, newInteractionServiceCommentActionResult, false),
-		"CommentList":    kitex.NewMethodInfo(commentListHandler, newInteractionServiceCommentListArgs, newInteractionServiceCommentListResult, false),
-		"CommentCount":   kitex.NewMethodInfo(commentCountHandler, newInteractionServiceCommentCountArgs, newInteractionServiceCommentCountResult, false),
+		"FavoriteAction":      kitex.NewMethodInfo(favoriteActionHandler, newInteractionServiceFavoriteActionArgs, newInteractionServiceFavoriteActionResult, false),
+		"FavoriteList":        kitex.NewMethodInfo(favoriteListHandler, newInteractionServiceFavoriteListArgs, newInteractionServiceFavoriteListResult, false),
+		"VideoFavoritedCount": kitex.NewMethodInfo(videoFavoritedCountHandler, newInteractionServiceVideoFavoritedCountArgs, newInteractionServiceVideoFavoritedCountResult, false),
+		"UserFavoriteCount":   kitex.NewMethodInfo(userFavoriteCountHandler, newInteractionServiceUserFavoriteCountArgs, newInteractionServiceUserFavoriteCountResult, false),
+		"UserTotalFavorited":  kitex.NewMethodInfo(userTotalFavoritedHandler, newInteractionServiceUserTotalFavoritedArgs, newInteractionServiceUserTotalFavoritedResult, false),
+		"CommentAction":       kitex.NewMethodInfo(commentActionHandler, newInteractionServiceCommentActionArgs, newInteractionServiceCommentActionResult, false),
+		"CommentList":         kitex.NewMethodInfo(commentListHandler, newInteractionServiceCommentListArgs, newInteractionServiceCommentListResult, false),
+		"CommentCount":        kitex.NewMethodInfo(commentCountHandler, newInteractionServiceCommentCountArgs, newInteractionServiceCommentCountResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "interaction",
@@ -76,22 +78,58 @@ func newInteractionServiceFavoriteListResult() interface{} {
 	return interaction.NewInteractionServiceFavoriteListResult()
 }
 
-func favoriteCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*interaction.InteractionServiceFavoriteCountArgs)
-	realResult := result.(*interaction.InteractionServiceFavoriteCountResult)
-	success, err := handler.(interaction.InteractionService).FavoriteCount(ctx, realArg.Req)
+func videoFavoritedCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*interaction.InteractionServiceVideoFavoritedCountArgs)
+	realResult := result.(*interaction.InteractionServiceVideoFavoritedCountResult)
+	success, err := handler.(interaction.InteractionService).VideoFavoritedCount(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newInteractionServiceFavoriteCountArgs() interface{} {
-	return interaction.NewInteractionServiceFavoriteCountArgs()
+func newInteractionServiceVideoFavoritedCountArgs() interface{} {
+	return interaction.NewInteractionServiceVideoFavoritedCountArgs()
 }
 
-func newInteractionServiceFavoriteCountResult() interface{} {
-	return interaction.NewInteractionServiceFavoriteCountResult()
+func newInteractionServiceVideoFavoritedCountResult() interface{} {
+	return interaction.NewInteractionServiceVideoFavoritedCountResult()
+}
+
+func userFavoriteCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*interaction.InteractionServiceUserFavoriteCountArgs)
+	realResult := result.(*interaction.InteractionServiceUserFavoriteCountResult)
+	success, err := handler.(interaction.InteractionService).UserFavoriteCount(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newInteractionServiceUserFavoriteCountArgs() interface{} {
+	return interaction.NewInteractionServiceUserFavoriteCountArgs()
+}
+
+func newInteractionServiceUserFavoriteCountResult() interface{} {
+	return interaction.NewInteractionServiceUserFavoriteCountResult()
+}
+
+func userTotalFavoritedHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*interaction.InteractionServiceUserTotalFavoritedArgs)
+	realResult := result.(*interaction.InteractionServiceUserTotalFavoritedResult)
+	success, err := handler.(interaction.InteractionService).UserTotalFavorited(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newInteractionServiceUserTotalFavoritedArgs() interface{} {
+	return interaction.NewInteractionServiceUserTotalFavoritedArgs()
+}
+
+func newInteractionServiceUserTotalFavoritedResult() interface{} {
+	return interaction.NewInteractionServiceUserTotalFavoritedResult()
 }
 
 func commentActionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -178,11 +216,31 @@ func (p *kClient) FavoriteList(ctx context.Context, req *interaction.FavoriteLis
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) FavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest) (r *interaction.FavoriteCountResponse, err error) {
-	var _args interaction.InteractionServiceFavoriteCountArgs
+func (p *kClient) VideoFavoritedCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest) (r *interaction.VideoFavoritedCountResponse, err error) {
+	var _args interaction.InteractionServiceVideoFavoritedCountArgs
 	_args.Req = req
-	var _result interaction.InteractionServiceFavoriteCountResult
-	if err = p.c.Call(ctx, "FavoriteCount", &_args, &_result); err != nil {
+	var _result interaction.InteractionServiceVideoFavoritedCountResult
+	if err = p.c.Call(ctx, "VideoFavoritedCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) UserFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountRequest) (r *interaction.UserFavoriteCountResponse, err error) {
+	var _args interaction.InteractionServiceUserFavoriteCountArgs
+	_args.Req = req
+	var _result interaction.InteractionServiceUserFavoriteCountResult
+	if err = p.c.Call(ctx, "UserFavoriteCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) UserTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest) (r *interaction.UserTotalFavoritedResponse, err error) {
+	var _args interaction.InteractionServiceUserTotalFavoritedArgs
+	_args.Req = req
+	var _result interaction.InteractionServiceUserTotalFavoritedResult
+	if err = p.c.Call(ctx, "UserTotalFavorited", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
