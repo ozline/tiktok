@@ -30,7 +30,7 @@ func Limit(ctx context.Context) error {
 		klog.Info("limit!")
 		return errors.New("too many request")
 	}
-	//否则添加一个新的时间戳成为成员
+	// 否则添加一个新的时间戳成为成员
 	RedisClient.ZAdd(ctx, key, redis.Z{Score: float64(now), Member: float64(now)})
 	return nil
 }

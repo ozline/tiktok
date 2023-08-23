@@ -6,31 +6,30 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	trace "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/kitex_gen/user/userservice"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/middleware"
-
-	trace "github.com/kitex-contrib/tracer-opentracing"
 )
 
 func InitUserRPC() {
-	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
+	resolver, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
 
 	if err != nil {
 		panic(err)
 	}
 
-	c, err := userservice.NewClient(
+	client, err := userservice.NewClient(
 		constants.UserServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),
 		client.WithConnectTimeout(constants.ConnectTimeout),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
-		client.WithResolver(r),
+		client.WithResolver(resolver),
 		client.WithSuite(trace.NewDefaultClientSuite()),
 	)
 
@@ -38,7 +37,7 @@ func InitUserRPC() {
 		panic(err)
 	}
 
-	userClient = c
+	userClient = client
 }
 
 func UserInfo(ctx context.Context, req *user.InfoRequest) (*user.User, error) {

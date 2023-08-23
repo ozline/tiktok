@@ -6,9 +6,7 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/pack"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/cmd/interaction/service"
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	interaction "github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -24,7 +22,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	claims, err := utils.CheckToken(req.Token)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
-		return resp, err
+		return resp, nil
 	}
 
 	if req.ActionType != 1 && req.ActionType != 2 {
@@ -37,18 +35,18 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	case constants.Like:
 		if err := service.NewInteractionService(ctx).Like(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
-			return resp, err
+			return resp, nil
 		}
 	// 2 dislike
 	case constants.Dislike:
 		if err := service.NewInteractionService(ctx).Dislike(req, claims.UserId); err != nil {
 			resp.Base = pack.BuildBaseResp(err)
-			return resp, err
+			return resp, nil
 		}
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
-	return
+	return resp, nil
 }
 
 // FavoriteList implements the interactionServiceImpl interface.
@@ -57,22 +55,17 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 
 	if _, err := utils.CheckToken(req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
-		return resp, err
+		return resp, nil
 	}
 
-	videoIdList, err := service.NewInteractionService(ctx).FavoriteList(req)
+	videoList, err := service.NewInteractionService(ctx).FavoriteList(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
-		return resp, err
+		return resp, nil
 	}
 
-	videos, err := rpc.GetFavoriteVideoList(ctx, &video.GetFavoriteVideoInfoRequest{
-		VideoId: videoIdList,
-		Token:   req.Token,
-	})
-
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.VideoList = pack.BuildVideos(videos)
+	resp.VideoList = pack.BuildVideos(videoList)
 	return
 }
 
@@ -88,14 +81,6 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		return resp, nil
 	}
 	userId := claim.UserId
-	userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
-		UserId: userId,
-		Token:  req.Token,
-	})
-	if err != nil {
-		resp.Base = pack.BuildBaseResp(err)
-		return resp, nil
-	}
 
 	switch req.ActionType {
 	//1-发布评论
@@ -123,7 +108,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return resp, nil
 		}
 
-		resp.Comment = pack.Comment(commentResp)
+		resp.Comment = commentResp
 
 	//2-删除评论
 	case constants.DeleteComment:
@@ -139,7 +124,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
-		resp.Comment = pack.Comment(commentResp)
+		resp.Comment = commentResp
 
 	default:
 		resp.Base = pack.BuildBaseResp(errno.UnexpectedTypeError)
@@ -147,9 +132,8 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.Comment.User = userInfo
 
-	return
+	return resp, nil
 }
 
 // CommentList implements the interactionServiceImpl interface.
@@ -169,52 +153,8 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 		return resp, nil
 	}
 
-	users := make(map[int64]int) // 利用map避免重复查询
-	commentList := make([]*interaction.Comment, 0, len(*commentsResp))
-	for commentIndex, comment := range *commentsResp {
-		rComment := pack.Comment(&comment)
-
-		index, ok := users[comment.UserId]
-		if !ok {
-			userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
-				UserId: comment.UserId,
-				Token:  req.Token,
-			})
-			if err != nil {
-				resp.Base = pack.BuildBaseResp(err)
-				return resp, nil
-			}
-			rComment.User = userInfo
-			users[comment.UserId] = commentIndex
-		} else {
-			rComment.User = commentList[index].User
-		}
-
-		commentList = append(commentList, rComment)
-	}
-
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.CommentList = commentList
-	return
-}
-
-// FavoriteCount implements the interactionServiceImpl interface.
-func (s *InteractionServiceImpl) FavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest) (resp *interaction.FavoriteCountResponse, err error) {
-	resp = new(interaction.FavoriteCountResponse)
-
-	if _, err := utils.CheckToken(req.Token); err != nil {
-		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
-		return resp, err
-	}
-
-	likeCount, err := service.NewInteractionService(ctx).GetLikeCount(req)
-	if err != nil {
-		resp.Base = pack.BuildBaseResp(err)
-		return resp, err
-	}
-
-	resp.Base = pack.BuildBaseResp(nil)
-	resp.LikeCount = likeCount
+	resp.CommentList = commentsResp
 	return
 }
 
@@ -238,5 +178,58 @@ func (s *InteractionServiceImpl) CommentCount(ctx context.Context, req *interact
 
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.CommentCount = count
+	return
+}
+
+// VideoFavoritedCount implements the InteractionServiceImpl interface.
+func (s *InteractionServiceImpl) VideoFavoritedCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest) (resp *interaction.VideoFavoritedCountResponse, err error) {
+	resp = new(interaction.VideoFavoritedCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	likeCount, err := service.NewInteractionService(ctx).GetVideoFavoritedCount(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.LikeCount = likeCount
+	return
+}
+
+// UserFavoriteCount implements the InteractionServiceImpl interface.
+func (s *InteractionServiceImpl) UserFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountRequest) (resp *interaction.UserFavoriteCountResponse, err error) {
+	resp = new(interaction.UserFavoriteCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	likeCount, err := service.NewInteractionService(ctx).GetUserFavoriteCount(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.LikeCount = likeCount
+	return
+}
+
+// UserTotalFavorited implements the InteractionServiceImpl interface.
+func (s *InteractionServiceImpl) UserTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest) (resp *interaction.UserTotalFavoritedResponse, err error) {
+	resp = new(interaction.UserTotalFavoritedResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	service.NewInteractionService(ctx).GetUserTotalFavorited(req)
 	return
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"testing"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal"
@@ -24,7 +25,7 @@ func TestMain(m *testing.M) {
 
 	config.InitForTest()
 	dal.Init()
-
+	rpc.Init()
 	interactionService = service.NewInteractionService(context.Background())
 
 	userId = 10000

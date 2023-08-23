@@ -89,3 +89,63 @@ func (s *FollowServiceImpl) FriendList(ctx context.Context, req *follow.FriendLi
 	resp.UserList = *friendResp
 	return
 }
+
+// FollowCount implements the FollowServiceImpl interface.
+func (s *FollowServiceImpl) FollowCount(ctx context.Context, req *follow.FollowCountRequest) (resp *follow.FollowCountResponse, err error) {
+	resp = new(follow.FollowCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	followResp, err := service.NewFollowService(ctx).FollowCount(req)
+
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.FollowCount = &followResp
+	return
+}
+
+// FollowerCount implements the FollowServiceImpl interface.
+func (s *FollowServiceImpl) FollowerCount(ctx context.Context, req *follow.FollowerCountRequest) (resp *follow.FollowerCountResponse, err error) {
+	resp = new(follow.FollowerCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	followResp, err := service.NewFollowService(ctx).FollowerCount(req)
+
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.FollowerCount = &followResp
+	return
+}
+
+// IsFollow implements the FollowServiceImpl interface.
+func (s *FollowServiceImpl) IsFollow(ctx context.Context, req *follow.IsFollowRequest) (resp *follow.IsFollowResponse, err error) {
+	resp = new(follow.IsFollowResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	followResp, err := service.NewFollowService(ctx).IsFollow(req)
+
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.IsFollow = followResp
+	return
+}

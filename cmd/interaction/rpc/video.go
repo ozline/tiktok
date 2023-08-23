@@ -17,20 +17,20 @@ import (
 )
 
 func InitVideoRPC() {
-	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
+	resolver, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
 
 	if err != nil {
 		panic(err)
 	}
 
-	c, err := videoservice.NewClient(
+	client, err := videoservice.NewClient(
 		constants.VideoServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),
 		client.WithConnectTimeout(constants.ConnectTimeout),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
-		client.WithResolver(r),
+		client.WithResolver(resolver),
 		client.WithSuite(trace.NewDefaultClientSuite()),
 	)
 
@@ -38,7 +38,7 @@ func InitVideoRPC() {
 		panic(err)
 	}
 
-	videoClient = c
+	videoClient = client
 }
 
 // TO DO: rpc调用GetVideoInfo and UpdateVideoInfo
