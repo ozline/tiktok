@@ -15,6 +15,9 @@ type Client interface {
 	FollowList(ctx context.Context, req *follow.FollowListRequest, callOptions ...callopt.Option) (r *follow.FollowListResponse, err error)
 	FollowerList(ctx context.Context, req *follow.FollowerListRequest, callOptions ...callopt.Option) (r *follow.FollowerListResponse, err error)
 	FriendList(ctx context.Context, req *follow.FriendListRequest, callOptions ...callopt.Option) (r *follow.FriendListResponse, err error)
+	FollowCount(ctx context.Context, req *follow.FollowCountRequest, callOptions ...callopt.Option) (r *follow.FollowCountResponse, err error)
+	FollowerCount(ctx context.Context, req *follow.FollowerCountRequest, callOptions ...callopt.Option) (r *follow.FollowerCountResponse, err error)
+	IsFollow(ctx context.Context, req *follow.IsFollowRequest, callOptions ...callopt.Option) (r *follow.IsFollowResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -64,4 +67,19 @@ func (p *kFollowServiceClient) FollowerList(ctx context.Context, req *follow.Fol
 func (p *kFollowServiceClient) FriendList(ctx context.Context, req *follow.FriendListRequest, callOptions ...callopt.Option) (r *follow.FriendListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FriendList(ctx, req)
+}
+
+func (p *kFollowServiceClient) FollowCount(ctx context.Context, req *follow.FollowCountRequest, callOptions ...callopt.Option) (r *follow.FollowCountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FollowCount(ctx, req)
+}
+
+func (p *kFollowServiceClient) FollowerCount(ctx context.Context, req *follow.FollowerCountRequest, callOptions ...callopt.Option) (r *follow.FollowerCountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FollowerCount(ctx, req)
+}
+
+func (p *kFollowServiceClient) IsFollow(ctx context.Context, req *follow.IsFollowRequest, callOptions ...callopt.Option) (r *follow.IsFollowResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.IsFollow(ctx, req)
 }

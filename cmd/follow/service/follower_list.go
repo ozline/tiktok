@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
 	"github.com/ozline/tiktok/cmd/follow/pack"
@@ -13,32 +14,33 @@ import (
 
 // FollowerList View fan list
 func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follow.User, error) {
-	//限流
+	// 限流
 	if err := cache.Limit(s.ctx); err != nil {
 		return nil, err
 	}
 
 	userList := make([]*follow.User, 0, 10)
 
-	//先查redis
+	// 先查redis
 	followerList, err := cache.FollowerListAction(s.ctx, req.UserId)
 	if err != nil {
 		return nil, err
-	} else if len(*followerList) == 0 { //redis中查不到再查db
+	} else if len(*followerList) == 0 { // redis中查不到再查db
 		followerList, err = db.FollowerListAction(s.ctx, req.UserId)
-		if errors.Is(err, db.RecordNotFound) { //db中也查不到
-			return nil, errors.New("you do not have any followers")
+		if errors.Is(err, db.RecordNotFound) { // db中也查不到
+			klog.Info("you do not have any followers")
+			return nil, nil
 		} else if err != nil {
 			return nil, err
 		}
-		//db中查到后写入redis
+		// db中查到后写入redis
 		err := cache.UpdateFollowerList(s.ctx, req.UserId, followerList)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	//数据处理
+	// 数据处理
 	for _, id := range *followerList {
 		user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
 			UserId: id,
@@ -47,7 +49,7 @@ func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follo
 		if err != nil {
 			return nil, err
 		}
-		follower := pack.User(user) //结构体转换
+		follower := pack.User(user) // 结构体转换
 		userList = append(userList, follower)
 	}
 	return &userList, nil

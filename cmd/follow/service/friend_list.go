@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
 	"github.com/ozline/tiktok/cmd/follow/pack"
@@ -14,25 +15,26 @@ import (
 
 // FriendList Viewing friends list
 func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.FriendUser, error) {
-	//限流
+	// 限流
 	if err := cache.Limit(s.ctx); err != nil {
 		return nil, err
 	}
 
 	friendList := make([]*follow.FriendUser, 0, 10)
 
-	//先查redis
+	// 先查redis
 	userList, err := cache.FriendListAction(s.ctx, req.UserId)
 	if err != nil {
 		return nil, err
-	} else if len(*userList) == 0 { //redis中查不到再查db
+	} else if len(*userList) == 0 { // redis中查不到再查db
 		userList, err = db.FriendListAction(s.ctx, req.UserId)
-		if errors.Is(err, db.RecordNotFound) { //db中也查不到
-			return nil, errors.New("you do not have any friends")
+		if errors.Is(err, db.RecordNotFound) { // db中也查不到
+			klog.Info("you do not have any friends")
+			return nil, nil
 		} else if err != nil {
 			return nil, err
 		}
-		//db中查到后写入redis
+		// db中查到后写入redis
 		followList, _ := db.FollowListAction(s.ctx, req.UserId)
 		followerList, _ := db.FollowerListAction(s.ctx, req.UserId)
 		err := cache.UpdateFriendList(s.ctx, req.UserId, followList, followerList)
@@ -41,7 +43,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		}
 	}
 
-	//数据处理
+	// 数据处理
 	for _, userId := range *userList {
 		user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
 			UserId: userId,
@@ -50,7 +52,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		if err != nil {
 			return nil, err
 		}
-		friend := pack.User(user) //结构体转换
+		friend := pack.User(user) // 结构体转换
 
 		message, msgType, err := rpc.GetMessage(s.ctx, &chat.MessageListRequest{
 			Token:    req.Token,

@@ -19,10 +19,13 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "FollowService"
 	handlerType := (*follow.FollowService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Action":       kitex.NewMethodInfo(actionHandler, newFollowServiceActionArgs, newFollowServiceActionResult, false),
-		"FollowList":   kitex.NewMethodInfo(followListHandler, newFollowServiceFollowListArgs, newFollowServiceFollowListResult, false),
-		"FollowerList": kitex.NewMethodInfo(followerListHandler, newFollowServiceFollowerListArgs, newFollowServiceFollowerListResult, false),
-		"FriendList":   kitex.NewMethodInfo(friendListHandler, newFollowServiceFriendListArgs, newFollowServiceFriendListResult, false),
+		"Action":        kitex.NewMethodInfo(actionHandler, newFollowServiceActionArgs, newFollowServiceActionResult, false),
+		"FollowList":    kitex.NewMethodInfo(followListHandler, newFollowServiceFollowListArgs, newFollowServiceFollowListResult, false),
+		"FollowerList":  kitex.NewMethodInfo(followerListHandler, newFollowServiceFollowerListArgs, newFollowServiceFollowerListResult, false),
+		"FriendList":    kitex.NewMethodInfo(friendListHandler, newFollowServiceFriendListArgs, newFollowServiceFriendListResult, false),
+		"FollowCount":   kitex.NewMethodInfo(followCountHandler, newFollowServiceFollowCountArgs, newFollowServiceFollowCountResult, false),
+		"FollowerCount": kitex.NewMethodInfo(followerCountHandler, newFollowServiceFollowerCountArgs, newFollowServiceFollowerCountResult, false),
+		"IsFollow":      kitex.NewMethodInfo(isFollowHandler, newFollowServiceIsFollowArgs, newFollowServiceIsFollowResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "follow",
@@ -110,6 +113,60 @@ func newFollowServiceFriendListResult() interface{} {
 	return follow.NewFollowServiceFriendListResult()
 }
 
+func followCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*follow.FollowServiceFollowCountArgs)
+	realResult := result.(*follow.FollowServiceFollowCountResult)
+	success, err := handler.(follow.FollowService).FollowCount(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newFollowServiceFollowCountArgs() interface{} {
+	return follow.NewFollowServiceFollowCountArgs()
+}
+
+func newFollowServiceFollowCountResult() interface{} {
+	return follow.NewFollowServiceFollowCountResult()
+}
+
+func followerCountHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*follow.FollowServiceFollowerCountArgs)
+	realResult := result.(*follow.FollowServiceFollowerCountResult)
+	success, err := handler.(follow.FollowService).FollowerCount(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newFollowServiceFollowerCountArgs() interface{} {
+	return follow.NewFollowServiceFollowerCountArgs()
+}
+
+func newFollowServiceFollowerCountResult() interface{} {
+	return follow.NewFollowServiceFollowerCountResult()
+}
+
+func isFollowHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*follow.FollowServiceIsFollowArgs)
+	realResult := result.(*follow.FollowServiceIsFollowResult)
+	success, err := handler.(follow.FollowService).IsFollow(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newFollowServiceIsFollowArgs() interface{} {
+	return follow.NewFollowServiceIsFollowArgs()
+}
+
+func newFollowServiceIsFollowResult() interface{} {
+	return follow.NewFollowServiceIsFollowResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -155,6 +212,36 @@ func (p *kClient) FriendList(ctx context.Context, req *follow.FriendListRequest)
 	_args.Req = req
 	var _result follow.FollowServiceFriendListResult
 	if err = p.c.Call(ctx, "FriendList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FollowCount(ctx context.Context, req *follow.FollowCountRequest) (r *follow.FollowCountResponse, err error) {
+	var _args follow.FollowServiceFollowCountArgs
+	_args.Req = req
+	var _result follow.FollowServiceFollowCountResult
+	if err = p.c.Call(ctx, "FollowCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FollowerCount(ctx context.Context, req *follow.FollowerCountRequest) (r *follow.FollowerCountResponse, err error) {
+	var _args follow.FollowServiceFollowerCountArgs
+	_args.Req = req
+	var _result follow.FollowServiceFollowerCountResult
+	if err = p.c.Call(ctx, "FollowerCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) IsFollow(ctx context.Context, req *follow.IsFollowRequest) (r *follow.IsFollowResponse, err error) {
+	var _args follow.FollowServiceIsFollowArgs
+	_args.Req = req
+	var _result follow.FollowServiceIsFollowResult
+	if err = p.c.Call(ctx, "IsFollow", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
