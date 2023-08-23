@@ -207,7 +207,7 @@ func (s *VideoServiceImpl) GetVideoIDByUid(ctx context.Context, req *video.GetVi
 		return resp, nil
 	}
 
-	videoIDList, err := service.NewVideoService(ctx).GetGetVideoIDByUid(req)
+	videoIDList, err := service.NewVideoService(ctx).GetVideoIDByUid(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
