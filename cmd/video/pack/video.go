@@ -10,7 +10,7 @@ import (
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 )
 
-func Video(data *db.Video, user *user.User) *video.Video {
+func Video(data *db.Video, user *user.User, favoriteCount int64, commentCount int64) *video.Video {
 	if data == nil {
 		return nil
 	}
@@ -31,22 +31,22 @@ func Video(data *db.Video, user *user.User) *video.Video {
 		},
 		PlayUrl:       data.PlayUrl,
 		CoverUrl:      data.CoverUrl,
-		FavoriteCount: 0,    //TODO
-		CommentCount:  0,    //TODO
+		FavoriteCount: favoriteCount,
+		CommentCount:  commentCount,
 		IsFavorite:    true, //TODO
 		Title:         data.Title,
 	}
 }
-func VideoList(data []db.Video, userList []*user.User) []*video.Video {
+func VideoList(data []db.Video, userList []*user.User, favoriteCountList []int64, commentCountList []int64) []*video.Video {
 	videoList := make([]*video.Video, 0, len(data))
 	for i := 0; i < len(data); i++ {
-		videoList = append(videoList, Video(&data[i], userList[i]))
+		videoList = append(videoList, Video(&data[i], userList[i], favoriteCountList[i], commentCountList[i]))
 	}
 	return videoList
 }
 
 // 用于获取喜欢列表 IsFavorite保证为true
-func VideoLiked(data *db.Video, user *user.User) *video.Video {
+func VideoLiked(data *db.Video, user *user.User, favoriteCount int64, commentCount int64) *video.Video {
 	if data == nil {
 		return nil
 	}
@@ -67,17 +67,19 @@ func VideoLiked(data *db.Video, user *user.User) *video.Video {
 		},
 		PlayUrl:       data.PlayUrl,
 		CoverUrl:      data.CoverUrl,
-		FavoriteCount: 0, //TODO
-		CommentCount:  0, //TODO
+		FavoriteCount: favoriteCount,
+		CommentCount:  commentCount,
 		IsFavorite:    true,
 		Title:         data.Title,
 	}
 }
-func VideoLikedList(data []db.Video, userList []*user.User) []*video.Video {
+func VideoLikedList(data []db.Video, userList []*user.User, favoriteCountList []int64, commentCountList []int64) []*video.Video {
 	videoList := make([]*video.Video, 0, len(data))
+
 	for i := 0; i < len(data); i++ {
-		videoList = append(videoList, VideoLiked(&data[i], userList[i]))
+		videoList = append(videoList, VideoLiked(&data[i], userList[i], favoriteCountList[i], commentCountList[i]))
 	}
+
 	return videoList
 }
 func GenerateVideoName(UserId int64) string {

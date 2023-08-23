@@ -22,7 +22,7 @@ type Favorite struct {
 func IsFavoriteExist(ctx context.Context, userId int64, videoId int64) (bool, error) {
 	var fav *Favorite
 	err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
-		Where("user_id = ? AND video_id = ?", userId, videoId).First(fav).Error
+		Where("user_id = ? AND video_id = ?", userId, videoId).First(&fav).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return false, nil
 	}

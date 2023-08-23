@@ -7,7 +7,9 @@ const (
 
 	// redis
 	ReidsDB_Chat       = 1
+	RedisDBFollow      = 2
 	RedisDBInteraction = 3
+	RedisDBVideo       = 4
 	CommentExpiredTime = 1 * time.Hour
 
 	// RPC

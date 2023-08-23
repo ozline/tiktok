@@ -56,8 +56,19 @@ func VideoFeed(ctx context.Context, req *video.FeedRequest) ([]*video.Video, int
 	return resp.VideoList, resp.NextTime, nil
 }
 
-// NOT GIVEN
-// func PublishList(ctx context.Context, req *video.PublishListRequest)
+func PublishList(ctx context.Context, req *video.GetPublishListRequest) ([]*video.Video, error) {
+	resp, err := videoClient.GetPublishList(ctx, req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Base.Code != errno.SuccessCode {
+		return nil, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
+	}
+
+	return resp.VideoList, nil
+}
 
 func VideoPublish(ctx context.Context, req *video.PutVideoRequest) error {
 	return nil

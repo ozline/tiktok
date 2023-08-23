@@ -28,6 +28,9 @@ func benchmarkFavoriteCount(b *testing.B) {
 		Token:   token,
 	}
 	for n := 0; n < b.N; n++ {
-		interactionService.GetLikeCount(req)
+		_, err := interactionService.GetLikeCount(req)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }

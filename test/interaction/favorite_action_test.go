@@ -34,7 +34,13 @@ func benchmarkFavoriteAction(b *testing.B) {
 		Token:   token,
 	}
 	for n := 0; n < b.N; n++ {
-		interactionService.Like(req, userId)
-		interactionService.Dislike(req, userId)
+		err := interactionService.Like(req, userId)
+		if err != nil {
+			b.Error(err)
+		}
+		err = interactionService.Dislike(req, userId)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }

@@ -150,7 +150,7 @@ func convertForMysql(message *cache.Message, tempMessage *MiddleMessage) (err er
 	message.ToUserId = tempMessage.ToUserId
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content
-	message.CreatedAt, err = time.ParseInLocation(time.RFC3339, tempMessage.CreatedAt, time.Local)
+	message.CreatedAt, err = time.Parse(time.DateTime, tempMessage.CreatedAt)
 	if err != nil {
 		return err
 	}

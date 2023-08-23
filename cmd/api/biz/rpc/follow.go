@@ -68,7 +68,6 @@ func FollowList(ctx context.Context, req *follow.FollowListRequest) ([]*follow.U
 	}
 
 	return resp.UserList, nil
-
 }
 
 func FollowerList(ctx context.Context, req *follow.FollowerListRequest) ([]*follow.User, error) {

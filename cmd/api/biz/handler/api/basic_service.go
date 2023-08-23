@@ -9,6 +9,7 @@ import (
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
 	"github.com/ozline/tiktok/cmd/api/biz/pack"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
+	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/kitex_gen/user"
 )
 
@@ -25,11 +26,18 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.FeedResponse)
 
-	// tmp, nexttime, err := rpc.VideoFeed(ctx, &video.FeedRequest{
-	// 	LatestTime: req.LatestTime,
-	// 	Token:      *req.Token,
-	// })
+	videoList, nexttime, err := rpc.VideoFeed(ctx, &video.FeedRequest{
+		LatestTime: *req.LatestTime,
+		Token:      *req.Token,
+	})
 
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.VideoList = pack.VideoList(videoList)
+	resp.NextTime = &nexttime
 	pack.SendResponse(c, resp)
 }
 
@@ -142,5 +150,16 @@ func PublishList(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.PublishListResponse)
 
+	videoList, err := rpc.PublishList(ctx, &video.GetPublishListRequest{
+		Token:  req.Token,
+		UserId: req.UserID,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
+
+	resp.VideoList = pack.VideoList(videoList)
 	pack.SendResponse(c, resp)
 }

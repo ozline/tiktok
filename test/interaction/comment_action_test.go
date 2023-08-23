@@ -21,7 +21,7 @@ func testCommentAction(t *testing.T) {
 		Token:       token,
 	}
 
-	resp, err := interactionService.CreateComment(req)
+	resp, err := interactionService.CreateComment(req, userId)
 
 	if err != nil {
 		t.Logf("err: [%v] \n", err)
@@ -32,7 +32,7 @@ func testCommentAction(t *testing.T) {
 	commentId = resp.Id
 	t.Logf("commentId: [%v] \n", commentId)
 
-	_, err = interactionService.DeleteComment(req)
+	_, err = interactionService.DeleteComment(req, userId)
 
 	if err != nil {
 		t.Logf("err: [%v] \n", err)
@@ -53,11 +53,14 @@ func benchmarkCommentAction(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		//interactionService.MatchSensitiveWords(commentText)
 
-		resp, _ := interactionService.CreateComment(req)
+		resp, _ := interactionService.CreateComment(req, userId)
 
 		commentId = resp.Id
 
-		interactionService.DeleteComment(req)
+		_, err := interactionService.DeleteComment(req, userId)
+		if err != nil {
+			b.Error(err)
+		}
 
 	}
 }

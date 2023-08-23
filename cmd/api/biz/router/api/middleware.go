@@ -4,6 +4,7 @@ package api
 
 import (
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/ozline/tiktok/cmd/api/biz/middleware"
 )
 
 func rootMw() []app.HandlerFunc {
@@ -23,7 +24,9 @@ func _feedMw() []app.HandlerFunc {
 
 func _userinfoMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _commentMw() []app.HandlerFunc {
@@ -33,12 +36,16 @@ func _commentMw() []app.HandlerFunc {
 
 func _commentactionMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _commentlistMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _favoriteMw() []app.HandlerFunc {
@@ -48,12 +55,16 @@ func _favoriteMw() []app.HandlerFunc {
 
 func _favoriteactionMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _favoritelistMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _messageMw() []app.HandlerFunc {
@@ -63,12 +74,16 @@ func _messageMw() []app.HandlerFunc {
 
 func _messageactionMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _messagechatMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _publishMw() []app.HandlerFunc {
@@ -78,12 +93,16 @@ func _publishMw() []app.HandlerFunc {
 
 func _publishactionMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _publishlistMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _relationMw() []app.HandlerFunc {
@@ -98,7 +117,9 @@ func _actionMw() []app.HandlerFunc {
 
 func _relationactionMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _followMw() []app.HandlerFunc {
@@ -108,7 +129,9 @@ func _followMw() []app.HandlerFunc {
 
 func _relationfollowlistMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _followerMw() []app.HandlerFunc {
@@ -118,7 +141,9 @@ func _followerMw() []app.HandlerFunc {
 
 func _relationfollowerlistMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _friendMw() []app.HandlerFunc {
@@ -128,7 +153,9 @@ func _friendMw() []app.HandlerFunc {
 
 func _relationfriendlistMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.AuthToken(),
+	}
 }
 
 func _userMw() []app.HandlerFunc {

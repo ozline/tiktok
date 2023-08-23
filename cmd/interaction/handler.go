@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 
-	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/pack"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/cmd/interaction/service"
@@ -81,13 +80,28 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interaction.CommentActionRequest) (resp *interaction.CommentActionResponse, err error) {
 	resp = new(interaction.CommentActionResponse)
 
-	commentResp := new(db.Comment)
 	commentService := service.NewInteractionService(ctx)
+
+	claim, err := utils.CheckToken(req.Token)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+	userId := claim.UserId
+	userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
+		UserId: userId,
+		Token:  req.Token,
+	})
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
 
 	switch req.ActionType {
 	//1-发布评论
 	case constants.AddComment:
-		if len(*req.CommentText) == 0 {
+
+		if req.CommentText == nil || len(*req.CommentText) == 0 || len(*req.CommentText) > 255 {
 			resp.Base = pack.BuildBaseResp(errno.ParamError)
 			return resp, nil
 		}
@@ -102,37 +116,37 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return resp, nil
 		}
 
-		commentResp, err = commentService.CreateComment(req)
+		commentResp, err := commentService.CreateComment(req, userId)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
+
+		resp.Comment = pack.Comment(commentResp)
+
 	//2-删除评论
 	case constants.DeleteComment:
-		commentResp, err = commentService.DeleteComment(req)
+
+		if req.CommentId == nil {
+			resp.Base = pack.BuildBaseResp(errno.ParamError)
+			return resp, nil
+		}
+
+		commentResp, err := commentService.DeleteComment(req, userId)
 
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
+		resp.Comment = pack.Comment(commentResp)
 
 	default:
 		resp.Base = pack.BuildBaseResp(errno.UnexpectedTypeError)
 		return resp, nil
 	}
 
-	userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
-		UserId: commentResp.UserId,
-		Token:  req.Token,
-	})
-	if err != nil {
-		resp.Base = pack.BuildBaseResp(err)
-		return resp, nil
-	}
-
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.Comment = pack.Comment(commentResp)
 	resp.Comment.User = userInfo
 
 	return
@@ -158,8 +172,7 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 	users := make(map[int64]int) // 利用map避免重复查询
 	commentList := make([]*interaction.Comment, 0, len(*commentsResp))
 	for commentIndex, comment := range *commentsResp {
-		rComment := new(interaction.Comment)
-		rComment = pack.Comment(&comment)
+		rComment := pack.Comment(&comment)
 
 		index, ok := users[comment.UserId]
 		if !ok {

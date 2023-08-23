@@ -7,7 +7,6 @@ import (
 )
 
 func testGetUserInfo(t *testing.T) {
-
 	_, err := userService.GetUser(&user.InfoRequest{
 		UserId: id,
 		Token:  token,

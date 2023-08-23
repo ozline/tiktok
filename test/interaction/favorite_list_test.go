@@ -28,6 +28,9 @@ func benchmarkFavoriteList(b *testing.B) {
 		Token:  token,
 	}
 	for n := 0; n < b.N; n++ {
-		interactionService.FavoriteList(req)
+		_, err := interactionService.FavoriteList(req)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }

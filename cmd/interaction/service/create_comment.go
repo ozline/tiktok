@@ -1,40 +1,51 @@
 package service
 
 import (
+	"strconv"
+	"sync"
+
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/ozline/tiktok/pkg/errno"
-	"github.com/ozline/tiktok/pkg/utils"
-	"strconv"
 )
 
 // CreateComment create comment
-func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest) (*db.Comment, error) {
+func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest, userId int64) (*db.Comment, error) {
 
-	claim, err := utils.CheckToken(req.Token)
-	if err != nil {
-		return nil, errno.AuthorizationFailedError
-	}
-
+	var wg sync.WaitGroup
 	commentModel := &db.Comment{
 		VideoId: req.VideoId,
-		UserId:  claim.UserId,
+		UserId:  userId,
 		Content: *req.CommentText,
 	}
-	comment, err := db.CreateComment(s.ctx, commentModel)
-	if err != nil {
-		return nil, err
-	}
 
-	key := strconv.FormatInt(comment.VideoId, 10)
-	exist, err := cache.IsExistComment(s.ctx, key)
-	if err != nil {
-		return nil, err
-	}
+	errs := make([]error, 3)
+	comment := new(db.Comment)
+	var err error
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		comment, err = db.CreateComment(s.ctx, commentModel)
+		errs[0] = err
+	}()
 
-	if exist == 1 {
-		err = cache.AddComment(s.ctx, key, comment)
+	key := strconv.FormatInt(req.VideoId, 10)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		exist, err := cache.IsExistComment(s.ctx, key)
+		errs[1] = err
+		if err != nil {
+			return
+		}
+		if exist == 1 {
+			err = cache.DeleteComments(s.ctx, key)
+			errs[2] = err
+		}
+	}()
+	wg.Wait()
+
+	for _, err = range errs {
 		if err != nil {
 			return nil, err
 		}

@@ -8,22 +8,22 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/ozline/tiktok/config"
-	"github.com/ozline/tiktok/kitex_gen/user"
-	"github.com/ozline/tiktok/kitex_gen/user/userservice"
+	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"github.com/ozline/tiktok/kitex_gen/interaction/interactionservice"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/middleware"
 )
 
-func InitUserRPC() {
+func InitInteractionRPC() {
 	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
 
 	if err != nil {
 		panic(err)
 	}
 
-	c, err := userservice.NewClient(
-		constants.UserServiceName,
+	c, err := interactionservice.NewClient(
+		constants.InteractionServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),
@@ -37,19 +37,30 @@ func InitUserRPC() {
 		panic(err)
 	}
 
-	userClient = c
+	interactionClient = c
 }
-
-func GetUser(ctx context.Context, req *user.InfoRequest) (*user.User, error) {
-	resp, err := userClient.Info(ctx, req)
+func GetFavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest) (favoriteCount int64, err error) {
+	resp, err := interactionClient.FavoriteCount(ctx, req)
 
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
+		return 0, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
 	}
 
-	return resp.User, nil
+	return resp.LikeCount, nil
+}
+func GetCommentCount(ctx context.Context, req *interaction.CommentCountRequest) (commentCount int64, err error) {
+	resp, err := interactionClient.CommentCount(ctx, req)
+
+	if err != nil {
+		return 0, err
+	}
+	if resp.Base.Code != errno.SuccessCode {
+		return 0, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+	}
+
+	return resp.CommentCount, nil
 }
