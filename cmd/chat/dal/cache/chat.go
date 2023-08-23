@@ -9,7 +9,7 @@ import (
 )
 
 func MessageInsert(ctx context.Context, key string, score float64, member string) error {
-	//先判断是否key是否存在，如果存在则判断过期时间是否小于十天，小于则加时间，大于则不加时间
+	// 先判断是否key是否存在，如果存在则判断过期时间是否小于十天，小于则加时间，大于则不加时间
 	if ok := MessageExist(ctx, key); ok != 0 {
 		err := RedisDB.ZAdd(context.TODO(), key, redis.Z{
 			Score:  score,
