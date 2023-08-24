@@ -49,6 +49,12 @@ func TestMainOrder(t *testing.T) {
 
 	t.Run("favorite count", testVideoFavoriteCount)
 
+	t.Run("user favorite count", testUserFavoriteCount)
+
+	t.Run("user total favorited", testUserTotalFavorited)
+
+	t.Run("is favorite", testIsFavorite)
+
 	t.Run("RPC Test", testRPC)
 }
 
@@ -64,4 +70,10 @@ func BenchmarkMainOrder(b *testing.B) {
 	b.Run("favorite list", benchmarkFavoriteList)
 
 	b.Run("favorite count", benchmarkFavoriteVideoCount)
+
+	b.Run("user favorite count", benchmarkUserFavoriteCount)
+
+	b.Run("user total favorited", benchmarkUserTotalFavorited)
+
+	b.Run("is favorite", benchmarkIsFavorite)
 }

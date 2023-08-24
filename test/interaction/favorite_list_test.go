@@ -18,7 +18,6 @@ func testFavoriteList(t *testing.T) {
 		t.Error(err)
 		t.Fail()
 	}
-	t.Log("------------testFavoriteList success---------------")
 }
 
 func benchmarkFavoriteList(b *testing.B) {
