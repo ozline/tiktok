@@ -17,6 +17,8 @@ type Client interface {
 	PutVideo(ctx context.Context, callOptions ...callopt.Option) (stream VideoService_PutVideoClient, err error)
 	GetFavoriteVideoInfo(ctx context.Context, Req *video.GetFavoriteVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetFavoriteVideoInfoResponse, err error)
 	GetPublishList(ctx context.Context, Req *video.GetPublishListRequest, callOptions ...callopt.Option) (r *video.GetPublishListResponse, err error)
+	GetWorkCount(ctx context.Context, Req *video.GetWorkCountRequest, callOptions ...callopt.Option) (r *video.GetWorkCountResponse, err error)
+	GetVideoIDByUid(ctx context.Context, Req *video.GetVideoIDByUidRequset, callOptions ...callopt.Option) (r *video.GetVideoIDByUidResponse, err error)
 }
 
 type VideoService_PutVideoClient interface {
@@ -74,4 +76,14 @@ func (p *kVideoServiceClient) GetFavoriteVideoInfo(ctx context.Context, Req *vid
 func (p *kVideoServiceClient) GetPublishList(ctx context.Context, Req *video.GetPublishListRequest, callOptions ...callopt.Option) (r *video.GetPublishListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetPublishList(ctx, Req)
+}
+
+func (p *kVideoServiceClient) GetWorkCount(ctx context.Context, Req *video.GetWorkCountRequest, callOptions ...callopt.Option) (r *video.GetWorkCountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetWorkCount(ctx, Req)
+}
+
+func (p *kVideoServiceClient) GetVideoIDByUid(ctx context.Context, Req *video.GetVideoIDByUidRequset, callOptions ...callopt.Option) (r *video.GetVideoIDByUidResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetVideoIDByUid(ctx, Req)
 }

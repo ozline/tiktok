@@ -39,7 +39,7 @@ func Init() {
 		klog.Info("Not found test1 key")
 	} else if err != nil {
 		panic(err)
-	} else {
-		klog.Infof("val: %v\n", val)
 	}
+
+	klog.Infof("val: %v\n", val)
 }

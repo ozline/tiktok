@@ -55,11 +55,12 @@ func GetMessage(ctx context.Context, req *chat.MessageListRequest, uid, tid int6
 	len := len(messageList)
 
 	for i := len - 1; i >= 0; i-- {
-		if messageList[i].FromUserId == uid && messageList[i].ToUserId == tid {
+		switch {
+		case messageList[i].FromUserId == uid && messageList[i].ToUserId == tid:
 			return messageList[i].Content, 1, nil
-		} else if messageList[i].FromUserId == tid && messageList[i].ToUserId == uid {
+		case messageList[i].FromUserId == tid && messageList[i].ToUserId == uid:
 			return messageList[i].Content, 0, nil
-		} else {
+		default:
 			continue
 		}
 	}

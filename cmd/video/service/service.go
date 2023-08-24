@@ -14,7 +14,7 @@ type VideoService struct {
 
 // NewVideoService new VideoService
 func NewVideoService(ctx context.Context) *VideoService {
-	//初始化bucket
+	// bucket init
 	if config.OSS == nil {
 		return &VideoService{ctx: ctx, bucket: nil}
 	}

@@ -4,6 +4,10 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/ozline/tiktok/cmd/interaction/pack"
+	"github.com/ozline/tiktok/cmd/interaction/rpc"
+	"github.com/ozline/tiktok/kitex_gen/user"
+
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
@@ -11,8 +15,7 @@ import (
 )
 
 // DeleteComment delete comment
-func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest, userId int64) (*db.Comment, error) {
-
+func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest, userId int64) (*interaction.Comment, error) {
 	var wg sync.WaitGroup
 	comment, err := db.GetCommentByID(s.ctx, *req.CommentId)
 	if err != nil {
@@ -23,7 +26,7 @@ func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest
 		return nil, errno.AuthorizationFailedError
 	}
 
-	errs := make([]error, 3)
+	errs := make([]error, 4)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
@@ -45,6 +48,17 @@ func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest
 			errs[2] = err
 		}
 	}()
+
+	var userInfo *user.User
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		userInfo, err = rpc.UserInfo(s.ctx, &user.InfoRequest{
+			UserId: userId,
+			Token:  req.Token,
+		})
+		errs[3] = err
+	}()
 	wg.Wait()
 
 	for _, err = range errs {
@@ -53,5 +67,5 @@ func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest
 		}
 	}
 
-	return comment, nil
+	return pack.Comment(comment, userInfo), nil
 }

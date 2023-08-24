@@ -29,7 +29,6 @@ func UserList(list []*follow.User) []*api.User {
 }
 
 func FriendList(list []*follow.FriendUser) []*api.FriendUser {
-
 	resp := make([]*api.FriendUser, 0)
 
 	for _, data := range list {

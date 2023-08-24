@@ -46,5 +46,4 @@ func Init() {
 	if SF, err = utils.NewSnowflake(constants.SnowflakeDatacenterID, constants.SnowflakeWorkerID); err != nil {
 		panic(err)
 	}
-
 }

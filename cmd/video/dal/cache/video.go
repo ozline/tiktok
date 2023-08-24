@@ -31,7 +31,6 @@ func GetVideoList(ctx context.Context, latestTime int64) (videoList []db.Video, 
 	return
 }
 func IsExistVideoInfo(ctx context.Context, latestTime int64) (exist int64, err error) {
-
 	exist, err = RedisClient.Exists(ctx, strconv.FormatInt(latestTime, 10)).Result()
 	return
 }

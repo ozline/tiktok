@@ -58,7 +58,6 @@ func configMapping(srv string) {
 }
 
 func GetService(srvname string) *service {
-
 	addrlist := viper.GetStringSlice("services." + srvname + ".addr")
 
 	return &service{
