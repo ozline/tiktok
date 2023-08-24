@@ -6,43 +6,81 @@ import (
 	"github.com/ozline/tiktok/cmd/video/rpc"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *VideoService) GetFavoriteVideoInfo(req *video.GetFavoriteVideoInfoRequest) ([]db.Video, []*user.User, []int64, []int64, error) {
 	videoList, err := db.GetVideoInfoByID(s.ctx, req.VideoId)
 
-	// 获取user信息、favoriteCount、commentCount
-	userList := make([]*user.User, len(videoList))
+	// 创建错误组
+	var eg errgroup.Group
+	// 并发调用获取user信息、favoriteCount和commentCount
+	userResults := make(chan *user.User, len(videoList))
+	favoriteCountResults := make(chan int64, len(videoList))
+	commentCountResults := make(chan int64, len(videoList))
+	// // 并发调用获取user信息、favoriteCount和commentCount
 	for i := 0; i < len(videoList); i++ {
-		userList[i], err = rpc.GetUser(s.ctx, &user.InfoRequest{
-			UserId: videoList[i].UserID,
-			Token:  req.Token,
+		index := i // 在闭包中使用本地副本以避免竞态条件
+		eg.Go(func() error {
+			// 获取user信息
+			userInfo, err := rpc.GetUser(s.ctx, &user.InfoRequest{
+				UserId: videoList[index].UserID,
+				Token:  req.Token,
+			})
+			if err == nil {
+				userResults <- userInfo
+			} else {
+				return err
+			}
+
+			// 获取favoriteCount
+			favoriteCount, err := rpc.GetVideoFavoriteCount(s.ctx, &interaction.VideoFavoritedCountRequest{
+				VideoId: videoList[index].Id,
+				Token:   req.Token,
+			})
+			if err == nil {
+				favoriteCountResults <- favoriteCount
+			} else {
+				return err
+			}
+
+			// 获取commentCount
+			commentCount, err := rpc.GetCommentCount(s.ctx, &interaction.CommentCountRequest{
+				VideoId: videoList[index].Id,
+				Token:   &req.Token,
+			})
+			if err == nil {
+				commentCountResults <- commentCount
+			} else {
+				return err
+			}
+
+			return nil
 		})
-		if err != nil {
-			return nil, nil, nil, nil, err
-		}
+	}
+	// 等待所有goroutine完成
+	if err := eg.Wait(); err != nil {
+		return nil, nil, nil, nil, err
 	}
 
-	favoriteCountList := make([]int64, len(videoList))
-	for i := 0; i < len(videoList); i++ {
-		favoriteCountList[i], err = rpc.GetVideoFavoriteCount(s.ctx, &interaction.VideoFavoritedCountRequest{
-			VideoId: videoList[i].Id,
-			Token:   req.Token,
-		})
-		if err != nil {
-			return nil, nil, nil, nil, err
-		}
+	// 关闭通道
+	close(userResults)
+	close(favoriteCountResults)
+	close(commentCountResults)
+	// 从通道中提取结果
+	var userList []*user.User
+	for userInfo := range userResults {
+		userList = append(userList, userInfo)
 	}
 
-	commentCountList := make([]int64, len(videoList))
-	for i := 0; i < len(videoList); i++ {
-		commentCountList[i], err = rpc.GetCommentCount(s.ctx, &interaction.CommentCountRequest{
-			VideoId: videoList[i].Id,
-			Token:   &req.Token,
-		})
-		if err != nil {
-			return nil, nil, nil, nil, err
-		}
+	var favoriteCountList []int64
+	for favoriteCount := range favoriteCountResults {
+		favoriteCountList = append(favoriteCountList, favoriteCount)
+	}
+
+	var commentCountList []int64
+	for commentCount := range commentCountResults {
+		commentCountList = append(commentCountList, commentCount)
 	}
 	return videoList, userList, favoriteCountList, commentCountList, err
 }
