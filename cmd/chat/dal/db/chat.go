@@ -7,6 +7,7 @@ import (
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"gorm.io/gorm"
+	"gorm.io/hints"
 )
 
 type Message struct {
@@ -30,7 +31,8 @@ type MessageArray []*Message
 
 func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, bool, error) {
 	messageListFormMysql := make([]*Message, 0)
-	err := DB.WithContext(ctx).
+	err := DB.WithContext(ctx).Clauses(hints.UseIndex("to_user_id", "from_user_id")).
+		Select("id", "to_user_id", "from_user_id", "content", "created_at").
 		Where("(to_user_id=? AND from_user_id =?) OR (to_user_id=? AND from_user_id =?) ", to_user_id, from_user_id, from_user_id, to_user_id).
 		Order("created_at desc").
 		Find(&messageListFormMysql).Error
