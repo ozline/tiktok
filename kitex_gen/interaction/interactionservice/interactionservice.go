@@ -24,6 +24,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"VideoFavoritedCount": kitex.NewMethodInfo(videoFavoritedCountHandler, newInteractionServiceVideoFavoritedCountArgs, newInteractionServiceVideoFavoritedCountResult, false),
 		"UserFavoriteCount":   kitex.NewMethodInfo(userFavoriteCountHandler, newInteractionServiceUserFavoriteCountArgs, newInteractionServiceUserFavoriteCountResult, false),
 		"UserTotalFavorited":  kitex.NewMethodInfo(userTotalFavoritedHandler, newInteractionServiceUserTotalFavoritedArgs, newInteractionServiceUserTotalFavoritedResult, false),
+		"IsFavorite":          kitex.NewMethodInfo(isFavoriteHandler, newInteractionServiceIsFavoriteArgs, newInteractionServiceIsFavoriteResult, false),
 		"CommentAction":       kitex.NewMethodInfo(commentActionHandler, newInteractionServiceCommentActionArgs, newInteractionServiceCommentActionResult, false),
 		"CommentList":         kitex.NewMethodInfo(commentListHandler, newInteractionServiceCommentListArgs, newInteractionServiceCommentListResult, false),
 		"CommentCount":        kitex.NewMethodInfo(commentCountHandler, newInteractionServiceCommentCountArgs, newInteractionServiceCommentCountResult, false),
@@ -130,6 +131,24 @@ func newInteractionServiceUserTotalFavoritedArgs() interface{} {
 
 func newInteractionServiceUserTotalFavoritedResult() interface{} {
 	return interaction.NewInteractionServiceUserTotalFavoritedResult()
+}
+
+func isFavoriteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*interaction.InteractionServiceIsFavoriteArgs)
+	realResult := result.(*interaction.InteractionServiceIsFavoriteResult)
+	success, err := handler.(interaction.InteractionService).IsFavorite(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newInteractionServiceIsFavoriteArgs() interface{} {
+	return interaction.NewInteractionServiceIsFavoriteArgs()
+}
+
+func newInteractionServiceIsFavoriteResult() interface{} {
+	return interaction.NewInteractionServiceIsFavoriteResult()
 }
 
 func commentActionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -241,6 +260,16 @@ func (p *kClient) UserTotalFavorited(ctx context.Context, req *interaction.UserT
 	_args.Req = req
 	var _result interaction.InteractionServiceUserTotalFavoritedResult
 	if err = p.c.Call(ctx, "UserTotalFavorited", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) IsFavorite(ctx context.Context, req *interaction.IsFavoriteRequest) (r *interaction.IsFavoriteResponse, err error) {
+	var _args interaction.InteractionServiceIsFavoriteArgs
+	_args.Req = req
+	var _result interaction.InteractionServiceIsFavoriteResult
+	if err = p.c.Call(ctx, "IsFavorite", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

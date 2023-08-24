@@ -240,3 +240,23 @@ func (s *InteractionServiceImpl) UserTotalFavorited(ctx context.Context, req *in
 	resp.TotalFavorited = total
 	return resp, nil
 }
+
+// IsFavorite implements the InteractionServiceImpl interface.
+func (s *InteractionServiceImpl) IsFavorite(ctx context.Context, req *interaction.IsFavoriteRequest) (resp *interaction.IsFavoriteResponse, err error) {
+	resp = new(interaction.IsFavoriteResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	exist, err := service.NewInteractionService(ctx).IsFavorite(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.IsFavorite = exist
+	return
+}
