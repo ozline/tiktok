@@ -2270,39 +2270,39 @@ func (p *FavoriteListResponse) Field2DeepEqual(src []*Video) bool {
 	return true
 }
 
-type FavoriteCountRequest struct {
+type VideoFavoritedCountRequest struct {
 	VideoId int64  `thrift:"video_id,1,required" frugal:"1,required,i64" json:"video_id"`
 	Token   string `thrift:"token,2,required" frugal:"2,required,string" json:"token"`
 }
 
-func NewFavoriteCountRequest() *FavoriteCountRequest {
-	return &FavoriteCountRequest{}
+func NewVideoFavoritedCountRequest() *VideoFavoritedCountRequest {
+	return &VideoFavoritedCountRequest{}
 }
 
-func (p *FavoriteCountRequest) InitDefault() {
-	*p = FavoriteCountRequest{}
+func (p *VideoFavoritedCountRequest) InitDefault() {
+	*p = VideoFavoritedCountRequest{}
 }
 
-func (p *FavoriteCountRequest) GetVideoId() (v int64) {
+func (p *VideoFavoritedCountRequest) GetVideoId() (v int64) {
 	return p.VideoId
 }
 
-func (p *FavoriteCountRequest) GetToken() (v string) {
+func (p *VideoFavoritedCountRequest) GetToken() (v string) {
 	return p.Token
 }
-func (p *FavoriteCountRequest) SetVideoId(val int64) {
+func (p *VideoFavoritedCountRequest) SetVideoId(val int64) {
 	p.VideoId = val
 }
-func (p *FavoriteCountRequest) SetToken(val string) {
+func (p *VideoFavoritedCountRequest) SetToken(val string) {
 	p.Token = val
 }
 
-var fieldIDToName_FavoriteCountRequest = map[int16]string{
+var fieldIDToName_VideoFavoritedCountRequest = map[int16]string{
 	1: "video_id",
 	2: "token",
 }
 
-func (p *FavoriteCountRequest) Read(iprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -2374,7 +2374,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FavoriteCountRequest[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_VideoFavoritedCountRequest[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -2383,10 +2383,10 @@ ReadFieldEndError:
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 RequiredFieldNotSetError:
-	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FavoriteCountRequest[fieldId]))
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_VideoFavoritedCountRequest[fieldId]))
 }
 
-func (p *FavoriteCountRequest) ReadField1(iprot thrift.TProtocol) error {
+func (p *VideoFavoritedCountRequest) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
@@ -2395,7 +2395,7 @@ func (p *FavoriteCountRequest) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *FavoriteCountRequest) ReadField2(iprot thrift.TProtocol) error {
+func (p *VideoFavoritedCountRequest) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
@@ -2404,9 +2404,9 @@ func (p *FavoriteCountRequest) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *FavoriteCountRequest) Write(oprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("FavoriteCountRequest"); err != nil {
+	if err = oprot.WriteStructBegin("VideoFavoritedCountRequest"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -2437,7 +2437,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *FavoriteCountRequest) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountRequest) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("video_id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -2454,7 +2454,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *FavoriteCountRequest) writeField2(oprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountRequest) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("token", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -2471,14 +2471,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *FavoriteCountRequest) String() string {
+func (p *VideoFavoritedCountRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("FavoriteCountRequest(%+v)", *p)
+	return fmt.Sprintf("VideoFavoritedCountRequest(%+v)", *p)
 }
 
-func (p *FavoriteCountRequest) DeepEqual(ano *FavoriteCountRequest) bool {
+func (p *VideoFavoritedCountRequest) DeepEqual(ano *VideoFavoritedCountRequest) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -2493,14 +2493,14 @@ func (p *FavoriteCountRequest) DeepEqual(ano *FavoriteCountRequest) bool {
 	return true
 }
 
-func (p *FavoriteCountRequest) Field1DeepEqual(src int64) bool {
+func (p *VideoFavoritedCountRequest) Field1DeepEqual(src int64) bool {
 
 	if p.VideoId != src {
 		return false
 	}
 	return true
 }
-func (p *FavoriteCountRequest) Field2DeepEqual(src string) bool {
+func (p *VideoFavoritedCountRequest) Field2DeepEqual(src string) bool {
 
 	if strings.Compare(p.Token, src) != 0 {
 		return false
@@ -2508,48 +2508,48 @@ func (p *FavoriteCountRequest) Field2DeepEqual(src string) bool {
 	return true
 }
 
-type FavoriteCountResponse struct {
+type VideoFavoritedCountResponse struct {
 	Base      *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
 	LikeCount int64     `thrift:"like_count,2,required" frugal:"2,required,i64" json:"like_count"`
 }
 
-func NewFavoriteCountResponse() *FavoriteCountResponse {
-	return &FavoriteCountResponse{}
+func NewVideoFavoritedCountResponse() *VideoFavoritedCountResponse {
+	return &VideoFavoritedCountResponse{}
 }
 
-func (p *FavoriteCountResponse) InitDefault() {
-	*p = FavoriteCountResponse{}
+func (p *VideoFavoritedCountResponse) InitDefault() {
+	*p = VideoFavoritedCountResponse{}
 }
 
-var FavoriteCountResponse_Base_DEFAULT *BaseResp
+var VideoFavoritedCountResponse_Base_DEFAULT *BaseResp
 
-func (p *FavoriteCountResponse) GetBase() (v *BaseResp) {
+func (p *VideoFavoritedCountResponse) GetBase() (v *BaseResp) {
 	if !p.IsSetBase() {
-		return FavoriteCountResponse_Base_DEFAULT
+		return VideoFavoritedCountResponse_Base_DEFAULT
 	}
 	return p.Base
 }
 
-func (p *FavoriteCountResponse) GetLikeCount() (v int64) {
+func (p *VideoFavoritedCountResponse) GetLikeCount() (v int64) {
 	return p.LikeCount
 }
-func (p *FavoriteCountResponse) SetBase(val *BaseResp) {
+func (p *VideoFavoritedCountResponse) SetBase(val *BaseResp) {
 	p.Base = val
 }
-func (p *FavoriteCountResponse) SetLikeCount(val int64) {
+func (p *VideoFavoritedCountResponse) SetLikeCount(val int64) {
 	p.LikeCount = val
 }
 
-var fieldIDToName_FavoriteCountResponse = map[int16]string{
+var fieldIDToName_VideoFavoritedCountResponse = map[int16]string{
 	1: "base",
 	2: "like_count",
 }
 
-func (p *FavoriteCountResponse) IsSetBase() bool {
+func (p *VideoFavoritedCountResponse) IsSetBase() bool {
 	return p.Base != nil
 }
 
-func (p *FavoriteCountResponse) Read(iprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountResponse) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -2621,7 +2621,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FavoriteCountResponse[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_VideoFavoritedCountResponse[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -2630,10 +2630,10 @@ ReadFieldEndError:
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 RequiredFieldNotSetError:
-	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FavoriteCountResponse[fieldId]))
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_VideoFavoritedCountResponse[fieldId]))
 }
 
-func (p *FavoriteCountResponse) ReadField1(iprot thrift.TProtocol) error {
+func (p *VideoFavoritedCountResponse) ReadField1(iprot thrift.TProtocol) error {
 	p.Base = NewBaseResp()
 	if err := p.Base.Read(iprot); err != nil {
 		return err
@@ -2641,7 +2641,7 @@ func (p *FavoriteCountResponse) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *FavoriteCountResponse) ReadField2(iprot thrift.TProtocol) error {
+func (p *VideoFavoritedCountResponse) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
@@ -2650,9 +2650,9 @@ func (p *FavoriteCountResponse) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *FavoriteCountResponse) Write(oprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountResponse) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("FavoriteCountResponse"); err != nil {
+	if err = oprot.WriteStructBegin("VideoFavoritedCountResponse"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -2683,7 +2683,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *FavoriteCountResponse) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountResponse) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("base", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -2700,7 +2700,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *FavoriteCountResponse) writeField2(oprot thrift.TProtocol) (err error) {
+func (p *VideoFavoritedCountResponse) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("like_count", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -2717,14 +2717,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *FavoriteCountResponse) String() string {
+func (p *VideoFavoritedCountResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("FavoriteCountResponse(%+v)", *p)
+	return fmt.Sprintf("VideoFavoritedCountResponse(%+v)", *p)
 }
 
-func (p *FavoriteCountResponse) DeepEqual(ano *FavoriteCountResponse) bool {
+func (p *VideoFavoritedCountResponse) DeepEqual(ano *VideoFavoritedCountResponse) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -2739,14 +2739,982 @@ func (p *FavoriteCountResponse) DeepEqual(ano *FavoriteCountResponse) bool {
 	return true
 }
 
-func (p *FavoriteCountResponse) Field1DeepEqual(src *BaseResp) bool {
+func (p *VideoFavoritedCountResponse) Field1DeepEqual(src *BaseResp) bool {
 
 	if !p.Base.DeepEqual(src) {
 		return false
 	}
 	return true
 }
-func (p *FavoriteCountResponse) Field2DeepEqual(src int64) bool {
+func (p *VideoFavoritedCountResponse) Field2DeepEqual(src int64) bool {
+
+	if p.LikeCount != src {
+		return false
+	}
+	return true
+}
+
+type UserTotalFavoritedRequest struct {
+	Token  string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
+	UserId int64  `thrift:"user_id,2,required" frugal:"2,required,i64" json:"user_id"`
+}
+
+func NewUserTotalFavoritedRequest() *UserTotalFavoritedRequest {
+	return &UserTotalFavoritedRequest{}
+}
+
+func (p *UserTotalFavoritedRequest) InitDefault() {
+	*p = UserTotalFavoritedRequest{}
+}
+
+func (p *UserTotalFavoritedRequest) GetToken() (v string) {
+	return p.Token
+}
+
+func (p *UserTotalFavoritedRequest) GetUserId() (v int64) {
+	return p.UserId
+}
+func (p *UserTotalFavoritedRequest) SetToken(val string) {
+	p.Token = val
+}
+func (p *UserTotalFavoritedRequest) SetUserId(val int64) {
+	p.UserId = val
+}
+
+var fieldIDToName_UserTotalFavoritedRequest = map[int16]string{
+	1: "token",
+	2: "user_id",
+}
+
+func (p *UserTotalFavoritedRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetToken bool = false
+	var issetUserId bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetToken = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUserId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetToken {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUserId {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserTotalFavoritedRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_UserTotalFavoritedRequest[fieldId]))
+}
+
+func (p *UserTotalFavoritedRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Token = v
+	}
+	return nil
+}
+
+func (p *UserTotalFavoritedRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
+func (p *UserTotalFavoritedRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserTotalFavoritedRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserTotalFavoritedRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Token); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserTotalFavoritedRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *UserTotalFavoritedRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserTotalFavoritedRequest(%+v)", *p)
+}
+
+func (p *UserTotalFavoritedRequest) DeepEqual(ano *UserTotalFavoritedRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Token) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.UserId) {
+		return false
+	}
+	return true
+}
+
+func (p *UserTotalFavoritedRequest) Field1DeepEqual(src string) bool {
+
+	if strings.Compare(p.Token, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *UserTotalFavoritedRequest) Field2DeepEqual(src int64) bool {
+
+	if p.UserId != src {
+		return false
+	}
+	return true
+}
+
+type UserTotalFavoritedResponse struct {
+	Base           *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
+	TotalFavorited int64     `thrift:"total_favorited,2,required" frugal:"2,required,i64" json:"total_favorited"`
+}
+
+func NewUserTotalFavoritedResponse() *UserTotalFavoritedResponse {
+	return &UserTotalFavoritedResponse{}
+}
+
+func (p *UserTotalFavoritedResponse) InitDefault() {
+	*p = UserTotalFavoritedResponse{}
+}
+
+var UserTotalFavoritedResponse_Base_DEFAULT *BaseResp
+
+func (p *UserTotalFavoritedResponse) GetBase() (v *BaseResp) {
+	if !p.IsSetBase() {
+		return UserTotalFavoritedResponse_Base_DEFAULT
+	}
+	return p.Base
+}
+
+func (p *UserTotalFavoritedResponse) GetTotalFavorited() (v int64) {
+	return p.TotalFavorited
+}
+func (p *UserTotalFavoritedResponse) SetBase(val *BaseResp) {
+	p.Base = val
+}
+func (p *UserTotalFavoritedResponse) SetTotalFavorited(val int64) {
+	p.TotalFavorited = val
+}
+
+var fieldIDToName_UserTotalFavoritedResponse = map[int16]string{
+	1: "base",
+	2: "total_favorited",
+}
+
+func (p *UserTotalFavoritedResponse) IsSetBase() bool {
+	return p.Base != nil
+}
+
+func (p *UserTotalFavoritedResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetBase bool = false
+	var issetTotalFavorited bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetBase = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetTotalFavorited = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetBase {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetTotalFavorited {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserTotalFavoritedResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_UserTotalFavoritedResponse[fieldId]))
+}
+
+func (p *UserTotalFavoritedResponse) ReadField1(iprot thrift.TProtocol) error {
+	p.Base = NewBaseResp()
+	if err := p.Base.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *UserTotalFavoritedResponse) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.TotalFavorited = v
+	}
+	return nil
+}
+
+func (p *UserTotalFavoritedResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserTotalFavoritedResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserTotalFavoritedResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("base", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Base.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserTotalFavoritedResponse) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("total_favorited", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.TotalFavorited); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *UserTotalFavoritedResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserTotalFavoritedResponse(%+v)", *p)
+}
+
+func (p *UserTotalFavoritedResponse) DeepEqual(ano *UserTotalFavoritedResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Base) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.TotalFavorited) {
+		return false
+	}
+	return true
+}
+
+func (p *UserTotalFavoritedResponse) Field1DeepEqual(src *BaseResp) bool {
+
+	if !p.Base.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+func (p *UserTotalFavoritedResponse) Field2DeepEqual(src int64) bool {
+
+	if p.TotalFavorited != src {
+		return false
+	}
+	return true
+}
+
+type UserFavoriteCountRequest struct {
+	UserId int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
+	Token  string `thrift:"token,2,required" frugal:"2,required,string" json:"token"`
+}
+
+func NewUserFavoriteCountRequest() *UserFavoriteCountRequest {
+	return &UserFavoriteCountRequest{}
+}
+
+func (p *UserFavoriteCountRequest) InitDefault() {
+	*p = UserFavoriteCountRequest{}
+}
+
+func (p *UserFavoriteCountRequest) GetUserId() (v int64) {
+	return p.UserId
+}
+
+func (p *UserFavoriteCountRequest) GetToken() (v string) {
+	return p.Token
+}
+func (p *UserFavoriteCountRequest) SetUserId(val int64) {
+	p.UserId = val
+}
+func (p *UserFavoriteCountRequest) SetToken(val string) {
+	p.Token = val
+}
+
+var fieldIDToName_UserFavoriteCountRequest = map[int16]string{
+	1: "user_id",
+	2: "token",
+}
+
+func (p *UserFavoriteCountRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetUserId bool = false
+	var issetToken bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUserId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetToken = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetUserId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetToken {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserFavoriteCountRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_UserFavoriteCountRequest[fieldId]))
+}
+
+func (p *UserFavoriteCountRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
+func (p *UserFavoriteCountRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Token = v
+	}
+	return nil
+}
+
+func (p *UserFavoriteCountRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserFavoriteCountRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserFavoriteCountRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserFavoriteCountRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Token); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *UserFavoriteCountRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserFavoriteCountRequest(%+v)", *p)
+}
+
+func (p *UserFavoriteCountRequest) DeepEqual(ano *UserFavoriteCountRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.UserId) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.Token) {
+		return false
+	}
+	return true
+}
+
+func (p *UserFavoriteCountRequest) Field1DeepEqual(src int64) bool {
+
+	if p.UserId != src {
+		return false
+	}
+	return true
+}
+func (p *UserFavoriteCountRequest) Field2DeepEqual(src string) bool {
+
+	if strings.Compare(p.Token, src) != 0 {
+		return false
+	}
+	return true
+}
+
+type UserFavoriteCountResponse struct {
+	Base      *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
+	LikeCount int64     `thrift:"like_count,2,required" frugal:"2,required,i64" json:"like_count"`
+}
+
+func NewUserFavoriteCountResponse() *UserFavoriteCountResponse {
+	return &UserFavoriteCountResponse{}
+}
+
+func (p *UserFavoriteCountResponse) InitDefault() {
+	*p = UserFavoriteCountResponse{}
+}
+
+var UserFavoriteCountResponse_Base_DEFAULT *BaseResp
+
+func (p *UserFavoriteCountResponse) GetBase() (v *BaseResp) {
+	if !p.IsSetBase() {
+		return UserFavoriteCountResponse_Base_DEFAULT
+	}
+	return p.Base
+}
+
+func (p *UserFavoriteCountResponse) GetLikeCount() (v int64) {
+	return p.LikeCount
+}
+func (p *UserFavoriteCountResponse) SetBase(val *BaseResp) {
+	p.Base = val
+}
+func (p *UserFavoriteCountResponse) SetLikeCount(val int64) {
+	p.LikeCount = val
+}
+
+var fieldIDToName_UserFavoriteCountResponse = map[int16]string{
+	1: "base",
+	2: "like_count",
+}
+
+func (p *UserFavoriteCountResponse) IsSetBase() bool {
+	return p.Base != nil
+}
+
+func (p *UserFavoriteCountResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetBase bool = false
+	var issetLikeCount bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetBase = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetLikeCount = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetBase {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetLikeCount {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserFavoriteCountResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_UserFavoriteCountResponse[fieldId]))
+}
+
+func (p *UserFavoriteCountResponse) ReadField1(iprot thrift.TProtocol) error {
+	p.Base = NewBaseResp()
+	if err := p.Base.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *UserFavoriteCountResponse) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.LikeCount = v
+	}
+	return nil
+}
+
+func (p *UserFavoriteCountResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserFavoriteCountResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserFavoriteCountResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("base", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Base.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserFavoriteCountResponse) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("like_count", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.LikeCount); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *UserFavoriteCountResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserFavoriteCountResponse(%+v)", *p)
+}
+
+func (p *UserFavoriteCountResponse) DeepEqual(ano *UserFavoriteCountResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Base) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.LikeCount) {
+		return false
+	}
+	return true
+}
+
+func (p *UserFavoriteCountResponse) Field1DeepEqual(src *BaseResp) bool {
+
+	if !p.Base.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+func (p *UserFavoriteCountResponse) Field2DeepEqual(src int64) bool {
 
 	if p.LikeCount != src {
 		return false
@@ -4464,7 +5432,11 @@ type InteractionService interface {
 
 	FavoriteList(ctx context.Context, req *FavoriteListRequest) (r *FavoriteListResponse, err error)
 
-	FavoriteCount(ctx context.Context, req *FavoriteCountRequest) (r *FavoriteCountResponse, err error)
+	VideoFavoritedCount(ctx context.Context, req *VideoFavoritedCountRequest) (r *VideoFavoritedCountResponse, err error)
+
+	UserFavoriteCount(ctx context.Context, req *UserFavoriteCountRequest) (r *UserFavoriteCountResponse, err error)
+
+	UserTotalFavorited(ctx context.Context, req *UserTotalFavoritedRequest) (r *UserTotalFavoritedResponse, err error)
 
 	CommentAction(ctx context.Context, req *CommentActionRequest) (r *CommentActionResponse, err error)
 
@@ -4517,11 +5489,29 @@ func (p *InteractionServiceClient) FavoriteList(ctx context.Context, req *Favori
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *InteractionServiceClient) FavoriteCount(ctx context.Context, req *FavoriteCountRequest) (r *FavoriteCountResponse, err error) {
-	var _args InteractionServiceFavoriteCountArgs
+func (p *InteractionServiceClient) VideoFavoritedCount(ctx context.Context, req *VideoFavoritedCountRequest) (r *VideoFavoritedCountResponse, err error) {
+	var _args InteractionServiceVideoFavoritedCountArgs
 	_args.Req = req
-	var _result InteractionServiceFavoriteCountResult
-	if err = p.Client_().Call(ctx, "FavoriteCount", &_args, &_result); err != nil {
+	var _result InteractionServiceVideoFavoritedCountResult
+	if err = p.Client_().Call(ctx, "VideoFavoritedCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *InteractionServiceClient) UserFavoriteCount(ctx context.Context, req *UserFavoriteCountRequest) (r *UserFavoriteCountResponse, err error) {
+	var _args InteractionServiceUserFavoriteCountArgs
+	_args.Req = req
+	var _result InteractionServiceUserFavoriteCountResult
+	if err = p.Client_().Call(ctx, "UserFavoriteCount", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *InteractionServiceClient) UserTotalFavorited(ctx context.Context, req *UserTotalFavoritedRequest) (r *UserTotalFavoritedResponse, err error) {
+	var _args InteractionServiceUserTotalFavoritedArgs
+	_args.Req = req
+	var _result InteractionServiceUserTotalFavoritedResult
+	if err = p.Client_().Call(ctx, "UserTotalFavorited", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -4576,7 +5566,9 @@ func NewInteractionServiceProcessor(handler InteractionService) *InteractionServ
 	self := &InteractionServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
 	self.AddToProcessorMap("FavoriteAction", &interactionServiceProcessorFavoriteAction{handler: handler})
 	self.AddToProcessorMap("FavoriteList", &interactionServiceProcessorFavoriteList{handler: handler})
-	self.AddToProcessorMap("FavoriteCount", &interactionServiceProcessorFavoriteCount{handler: handler})
+	self.AddToProcessorMap("VideoFavoritedCount", &interactionServiceProcessorVideoFavoritedCount{handler: handler})
+	self.AddToProcessorMap("UserFavoriteCount", &interactionServiceProcessorUserFavoriteCount{handler: handler})
+	self.AddToProcessorMap("UserTotalFavorited", &interactionServiceProcessorUserTotalFavorited{handler: handler})
 	self.AddToProcessorMap("CommentAction", &interactionServiceProcessorCommentAction{handler: handler})
 	self.AddToProcessorMap("CommentList", &interactionServiceProcessorCommentList{handler: handler})
 	self.AddToProcessorMap("CommentCount", &interactionServiceProcessorCommentCount{handler: handler})
@@ -4696,16 +5688,16 @@ func (p *interactionServiceProcessorFavoriteList) Process(ctx context.Context, s
 	return true, err
 }
 
-type interactionServiceProcessorFavoriteCount struct {
+type interactionServiceProcessorVideoFavoritedCount struct {
 	handler InteractionService
 }
 
-func (p *interactionServiceProcessorFavoriteCount) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := InteractionServiceFavoriteCountArgs{}
+func (p *interactionServiceProcessorVideoFavoritedCount) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := InteractionServiceVideoFavoritedCountArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-		oprot.WriteMessageBegin("FavoriteCount", thrift.EXCEPTION, seqId)
+		oprot.WriteMessageBegin("VideoFavoritedCount", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -4714,11 +5706,11 @@ func (p *interactionServiceProcessorFavoriteCount) Process(ctx context.Context, 
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := InteractionServiceFavoriteCountResult{}
-	var retval *FavoriteCountResponse
-	if retval, err2 = p.handler.FavoriteCount(ctx, args.Req); err2 != nil {
-		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FavoriteCount: "+err2.Error())
-		oprot.WriteMessageBegin("FavoriteCount", thrift.EXCEPTION, seqId)
+	result := InteractionServiceVideoFavoritedCountResult{}
+	var retval *VideoFavoritedCountResponse
+	if retval, err2 = p.handler.VideoFavoritedCount(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing VideoFavoritedCount: "+err2.Error())
+		oprot.WriteMessageBegin("VideoFavoritedCount", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -4726,7 +5718,103 @@ func (p *interactionServiceProcessorFavoriteCount) Process(ctx context.Context, 
 	} else {
 		result.Success = retval
 	}
-	if err2 = oprot.WriteMessageBegin("FavoriteCount", thrift.REPLY, seqId); err2 != nil {
+	if err2 = oprot.WriteMessageBegin("VideoFavoritedCount", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type interactionServiceProcessorUserFavoriteCount struct {
+	handler InteractionService
+}
+
+func (p *interactionServiceProcessorUserFavoriteCount) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := InteractionServiceUserFavoriteCountArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("UserFavoriteCount", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := InteractionServiceUserFavoriteCountResult{}
+	var retval *UserFavoriteCountResponse
+	if retval, err2 = p.handler.UserFavoriteCount(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing UserFavoriteCount: "+err2.Error())
+		oprot.WriteMessageBegin("UserFavoriteCount", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("UserFavoriteCount", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type interactionServiceProcessorUserTotalFavorited struct {
+	handler InteractionService
+}
+
+func (p *interactionServiceProcessorUserTotalFavorited) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := InteractionServiceUserTotalFavoritedArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("UserTotalFavorited", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := InteractionServiceUserTotalFavoritedResult{}
+	var retval *UserTotalFavoritedResponse
+	if retval, err2 = p.handler.UserTotalFavorited(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing UserTotalFavorited: "+err2.Error())
+		oprot.WriteMessageBegin("UserTotalFavorited", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("UserTotalFavorited", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -5580,39 +6668,39 @@ func (p *InteractionServiceFavoriteListResult) Field0DeepEqual(src *FavoriteList
 	return true
 }
 
-type InteractionServiceFavoriteCountArgs struct {
-	Req *FavoriteCountRequest `thrift:"req,1" frugal:"1,default,FavoriteCountRequest" json:"req"`
+type InteractionServiceVideoFavoritedCountArgs struct {
+	Req *VideoFavoritedCountRequest `thrift:"req,1" frugal:"1,default,VideoFavoritedCountRequest" json:"req"`
 }
 
-func NewInteractionServiceFavoriteCountArgs() *InteractionServiceFavoriteCountArgs {
-	return &InteractionServiceFavoriteCountArgs{}
+func NewInteractionServiceVideoFavoritedCountArgs() *InteractionServiceVideoFavoritedCountArgs {
+	return &InteractionServiceVideoFavoritedCountArgs{}
 }
 
-func (p *InteractionServiceFavoriteCountArgs) InitDefault() {
-	*p = InteractionServiceFavoriteCountArgs{}
+func (p *InteractionServiceVideoFavoritedCountArgs) InitDefault() {
+	*p = InteractionServiceVideoFavoritedCountArgs{}
 }
 
-var InteractionServiceFavoriteCountArgs_Req_DEFAULT *FavoriteCountRequest
+var InteractionServiceVideoFavoritedCountArgs_Req_DEFAULT *VideoFavoritedCountRequest
 
-func (p *InteractionServiceFavoriteCountArgs) GetReq() (v *FavoriteCountRequest) {
+func (p *InteractionServiceVideoFavoritedCountArgs) GetReq() (v *VideoFavoritedCountRequest) {
 	if !p.IsSetReq() {
-		return InteractionServiceFavoriteCountArgs_Req_DEFAULT
+		return InteractionServiceVideoFavoritedCountArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *InteractionServiceFavoriteCountArgs) SetReq(val *FavoriteCountRequest) {
+func (p *InteractionServiceVideoFavoritedCountArgs) SetReq(val *VideoFavoritedCountRequest) {
 	p.Req = val
 }
 
-var fieldIDToName_InteractionServiceFavoriteCountArgs = map[int16]string{
+var fieldIDToName_InteractionServiceVideoFavoritedCountArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *InteractionServiceFavoriteCountArgs) IsSetReq() bool {
+func (p *InteractionServiceVideoFavoritedCountArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *InteractionServiceFavoriteCountArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractionServiceVideoFavoritedCountArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -5661,7 +6749,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceFavoriteCountArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceVideoFavoritedCountArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -5671,17 +6759,17 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteCountArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewFavoriteCountRequest()
+func (p *InteractionServiceVideoFavoritedCountArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewVideoFavoritedCountRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p *InteractionServiceFavoriteCountArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractionServiceVideoFavoritedCountArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("FavoriteCount_args"); err != nil {
+	if err = oprot.WriteStructBegin("VideoFavoritedCount_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -5708,7 +6796,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteCountArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *InteractionServiceVideoFavoritedCountArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -5725,14 +6813,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteCountArgs) String() string {
+func (p *InteractionServiceVideoFavoritedCountArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceFavoriteCountArgs(%+v)", *p)
+	return fmt.Sprintf("InteractionServiceVideoFavoritedCountArgs(%+v)", *p)
 }
 
-func (p *InteractionServiceFavoriteCountArgs) DeepEqual(ano *InteractionServiceFavoriteCountArgs) bool {
+func (p *InteractionServiceVideoFavoritedCountArgs) DeepEqual(ano *InteractionServiceVideoFavoritedCountArgs) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -5744,7 +6832,7 @@ func (p *InteractionServiceFavoriteCountArgs) DeepEqual(ano *InteractionServiceF
 	return true
 }
 
-func (p *InteractionServiceFavoriteCountArgs) Field1DeepEqual(src *FavoriteCountRequest) bool {
+func (p *InteractionServiceVideoFavoritedCountArgs) Field1DeepEqual(src *VideoFavoritedCountRequest) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -5752,39 +6840,39 @@ func (p *InteractionServiceFavoriteCountArgs) Field1DeepEqual(src *FavoriteCount
 	return true
 }
 
-type InteractionServiceFavoriteCountResult struct {
-	Success *FavoriteCountResponse `thrift:"success,0,optional" frugal:"0,optional,FavoriteCountResponse" json:"success,omitempty"`
+type InteractionServiceVideoFavoritedCountResult struct {
+	Success *VideoFavoritedCountResponse `thrift:"success,0,optional" frugal:"0,optional,VideoFavoritedCountResponse" json:"success,omitempty"`
 }
 
-func NewInteractionServiceFavoriteCountResult() *InteractionServiceFavoriteCountResult {
-	return &InteractionServiceFavoriteCountResult{}
+func NewInteractionServiceVideoFavoritedCountResult() *InteractionServiceVideoFavoritedCountResult {
+	return &InteractionServiceVideoFavoritedCountResult{}
 }
 
-func (p *InteractionServiceFavoriteCountResult) InitDefault() {
-	*p = InteractionServiceFavoriteCountResult{}
+func (p *InteractionServiceVideoFavoritedCountResult) InitDefault() {
+	*p = InteractionServiceVideoFavoritedCountResult{}
 }
 
-var InteractionServiceFavoriteCountResult_Success_DEFAULT *FavoriteCountResponse
+var InteractionServiceVideoFavoritedCountResult_Success_DEFAULT *VideoFavoritedCountResponse
 
-func (p *InteractionServiceFavoriteCountResult) GetSuccess() (v *FavoriteCountResponse) {
+func (p *InteractionServiceVideoFavoritedCountResult) GetSuccess() (v *VideoFavoritedCountResponse) {
 	if !p.IsSetSuccess() {
-		return InteractionServiceFavoriteCountResult_Success_DEFAULT
+		return InteractionServiceVideoFavoritedCountResult_Success_DEFAULT
 	}
 	return p.Success
 }
-func (p *InteractionServiceFavoriteCountResult) SetSuccess(x interface{}) {
-	p.Success = x.(*FavoriteCountResponse)
+func (p *InteractionServiceVideoFavoritedCountResult) SetSuccess(x interface{}) {
+	p.Success = x.(*VideoFavoritedCountResponse)
 }
 
-var fieldIDToName_InteractionServiceFavoriteCountResult = map[int16]string{
+var fieldIDToName_InteractionServiceVideoFavoritedCountResult = map[int16]string{
 	0: "success",
 }
 
-func (p *InteractionServiceFavoriteCountResult) IsSetSuccess() bool {
+func (p *InteractionServiceVideoFavoritedCountResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *InteractionServiceFavoriteCountResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *InteractionServiceVideoFavoritedCountResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -5833,7 +6921,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceFavoriteCountResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceVideoFavoritedCountResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -5843,17 +6931,17 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteCountResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewFavoriteCountResponse()
+func (p *InteractionServiceVideoFavoritedCountResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewVideoFavoritedCountResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p *InteractionServiceFavoriteCountResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *InteractionServiceVideoFavoritedCountResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("FavoriteCount_result"); err != nil {
+	if err = oprot.WriteStructBegin("VideoFavoritedCount_result"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -5880,7 +6968,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteCountResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *InteractionServiceVideoFavoritedCountResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -5899,14 +6987,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *InteractionServiceFavoriteCountResult) String() string {
+func (p *InteractionServiceVideoFavoritedCountResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InteractionServiceFavoriteCountResult(%+v)", *p)
+	return fmt.Sprintf("InteractionServiceVideoFavoritedCountResult(%+v)", *p)
 }
 
-func (p *InteractionServiceFavoriteCountResult) DeepEqual(ano *InteractionServiceFavoriteCountResult) bool {
+func (p *InteractionServiceVideoFavoritedCountResult) DeepEqual(ano *InteractionServiceVideoFavoritedCountResult) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -5918,7 +7006,699 @@ func (p *InteractionServiceFavoriteCountResult) DeepEqual(ano *InteractionServic
 	return true
 }
 
-func (p *InteractionServiceFavoriteCountResult) Field0DeepEqual(src *FavoriteCountResponse) bool {
+func (p *InteractionServiceVideoFavoritedCountResult) Field0DeepEqual(src *VideoFavoritedCountResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type InteractionServiceUserFavoriteCountArgs struct {
+	Req *UserFavoriteCountRequest `thrift:"req,1" frugal:"1,default,UserFavoriteCountRequest" json:"req"`
+}
+
+func NewInteractionServiceUserFavoriteCountArgs() *InteractionServiceUserFavoriteCountArgs {
+	return &InteractionServiceUserFavoriteCountArgs{}
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) InitDefault() {
+	*p = InteractionServiceUserFavoriteCountArgs{}
+}
+
+var InteractionServiceUserFavoriteCountArgs_Req_DEFAULT *UserFavoriteCountRequest
+
+func (p *InteractionServiceUserFavoriteCountArgs) GetReq() (v *UserFavoriteCountRequest) {
+	if !p.IsSetReq() {
+		return InteractionServiceUserFavoriteCountArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *InteractionServiceUserFavoriteCountArgs) SetReq(val *UserFavoriteCountRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_InteractionServiceUserFavoriteCountArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceUserFavoriteCountArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewUserFavoriteCountRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserFavoriteCount_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("InteractionServiceUserFavoriteCountArgs(%+v)", *p)
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) DeepEqual(ano *InteractionServiceUserFavoriteCountArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *InteractionServiceUserFavoriteCountArgs) Field1DeepEqual(src *UserFavoriteCountRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type InteractionServiceUserFavoriteCountResult struct {
+	Success *UserFavoriteCountResponse `thrift:"success,0,optional" frugal:"0,optional,UserFavoriteCountResponse" json:"success,omitempty"`
+}
+
+func NewInteractionServiceUserFavoriteCountResult() *InteractionServiceUserFavoriteCountResult {
+	return &InteractionServiceUserFavoriteCountResult{}
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) InitDefault() {
+	*p = InteractionServiceUserFavoriteCountResult{}
+}
+
+var InteractionServiceUserFavoriteCountResult_Success_DEFAULT *UserFavoriteCountResponse
+
+func (p *InteractionServiceUserFavoriteCountResult) GetSuccess() (v *UserFavoriteCountResponse) {
+	if !p.IsSetSuccess() {
+		return InteractionServiceUserFavoriteCountResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *InteractionServiceUserFavoriteCountResult) SetSuccess(x interface{}) {
+	p.Success = x.(*UserFavoriteCountResponse)
+}
+
+var fieldIDToName_InteractionServiceUserFavoriteCountResult = map[int16]string{
+	0: "success",
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceUserFavoriteCountResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewUserFavoriteCountResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserFavoriteCount_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("InteractionServiceUserFavoriteCountResult(%+v)", *p)
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) DeepEqual(ano *InteractionServiceUserFavoriteCountResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *InteractionServiceUserFavoriteCountResult) Field0DeepEqual(src *UserFavoriteCountResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type InteractionServiceUserTotalFavoritedArgs struct {
+	Req *UserTotalFavoritedRequest `thrift:"req,1" frugal:"1,default,UserTotalFavoritedRequest" json:"req"`
+}
+
+func NewInteractionServiceUserTotalFavoritedArgs() *InteractionServiceUserTotalFavoritedArgs {
+	return &InteractionServiceUserTotalFavoritedArgs{}
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) InitDefault() {
+	*p = InteractionServiceUserTotalFavoritedArgs{}
+}
+
+var InteractionServiceUserTotalFavoritedArgs_Req_DEFAULT *UserTotalFavoritedRequest
+
+func (p *InteractionServiceUserTotalFavoritedArgs) GetReq() (v *UserTotalFavoritedRequest) {
+	if !p.IsSetReq() {
+		return InteractionServiceUserTotalFavoritedArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *InteractionServiceUserTotalFavoritedArgs) SetReq(val *UserTotalFavoritedRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_InteractionServiceUserTotalFavoritedArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceUserTotalFavoritedArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewUserTotalFavoritedRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserTotalFavorited_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("InteractionServiceUserTotalFavoritedArgs(%+v)", *p)
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) DeepEqual(ano *InteractionServiceUserTotalFavoritedArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *InteractionServiceUserTotalFavoritedArgs) Field1DeepEqual(src *UserTotalFavoritedRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type InteractionServiceUserTotalFavoritedResult struct {
+	Success *UserTotalFavoritedResponse `thrift:"success,0,optional" frugal:"0,optional,UserTotalFavoritedResponse" json:"success,omitempty"`
+}
+
+func NewInteractionServiceUserTotalFavoritedResult() *InteractionServiceUserTotalFavoritedResult {
+	return &InteractionServiceUserTotalFavoritedResult{}
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) InitDefault() {
+	*p = InteractionServiceUserTotalFavoritedResult{}
+}
+
+var InteractionServiceUserTotalFavoritedResult_Success_DEFAULT *UserTotalFavoritedResponse
+
+func (p *InteractionServiceUserTotalFavoritedResult) GetSuccess() (v *UserTotalFavoritedResponse) {
+	if !p.IsSetSuccess() {
+		return InteractionServiceUserTotalFavoritedResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *InteractionServiceUserTotalFavoritedResult) SetSuccess(x interface{}) {
+	p.Success = x.(*UserTotalFavoritedResponse)
+}
+
+var fieldIDToName_InteractionServiceUserTotalFavoritedResult = map[int16]string{
+	0: "success",
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InteractionServiceUserTotalFavoritedResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewUserTotalFavoritedResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserTotalFavorited_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("InteractionServiceUserTotalFavoritedResult(%+v)", *p)
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) DeepEqual(ano *InteractionServiceUserTotalFavoritedResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *InteractionServiceUserTotalFavoritedResult) Field0DeepEqual(src *UserTotalFavoritedResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

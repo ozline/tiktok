@@ -2,9 +2,10 @@ package sensitive_words
 
 import (
 	"bufio"
-	"github.com/cloudwego/kitex/pkg/klog"
 	"io"
 	"os"
+
+	"github.com/cloudwego/kitex/pkg/klog"
 
 	"github.com/ozline/tiktok/pkg/utils"
 )

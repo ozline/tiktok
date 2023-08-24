@@ -27,7 +27,6 @@ func benchmarkCommentCount(b *testing.B) {
 	}
 
 	for i := 0; i < b.N; i++ {
-
 		_, err := interactionService.CountComments(req)
 		if err != nil {
 			b.Error(err)

@@ -19,4 +19,8 @@ var (
 	NotImplementError       = NewErrNo(NotImplementErrorCode, "not implement")
 	SensitiveWordsError     = NewErrNo(SensitiveWordsErrorCode, "existed sensitive words")
 	SensitiveWordsHTTPError = NewErrNo(ServiceErrorCode, "sensitive-words api error")
+
+	// Favorite
+	LikeNoExistError      = NewErrNo(LikeNoExistErrorCode, "you did not like the video")
+	LikeAlreadyExistError = NewErrNo(LikeAlreadyExistErrorCode, "you already like the video")
 )

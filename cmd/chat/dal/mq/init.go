@@ -35,7 +35,6 @@ type RabbitMQ struct {
 var Rmq *RabbitMQ
 
 func InitRabbitMQ() {
-
 	Rmq = &RabbitMQ{
 		mqurl: utils.GetMQUrl(),
 	}

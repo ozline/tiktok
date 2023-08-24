@@ -29,8 +29,6 @@ type MiddleMessage struct {
 type MessageArray []*Message
 
 func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, bool, error) {
-	//mysql
-
 	messageListFormMysql := make([]*Message, 0)
 	err := DB.WithContext(ctx).
 		Where("(to_user_id=? AND from_user_id =?) OR (to_user_id=? AND from_user_id =?) ", to_user_id, from_user_id, from_user_id, to_user_id).
@@ -44,7 +42,7 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		}
 		return nil, false, err
 	}
-	//回写redis --先返回信息，然后送到mq进行异步处理
+	// 回写redis --先返回信息，然后送到mq进行异步处理
 	return messageListFormMysql, true, nil
 }
 

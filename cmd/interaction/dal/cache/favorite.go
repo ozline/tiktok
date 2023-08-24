@@ -7,45 +7,43 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
-func IsVideoLikeExist(ctx context.Context, videoId int64, userId int64) (bool, error) {
-	exist, err := RedisClient.SIsMember(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Result()
+func IsVideoLikeExist(ctx context.Context, videoID int64, userID int64) (bool, error) {
+	exist, err := RedisClient.SIsMember(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Result()
 	if err != nil {
-		return false, err
+		klog.Infof("err: %v", err)
+		return exist, err
 	}
-	if !exist {
-		return false, nil
-	}
-	return true, nil
+	return exist, nil
 }
 
-func AddVideoLikeCount(ctx context.Context, videoId int64, userId int64) error {
+func AddVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
 	// add video like
-	if err := RedisClient.SAdd(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Err(); err != nil {
+	if err := RedisClient.SAdd(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
 	// add user like
-	if err := RedisClient.SAdd(ctx, GetUserKey(userId), strconv.FormatInt(videoId, 10)).Err(); err != nil {
+	if err := RedisClient.SAdd(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
 	return nil
 }
 
-func ReduceVideoLikeCount(ctx context.Context, videoId int64, userId int64) error {
+func ReduceVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
 	// unlike the video
-	if err := RedisClient.SRem(ctx, GetVideoKey(videoId), strconv.FormatInt(userId, 10)).Err(); err != nil {
+	if err := RedisClient.SRem(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
-	if err := RedisClient.SRem(ctx, GetUserKey(userId), strconv.FormatInt(videoId, 10)).Err(); err != nil {
+	if err := RedisClient.SRem(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 	}
 	return nil
 }
 
-func GetVideoLikeCount(ctx context.Context, videoId int64) (int64, error) {
-	count, err := RedisClient.SCard(ctx, GetVideoKey(videoId)).Result()
+func GetVideoLikeCount(ctx context.Context, videoID int64) (int64, error) {
+	count, err := RedisClient.SCard(ctx, GetVideoKey(videoID)).Result()
 	if err != nil {
 		klog.Infof("err: %v", err)
 		return 0, err
@@ -53,30 +51,38 @@ func GetVideoLikeCount(ctx context.Context, videoId int64) (int64, error) {
 	return count, nil
 }
 
-func GetUserFavoriteVideos(ctx context.Context, userId int64) ([]int64, error) {
-	items, err := RedisClient.SMembers(ctx, GetUserKey(userId)).Result()
+func GetUserFavoriteVideos(ctx context.Context, userID int64) ([]int64, error) {
+	items, err := RedisClient.SMembers(ctx, GetUserKey(userID)).Result()
 	if err != nil {
 		klog.Infof("err: %v", err)
 		return nil, err
 	}
 
-	//get favorite video id list
-	videoIdList := make([]int64, 10)
+	// get favorite video id list
+	videoIDList := make([]int64, 0, 10)
 	for _, item := range items {
-		videoId, err := strconv.ParseInt(item, 10, 64)
-		if err != nil {
-			klog.Infof("parseInt err")
-			return nil, err
-		}
-		videoIdList = append(videoIdList, videoId)
+		videoId, _ := strconv.ParseInt(item, 10, 64)
+		videoIDList = append(videoIDList, videoId)
 	}
-	return videoIdList, nil
+	return videoIDList, nil
 }
 
-func UpdateFavoriteVideoList(ctx context.Context, userId int64, videoIdList []int64) error {
-	err := RedisClient.SAdd(ctx, GetUserKey(userId), videoIdList).Err()
-	if err != nil {
-		return err
+func UpdateFavoriteVideoList(ctx context.Context, userID int64, videoIDList []int64) error {
+	var err error
+	for _, videoID := range videoIDList {
+		err = RedisClient.SAdd(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err()
+		if err != nil {
+			klog.Infof("err: %v", err)
+		}
 	}
-	return nil
+	return err
+}
+
+func GetUserFavoriteCount(ctx context.Context, userID int64) (int64, error) {
+	count, err := RedisClient.SCard(ctx, GetUserKey(userID)).Result()
+	if err != nil {
+		klog.Infof("err: %v", err)
+		return 0, err
+	}
+	return count, nil
 }

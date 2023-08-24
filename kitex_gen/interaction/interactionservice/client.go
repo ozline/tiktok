@@ -13,7 +13,9 @@ import (
 type Client interface {
 	FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest, callOptions ...callopt.Option) (r *interaction.FavoriteActionResponse, err error)
 	FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest, callOptions ...callopt.Option) (r *interaction.FavoriteListResponse, err error)
-	FavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest, callOptions ...callopt.Option) (r *interaction.FavoriteCountResponse, err error)
+	VideoFavoritedCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest, callOptions ...callopt.Option) (r *interaction.VideoFavoritedCountResponse, err error)
+	UserFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountRequest, callOptions ...callopt.Option) (r *interaction.UserFavoriteCountResponse, err error)
+	UserTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest, callOptions ...callopt.Option) (r *interaction.UserTotalFavoritedResponse, err error)
 	CommentAction(ctx context.Context, req *interaction.CommentActionRequest, callOptions ...callopt.Option) (r *interaction.CommentActionResponse, err error)
 	CommentList(ctx context.Context, req *interaction.CommentListRequest, callOptions ...callopt.Option) (r *interaction.CommentListResponse, err error)
 	CommentCount(ctx context.Context, req *interaction.CommentCountRequest, callOptions ...callopt.Option) (r *interaction.CommentCountResponse, err error)
@@ -58,9 +60,19 @@ func (p *kInteractionServiceClient) FavoriteList(ctx context.Context, req *inter
 	return p.kClient.FavoriteList(ctx, req)
 }
 
-func (p *kInteractionServiceClient) FavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest, callOptions ...callopt.Option) (r *interaction.FavoriteCountResponse, err error) {
+func (p *kInteractionServiceClient) VideoFavoritedCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest, callOptions ...callopt.Option) (r *interaction.VideoFavoritedCountResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.FavoriteCount(ctx, req)
+	return p.kClient.VideoFavoritedCount(ctx, req)
+}
+
+func (p *kInteractionServiceClient) UserFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountRequest, callOptions ...callopt.Option) (r *interaction.UserFavoriteCountResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UserFavoriteCount(ctx, req)
+}
+
+func (p *kInteractionServiceClient) UserTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest, callOptions ...callopt.Option) (r *interaction.UserTotalFavoritedResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UserTotalFavorited(ctx, req)
 }
 
 func (p *kInteractionServiceClient) CommentAction(ctx context.Context, req *interaction.CommentActionRequest, callOptions ...callopt.Option) (r *interaction.CommentActionResponse, err error) {

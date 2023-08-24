@@ -25,7 +25,6 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 func TestMainOrder(t *testing.T) {
-
 	t.Run("rpc", testRpc)
 
 	t.Run("get_message", testGetMessage)
@@ -38,7 +37,6 @@ func TestMainOrder(t *testing.T) {
 }
 
 func BenchmarkMainOrder(b *testing.B) {
-
 	b.Run("get_post_message", benchmarkGetAndPostMessage)
 
 	b.Run("post_message", benchmarkPostMessage)

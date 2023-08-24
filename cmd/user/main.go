@@ -33,7 +33,6 @@ func Init() {
 	// others
 	dal.Init()
 	tracer.InitJaeger(constants.UserServiceName)
-
 }
 
 func main() {

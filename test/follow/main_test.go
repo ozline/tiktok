@@ -52,7 +52,6 @@ func TestMainOrder(t *testing.T) {
 }
 
 func BenchmarkMainOrder(b *testing.B) {
-
 	b.Run("action", benchmarkAction)
 
 	b.Run("followList", benchmarkFollowList)

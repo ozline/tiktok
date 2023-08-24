@@ -4,10 +4,10 @@ import "fmt"
 
 var keyPattern = "%s::%d"
 
-func GetVideoKey(videoId int64) string {
-	return fmt.Sprintf(keyPattern, "like", videoId)
+func GetVideoKey(videoID int64) string {
+	return fmt.Sprintf(keyPattern, "favorited", videoID)
 }
 
-func GetUserKey(userId int64) string {
-	return fmt.Sprintf(keyPattern, "like", userId)
+func GetUserKey(userID int64) string {
+	return fmt.Sprintf(keyPattern, "favorite", userID)
 }
