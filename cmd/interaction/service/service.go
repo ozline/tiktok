@@ -6,7 +6,7 @@ type InteractionService struct {
 	ctx context.Context
 }
 
-// NewinteractionService new interactionService
+// NewInteractionService new interactionService
 func NewInteractionService(ctx context.Context) *InteractionService {
 	return &InteractionService{ctx: ctx}
 }

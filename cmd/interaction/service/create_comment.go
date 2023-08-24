@@ -25,12 +25,12 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 
 	errs := make([]error, 4)
 	comment := new(db.Comment)
-	var err error
+	var err1 error
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		comment, err = db.CreateComment(s.ctx, commentModel)
-		errs[0] = err
+		comment, err1 = db.CreateComment(s.ctx, commentModel)
+		errs[0] = err1
 	}()
 
 	key := strconv.FormatInt(req.VideoId, 10)
@@ -43,24 +43,25 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 			return
 		}
 		if exist == 1 {
-			err = cache.DeleteComments(s.ctx, key)
+			err := cache.DeleteComments(s.ctx, key)
 			errs[2] = err
 		}
 	}()
 
 	userInfo := new(user.User)
 	wg.Add(1)
+	var err2 error
 	go func() {
 		defer wg.Done()
-		userInfo, err = rpc.UserInfo(s.ctx, &user.InfoRequest{
+		userInfo, err2 = rpc.UserInfo(s.ctx, &user.InfoRequest{
 			UserId: userId,
 			Token:  req.Token,
 		})
-		errs[3] = err
+		errs[3] = err2
 	}()
 	wg.Wait()
 
-	for _, err = range errs {
+	for _, err := range errs {
 		if err != nil {
 			return nil, err
 		}
