@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/pkg/loadbalance"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
@@ -14,6 +15,8 @@ import (
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/middleware"
 )
+
+// TODO: 此处是与互动接口的微服务通信, 以获取user的一些信息, 具体可以看dal/db/user.go中的叙述
 
 func InitInteractionRPC() {
 	r, err := etcd.NewEtcdResolver([]string{config.Etcd.Addr})
@@ -30,7 +33,8 @@ func InitInteractionRPC() {
 		client.WithConnectTimeout(constants.ConnectTimeout),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),
-		client.WithSuite(trace.NewDefaultClientSuite()), // 设置链路追踪
+		client.WithSuite(trace.NewDefaultClientSuite()),
+		client.WithLoadBalancer(loadbalance.NewWeightedRoundRobinBalancer()),
 	)
 
 	if err != nil {
@@ -39,28 +43,31 @@ func InitInteractionRPC() {
 
 	interactionClient = c
 }
-func GetVideoFavoriteCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest) (favoriteCount int64, err error) {
-	resp, err := interactionClient.VideoFavoritedCount(ctx, req)
+
+func GetFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountRequest) (int64, error) {
+	resp, err := interactionClient.UserFavoriteCount(ctx, req)
 
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return 0, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return -1, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
 	}
 
 	return resp.LikeCount, nil
 }
-func GetCommentCount(ctx context.Context, req *interaction.CommentCountRequest) (commentCount int64, err error) {
-	resp, err := interactionClient.CommentCount(ctx, req)
+
+func GetTotalFavorited(ctx context.Context, req *interaction.VideoFavoritedCountRequest) (int64, error) {
+	resp, err := interactionClient.VideoFavoritedCount(ctx, req)
 
 	if err != nil {
-		return 0, err
-	}
-	if resp.Base.Code != errno.SuccessCode {
-		return 0, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return -1, err
 	}
 
-	return resp.CommentCount, nil
+	if resp.Base.Code != errno.SuccessCode {
+		return -1, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+	}
+
+	return resp.LikeCount, nil
 }

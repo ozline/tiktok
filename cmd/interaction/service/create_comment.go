@@ -16,7 +16,6 @@ import (
 
 // CreateComment create comment
 func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest, userId int64) (*interaction.Comment, error) {
-
 	var wg sync.WaitGroup
 	commentModel := &db.Comment{
 		VideoId: req.VideoId,

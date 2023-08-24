@@ -72,7 +72,7 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 		if videoName == "" {
 			videoName = pack.GenerateVideoName(req.UserId)
 		}
-		if !req.IsFinished { //上传一部分视频
+		if !req.IsFinished { // 上传一部分视频
 			nextPos, err = service.NewVideoService(stream.Context()).UploadVideo(req, videoName, nextPos)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
@@ -86,8 +86,8 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			if err != nil {
 				return err
 			}
-		} else { //当视频全部上传完成后，开始封面的上传和持久化处理
-			//上传封面
+		} else { // 当视频全部上传完成后，开始封面的上传和持久化处理
+			// 上传封面
 			err = service.NewVideoService(stream.Context()).UploadCover(req, coverName)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
@@ -95,7 +95,7 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 				err = stream.Send(resp)
 				return err
 			}
-			//保存到数据库
+			// 保存到数据库
 			playURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
 			coverURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
 			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playURL, coverURL)
@@ -111,13 +111,12 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			if err = stream.Send(resp); err != nil {
 				return err
 			}
-			//结束循环停止接收
+			// 结束循环停止接收
 			break
 		}
 	}
 	stream.Close()
-
-	return
+	return err
 }
 
 // GetFavoriteVideoInfo implements the VideoServiceImpl interface.

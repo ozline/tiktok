@@ -38,6 +38,6 @@ func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userId
 	if err != nil {
 		return err
 	}
-	//exist
+	// exist
 	return db.UpdateFavoriteStatus(s.ctx, userId, req.VideoId, 1)
 }

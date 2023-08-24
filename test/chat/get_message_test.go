@@ -60,7 +60,6 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 				b.Error(err)
 				b.Fail()
 			}
-
 		}
 	}
 }

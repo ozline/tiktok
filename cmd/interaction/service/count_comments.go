@@ -1,10 +1,11 @@
 package service
 
 import (
+	"strconv"
+
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
-	"strconv"
 )
 
 func (s *InteractionService) CountComments(req *interaction.CommentCountRequest) (count int64, err error) {

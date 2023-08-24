@@ -10,7 +10,6 @@ import (
 )
 
 func (c *ChatService) SendMessage(req *chat.MessagePostRequest) error {
-
 	if len(req.Content) == 0 || len(req.Content) > 1000 {
 		return errors.New("character limit error")
 	}

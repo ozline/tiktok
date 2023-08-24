@@ -51,8 +51,7 @@ func benchmarkCommentAction(b *testing.B) {
 	}
 
 	for i := 0; i < b.N; i++ {
-		//interactionService.MatchSensitiveWords(commentText)
-
+		// interactionService.MatchSensitiveWords(commentText)
 		resp, _ := interactionService.CreateComment(req, userId)
 
 		commentId = resp.Id
@@ -61,6 +60,5 @@ func benchmarkCommentAction(b *testing.B) {
 		if err != nil {
 			b.Error(err)
 		}
-
 	}
 }

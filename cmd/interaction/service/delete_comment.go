@@ -1,11 +1,12 @@
 package service
 
 import (
+	"strconv"
+	"sync"
+
 	"github.com/ozline/tiktok/cmd/interaction/pack"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/kitex_gen/user"
-	"strconv"
-	"sync"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
@@ -15,7 +16,6 @@ import (
 
 // DeleteComment delete comment
 func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest, userId int64) (*interaction.Comment, error) {
-
 	var wg sync.WaitGroup
 	comment, err := db.GetCommentByID(s.ctx, *req.CommentId)
 	if err != nil {

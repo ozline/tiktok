@@ -16,7 +16,6 @@ import (
 )
 
 func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([]*interaction.Comment, error) {
-
 	var comments []db.Comment
 	key := strconv.FormatInt(req.VideoId, 10)
 	exist, err := cache.IsExistComment(s.ctx, key)
@@ -38,7 +37,6 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 			comment.CreatedAt = time.Unix(int64(rComment.Score), 0)
 			comments = append(comments, comment)
 		}
-
 	} else {
 		comments, err = db.GetCommentsByVideoID(s.ctx, req.VideoId)
 		if err != nil {
@@ -50,30 +48,13 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 			if err != nil {
 				return nil, err
 			}
-
 		}
 	}
-
 	var wg sync.WaitGroup
-	//users := make(map[int64]int) // 利用map避免重复查询
+	// users := make(map[int64]int) // 利用map避免重复查询
 	commentList := make([]*interaction.Comment, len(comments))
 	errs := make([]error, len(comments))
 	for index, data := range comments {
-
-		//index, ok := users[comment.UserId]
-		//if !ok {
-		//	userInfo, err := rpc.UserInfo(s.ctx, &user.InfoRequest{
-		//		UserId: comment.UserId,
-		//		Token:  req.Token,
-		//	})
-		//	if err != nil {
-		//		return resp, nil
-		//	}
-		//	rComment.User = userInfo
-		//	users[comment.UserId] = commentIndex
-		//} else {
-		//	rComment.User = commentList[index].User
-		//}
 		comment := data
 		commentIndex := index
 		wg.Add(1)

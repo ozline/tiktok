@@ -2,11 +2,11 @@ package service
 
 import "context"
 
-type ChatService struct{
-    ctx context.Context   
+type ChatService struct {
+	ctx context.Context
 }
 
-// NewUserService new UserService
+// NewChatService new ChatService
 func NewChatService(ctx context.Context) *ChatService {
 	return &ChatService{ctx: ctx}
 }

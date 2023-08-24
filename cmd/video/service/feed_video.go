@@ -46,7 +46,7 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 
 	favoriteCountList := make([]int64, len(videoList))
 	for i := 0; i < len(videoList); i++ {
-		favoriteCountList[i], err = rpc.GetFavoriteCount(s.ctx, &interaction.FavoriteCountRequest{
+		favoriteCountList[i], err = rpc.GetVideoFavoriteCount(s.ctx, &interaction.VideoFavoritedCountRequest{
 			VideoId: videoList[i].Id,
 			Token:   req.Token,
 		})
