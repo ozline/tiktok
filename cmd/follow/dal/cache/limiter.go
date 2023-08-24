@@ -10,12 +10,12 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-var (
-	rate     = 100             // 每秒钟最多处理的请求数
-	interval = 1 * time.Second // 限流器的时间间隔
-)
+// var (
+// 	rate     = 100             // 每秒钟最多处理的请求数
+// 	interval = 1 * time.Second // 限流器的时间间隔
+// )
 
-func Limit(ctx context.Context) error {
+func Limit(ctx context.Context, rate int, interval time.Duration) error {
 	key := LimiterKey
 	now := time.Now().UnixNano()
 	// 移除时间戳小于(now - interval)的令牌数
