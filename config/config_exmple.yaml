@@ -58,8 +58,8 @@ services:
     load-balance: false
     addr:
       - 127.0.0.1:10004
-  comment:
-    name: interactive
+  interaction:
+    name: interaction
     load-balance: false
     addr:
       - 127.0.0.1:10005

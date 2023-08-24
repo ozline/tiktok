@@ -16,6 +16,7 @@ type Client interface {
 	VideoFavoritedCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest, callOptions ...callopt.Option) (r *interaction.VideoFavoritedCountResponse, err error)
 	UserFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountRequest, callOptions ...callopt.Option) (r *interaction.UserFavoriteCountResponse, err error)
 	UserTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest, callOptions ...callopt.Option) (r *interaction.UserTotalFavoritedResponse, err error)
+	IsFavorite(ctx context.Context, req *interaction.IsFavoriteRequest, callOptions ...callopt.Option) (r *interaction.IsFavoriteResponse, err error)
 	CommentAction(ctx context.Context, req *interaction.CommentActionRequest, callOptions ...callopt.Option) (r *interaction.CommentActionResponse, err error)
 	CommentList(ctx context.Context, req *interaction.CommentListRequest, callOptions ...callopt.Option) (r *interaction.CommentListResponse, err error)
 	CommentCount(ctx context.Context, req *interaction.CommentCountRequest, callOptions ...callopt.Option) (r *interaction.CommentCountResponse, err error)
@@ -73,6 +74,11 @@ func (p *kInteractionServiceClient) UserFavoriteCount(ctx context.Context, req *
 func (p *kInteractionServiceClient) UserTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest, callOptions ...callopt.Option) (r *interaction.UserTotalFavoritedResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UserTotalFavorited(ctx, req)
+}
+
+func (p *kInteractionServiceClient) IsFavorite(ctx context.Context, req *interaction.IsFavoriteRequest, callOptions ...callopt.Option) (r *interaction.IsFavoriteResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.IsFavorite(ctx, req)
 }
 
 func (p *kInteractionServiceClient) CommentAction(ctx context.Context, req *interaction.CommentActionRequest, callOptions ...callopt.Option) (r *interaction.CommentActionResponse, err error) {
