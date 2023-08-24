@@ -70,10 +70,12 @@ create table tiktok.`message` (
     `id`              bigint          not null,
     `to_user_id`      bigint          not null comment 'target user id',
     `from_user_id`    bigint          not null comment 'user id',
-    `content`         longtext        not null comment 'message content',
+    `content`         varchar(4000)  not null comment 'message content',
     `created_at`      timestamp       not null        default current_timestamp,
     `updated_at`      timestamp       not null        default current_timestamp on update current_timestamp,
     `deleted_at`      timestamp       null            default null,
     constraint `id`
-        primary key (`id`)
+        primary key (`id`),
+        index(`to_user_id`),
+        index(`from_user_id`)
 ) engine=InnoDB default charset=utf8mb4;

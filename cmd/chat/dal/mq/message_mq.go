@@ -41,10 +41,6 @@ func InitMessageMQ() {
 }
 
 func (c *MessageMQ) Publish(ctx context.Context, message string) error {
-<<<<<<< HEAD
-
-=======
->>>>>>> 01ecfd1d625d51bdfac2a2f6327a1a564e580f5b
 	_, err := c.channel.QueueDeclare(
 		c.queueName,
 		// 是否持久化
