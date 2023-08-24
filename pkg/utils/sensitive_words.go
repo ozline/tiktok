@@ -8,8 +8,7 @@ import (
 // TrieNode 敏感词前缀树节点
 type TrieNode struct {
 	childMap map[rune]*TrieNode // 本节点下的所有子节点
-	//Data     string             // 在最后一个节点保存完整的一个内容
-	End bool // 标识是否最后一个节点
+	End      bool               // 标识是否最后一个节点
 }
 
 // SensitiveTrie 敏感词前缀树
@@ -27,7 +26,7 @@ func NewSensitiveTrie() *SensitiveTrie {
 // FilterSpecialChar 过滤特殊字符
 func (st *SensitiveTrie) FilterSpecialChar(text string) string {
 	text = strings.ToLower(text)
-	text = strings.Replace(text, " ", "", -1) // 去除空格
+	text = strings.ReplaceAll(text, " ", "") // 去除空格
 
 	// 过滤除中英文及数字以外的其他字符
 	otherCharReg := regexp.MustCompile("[^\u4e00-\u9fa5a-zA-Z0-9]")
@@ -89,7 +88,6 @@ func (st *SensitiveTrie) Match(text string) bool {
 
 // AddChild 前缀树添加字节点
 func (tn *TrieNode) AddChild(c rune) *TrieNode {
-
 	if tn.childMap == nil {
 		tn.childMap = make(map[rune]*TrieNode)
 	}

@@ -24,7 +24,7 @@ func InitFollowRPC() {
 	}
 
 	c, err := followservice.NewClient(
-		constants.UserServiceName,
+		constants.FollowServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMuxConnection(constants.MuxConnection),
 		client.WithRPCTimeout(constants.RPCTimeout),

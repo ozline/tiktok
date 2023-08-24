@@ -3,9 +3,10 @@ package db
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/ozline/tiktok/pkg/constants"
 	"gorm.io/gorm"
-	"time"
 )
 
 //go:generate msgp -io=false -tests=false
@@ -20,7 +21,6 @@ type Comment struct {
 }
 
 func CreateComment(ctx context.Context, comment *Comment) (*Comment, error) {
-
 	comment.Id = SF.NextVal()
 	if err := DB.Table(constants.CommentTableName).WithContext(ctx).Create(&comment).Error; err != nil {
 		return nil, err
@@ -43,7 +43,6 @@ func GetCommentByID(ctx context.Context, commentId int64) (*Comment, error) {
 	err := DB.Table(constants.CommentTableName).WithContext(ctx).Where("id = ?", commentId).First(&commentResp).Error
 
 	if err != nil {
-
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("comment not found")
 		}

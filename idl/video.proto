@@ -81,9 +81,31 @@ message GetPublishListResponse{
     repeated Video video_list = 2 ;
 }
 
+message GetWorkCountRequest{
+    string token = 1;
+    int64 user_id = 2 ;
+}
+
+message GetWorkCountResponse{
+    BaseResp base = 1;
+    int64 work_count = 2; // 作品数量
+}
+
+message GetVideoIDByUidRequset{
+    string token = 1;
+    int64 user_id = 2 ;
+}
+
+message GetVideoIDByUidResponse{
+    BaseResp base = 1;
+    repeated int64 video_id = 2;
+}
+
 service VideoService {
     rpc Feed(FeedRequest) returns (FeedResponse){};
     rpc PutVideo(stream PutVideoRequest) returns (stream PutVideoResponse){};
     rpc GetFavoriteVideoInfo(GetFavoriteVideoInfoRequest)returns (GetFavoriteVideoInfoResponse){};
     rpc GetPublishList(GetPublishListRequest)returns (GetPublishListResponse){};
+    rpc GetWorkCount(GetWorkCountRequest)returns (GetWorkCountResponse){};
+    rpc GetVideoIDByUid(GetVideoIDByUidRequset) returns (GetVideoIDByUidResponse){};
 }

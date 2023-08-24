@@ -1,10 +1,11 @@
 package main
 
 import (
+	"testing"
+
 	"github.com/cloudwego/kitex/client"
 	"github.com/ozline/tiktok/kitex_gen/interaction/interactionservice"
 	"github.com/ozline/tiktok/pkg/constants"
-	"testing"
 )
 
 func testRPC(t *testing.T) {

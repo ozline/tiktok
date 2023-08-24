@@ -11,7 +11,7 @@ create table tiktok.`user`
     `deleted_at`       timestamp    default null null,
     constraint `id`
         primary key (`id`)
-) engine=InnoDB default charset=utf8mb4;
+) engine=InnoDB auto_increment=10000 default charset=utf8mb4;
 
 create table tiktok.`favorite`
 (

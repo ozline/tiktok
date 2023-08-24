@@ -39,8 +39,8 @@ func InitInteractionRPC() {
 
 	interactionClient = c
 }
-func GetFavoriteCount(ctx context.Context, req *interaction.FavoriteCountRequest) (favoriteCount int64, err error) {
-	resp, err := interactionClient.FavoriteCount(ctx, req)
+func GetVideoFavoriteCount(ctx context.Context, req *interaction.VideoFavoritedCountRequest) (favoriteCount int64, err error) {
+	resp, err := interactionClient.VideoFavoritedCount(ctx, req)
 
 	if err != nil {
 		return 0, err

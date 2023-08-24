@@ -47,7 +47,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 
 func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
 	resp := new(video.PutVideoResponse)
-	//追加位置
+	// 追加位置
 	var nextPos int64
 	var coverName string
 	var videoName string
@@ -72,7 +72,7 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 		if videoName == "" {
 			videoName = pack.GenerateVideoName(req.UserId)
 		}
-		if !req.IsFinished { //上传一部分视频
+		if !req.IsFinished { // 上传一部分视频
 			nextPos, err = service.NewVideoService(stream.Context()).UploadVideo(req, videoName, nextPos)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
@@ -86,8 +86,8 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			if err != nil {
 				return err
 			}
-		} else { //当视频全部上传完成后，开始封面的上传和持久化处理
-			//上传封面
+		} else { // 当视频全部上传完成后，开始封面的上传和持久化处理
+			// 上传封面
 			err = service.NewVideoService(stream.Context()).UploadCover(req, coverName)
 			if err != nil {
 				resp.Base = pack.BuildBaseResp(err)
@@ -95,7 +95,7 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 				err = stream.Send(resp)
 				return err
 			}
-			//保存到数据库
+			// 保存到数据库
 			playURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
 			coverURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
 			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playURL, coverURL)
@@ -111,13 +111,12 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			if err = stream.Send(resp); err != nil {
 				return err
 			}
-			//结束循环停止接收
+			// 结束循环停止接收
 			break
 		}
 	}
 	stream.Close()
-
-	return
+	return err
 }
 
 // GetFavoriteVideoInfo implements the VideoServiceImpl interface.
@@ -145,21 +144,74 @@ func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.
 // GetPublishList implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPublishListRequest) (resp *video.GetPublishListResponse, err error) {
 	resp = new(video.GetPublishListResponse)
+
 	if _, err := utils.CheckToken(req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
+
 	if req.UserId < 10000 {
 		resp.Base = pack.BuildBaseResp(errno.ParamError)
 		return resp, nil
 	}
+
 	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
+
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList)
 
+	return
+}
+
+// GetWorkCount implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetWorkCount(ctx context.Context, req *video.GetWorkCountRequest) (resp *video.GetWorkCountResponse, err error) {
+	resp = new(video.GetWorkCountResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	if req.UserId < 10000 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+
+	workCount, err := service.NewVideoService(ctx).GetWorkCount(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.WorkCount = workCount
+
+	return
+}
+
+// GetGetVideoIDByUid implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) GetVideoIDByUid(ctx context.Context, req *video.GetVideoIDByUidRequset) (resp *video.GetVideoIDByUidResponse, err error) {
+	resp = new(video.GetVideoIDByUidResponse)
+
+	if _, err := utils.CheckToken(req.Token); err != nil {
+		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
+		return resp, nil
+	}
+
+	if req.UserId < 10000 {
+		resp.Base = pack.BuildBaseResp(errno.ParamError)
+		return resp, nil
+	}
+
+	videoIDList, err := service.NewVideoService(ctx).GetVideoIDByUid(req)
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.VideoId = videoIDList
 	return
 }

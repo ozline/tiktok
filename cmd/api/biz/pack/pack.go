@@ -12,7 +12,6 @@ type Response struct {
 }
 
 func SendFailResponse(c *app.RequestContext, err error) {
-
 	if err == nil {
 		c.JSON(consts.StatusOK, Response{
 			Code: errno.SuccessCode,

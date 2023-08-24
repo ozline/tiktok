@@ -4,10 +4,8 @@ import (
 	"context"
 
 	"github.com/ozline/tiktok/cmd/interaction/pack"
-	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/cmd/interaction/service"
 	interaction "github.com/ozline/tiktok/kitex_gen/interaction"
-	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -47,7 +45,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
-	return
+	return resp, nil
 }
 
 // FavoriteList implements the interactionServiceImpl interface.
@@ -82,17 +80,9 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		return resp, nil
 	}
 	userId := claim.UserId
-	userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
-		UserId: userId,
-		Token:  req.Token,
-	})
-	if err != nil {
-		resp.Base = pack.BuildBaseResp(err)
-		return resp, nil
-	}
 
 	switch req.ActionType {
-	//1-发布评论
+	// 1-发布评论
 	case constants.AddComment:
 
 		if req.CommentText == nil || len(*req.CommentText) == 0 || len(*req.CommentText) > 255 {
@@ -117,9 +107,9 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return resp, nil
 		}
 
-		resp.Comment = pack.Comment(commentResp)
+		resp.Comment = commentResp
 
-	//2-删除评论
+	// 2-删除评论
 	case constants.DeleteComment:
 
 		if req.CommentId == nil {
@@ -133,7 +123,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
-		resp.Comment = pack.Comment(commentResp)
+		resp.Comment = commentResp
 
 	default:
 		resp.Base = pack.BuildBaseResp(errno.UnexpectedTypeError)
@@ -141,9 +131,8 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.Comment.User = userInfo
 
-	return
+	return resp, nil
 }
 
 // CommentList implements the interactionServiceImpl interface.
@@ -163,32 +152,8 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 		return resp, nil
 	}
 
-	users := make(map[int64]int) // 利用map避免重复查询
-	commentList := make([]*interaction.Comment, 0, len(*commentsResp))
-	for commentIndex, comment := range *commentsResp {
-		rComment := pack.Comment(&comment)
-
-		index, ok := users[comment.UserId]
-		if !ok {
-			userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
-				UserId: comment.UserId,
-				Token:  req.Token,
-			})
-			if err != nil {
-				resp.Base = pack.BuildBaseResp(err)
-				return resp, nil
-			}
-			rComment.User = userInfo
-			users[comment.UserId] = commentIndex
-		} else {
-			rComment.User = commentList[index].User
-		}
-
-		commentList = append(commentList, rComment)
-	}
-
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.CommentList = commentList
+	resp.CommentList = commentsResp
 	return
 }
 
@@ -264,6 +229,14 @@ func (s *InteractionServiceImpl) UserTotalFavorited(ctx context.Context, req *in
 		return resp, nil
 	}
 
-	service.NewInteractionService(ctx).GetUserTotalFavorited(req)
-	return
+	total, err := service.NewInteractionService(ctx).GetUserTotalFavorited(req)
+
+	if err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+
+	resp.Base = pack.BuildBaseResp(nil)
+	resp.TotalFavorited = total
+	return resp, nil
 }
