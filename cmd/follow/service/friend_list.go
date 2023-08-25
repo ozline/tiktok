@@ -52,7 +52,14 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 	for _, userID := range *userList {
 		wg.Add(1)
 		go func(id int64, req *follow.FriendListRequest, userList *[]*follow.FriendUser, wg *sync.WaitGroup, mu *sync.Mutex) {
-			defer wg.Done()
+			defer func() {
+				// 协程内部使用recover捕获可能在调用逻辑中发生的panic
+				if e := recover(); e != nil {
+					// 某个服务调用协程报错，可以在这里打印一些错误日志
+					klog.Info("recover panic:", e)
+				}
+				wg.Done()
+			}()
 
 			user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
 				UserId: id,
