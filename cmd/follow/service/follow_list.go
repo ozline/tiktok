@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"sync"
-	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
@@ -12,12 +11,13 @@ import (
 	"github.com/ozline/tiktok/cmd/follow/rpc"
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/pkg/constants"
 )
 
 // FollowList View the follow list
 func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.User, error) {
 	// 限流
-	if err := cache.Limit(s.ctx, 100, 1*time.Second); err != nil {
+	if err := cache.Limit(s.ctx, constants.FollowListRate, constants.Interval); err != nil {
 		return nil, err
 	}
 
