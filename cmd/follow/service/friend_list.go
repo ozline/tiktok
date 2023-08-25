@@ -55,7 +55,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 			defer func() {
 				// 协程内部使用recover捕获可能在调用逻辑中发生的panic
 				if e := recover(); e != nil {
-					// 某个服务调用协程报错，可以在这里打印一些错误日志
+					// 某个服务调用协程报错，在这里打印一些错误日志
 					klog.Info("recover panic:", e)
 				}
 				wg.Done()
