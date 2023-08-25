@@ -17,13 +17,20 @@ func IsVideoLikeExist(ctx context.Context, videoID int64, userID int64) (bool, e
 }
 
 func AddVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
+	pipe := RedisClient.TxPipeline()
 	// add video like
-	if err := RedisClient.SAdd(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
+	if err := pipe.SAdd(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
 	// add user like
-	if err := RedisClient.SAdd(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
+	if err := pipe.SAdd(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
+		klog.Infof("err: %v", err)
+		return err
+	}
+
+	_, err := pipe.Exec(ctx)
+	if err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
@@ -31,13 +38,20 @@ func AddVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
 }
 
 func ReduceVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
+	pipe := RedisClient.TxPipeline()
 	// unlike the video
-	if err := RedisClient.SRem(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
+	if err := pipe.SRem(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
 		return err
 	}
-	if err := RedisClient.SRem(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
+	if err := pipe.SRem(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
 		klog.Infof("err: %v", err)
+	}
+
+	_, err := pipe.Exec(ctx)
+	if err != nil {
+		klog.Infof("err: %v", err)
+		return err
 	}
 	return nil
 }
