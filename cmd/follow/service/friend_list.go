@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"sync"
+	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
@@ -17,13 +18,14 @@ import (
 // FriendList Viewing friends list
 func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.FriendUser, error) {
 	// 限流
-	if err := cache.Limit(s.ctx); err != nil {
+	if err := cache.Limit(s.ctx, 100, 1*time.Second); err != nil {
 		return nil, err
 	}
 
 	friendList := make([]*follow.FriendUser, 0, 10)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
+	isErr := false
 
 	// 先查redis
 	userList, err := cache.FriendListAction(s.ctx, req.UserId)
@@ -57,6 +59,9 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 				Token:  req.Token,
 			})
 			if err != nil {
+				mu.Lock()
+				isErr = true // 报错就修改为true
+				mu.Unlock()
 				return
 			}
 			friend := pack.User(user) // 结构体转换
@@ -66,6 +71,9 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 				ToUserId: req.UserId,
 			}, req.UserId, id)
 			if err != nil {
+				mu.Lock()
+				isErr = true // 报错就修改为true
+				mu.Unlock()
 				return
 			}
 
@@ -79,6 +87,9 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 			*userList = append(*userList, friendUser)
 			mu.Unlock()
 		}(userID, req, &friendList, &wg, &mu)
+		if isErr {
+			return nil, errors.New("RPC call error")
+		}
 	}
 
 	wg.Wait()

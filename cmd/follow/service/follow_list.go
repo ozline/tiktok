@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"sync"
+	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
@@ -16,13 +17,14 @@ import (
 // FollowList View the follow list
 func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.User, error) {
 	// 限流
-	if err := cache.Limit(s.ctx); err != nil {
+	if err := cache.Limit(s.ctx, 100, 1*time.Second); err != nil {
 		return nil, err
 	}
 
 	userList := make([]*follow.User, 0, 10)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
+	isErr := false
 
 	// 先查redis
 	followList, err := cache.FollowListAction(s.ctx, req.UserId)
@@ -54,6 +56,9 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 				Token:  req.Token,
 			})
 			if err != nil {
+				mu.Lock()
+				isErr = true // 报错就修改为true
+				mu.Unlock()
 				return
 			}
 
@@ -63,6 +68,9 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 			*userList = append(*userList, follow)
 			mu.Unlock()
 		}(id, req, &userList, &wg, &mu)
+		if isErr {
+			return nil, errors.New("RPC call error")
+		}
 	}
 
 	wg.Wait()
