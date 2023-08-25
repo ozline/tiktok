@@ -36,7 +36,9 @@ create table tiktok.`comment`
     `updated_at` timestamp default current_timestamp not null on update current_timestamp comment 'update profile time',
     `deleted_at` timestamp default null null,
     constraint `id`
-        primary key (`id`)
+        primary key (`id`),
+    index (`video_id`),
+    index (`deleted_at`)
 ) engine=InnoDB default charset=utf8mb4;
 
 create table tiktok.`video`

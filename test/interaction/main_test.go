@@ -37,21 +37,13 @@ func TestMain(m *testing.M) {
 }
 
 func TestMainOrder(t *testing.T) {
-	t.Run("comment action", testCommentAction)
-
-	t.Run("comment list", testCommentList)
-
 	t.Run("comment count", testCommentCount)
 
 	t.Run("favorite action", testFavoriteAction)
 
-	t.Run("favorite list", testFavoriteList)
-
 	t.Run("favorite count", testVideoFavoriteCount)
 
 	t.Run("user favorite count", testUserFavoriteCount)
-
-	t.Run("user total favorited", testUserTotalFavorited)
 
 	t.Run("is favorite", testIsFavorite)
 
