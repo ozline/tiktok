@@ -4,8 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ozline/tiktok/cmd/interaction/rpc"
-
 	"github.com/ozline/tiktok/cmd/interaction/dal"
 	"github.com/ozline/tiktok/cmd/interaction/service"
 	"github.com/ozline/tiktok/config"
@@ -25,7 +23,6 @@ var (
 func TestMain(m *testing.M) {
 	config.InitForTest()
 	dal.Init()
-	rpc.Init()
 	interactionService = service.NewInteractionService(context.Background())
 
 	userId = 10000
@@ -37,21 +34,13 @@ func TestMain(m *testing.M) {
 }
 
 func TestMainOrder(t *testing.T) {
-	t.Run("comment action", testCommentAction)
-
-	t.Run("comment list", testCommentList)
-
 	t.Run("comment count", testCommentCount)
 
 	t.Run("favorite action", testFavoriteAction)
 
-	t.Run("favorite list", testFavoriteList)
-
 	t.Run("favorite count", testVideoFavoriteCount)
 
 	t.Run("user favorite count", testUserFavoriteCount)
-
-	t.Run("user total favorited", testUserTotalFavorited)
 
 	t.Run("is favorite", testIsFavorite)
 

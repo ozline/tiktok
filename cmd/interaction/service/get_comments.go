@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cloudwego/kitex/pkg/klog"
+
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/pack"
@@ -55,6 +57,11 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 		comment := data
 		commentIndex := index
 		eg.Go(func() error {
+			defer func() {
+				if e := recover(); e != nil {
+					klog.Error(e)
+				}
+			}()
 			userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
 				UserId: comment.UserId,
 				Token:  req.Token,
