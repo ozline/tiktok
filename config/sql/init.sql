@@ -24,6 +24,7 @@ create table tiktok.`favorite`
     `deleted_at` timestamp default null null,
     constraint `id`
         primary key (`id`)
+        INDEX `uid_vid_idx` (`user_id`, `video_id`)
 ) engine=InnoDB default charset=utf8mb4;
 
 create table tiktok.`comment`
