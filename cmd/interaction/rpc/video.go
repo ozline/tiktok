@@ -41,7 +41,6 @@ func InitVideoRPC() {
 	videoClient = client
 }
 
-// TO DO: rpc调用GetVideoInfo and UpdateVideoInfo
 func GetFavoriteVideoList(ctx context.Context, req *video.GetFavoriteVideoInfoRequest) ([]*video.Video, error) {
 	resp, err := videoClient.GetFavoriteVideoInfo(ctx, req)
 	if err != nil {
@@ -52,4 +51,16 @@ func GetFavoriteVideoList(ctx context.Context, req *video.GetFavoriteVideoInfoRe
 		return nil, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 	return resp.VideoList, nil
+}
+
+func GetUserVideoList(ctx context.Context, req *video.GetVideoIDByUidRequset) ([]int64, error) {
+	resp, err := videoClient.GetVideoIDByUid(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Base.Code != errno.SuccessCode {
+		return nil, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
+	}
+	return resp.VideoId, nil
 }

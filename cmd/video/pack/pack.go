@@ -28,23 +28,3 @@ func baseResp(err errno.ErrNo) *video.BaseResp {
 		Msg:  err.ErrorMsg,
 	}
 }
-
-// func BuildPutVideoResp(err error, state int64) *video.PutVideoResponse {
-// 	if err == nil {
-// 		return putVideoResp(errno.Success, state)
-// 	}
-// 	e := errno.ErrNo{}
-
-// 	if errors.As(err, &e) {
-// 		return putVideoResp(e, state)
-// 	}
-// 	s := errno.ServiceError.WithMessage(err.Error())
-// 	return putVideoResp(s, state)
-// }
-
-// func putVideoResp(err errno.ErrNo, state int64) *video.PutVideoResponse {
-// 	return &video.PutVideoResponse{
-// 		Base:  BuildBaseResp(err),
-// 		State: state,
-// 	}
-// }

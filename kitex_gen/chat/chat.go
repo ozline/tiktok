@@ -683,6 +683,7 @@ type MessagePostRequest struct {
 	FromUserId int64   `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
 	Content    string  `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
 	CreateTime *string `thrift:"create_time,5,optional" frugal:"5,optional,string" json:"create_time,omitempty"`
+	ActionType *string `thrift:"action_type,6,optional" frugal:"6,optional,string" json:"action_type,omitempty"`
 }
 
 func NewMessagePostRequest() *MessagePostRequest {
@@ -717,6 +718,15 @@ func (p *MessagePostRequest) GetCreateTime() (v string) {
 	}
 	return *p.CreateTime
 }
+
+var MessagePostRequest_ActionType_DEFAULT string
+
+func (p *MessagePostRequest) GetActionType() (v string) {
+	if !p.IsSetActionType() {
+		return MessagePostRequest_ActionType_DEFAULT
+	}
+	return *p.ActionType
+}
 func (p *MessagePostRequest) SetToken(val string) {
 	p.Token = val
 }
@@ -732,6 +742,9 @@ func (p *MessagePostRequest) SetContent(val string) {
 func (p *MessagePostRequest) SetCreateTime(val *string) {
 	p.CreateTime = val
 }
+func (p *MessagePostRequest) SetActionType(val *string) {
+	p.ActionType = val
+}
 
 var fieldIDToName_MessagePostRequest = map[int16]string{
 	1: "token",
@@ -739,10 +752,15 @@ var fieldIDToName_MessagePostRequest = map[int16]string{
 	3: "from_user_id",
 	4: "content",
 	5: "create_time",
+	6: "action_type",
 }
 
 func (p *MessagePostRequest) IsSetCreateTime() bool {
 	return p.CreateTime != nil
+}
+
+func (p *MessagePostRequest) IsSetActionType() bool {
+	return p.ActionType != nil
 }
 
 func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -815,6 +833,16 @@ func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 5:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 6:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -918,6 +946,15 @@ func (p *MessagePostRequest) ReadField5(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *MessagePostRequest) ReadField6(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.ActionType = &v
+	}
+	return nil
+}
+
 func (p *MessagePostRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("MessagePostRequest"); err != nil {
@@ -942,6 +979,10 @@ func (p *MessagePostRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField5(oprot); err != nil {
 			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
 			goto WriteFieldError
 		}
 
@@ -1050,6 +1091,25 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
 }
 
+func (p *MessagePostRequest) writeField6(oprot thrift.TProtocol) (err error) {
+	if p.IsSetActionType() {
+		if err = oprot.WriteFieldBegin("action_type", thrift.STRING, 6); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.ActionType); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
 func (p *MessagePostRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1076,6 +1136,9 @@ func (p *MessagePostRequest) DeepEqual(ano *MessagePostRequest) bool {
 		return false
 	}
 	if !p.Field5DeepEqual(ano.CreateTime) {
+		return false
+	}
+	if !p.Field6DeepEqual(ano.ActionType) {
 		return false
 	}
 	return true
@@ -1117,6 +1180,18 @@ func (p *MessagePostRequest) Field5DeepEqual(src *string) bool {
 		return false
 	}
 	if strings.Compare(*p.CreateTime, *src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *MessagePostRequest) Field6DeepEqual(src *string) bool {
+
+	if p.ActionType == src {
+		return true
+	} else if p.ActionType == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.ActionType, *src) != 0 {
 		return false
 	}
 	return true

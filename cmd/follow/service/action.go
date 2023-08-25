@@ -14,7 +14,7 @@ import (
 // Action Function for the follow/close operation
 func (s *FollowService) Action(req *follow.ActionRequest) error {
 	// 限流
-	if err := cache.Limit(s.ctx); err != nil {
+	if err := cache.Limit(s.ctx, 200, 1*time.Second); err != nil {
 		return err
 	}
 
