@@ -21,11 +21,11 @@ func benchmarkCommentAction(b *testing.B) {
 		if resp == nil {
 			continue
 		}
-		//commentId = resp.Id
-		//
-		//_, err := interactionService.DeleteComment(req, userId)
-		//if err != nil {
-		//	b.Error(err)
-		//}
+		commentId = resp.Id
+
+		_, err := interactionService.DeleteComment(req, userId)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }
