@@ -3,6 +3,7 @@ package service
 import (
 	"strconv"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/pack"
@@ -24,6 +25,11 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 	comment := new(db.Comment)
 
 	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
 		var err error
 		comment, err = db.CreateComment(ctx, commentModel)
 		return err
@@ -31,6 +37,11 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 
 	key := strconv.FormatInt(req.VideoId, 10)
 	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
 		exist, err := cache.IsExistComment(ctx, key)
 		if err != nil {
 			return err
@@ -44,6 +55,11 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 	userInfo := new(user.User)
 
 	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
 		var err error
 		userInfo, err = rpc.UserInfo(ctx, &user.InfoRequest{
 			UserId: userId,
