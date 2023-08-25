@@ -38,7 +38,8 @@ create table tiktok.`comment`
     constraint `id`
         primary key (`id`),
     index (`video_id`),
-    index (`deleted_at`)
+    index (`deleted_at`),
+    index (`created_at`)
 ) engine=InnoDB default charset=utf8mb4;
 
 create table tiktok.`video`
