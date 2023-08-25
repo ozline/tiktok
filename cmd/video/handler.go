@@ -115,7 +115,7 @@ func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (e
 			break
 		}
 	}
-	stream.Close()
+	err = stream.Close()
 	return err
 }
 

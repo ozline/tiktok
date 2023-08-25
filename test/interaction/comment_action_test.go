@@ -27,6 +27,7 @@ func testCommentAction(t *testing.T) {
 		t.Logf("err: [%v] \n", err)
 		t.Error(err)
 		t.Fail()
+		return
 	}
 
 	commentId = resp.Id

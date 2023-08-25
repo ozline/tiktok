@@ -655,6 +655,20 @@ func (p *MessagePostRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 6:
+			if fieldTypeId == thrift.STRING {
+				l, err = p.FastReadField6(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -780,6 +794,19 @@ func (p *MessagePostRequest) FastReadField5(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *MessagePostRequest) FastReadField6(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+		p.ActionType = &v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *MessagePostRequest) FastWrite(buf []byte) int {
 	return 0
@@ -794,6 +821,7 @@ func (p *MessagePostRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bi
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 		offset += p.fastWriteField5(buf[offset:], binaryWriter)
+		offset += p.fastWriteField6(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -809,6 +837,7 @@ func (p *MessagePostRequest) BLength() int {
 		l += p.field3Length()
 		l += p.field4Length()
 		l += p.field5Length()
+		l += p.field6Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -862,6 +891,17 @@ func (p *MessagePostRequest) fastWriteField5(buf []byte, binaryWriter bthrift.Bi
 	return offset
 }
 
+func (p *MessagePostRequest) fastWriteField6(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	if p.IsSetActionType() {
+		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "action_type", thrift.STRING, 6)
+		offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, *p.ActionType)
+
+		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	}
+	return offset
+}
+
 func (p *MessagePostRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("token", thrift.STRING, 1)
@@ -903,6 +943,17 @@ func (p *MessagePostRequest) field5Length() int {
 	if p.IsSetCreateTime() {
 		l += bthrift.Binary.FieldBeginLength("create_time", thrift.STRING, 5)
 		l += bthrift.Binary.StringLengthNocopy(*p.CreateTime)
+
+		l += bthrift.Binary.FieldEndLength()
+	}
+	return l
+}
+
+func (p *MessagePostRequest) field6Length() int {
+	l := 0
+	if p.IsSetActionType() {
+		l += bthrift.Binary.FieldBeginLength("action_type", thrift.STRING, 6)
+		l += bthrift.Binary.StringLengthNocopy(*p.ActionType)
 
 		l += bthrift.Binary.FieldEndLength()
 	}
