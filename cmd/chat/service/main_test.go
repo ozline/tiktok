@@ -10,9 +10,9 @@ import (
 
 var (
 	chatservice  *ChatService
+	content      string = "cover test"
 	from_user_id int64 = 2
 	to_user_id   int64 = 3
-	content      string = "cover test"
 )
 
 func TestMain(m *testing.M) {
