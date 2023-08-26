@@ -32,7 +32,6 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	extra := map[string]interface{}{
 		"PackageName": "video",
 	}
-	extra["streaming"] = true
 	svcInfo := &kitex.ServiceInfo{
 		ServiceName:     serviceName,
 		HandlerType:     handlerType,
@@ -198,36 +197,30 @@ func (p *FeedResult) GetResult() interface{} {
 }
 
 func putVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	st := arg.(*streaming.Args).Stream
-	stream := &videoServicePutVideoServer{st}
-	return handler.(video.VideoService).PutVideo(stream)
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(video.PutVideoRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(video.VideoService).PutVideo(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *PutVideoArgs:
+		success, err := handler.(video.VideoService).PutVideo(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*PutVideoResult)
+		realResult.Success = success
+	}
+	return nil
 }
-
-type videoServicePutVideoClient struct {
-	streaming.Stream
-}
-
-func (x *videoServicePutVideoClient) Send(m *video.PutVideoRequest) error {
-	return x.Stream.SendMsg(m)
-}
-func (x *videoServicePutVideoClient) Recv() (*video.PutVideoResponse, error) {
-	m := new(video.PutVideoResponse)
-	return m, x.Stream.RecvMsg(m)
-}
-
-type videoServicePutVideoServer struct {
-	streaming.Stream
-}
-
-func (x *videoServicePutVideoServer) Send(m *video.PutVideoResponse) error {
-	return x.Stream.SendMsg(m)
-}
-
-func (x *videoServicePutVideoServer) Recv() (*video.PutVideoRequest, error) {
-	m := new(video.PutVideoRequest)
-	return m, x.Stream.RecvMsg(m)
-}
-
 func newPutVideoArgs() interface{} {
 	return &PutVideoArgs{}
 }
@@ -988,18 +981,14 @@ func (p *kClient) Feed(ctx context.Context, Req *video.FeedRequest) (r *video.Fe
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) PutVideo(ctx context.Context) (VideoService_PutVideoClient, error) {
-	streamClient, ok := p.c.(client.Streaming)
-	if !ok {
-		return nil, fmt.Errorf("client not support streaming")
+func (p *kClient) PutVideo(ctx context.Context, Req *video.PutVideoRequest) (r *video.PutVideoResponse, err error) {
+	var _args PutVideoArgs
+	_args.Req = Req
+	var _result PutVideoResult
+	if err = p.c.Call(ctx, "PutVideo", &_args, &_result); err != nil {
+		return
 	}
-	res := new(streaming.Result)
-	err := streamClient.Stream(ctx, "PutVideo", nil, res)
-	if err != nil {
-		return nil, err
-	}
-	stream := &videoServicePutVideoClient{res.Stream}
-	return stream, nil
+	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) GetFavoriteVideoInfo(ctx context.Context, Req *video.GetFavoriteVideoInfoRequest) (r *video.GetFavoriteVideoInfoResponse, err error) {

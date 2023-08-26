@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
 	"github.com/ozline/tiktok/cmd/video/service"
 	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
+	"golang.org/x/sync/errgroup"
 )
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
@@ -43,80 +43,6 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList)
 
 	return
-}
-
-func (s *VideoServiceImpl) PutVideo(stream video.VideoService_PutVideoServer) (err error) {
-	resp := new(video.PutVideoResponse)
-	// 追加位置
-	var nextPos int64
-	var coverName string
-	var videoName string
-
-	for {
-		req, err := stream.Recv()
-		if err != nil {
-			resp.Base = pack.BuildBaseResp(err)
-			resp.State = 0
-			err = stream.Send(resp)
-			return err
-		}
-		if _, err := utils.CheckToken(req.Token); err != nil {
-			resp.Base = pack.BuildBaseResp(err)
-			resp.State = 0
-			err = stream.Send(resp)
-			return err
-		}
-		if coverName == "" {
-			coverName = pack.GenerateCoverName(req.UserId)
-		}
-		if videoName == "" {
-			videoName = pack.GenerateVideoName(req.UserId)
-		}
-		if !req.IsFinished { // 上传一部分视频
-			nextPos, err = service.NewVideoService(stream.Context()).UploadVideo(req, videoName, nextPos)
-			if err != nil {
-				resp.Base = pack.BuildBaseResp(err)
-				resp.State = 0
-				err = stream.Send(resp)
-				return err
-			}
-			resp.Base = pack.BuildBaseResp(nil)
-			resp.State = 1
-			err = stream.Send(resp)
-			if err != nil {
-				return err
-			}
-		} else { // 当视频全部上传完成后，开始封面的上传和持久化处理
-			// 上传封面
-			err = service.NewVideoService(stream.Context()).UploadCover(req, coverName)
-			if err != nil {
-				resp.Base = pack.BuildBaseResp(err)
-				resp.State = 0
-				err = stream.Send(resp)
-				return err
-			}
-			// 保存到数据库
-			playURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
-			coverURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
-			_, err = service.NewVideoService(stream.Context()).CreateVideo(req, playURL, coverURL)
-			if err != nil {
-				resp.Base = pack.BuildBaseResp(err)
-				resp.State = 0
-				err = stream.Send(resp)
-				return err
-			}
-			klog.Infof("视频全部传输完成")
-			resp.Base = pack.BuildBaseResp(nil)
-			resp.State = 2
-			if err = stream.Send(resp); err != nil {
-				return err
-			}
-			// 结束循环停止接收
-			break
-		}
-	}
-	err = stream.Close()
-	return err
 }
 
 // GetFavoriteVideoInfo implements the VideoServiceImpl interface.
@@ -213,5 +139,42 @@ func (s *VideoServiceImpl) GetVideoIDByUid(ctx context.Context, req *video.GetVi
 	}
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.VideoId = videoIDList
+	return
+}
+
+// PutVideo implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequest) (resp *video.PutVideoResponse, err error) {
+	resp = new(video.PutVideoResponse)
+
+	claim, err := utils.CheckToken(req.Token)
+	if err != nil {
+		return nil, errno.AuthorizationFailedError
+	}
+	videoName := pack.GenerateVideoName(claim.UserId)
+	coverName := pack.GenerateCoverName(claim.UserId)
+	// 创建错误组
+	var eg errgroup.Group
+	//上传视频
+	eg.Go(func() error {
+		err = service.NewVideoService(ctx).UploadVideo(req, videoName)
+		return err
+	})
+	// 截取并上传封面
+	eg.Go(func() error {
+		err = service.NewVideoService(ctx).UploadCover(req, coverName)
+		return err
+	})
+	// 将视频数据写入数据库
+	eg.Go(func() error {
+		playURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
+		coverURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
+		_, err = service.NewVideoService(ctx).CreateVideo(req, playURL, coverURL)
+		return err
+	})
+	if err := eg.Wait(); err != nil {
+		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
+	}
+	resp.Base = pack.BuildBaseResp(nil)
 	return
 }
