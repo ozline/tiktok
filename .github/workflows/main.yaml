@@ -34,7 +34,7 @@ jobs:
           path: output
 
   run-test:
-    needs: build
+    needs: build-all
     runs-on: ubuntu-latest
     strategy:
       matrix:
