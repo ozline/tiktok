@@ -34,6 +34,10 @@ func TestMain(m *testing.M) {
 }
 
 func TestMainOrder(t *testing.T) {
+	t.Run("comment action", testCommentAction)
+
+	t.Run("comment list", testCommentList)
+
 	t.Run("comment count", testCommentCount)
 
 	t.Run("favorite action", testFavoriteAction)
