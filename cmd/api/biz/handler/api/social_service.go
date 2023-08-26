@@ -4,6 +4,7 @@ package api
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
@@ -134,11 +135,13 @@ func MessageAction(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.MessageActionResponse)
 
-	// err = rpc.MessageAction(ctx, &chat.MessagePostRequest{
-	// 	Token:      req.Token,
-	// 	ToUserId:   req.ToUserID,
-	// 	ActionType: req.ActionType,
-	// })
+	actionType := strconv.FormatInt(req.ActionType, 10) // TODO: wait zhangxin to fix this problem
+
+	err = rpc.MessageAction(ctx, &chat.MessagePostRequest{
+		Token:      req.Token,
+		ToUserId:   req.ToUserID,
+		ActionType: &actionType,
+	})
 
 	if err != nil {
 		pack.SendFailResponse(c, err)
