@@ -3,7 +3,9 @@ package constants
 import "time"
 
 const (
+	// auth
 	JWTValue = "MTAxNTkwMTg1Mw=="
+	StartID  = 10000
 
 	// redis
 	ReidsDB_Chat       = 1
@@ -66,4 +68,11 @@ const (
 	// follow type
 	FollowAction   = 1
 	UnFollowAction = 2
+
+	// follow limit
+	Interval         = 1 * time.Second
+	ActionRate       = 100
+	FollowListRate   = 200
+	FollowerListRate = 200
+	FriendListRate   = 200
 )

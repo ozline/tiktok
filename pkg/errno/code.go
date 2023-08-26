@@ -16,7 +16,8 @@ const (
 	AuthorizationFailedErrCode = 10003 // 鉴权失败
 	UnexpectedTypeErrorCode    = 10004 // 未知类型
 	NotImplementErrorCode      = 10005 // 未实装
-	SensitiveWordsErrorCode    = 10006 // 敏感词错误
-	LikeAlreadyExistErrorCode  = 10007 // 已点赞错误
-	LikeNoExistErrorCode       = 10008 // 未点赞错误
+	SensitiveWordsErrorCode    = 10006 // 敏感词
+	LikeAlreadyExistErrorCode  = 10007 // 已点赞
+	LikeNoExistErrorCode       = 10008 // 未点赞
+	FileUploadErrorCode        = 10009 // 文件上传
 )

@@ -11,6 +11,8 @@ service = $(word 1, $@)
 MOCKS := user_mock
 mock = $(word 1, $@)
 
+PERFIX = "[Makefile]"
+
 .PHONY: env-up
 env-up:
 	docker-compose up -d
@@ -24,9 +26,9 @@ $(SERVICES):
 	mkdir -p output
 	cd $(CMD)/$(service) && sh build.sh
 	cd $(CMD)/$(service)/output && cp -r . $(OUTPUT_PATH)/$(service)
-	@echo "[Makefile] Build target completed"
+	@echo "$(PERFIX) Build $(service) target completed"
 ifndef ci
-	@echo "[Makefile] Automatic run server"
+	@echo "$(PERFIX) Automatic run server"
 	sh $(OUTPUT_PATH)/$(service)/bootstrap.sh
 endif
 
@@ -40,3 +42,11 @@ $(MOCKS):
 .PHONY: clean
 clean:
 	@find . -type d -name "output" -exec rm -rf {} + -print
+
+
+.PHONY: build-all
+build-all:
+	@for var in $(SERVICES); do \
+		echo "$(PERFIX) building $$var service"; \
+		make $$var ci=1; \
+	done

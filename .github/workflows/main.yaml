@@ -9,11 +9,8 @@ on:
       - main
 
 jobs:
-  build:
+  build-all:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [user, video, chat, interaction]
     steps:
 
       - name: Checkout code
@@ -28,7 +25,7 @@ jobs:
         run: go mod tidy
 
       - name: Build target
-        run: make ${{ matrix.service }} ci=true
+        run: make build-all
 
       - name: Archive production
         uses: actions/upload-artifact@v3
@@ -37,11 +34,11 @@ jobs:
           path: output
 
   run-test:
-    needs: build
+    needs: build-all
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [user, video, chat, interaction]
+        service: [user, video, chat, interaction, follow]
     steps:
 
       - name: Checkout code

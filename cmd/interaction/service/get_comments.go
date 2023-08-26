@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cloudwego/kitex/pkg/klog"
+
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/pack"
@@ -26,13 +28,13 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 		if err != nil {
 			return nil, err
 		}
-		for _, rComment := range *rComments {
+		for i := 0; i < len(*rComments); i++ {
 			var comment db.Comment
-			_, err = comment.UnmarshalMsg([]byte(rComment.Member.(string)))
+			_, err = comment.UnmarshalMsg([]byte((*rComments)[i].Member.(string)))
 			if err != nil {
 				return nil, err
 			}
-			comment.CreatedAt = time.Unix(int64(rComment.Score), 0)
+			comment.CreatedAt = time.Unix(int64((*rComments)[i].Score), 0)
 			comments = append(comments, comment)
 		}
 	} else {
@@ -51,10 +53,15 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 
 	eg, ctx := errgroup.WithContext(s.ctx)
 	commentList := make([]*interaction.Comment, len(comments))
-	for index, data := range comments {
-		comment := data
-		commentIndex := index
+	for i := 0; i < len(comments); i++ {
+		comment := comments[i]
+		commentIndex := i
 		eg.Go(func() error {
+			defer func() {
+				if e := recover(); e != nil {
+					klog.Error(e)
+				}
+			}()
 			userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
 				UserId: comment.UserId,
 				Token:  req.Token,

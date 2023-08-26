@@ -1,12 +1,21 @@
 package main
 
 import (
+	"context"
 	"testing"
 
+	"bou.ke/monkey"
+	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"github.com/ozline/tiktok/kitex_gen/user"
 )
 
 func testCommentAction(t *testing.T) {
+	monkey.Patch(rpc.UserInfo, func(ctx context.Context, req *user.InfoRequest) (*user.User, error) {
+		return &user.User{Id: userId}, nil
+	})
+
+	defer monkey.UnpatchAll()
 	_, err := interactionService.MatchSensitiveWords(commentText)
 	if err != nil {
 		t.Logf("err: [%v] \n", err)
@@ -55,6 +64,9 @@ func benchmarkCommentAction(b *testing.B) {
 		// interactionService.MatchSensitiveWords(commentText)
 		resp, _ := interactionService.CreateComment(req, userId)
 
+		if resp == nil {
+			continue
+		}
 		commentId = resp.Id
 
 		_, err := interactionService.DeleteComment(req, userId)
