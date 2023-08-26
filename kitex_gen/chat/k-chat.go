@@ -656,7 +656,7 @@ func (p *MessagePostRequest) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 6:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				l, err = p.FastReadField6(buf[offset:])
 				offset += l
 				if err != nil {
@@ -797,7 +797,7 @@ func (p *MessagePostRequest) FastReadField5(buf []byte) (int, error) {
 func (p *MessagePostRequest) FastReadField6(buf []byte) (int, error) {
 	offset := 0
 
-	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
@@ -818,10 +818,10 @@ func (p *MessagePostRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bi
 	if p != nil {
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
+		offset += p.fastWriteField6(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 		offset += p.fastWriteField5(buf[offset:], binaryWriter)
-		offset += p.fastWriteField6(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -894,8 +894,8 @@ func (p *MessagePostRequest) fastWriteField5(buf []byte, binaryWriter bthrift.Bi
 func (p *MessagePostRequest) fastWriteField6(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
 	if p.IsSetActionType() {
-		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "action_type", thrift.STRING, 6)
-		offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, *p.ActionType)
+		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "action_type", thrift.I64, 6)
+		offset += bthrift.Binary.WriteI64(buf[offset:], *p.ActionType)
 
 		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	}
@@ -952,8 +952,8 @@ func (p *MessagePostRequest) field5Length() int {
 func (p *MessagePostRequest) field6Length() int {
 	l := 0
 	if p.IsSetActionType() {
-		l += bthrift.Binary.FieldBeginLength("action_type", thrift.STRING, 6)
-		l += bthrift.Binary.StringLengthNocopy(*p.ActionType)
+		l += bthrift.Binary.FieldBeginLength("action_type", thrift.I64, 6)
+		l += bthrift.Binary.I64Length(*p.ActionType)
 
 		l += bthrift.Binary.FieldEndLength()
 	}

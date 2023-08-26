@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>service: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/ozline/tiktok/cmd/chat/service/get_message.go (57.1%)</option>
+				
+				<option value="file1">github.com/ozline/tiktok/cmd/chat/service/send_message.go (70.0%)</option>
+				
+				<option value="file2">github.com/ozline/tiktok/cmd/chat/service/service.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package service
+
+import (
+        "sort"
+        "strconv"
+
+        "github.com/bytedance/sonic"
+        "github.com/cloudwego/kitex/pkg/klog"
+        "github.com/ozline/tiktok/cmd/chat/dal/cache"
+        "github.com/ozline/tiktok/cmd/chat/dal/db"
+        "github.com/ozline/tiktok/cmd/chat/dal/mq"
+        "github.com/ozline/tiktok/kitex_gen/chat"
+)
+
+// Get Messages history list
+func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) ([]*db.Message, error) <span class="cov8" title="1">{
+        messageList := make(db.MessageArray, 0)
+        // redis  ZSET
+        // RedisDB.WithContext(ctx)
+        key := strconv.FormatInt(req.ToUserId, 10) + "-" + strconv.FormatInt(user_id, 10)
+        revkey := strconv.FormatInt(user_id, 10) + "-" + strconv.FormatInt(req.ToUserId, 10)
+        if ok := cache.MessageExist(c.ctx, key); ok != 0 </span><span class="cov8" title="1">{
+                // 查询 a-&gt;b的消息
+                mem, err := cache.MessageGet(c.ctx, key)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                // 暂时用forrange
+                <span class="cov8" title="1">for _, val := range mem </span><span class="cov8" title="1">{
+                        tempMessage := new(db.MiddleMessage)
+                        message := new(db.Message)
+                        err = sonic.Unmarshal([]byte(val), &amp;tempMessage)
+                        if err != nil </span><span class="cov0" title="0">{
+                                klog.Info(err)
+                                return nil, err
+                        }</span>
+                        <span class="cov8" title="1">err = db.Convert(message, tempMessage)
+                        if err != nil </span><span class="cov0" title="0">{
+                                klog.Info(err)
+                                return nil, err
+                        }</span>
+                        <span class="cov8" title="1">messageList = append(messageList, message)</span>
+                }
+        }
+
+        <span class="cov8" title="1">if ok := cache.MessageExist(c.ctx, revkey); ok != 0 </span><span class="cov8" title="1">{
+                mem, err := cache.MessageGet(c.ctx, revkey)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                // 暂时用forrange
+                <span class="cov8" title="1">for _, val := range mem </span><span class="cov8" title="1">{
+                        tempMessage := new(db.MiddleMessage)
+                        message := new(db.Message)
+                        err = sonic.Unmarshal([]byte(val), &amp;tempMessage)
+                        if err != nil </span><span class="cov0" title="0">{
+                                klog.Info(err)
+                                return nil, err
+                        }</span>
+                        <span class="cov8" title="1">err = db.Convert(message, tempMessage)
+                        if err != nil </span><span class="cov0" title="0">{
+                                klog.Info(err)
+                                return nil, err
+                        }</span>
+                        <span class="cov8" title="1">messageList = append(messageList, message)</span>
+                }
+        }
+        <span class="cov8" title="1">if len(messageList) &gt; 0 </span><span class="cov8" title="1">{
+                // 合并排序
+                sort.Sort(messageList)
+                return messageList, nil
+        }</span>
+
+        <span class="cov0" title="0">messages, ok, err := db.GetMessageList(c.ctx, req.ToUserId, user_id)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">if ok </span><span class="cov0" title="0">{
+                mq_message, err := sonic.Marshal(messages)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">err = mq.MessageMQCli.Publish(c.ctx, string(mq_message))
+                if err != nil </span><span class="cov0" title="0">{
+                        return messages, err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return messages, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package service
+
+import (
+        "errors"
+
+        "github.com/bytedance/sonic"
+        "github.com/ozline/tiktok/cmd/chat/dal/db"
+        "github.com/ozline/tiktok/cmd/chat/dal/mq"
+        "github.com/ozline/tiktok/kitex_gen/chat"
+)
+
+func (c *ChatService) SendMessage(req *chat.MessagePostRequest) error <span class="cov8" title="1">{
+        if len(req.Content) == 0 || len(req.Content) &gt; 1000 </span><span class="cov0" title="0">{
+                return errors.New("character limit error")
+        }</span>
+        <span class="cov8" title="1">message := &amp;mq.MiddleMessage{
+                Id:         db.SF.NextVal(),
+                ToUserId:   req.ToUserId,
+                FromUserId: req.FromUserId,
+                Content:    req.Content,
+                CreatedAt:  *req.CreateTime,
+        }
+        trans_message, err := sonic.Marshal(message)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">err = mq.ChatMQCli.Publish(c.ctx, string(trans_message))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package service
+
+import "context"
+
+type ChatService struct {
+        ctx context.Context
+}
+
+// NewChatService new ChatService
+func NewChatService(ctx context.Context) *ChatService <span class="cov8" title="1">{
+        return &amp;ChatService{ctx: ctx}
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

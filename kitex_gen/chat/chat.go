@@ -683,7 +683,7 @@ type MessagePostRequest struct {
 	FromUserId int64   `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
 	Content    string  `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
 	CreateTime *string `thrift:"create_time,5,optional" frugal:"5,optional,string" json:"create_time,omitempty"`
-	ActionType *string `thrift:"action_type,6,optional" frugal:"6,optional,string" json:"action_type,omitempty"`
+	ActionType *int64  `thrift:"action_type,6,optional" frugal:"6,optional,i64" json:"action_type,omitempty"`
 }
 
 func NewMessagePostRequest() *MessagePostRequest {
@@ -719,9 +719,9 @@ func (p *MessagePostRequest) GetCreateTime() (v string) {
 	return *p.CreateTime
 }
 
-var MessagePostRequest_ActionType_DEFAULT string
+var MessagePostRequest_ActionType_DEFAULT int64
 
-func (p *MessagePostRequest) GetActionType() (v string) {
+func (p *MessagePostRequest) GetActionType() (v int64) {
 	if !p.IsSetActionType() {
 		return MessagePostRequest_ActionType_DEFAULT
 	}
@@ -742,7 +742,7 @@ func (p *MessagePostRequest) SetContent(val string) {
 func (p *MessagePostRequest) SetCreateTime(val *string) {
 	p.CreateTime = val
 }
-func (p *MessagePostRequest) SetActionType(val *string) {
+func (p *MessagePostRequest) SetActionType(val *int64) {
 	p.ActionType = val
 }
 
@@ -841,7 +841,7 @@ func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 6:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -947,7 +947,7 @@ func (p *MessagePostRequest) ReadField5(iprot thrift.TProtocol) error {
 }
 
 func (p *MessagePostRequest) ReadField6(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		p.ActionType = &v
@@ -1093,10 +1093,10 @@ WriteFieldEndError:
 
 func (p *MessagePostRequest) writeField6(oprot thrift.TProtocol) (err error) {
 	if p.IsSetActionType() {
-		if err = oprot.WriteFieldBegin("action_type", thrift.STRING, 6); err != nil {
+		if err = oprot.WriteFieldBegin("action_type", thrift.I64, 6); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.ActionType); err != nil {
+		if err := oprot.WriteI64(*p.ActionType); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -1184,14 +1184,14 @@ func (p *MessagePostRequest) Field5DeepEqual(src *string) bool {
 	}
 	return true
 }
-func (p *MessagePostRequest) Field6DeepEqual(src *string) bool {
+func (p *MessagePostRequest) Field6DeepEqual(src *int64) bool {
 
 	if p.ActionType == src {
 		return true
 	} else if p.ActionType == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.ActionType, *src) != 0 {
+	if *p.ActionType != *src {
 		return false
 	}
 	return true
