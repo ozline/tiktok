@@ -7,7 +7,7 @@ import (
 )
 
 func testGetPublishVideo(t *testing.T) {
-	_, _, _, _, err := videoService.GetPublishVideoInfo(&video.GetPublishListRequest{
+	_, _, _, _, _, err := videoService.GetPublishVideoInfo(&video.GetPublishListRequest{
 		UserId: 10000,
 		Token:  token,
 	})

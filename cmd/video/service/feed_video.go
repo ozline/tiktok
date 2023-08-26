@@ -12,32 +12,33 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.User, []int64, []int64, error) {
+func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.User, []int64, []int64, []bool, error) {
 	var videoList []db.Video
 	var err error
 
 	if exist, err := cache.IsExistVideoInfo(s.ctx, req.LatestTime); exist == 1 {
 		if err != nil {
-			return nil, nil, nil, nil, err
+			return nil, nil, nil, nil, nil, err
 		}
 		videoList, err = cache.GetVideoList(s.ctx, req.LatestTime)
 		if err != nil {
-			return nil, nil, nil, nil, err
+			return nil, nil, nil, nil, nil, err
 		}
 	} else {
 		formattedTime := time.Unix(req.LatestTime, 0).Format("2006-01-02 15:04:05")
 		videoList, err := db.GetVideoInfoByTime(s.ctx, formattedTime)
 		if err != nil {
-			return nil, nil, nil, nil, err
+			return nil, nil, nil, nil, nil, err
 		}
 		go cache.AddVideoList(s.ctx, videoList, req.LatestTime)
 	}
 	// 创建错误组
 	var eg errgroup.Group
-	// 并发调用获取user信息、favoriteCount和commentCount
+	// 并发调用获取user信息、favoriteCount、commentCount和isFavorite
 	userResults := make(chan *user.User, len(videoList))
 	favoriteCountResults := make(chan int64, len(videoList))
 	commentCountResults := make(chan int64, len(videoList))
+	isFavoriteResults := make(chan bool, len(videoList))
 	// // 并发调用获取user信息、favoriteCount和commentCount
 	for i := 0; i < len(videoList); i++ {
 		index := i // 在闭包中使用本地副本以避免竞态条件
@@ -75,18 +76,30 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 				return err
 			}
 
+			// 获取isFavorite
+			isFavorite, err := rpc.GetVideoIsFavorite(s.ctx, &interaction.InteractionServiceIsFavoriteArgs{Req: &interaction.IsFavoriteRequest{
+				UserId:  videoList[index].UserID,
+				VideoId: videoList[index].Id,
+				Token:   req.Token,
+			}})
+			if err == nil {
+				isFavoriteResults <- isFavorite
+			} else {
+				return err
+			}
 			return nil
 		})
 	}
 	// 等待所有goroutine完成
 	if err := eg.Wait(); err != nil {
-		return nil, nil, nil, nil, err
+		return nil, nil, nil, nil, nil, err
 	}
 
 	// 关闭通道
 	close(userResults)
 	close(favoriteCountResults)
 	close(commentCountResults)
+	close(isFavoriteResults)
 	// 从通道中提取结果
 	var userList []*user.User
 	for userInfo := range userResults {
@@ -102,6 +115,9 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 	for commentCount := range commentCountResults {
 		commentCountList = append(commentCountList, commentCount)
 	}
-
-	return videoList, userList, favoriteCountList, commentCountList, err
+	var isFavoriteList []bool
+	for isFavorite := range isFavoriteResults {
+		isFavoriteList = append(isFavoriteList, isFavorite)
+	}
+	return videoList, userList, favoriteCountList, commentCountList, isFavoriteList, err
 }
