@@ -27,7 +27,6 @@ func TestIsFollow(t *testing.T) {
 			ToUserId: test.touserid,
 			Token:    test.token,
 		})
-
 		if err != nil {
 			continue
 		}
