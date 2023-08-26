@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ozline/tiktok/pkg/constants"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
@@ -53,9 +55,11 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 
 	eg, ctx := errgroup.WithContext(s.ctx)
 	commentList := make([]*interaction.Comment, len(comments))
+	ch := make(chan struct{}, constants.MaxGoroutines)
 	for i := 0; i < len(comments); i++ {
 		comment := comments[i]
 		commentIndex := i
+		ch <- struct{}{}
 		eg.Go(func() error {
 			defer func() {
 				if e := recover(); e != nil {
@@ -68,6 +72,7 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 			})
 			rComment := pack.Comment(&comment, userInfo)
 			commentList[commentIndex] = rComment
+			<-ch
 			return err
 		})
 	}
