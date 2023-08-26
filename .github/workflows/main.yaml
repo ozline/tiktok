@@ -33,7 +33,7 @@ jobs:
           name: build-output-all
           path: output
 
-  run-test:
+  build-all:
     needs: build
     runs-on: ubuntu-latest
     strategy:
