@@ -72,7 +72,6 @@ func PublishList(ctx context.Context, req *video.GetPublishListRequest) ([]*vide
 }
 
 func VideoPublish(ctx context.Context, req *video.PutVideoRequest, file *multipart.FileHeader) error {
-
 	// stream, err := videoClient.PutVideo(ctx)
 
 	// if err != nil {
