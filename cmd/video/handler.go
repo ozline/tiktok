@@ -33,14 +33,14 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
-	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).FeedVideo(req)
+	videoList, userList, favoriteCountList, commentCountList, isFavoriteList, err := service.NewVideoService(ctx).FeedVideo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.NextTime = videoList[0].CreatedAt.Unix()
-	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList)
+	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList, isFavoriteList)
 
 	return
 }
@@ -81,14 +81,14 @@ func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPub
 		return resp, nil
 	}
 
-	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
+	videoList, userList, favoriteCountList, commentCountList, isFavoriteList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList)
+	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList, isFavoriteList)
 
 	return
 }

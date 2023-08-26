@@ -9,15 +9,16 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *VideoService) GetPublishVideoInfo(req *video.GetPublishListRequest) ([]db.Video, []*user.User, []int64, []int64, error) {
+func (s *VideoService) GetPublishVideoInfo(req *video.GetPublishListRequest) ([]db.Video, []*user.User, []int64, []int64, []bool, error) {
 	videoList, err := db.GetVideoInfoByUid(s.ctx, req.UserId)
 
 	// 创建错误组
 	var eg errgroup.Group
-	// 并发调用获取user信息、favoriteCount和commentCount
+	// 并发调用获取user信息、favoriteCount、commentCount和isFavorite
 	userResults := make(chan *user.User, len(videoList))
 	favoriteCountResults := make(chan int64, len(videoList))
 	commentCountResults := make(chan int64, len(videoList))
+	isFavoriteResults := make(chan bool, len(videoList))
 	// // 并发调用获取user信息、favoriteCount和commentCount
 	for i := 0; i < len(videoList); i++ {
 		index := i // 在闭包中使用本地副本以避免竞态条件
@@ -55,18 +56,30 @@ func (s *VideoService) GetPublishVideoInfo(req *video.GetPublishListRequest) ([]
 				return err
 			}
 
+			// 获取isFavorite
+			isFavorite, err := rpc.GetVideoIsFavorite(s.ctx, &interaction.InteractionServiceIsFavoriteArgs{Req: &interaction.IsFavoriteRequest{
+				UserId:  videoList[index].UserID,
+				VideoId: videoList[index].Id,
+				Token:   req.Token,
+			}})
+			if err == nil {
+				isFavoriteResults <- isFavorite
+			} else {
+				return err
+			}
 			return nil
 		})
 	}
 	// 等待所有goroutine完成
 	if err := eg.Wait(); err != nil {
-		return nil, nil, nil, nil, err
+		return nil, nil, nil, nil, nil, err
 	}
 
 	// 关闭通道
 	close(userResults)
 	close(favoriteCountResults)
 	close(commentCountResults)
+	close(isFavoriteResults)
 	// 从通道中提取结果
 	var userList []*user.User
 	for userInfo := range userResults {
@@ -82,5 +95,9 @@ func (s *VideoService) GetPublishVideoInfo(req *video.GetPublishListRequest) ([]
 	for commentCount := range commentCountResults {
 		commentCountList = append(commentCountList, commentCount)
 	}
-	return videoList, userList, favoriteCountList, commentCountList, err
+	var isFavoriteList []bool
+	for isFavorite := range isFavoriteResults {
+		isFavoriteList = append(isFavoriteList, isFavorite)
+	}
+	return videoList, userList, favoriteCountList, commentCountList, isFavoriteList, err
 }
