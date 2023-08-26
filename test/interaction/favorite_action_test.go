@@ -25,7 +25,6 @@ func testFavoriteAction(t *testing.T) {
 		t.Error(err)
 		t.Fail()
 	}
-	t.Log("------------testFavoriteAction success---------------")
 }
 
 func benchmarkFavoriteAction(b *testing.B) {

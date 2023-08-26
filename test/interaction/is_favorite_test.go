@@ -6,13 +6,14 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
-func testVideoFavoriteCount(t *testing.T) {
-	req := &interaction.VideoFavoritedCountRequest{
+func testIsFavorite(t *testing.T) {
+	req := &interaction.IsFavoriteRequest{
+		UserId:  userId,
 		VideoId: videoId,
 		Token:   token,
 	}
 
-	_, err := interactionService.GetVideoFavoritedCount(req)
+	_, err := interactionService.IsFavorite(req)
 	if err != nil {
 		t.Logf("err: [%v] \n", err)
 		t.Error(err)
@@ -20,13 +21,14 @@ func testVideoFavoriteCount(t *testing.T) {
 	}
 }
 
-func benchmarkFavoriteVideoCount(b *testing.B) {
-	req := &interaction.VideoFavoritedCountRequest{
+func benchmarkIsFavorite(b *testing.B) {
+	req := &interaction.IsFavoriteRequest{
+		UserId:  userId,
 		VideoId: videoId,
 		Token:   token,
 	}
 	for n := 0; n < b.N; n++ {
-		_, err := interactionService.GetVideoFavoritedCount(req)
+		_, err := interactionService.IsFavorite(req)
 		if err != nil {
 			b.Error(err)
 		}

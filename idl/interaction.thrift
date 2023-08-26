@@ -75,6 +75,17 @@ struct UserFavoriteCountResponse {
     2: required i64 like_count,
 }
 
+struct IsFavoriteRequest {
+    1: required i64 user_id,
+    2: required i64 video_id,
+    3: required string token,
+}
+
+struct IsFavoriteResponse {
+    1: required BaseResp base,
+    2: required bool is_favorite,
+}
+
 struct CommentActionRequest {
     1: required i64 video_id,
     2: required i64 action_type,
@@ -114,6 +125,7 @@ service InteractionService {
     VideoFavoritedCountResponse VideoFavoritedCount(1 : VideoFavoritedCountRequest req)
     UserFavoriteCountResponse UserFavoriteCount(1 : UserFavoriteCountRequest req)
     UserTotalFavoritedResponse UserTotalFavorited(1 : UserTotalFavoritedRequest req)
+    IsFavoriteResponse IsFavorite(1 : IsFavoriteRequest req)
     CommentActionResponse CommentAction(1 : CommentActionRequest req)
     CommentListResponse CommentList(1 : CommentListRequest req)
     CommentCountResponse CommentCount(1 : CommentCountRequest req)

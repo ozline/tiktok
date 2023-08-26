@@ -2,68 +2,74 @@ package service
 
 import (
 	"strconv"
-	"sync"
 
-	"github.com/ozline/tiktok/cmd/interaction/pack"
-	"github.com/ozline/tiktok/kitex_gen/user"
-
-	"github.com/ozline/tiktok/cmd/interaction/rpc"
-
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
+	"github.com/ozline/tiktok/cmd/interaction/pack"
+	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"github.com/ozline/tiktok/kitex_gen/user"
+	"golang.org/x/sync/errgroup"
 )
 
 // CreateComment create comment
 func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest, userId int64) (*interaction.Comment, error) {
-	var wg sync.WaitGroup
+	eg, ctx := errgroup.WithContext(s.ctx)
 	commentModel := &db.Comment{
 		VideoId: req.VideoId,
 		UserId:  userId,
 		Content: *req.CommentText,
 	}
 
-	errs := make([]error, 4)
 	comment := new(db.Comment)
-	var err error
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		comment, err = db.CreateComment(s.ctx, commentModel)
-		errs[0] = err
-	}()
+
+	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
+		var err error
+		comment, err = db.CreateComment(ctx, commentModel)
+		return err
+	})
 
 	key := strconv.FormatInt(req.VideoId, 10)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		exist, err := cache.IsExistComment(s.ctx, key)
-		errs[1] = err
+	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
+		exist, err := cache.IsExistComment(ctx, key)
 		if err != nil {
-			return
+			return err
 		}
 		if exist == 1 {
-			err = cache.DeleteComments(s.ctx, key)
-			errs[2] = err
+			err = cache.DeleteComments(ctx, key)
 		}
-	}()
+		return err
+	})
 
 	userInfo := new(user.User)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		userInfo, err = rpc.UserInfo(s.ctx, &user.InfoRequest{
+
+	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
+		var err error
+		userInfo, err = rpc.UserInfo(ctx, &user.InfoRequest{
 			UserId: userId,
 			Token:  req.Token,
 		})
-		errs[3] = err
-	}()
-	wg.Wait()
+		return err
+	})
 
-	for _, err = range errs {
-		if err != nil {
-			return nil, err
-		}
+	if err := eg.Wait(); err != nil {
+		return nil, err
 	}
 
 	return pack.Comment(comment, userInfo), nil

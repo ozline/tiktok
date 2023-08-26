@@ -11,18 +11,20 @@ import (
 	"github.com/ozline/tiktok/cmd/follow/rpc"
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/pkg/constants"
 )
 
 // FollowerList View fan list
 func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follow.User, error) {
 	// 限流
-	if err := cache.Limit(s.ctx); err != nil {
+	if err := cache.Limit(s.ctx, constants.FollowerListRate, constants.Interval); err != nil {
 		return nil, err
 	}
 
 	userList := make([]*follow.User, 0, 10)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
+	isErr := false
 
 	// 先查redis
 	followerList, err := cache.FollowerListAction(s.ctx, req.UserId)
@@ -47,13 +49,23 @@ func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follo
 	for _, id := range *followerList {
 		wg.Add(1)
 		go func(id int64, req *follow.FollowerListRequest, userList *[]*follow.User, wg *sync.WaitGroup, mu *sync.Mutex) {
-			defer wg.Done()
+			defer func() {
+				// 协程内部使用recover捕获可能在调用逻辑中发生的panic
+				if e := recover(); e != nil {
+					// 某个服务调用协程报错，在这里打印一些错误日志
+					klog.Info("recover panic:", e)
+				}
+				wg.Done()
+			}()
 
 			user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
 				UserId: id,
 				Token:  req.Token,
 			})
 			if err != nil {
+				mu.Lock()
+				isErr = true // 报错就修改为true
+				mu.Unlock()
 				return
 			}
 
@@ -63,6 +75,9 @@ func (s *FollowService) FollowerList(req *follow.FollowerListRequest) (*[]*follo
 			*userList = append(*userList, follow)
 			mu.Unlock()
 		}(id, req, &userList, &wg, &mu)
+		if isErr {
+			return nil, errors.New("RPC call error")
+		}
 	}
 
 	wg.Wait()

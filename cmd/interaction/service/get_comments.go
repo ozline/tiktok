@@ -2,17 +2,17 @@ package service
 
 import (
 	"strconv"
-	"sync"
 	"time"
 
-	"github.com/ozline/tiktok/cmd/interaction/pack"
-	"github.com/ozline/tiktok/cmd/interaction/rpc"
-	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/cloudwego/kitex/pkg/klog"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
-
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
+	"github.com/ozline/tiktok/cmd/interaction/pack"
+	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"github.com/ozline/tiktok/kitex_gen/user"
+	"golang.org/x/sync/errgroup"
 )
 
 func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([]*interaction.Comment, error) {
@@ -50,31 +50,30 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 			}
 		}
 	}
-	var wg sync.WaitGroup
-	// users := make(map[int64]int) // 利用map避免重复查询
+
+	eg, ctx := errgroup.WithContext(s.ctx)
 	commentList := make([]*interaction.Comment, len(comments))
-	errs := make([]error, len(comments))
 	for index, data := range comments {
 		comment := data
 		commentIndex := index
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			userInfo, err := rpc.UserInfo(s.ctx, &user.InfoRequest{
+		eg.Go(func() error {
+			defer func() {
+				if e := recover(); e != nil {
+					klog.Error(e)
+				}
+			}()
+			userInfo, err := rpc.UserInfo(ctx, &user.InfoRequest{
 				UserId: comment.UserId,
 				Token:  req.Token,
 			})
 			rComment := pack.Comment(&comment, userInfo)
 			commentList[commentIndex] = rComment
-			errs[commentIndex] = err
-		}()
+			return err
+		})
 	}
-	wg.Wait()
 
-	for _, err = range errs {
-		if err != nil {
-			return nil, err
-		}
+	if err = eg.Wait(); err != nil {
+		return nil, err
 	}
 
 	return commentList, nil

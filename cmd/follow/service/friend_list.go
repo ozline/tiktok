@@ -12,18 +12,20 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/pkg/constants"
 )
 
 // FriendList Viewing friends list
 func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.FriendUser, error) {
 	// 限流
-	if err := cache.Limit(s.ctx); err != nil {
+	if err := cache.Limit(s.ctx, constants.FriendListRate, constants.Interval); err != nil {
 		return nil, err
 	}
 
 	friendList := make([]*follow.FriendUser, 0, 10)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
+	isErr := false
 
 	// 先查redis
 	userList, err := cache.FriendListAction(s.ctx, req.UserId)
@@ -50,13 +52,23 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 	for _, userID := range *userList {
 		wg.Add(1)
 		go func(id int64, req *follow.FriendListRequest, userList *[]*follow.FriendUser, wg *sync.WaitGroup, mu *sync.Mutex) {
-			defer wg.Done()
+			defer func() {
+				// 协程内部使用recover捕获可能在调用逻辑中发生的panic
+				if e := recover(); e != nil {
+					// 某个服务调用协程报错，在这里打印一些错误日志
+					klog.Info("recover panic:", e)
+				}
+				wg.Done()
+			}()
 
 			user, err := rpc.GetUser(s.ctx, &user.InfoRequest{
 				UserId: id,
 				Token:  req.Token,
 			})
 			if err != nil {
+				mu.Lock()
+				isErr = true // 报错就修改为true
+				mu.Unlock()
 				return
 			}
 			friend := pack.User(user) // 结构体转换
@@ -66,6 +78,9 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 				ToUserId: req.UserId,
 			}, req.UserId, id)
 			if err != nil {
+				mu.Lock()
+				isErr = true // 报错就修改为true
+				mu.Unlock()
 				return
 			}
 
@@ -79,6 +94,9 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 			*userList = append(*userList, friendUser)
 			mu.Unlock()
 		}(userID, req, &friendList, &wg, &mu)
+		if isErr {
+			return nil, errors.New("RPC call error")
+		}
 	}
 
 	wg.Wait()

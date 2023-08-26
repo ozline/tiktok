@@ -6,13 +6,13 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 )
 
-func benchmarkFavoriteList(b *testing.B) {
-	req := &interaction.FavoriteListRequest{
+func benchmarkUserTotalFavorited(b *testing.B) {
+	req := &interaction.UserTotalFavoritedRequest{
 		UserId: userId,
 		Token:  token,
 	}
 	for n := 0; n < b.N; n++ {
-		_, err := interactionService.FavoriteList(req)
+		_, err := interactionService.GetUserTotalFavorited(req)
 		if err != nil {
 			b.Error(err)
 		}
