@@ -6,11 +6,13 @@ import (
 	"context"
 
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
 	"github.com/ozline/tiktok/cmd/api/biz/pack"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/pkg/errno"
 )
 
 // Feed .
@@ -133,6 +135,15 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(api.PublishActionResponse)
+
+	file, err := c.FormFile("data")
+
+	if err != nil {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
+		return
+	}
+
+	hlog.CtxInfof(ctx, "filename: %v\n", file.Filename)
 
 	pack.SendResponse(c, resp)
 }

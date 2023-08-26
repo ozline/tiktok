@@ -3,7 +3,9 @@ package constants
 import "time"
 
 const (
+	// auth
 	JWTValue = "MTAxNTkwMTg1Mw=="
+	StartID  = 10000
 
 	// redis
 	ReidsDB_Chat       = 1

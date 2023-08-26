@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"mime/multipart"
 
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/loadbalance"
@@ -70,6 +71,16 @@ func PublishList(ctx context.Context, req *video.GetPublishListRequest) ([]*vide
 	return resp.VideoList, nil
 }
 
-func VideoPublish(ctx context.Context, req *video.PutVideoRequest) error {
+func VideoPublish(ctx context.Context, req *video.PutVideoRequest, file *multipart.FileHeader) error {
+	// stream, err := videoClient.PutVideo(ctx)
+
+	// if err != nil {
+	// 	return err
+	// }
+
+	// for i := 0; i < 5; i++ {
+	// 	err = stream.Send(&video.PutVideoRequest{})
+	// }
+
 	return nil
 }

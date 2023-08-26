@@ -24,7 +24,6 @@ type MiddleMessage struct {
 	FromUserId int64
 	Content    string
 	CreatedAt  string
-	UpdatedAt  string
 }
 
 type RabbitMQ struct {
