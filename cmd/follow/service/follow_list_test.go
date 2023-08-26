@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal"
 	"github.com/ozline/tiktok/cmd/follow/rpc"
 	"github.com/ozline/tiktok/cmd/follow/service"
@@ -22,7 +23,7 @@ func TestFollowList(t *testing.T) {
 	dal.Init()
 	rpc.Init()
 	followService := service.NewFollowService(context.Background())
-	for _, test := range followListTests {
+	for i, test := range followListTests {
 		test.token, _ = utils.CreateToken(test.id)
 		_, err := followService.FollowList(&follow.FollowListRequest{
 			UserId: test.id,
@@ -30,6 +31,7 @@ func TestFollowList(t *testing.T) {
 		})
 
 		if err != nil {
+			klog.Infof("test num %v,err:%v", i, err)
 			continue
 		}
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal"
 	"github.com/ozline/tiktok/cmd/follow/service"
 	"github.com/ozline/tiktok/config"
@@ -20,7 +21,7 @@ func TestFollowerCount(t *testing.T) {
 	config.InitForTest()
 	dal.Init()
 	followService := service.NewFollowService(context.Background())
-	for _, test := range followerCountTests {
+	for i, test := range followerCountTests {
 		test.token, _ = utils.CreateToken(test.id)
 		_, err := followService.FollowerCount(&follow.FollowerCountRequest{
 			UserId: test.id,
@@ -28,6 +29,7 @@ func TestFollowerCount(t *testing.T) {
 		})
 
 		if err != nil {
+			klog.Infof("test num %v,err:%v", i, err)
 			continue
 		}
 	}
