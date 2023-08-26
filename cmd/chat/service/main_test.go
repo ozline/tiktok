@@ -12,7 +12,6 @@ var (
 	chatservice  *ChatService
 	from_user_id int64 = 2
 	to_user_id   int64 = 3
-	token        string
 	content      string = "cover test"
 )
 
