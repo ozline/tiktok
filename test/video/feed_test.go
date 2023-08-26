@@ -18,5 +18,4 @@ func testFeed(t *testing.T) {
 		t.Fail()
 	}
 	fmt.Println(pack.VideoList(videoList, userList, favoriteCountList, commentCountList, isFavoriteList))
-
 }

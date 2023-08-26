@@ -154,7 +154,7 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 	coverName := pack.GenerateCoverName(claim.UserId)
 	// 创建错误组
 	var eg errgroup.Group
-	//上传视频
+	// 上传视频
 	eg.Go(func() error {
 		err = service.NewVideoService(ctx).UploadVideo(req, videoName)
 		return err
@@ -176,5 +176,5 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 		return resp, nil
 	}
 	resp.Base = pack.BuildBaseResp(nil)
-	return
+	return resp, nil
 }
