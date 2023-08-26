@@ -1,4 +1,4 @@
-FROM golang:1.21 AS builder
+FROM golang:1.20 AS builder
 
 ENV TZ Asia/Shanghai
 ENV CGO_ENABLED 0
