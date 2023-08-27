@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/pack"
 	"github.com/ozline/tiktok/cmd/video/service"
 	"github.com/ozline/tiktok/config"
+	"github.com/ozline/tiktok/kitex_gen/video"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
 	"golang.org/x/sync/errgroup"
@@ -39,8 +39,10 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		return resp, nil
 	}
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.NextTime = videoList[0].CreatedAt.Unix()
 	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList, isFavoriteList)
+	if len(videoList) > 0 {
+		resp.NextTime = videoList[len(videoList)-1].CreatedAt.Unix()
+	}
 
 	return
 }

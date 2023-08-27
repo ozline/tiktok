@@ -25,6 +25,7 @@ func TestMain(m *testing.M) {
 	rpc.Init()
 	videoService = service.NewVideoService(context.Background())
 	token, _ = utils.CreateToken(10000)
+	videoId = []int64{482581113097682944, 483299894140862464, 483302572409487360}
 	m.Run()
 }
 

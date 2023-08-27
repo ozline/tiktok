@@ -6,8 +6,8 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"github.com/ozline/tiktok/kitex_gen/video"
 	"gorm.io/gorm"
 )
 
