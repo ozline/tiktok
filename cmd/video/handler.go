@@ -41,7 +41,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList, isFavoriteList)
 	if len(videoList) > 0 {
-		resp.NextTime = videoList[0].CreatedAt.Unix()
+		resp.NextTime = videoList[len(videoList)-1].CreatedAt.Unix()
 	}
 
 	return
