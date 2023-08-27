@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/pack"
 	"github.com/ozline/tiktok/cmd/video/service"
 	"github.com/ozline/tiktok/config"
@@ -41,7 +40,6 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 	}
 	resp.Base = pack.BuildBaseResp(nil)
 	resp.VideoList = pack.VideoList(videoList, userList, favoriteCountList, commentCountList, isFavoriteList)
-	klog.Info(videoList)
 	if len(videoList) > 0 {
 		resp.NextTime = videoList[0].CreatedAt.Unix()
 	}
