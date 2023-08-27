@@ -3,10 +3,10 @@ name: basic-test
 on:
   push:
     branches:
-      - main
+      - dev
   pull_request:
     branches:
-      - main
+      - dev
 
 jobs:
   build-all:
@@ -60,5 +60,5 @@ jobs:
       - name: Run local server
         run: nohup sh ./output/${{ matrix.service }}/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
 
-      - name: Test interfaces
+      - name: Run test
         run: go test -v ./test/${{ matrix.service }}/...
