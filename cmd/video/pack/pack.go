@@ -3,7 +3,7 @@ package pack
 import (
 	"errors"
 
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
+	"github.com/ozline/tiktok/kitex_gen/video"
 	"github.com/ozline/tiktok/pkg/errno"
 )
 

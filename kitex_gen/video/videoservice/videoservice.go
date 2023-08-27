@@ -8,7 +8,7 @@ import (
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
 	streaming "github.com/cloudwego/kitex/pkg/streaming"
-	video "github.com/ozline/tiktok/cmd/video/kitex_gen/video"
+	video "github.com/ozline/tiktok/kitex_gen/video"
 	proto "google.golang.org/protobuf/proto"
 )
 

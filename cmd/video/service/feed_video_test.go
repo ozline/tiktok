@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/ozline/tiktok/cmd/video/dal"
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/rpc"
 	"github.com/ozline/tiktok/cmd/video/service"
 	"github.com/ozline/tiktok/config"
+	"github.com/ozline/tiktok/kitex_gen/video"
 	"github.com/ozline/tiktok/pkg/utils"
 )
 
