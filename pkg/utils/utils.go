@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"mime/multipart"
 	"net"
 	"strings"
 
@@ -38,4 +39,21 @@ func AddrCheck(addr string) bool {
 	l.Close()
 
 	return true
+}
+
+func IsVideoFile(header *multipart.FileHeader) bool {
+	contentType := header.Header.Get("Content-Type")
+	if strings.HasPrefix(contentType, "video/") {
+		return true
+	}
+
+	filename := header.Filename
+	extensions := []string{".mp4", ".avi", ".mkv", ".mov"} // Add more video extensions if needed
+	for _, ext := range extensions {
+		if strings.HasSuffix(strings.ToLower(filename), ext) {
+			return true
+		}
+	}
+
+	return false
 }
