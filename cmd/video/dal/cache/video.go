@@ -12,11 +12,11 @@ import (
 func AddVideoList(ctx context.Context, videoList []db.Video, latestTime int64) {
 	videoJson, err := json.Marshal(videoList)
 	if err != nil {
-		klog.Infof(err.Error())
+		klog.Error(err)
 	}
 	err = RedisClient.Set(ctx, strconv.FormatInt(latestTime, 10), videoJson, 0).Err()
 	if err != nil {
-		klog.Infof(err.Error())
+		klog.Error(err)
 	}
 }
 func GetVideoList(ctx context.Context, latestTime int64) (videoList []db.Video, err error) {
