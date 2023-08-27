@@ -4,9 +4,9 @@ package api
 
 import (
 	"context"
+	"io"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
 	"github.com/ozline/tiktok/cmd/api/biz/pack"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
@@ -143,7 +143,30 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	hlog.CtxInfof(ctx, "filename: %v\n", file.Filename)
+	fileContent, err := file.Open()
+
+	if err != nil {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
+		return
+	}
+
+	byteContainer, err := io.ReadAll(fileContent)
+
+	if err != nil {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
+		return
+	}
+
+	err = rpc.VideoPublish(ctx, &video.PutVideoRequest{
+		VideoFile: byteContainer,
+		Title:     req.Title,
+		Token:     req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
 
 	pack.SendResponse(c, resp)
 }
