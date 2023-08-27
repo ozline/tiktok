@@ -35,7 +35,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 		userList, err = db.FriendListAction(s.ctx, req.UserId)
 		if errors.Is(err, db.RecordNotFound) { // db中也查不到
 			klog.Info("you do not have any friends")
-			return nil, nil
+			return &friendList, nil
 		} else if err != nil {
 			return nil, err
 		}

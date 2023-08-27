@@ -51,8 +51,14 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 // 取消关注
 func UnFollowAction(ctx context.Context, follow *Follow) error {
+	followOrNot, err := IsFollow(ctx, follow.UserID, follow.ToUserID)
+	if err != nil {
+		return err
+	} else if !followOrNot {
+		return errors.New("you are not following this user")
+	}
 	// 修改db中的status
-	err := DB.WithContext(ctx).Model(&Follow{}).
+	err = DB.WithContext(ctx).Model(&Follow{}).
 		Where("user_id= ? AND to_user_id = ?", follow.UserID, follow.ToUserID).
 		Update("status", constants.UnFollowAction).Error
 	if err != nil {
@@ -155,11 +161,11 @@ func FollowerCount(ctx context.Context, uid int64) (int64, error) {
 }
 
 func IsFollow(ctx context.Context, uid, tid int64) (bool, error) {
-	followResp := new(Follow)
+	var count int64
 	err := DB.WithContext(ctx).Model(&Follow{}).
 		Where("user_id = ? AND to_user_id = ? AND status = ?", uid, tid, constants.FollowAction).
-		Find(&followResp).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) { // db中也查不到
+		Count(&count).Error
+	if count == 0 { // db中也查不到
 		return false, RecordNotFound
 	} else if err != nil {
 		return false, err

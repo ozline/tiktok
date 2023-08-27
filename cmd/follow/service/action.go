@@ -1,11 +1,15 @@
 package service
 
 import (
+	"errors"
 	"time"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
+	"github.com/ozline/tiktok/cmd/follow/rpc"
 	"github.com/ozline/tiktok/kitex_gen/follow"
+	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -22,6 +26,22 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 
 	if err != nil {
 		return errno.AuthorizationFailedError
+	}
+
+	// 禁止自己关注自己
+	if claim.UserId == req.ToUserId {
+		return errors.New("you should not follow yourself")
+	}
+
+	// 判断是否目标用户是否存在
+	_, err = rpc.GetUser(s.ctx, &user.InfoRequest{
+		UserId: req.ToUserId,
+		Token:  req.Token,
+	})
+
+	if err != nil {
+		klog.Info(err)
+		return errors.New("user not found")
 	}
 
 	action := &db.Follow{

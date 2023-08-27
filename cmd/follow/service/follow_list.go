@@ -34,7 +34,7 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 		followList, err = db.FollowListAction(s.ctx, req.UserId)
 		if errors.Is(err, db.RecordNotFound) { // db中也查不到
 			klog.Info("you are not following anyone")
-			return nil, nil
+			return &userList, nil
 		} else if err != nil {
 			return nil, err
 		}
