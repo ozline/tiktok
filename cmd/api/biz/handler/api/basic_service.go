@@ -4,6 +4,7 @@ package api
 
 import (
 	"context"
+	"io"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
@@ -11,6 +12,8 @@ import (
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 // Feed .
@@ -133,6 +136,43 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(api.PublishActionResponse)
+
+	file, err := c.FormFile("data")
+
+	if !utils.IsVideoFile(file) {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage("not video file"))
+		return
+	}
+
+	if err != nil {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
+		return
+	}
+
+	fileContent, err := file.Open()
+
+	if err != nil {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
+		return
+	}
+
+	byteContainer, err := io.ReadAll(fileContent)
+
+	if err != nil {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
+		return
+	}
+
+	err = rpc.VideoPublish(ctx, &video.PutVideoRequest{
+		VideoFile: byteContainer,
+		Title:     req.Title,
+		Token:     req.Token,
+	})
+
+	if err != nil {
+		pack.SendFailResponse(c, err)
+		return
+	}
 
 	pack.SendResponse(c, resp)
 }

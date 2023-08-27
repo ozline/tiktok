@@ -109,8 +109,8 @@ struct UserResponse {
 
 struct PublishActionRequest {
     1: required string token,
-    2: required binary data,
-    3: required string title,
+    // 2: required binary data,
+    2: required string title,
 }
 
 struct PublishActionResponse {
@@ -129,7 +129,7 @@ struct PublishListResponse {
     3: required list<Video> video_list,
 }
 
-// interaction
+// Interaction
 
 struct FavoriteActionRequest {
     1: required string token,
@@ -157,8 +157,8 @@ struct CommentActionRequest {
     1: required string token,
     2: required i64 video_id,
     3: required i64 action_type,
-    4: required string comment_text,
-    5: required i64 comment_id,
+    4: optional string comment_text,
+    5: optional i64 comment_id,
 }
 
 struct CommentActionResponse {
@@ -260,7 +260,7 @@ service BasicService {
     PublishListResponse PublishList(1: PublishListRequest req) (api.get="/douyin/publish/list")
 }
 
-service interactionService {
+service InteractionService {
     FavoriteActionResponse FavoriteAction(1: FavoriteActionRequest req) (api.post="/douyin/favorite/action")
     FavoriteListResponse FavoriteList(1: FavoriteListRequest req) (api.get="/douyin/favorite/list")
 

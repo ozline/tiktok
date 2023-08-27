@@ -11,13 +11,11 @@ new:
 	hz new \
 	-module $(MODULE)/cmd/$(SERVICE_NAME) \
 	-service "$(SERVICE_NAME)" \
-	-idl ../../idl/api.thrift \
+	hz update -idl ../../idl/api.thrift
 
 .PHONY: gen
 gen:
-	hz update \
-	-module $(MODULE)/cmd/$(SERVICE_NAME) \
-	-idl ../../idl/api.thrift \
+	hz update -idl ../../idl/api.thrift
 
 .PHONY: server
 server:

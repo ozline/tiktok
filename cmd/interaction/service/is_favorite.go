@@ -1,9 +1,12 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
+	"gorm.io/gorm"
 )
 
 func (s *InteractionService) IsFavorite(req *interaction.IsFavoriteRequest) (bool, error) {
@@ -17,8 +20,11 @@ func (s *InteractionService) IsFavorite(req *interaction.IsFavoriteRequest) (boo
 	}
 	// read from mysql
 	err = db.IsFavoriteExist(s.ctx, req.UserId, req.VideoId)
-	if err != nil {
-		exist = false
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
 	}
-	return exist, err
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

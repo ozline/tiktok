@@ -10,7 +10,7 @@ import (
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 )
 
-func Video(data *db.Video, user *user.User, favoriteCount int64, commentCount int64) *video.Video {
+func Video(data *db.Video, user *user.User, favoriteCount int64, commentCount int64, isFavorite bool) *video.Video {
 	if data == nil {
 		return nil
 	}
@@ -33,14 +33,14 @@ func Video(data *db.Video, user *user.User, favoriteCount int64, commentCount in
 		CoverUrl:      data.CoverUrl,
 		FavoriteCount: favoriteCount,
 		CommentCount:  commentCount,
-		IsFavorite:    true, // TODO
+		IsFavorite:    isFavorite,
 		Title:         data.Title,
 	}
 }
-func VideoList(data []db.Video, userList []*user.User, favoriteCountList []int64, commentCountList []int64) []*video.Video {
+func VideoList(data []db.Video, userList []*user.User, favoriteCountList []int64, commentCountList []int64, isFavoriteList []bool) []*video.Video {
 	videoList := make([]*video.Video, 0, len(data))
 	for i := 0; i < len(data); i++ {
-		videoList = append(videoList, Video(&data[i], userList[i], favoriteCountList[i], commentCountList[i]))
+		videoList = append(videoList, Video(&data[i], userList[i], favoriteCountList[i], commentCountList[i], isFavoriteList[i]))
 	}
 	return videoList
 }

@@ -6,33 +6,23 @@ import (
 	"context"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
-	streaming "github.com/cloudwego/kitex/pkg/streaming"
-	transport "github.com/cloudwego/kitex/transport"
 	video "github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	Feed(ctx context.Context, Req *video.FeedRequest, callOptions ...callopt.Option) (r *video.FeedResponse, err error)
-	PutVideo(ctx context.Context, callOptions ...callopt.Option) (stream VideoService_PutVideoClient, err error)
+	PutVideo(ctx context.Context, Req *video.PutVideoRequest, callOptions ...callopt.Option) (r *video.PutVideoResponse, err error)
 	GetFavoriteVideoInfo(ctx context.Context, Req *video.GetFavoriteVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetFavoriteVideoInfoResponse, err error)
 	GetPublishList(ctx context.Context, Req *video.GetPublishListRequest, callOptions ...callopt.Option) (r *video.GetPublishListResponse, err error)
 	GetWorkCount(ctx context.Context, Req *video.GetWorkCountRequest, callOptions ...callopt.Option) (r *video.GetWorkCountResponse, err error)
 	GetVideoIDByUid(ctx context.Context, Req *video.GetVideoIDByUidRequset, callOptions ...callopt.Option) (r *video.GetVideoIDByUidResponse, err error)
 }
 
-type VideoService_PutVideoClient interface {
-	streaming.Stream
-	Send(*video.PutVideoRequest) error
-	Recv() (*video.PutVideoResponse, error)
-}
-
 // NewClient creates a client for the service defined in IDL.
 func NewClient(destService string, opts ...client.Option) (Client, error) {
 	var options []client.Option
 	options = append(options, client.WithDestService(destService))
-
-	options = append(options, client.WithTransportProtocol(transport.GRPC))
 
 	options = append(options, opts...)
 
@@ -63,9 +53,9 @@ func (p *kVideoServiceClient) Feed(ctx context.Context, Req *video.FeedRequest, 
 	return p.kClient.Feed(ctx, Req)
 }
 
-func (p *kVideoServiceClient) PutVideo(ctx context.Context, callOptions ...callopt.Option) (stream VideoService_PutVideoClient, err error) {
+func (p *kVideoServiceClient) PutVideo(ctx context.Context, Req *video.PutVideoRequest, callOptions ...callopt.Option) (r *video.PutVideoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.PutVideo(ctx)
+	return p.kClient.PutVideo(ctx, Req)
 }
 
 func (p *kVideoServiceClient) GetFavoriteVideoInfo(ctx context.Context, Req *video.GetFavoriteVideoInfoRequest, callOptions ...callopt.Option) (r *video.GetFavoriteVideoInfoResponse, err error) {

@@ -4751,8 +4751,8 @@ func (p *UserResponse) String() string {
 
 type PublishActionRequest struct {
 	Token string `thrift:"token,1,required" form:"token,required" json:"token,required" query:"token,required"`
-	Data  []byte `thrift:"data,2,required" form:"data,required" json:"data,required" query:"data,required"`
-	Title string `thrift:"title,3,required" form:"title,required" json:"title,required" query:"title,required"`
+	// 2: required binary data,
+	Title string `thrift:"title,2,required" form:"title,required" json:"title,required" query:"title,required"`
 }
 
 func NewPublishActionRequest() *PublishActionRequest {
@@ -4763,18 +4763,13 @@ func (p *PublishActionRequest) GetToken() (v string) {
 	return p.Token
 }
 
-func (p *PublishActionRequest) GetData() (v []byte) {
-	return p.Data
-}
-
 func (p *PublishActionRequest) GetTitle() (v string) {
 	return p.Title
 }
 
 var fieldIDToName_PublishActionRequest = map[int16]string{
 	1: "token",
-	2: "data",
-	3: "title",
+	2: "title",
 }
 
 func (p *PublishActionRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -4782,7 +4777,6 @@ func (p *PublishActionRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetToken bool = false
-	var issetData bool = false
 	var issetTitle bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
@@ -4815,17 +4809,6 @@ func (p *PublishActionRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetData = true
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 3:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField3(iprot); err != nil {
-					goto ReadFieldError
-				}
 				issetTitle = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
@@ -4851,13 +4834,8 @@ func (p *PublishActionRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetData {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
-
 	if !issetTitle {
-		fieldId = 3
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -4888,15 +4866,6 @@ func (p *PublishActionRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *PublishActionRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadBinary(); err != nil {
-		return err
-	} else {
-		p.Data = []byte(v)
-	}
-	return nil
-}
-
-func (p *PublishActionRequest) ReadField3(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
@@ -4917,10 +4886,6 @@ func (p *PublishActionRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
-			goto WriteFieldError
-		}
-		if err = p.writeField3(oprot); err != nil {
-			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -4960,24 +4925,7 @@ WriteFieldEndError:
 }
 
 func (p *PublishActionRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("data", thrift.STRING, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteBinary([]byte(p.Data)); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
-}
-
-func (p *PublishActionRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("title", thrift.STRING, 3); err != nil {
+	if err = oprot.WriteFieldBegin("title", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteString(p.Title); err != nil {
@@ -4988,9 +4936,9 @@ func (p *PublishActionRequest) writeField3(oprot thrift.TProtocol) (err error) {
 	}
 	return nil
 WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
 WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
 func (p *PublishActionRequest) String() string {
@@ -5680,7 +5628,7 @@ func (p *PublishListResponse) String() string {
 	return fmt.Sprintf("PublishListResponse(%+v)", *p)
 }
 
-// interaction
+// Interaction
 type FavoriteActionRequest struct {
 	Token   string `thrift:"token,1,required" form:"token,required" json:"token,required" query:"token,required"`
 	VideoID int64  `thrift:"video_id,2,required" form:"video_id,required" json:"video_id,required" query:"video_id,required"`
@@ -6614,11 +6562,11 @@ func (p *FavoriteListResponse) String() string {
 }
 
 type CommentActionRequest struct {
-	Token       string `thrift:"token,1,required" form:"token,required" json:"token,required" query:"token,required"`
-	VideoID     int64  `thrift:"video_id,2,required" form:"video_id,required" json:"video_id,required" query:"video_id,required"`
-	ActionType  int64  `thrift:"action_type,3,required" form:"action_type,required" json:"action_type,required" query:"action_type,required"`
-	CommentText string `thrift:"comment_text,4,required" form:"comment_text,required" json:"comment_text,required" query:"comment_text,required"`
-	CommentID   int64  `thrift:"comment_id,5,required" form:"comment_id,required" json:"comment_id,required" query:"comment_id,required"`
+	Token       string  `thrift:"token,1,required" form:"token,required" json:"token,required" query:"token,required"`
+	VideoID     int64   `thrift:"video_id,2,required" form:"video_id,required" json:"video_id,required" query:"video_id,required"`
+	ActionType  int64   `thrift:"action_type,3,required" form:"action_type,required" json:"action_type,required" query:"action_type,required"`
+	CommentText *string `thrift:"comment_text,4,optional" form:"comment_text" json:"comment_text,omitempty" query:"comment_text"`
+	CommentID   *int64  `thrift:"comment_id,5,optional" form:"comment_id" json:"comment_id,omitempty" query:"comment_id"`
 }
 
 func NewCommentActionRequest() *CommentActionRequest {
@@ -6637,12 +6585,22 @@ func (p *CommentActionRequest) GetActionType() (v int64) {
 	return p.ActionType
 }
 
+var CommentActionRequest_CommentText_DEFAULT string
+
 func (p *CommentActionRequest) GetCommentText() (v string) {
-	return p.CommentText
+	if !p.IsSetCommentText() {
+		return CommentActionRequest_CommentText_DEFAULT
+	}
+	return *p.CommentText
 }
 
+var CommentActionRequest_CommentID_DEFAULT int64
+
 func (p *CommentActionRequest) GetCommentID() (v int64) {
-	return p.CommentID
+	if !p.IsSetCommentID() {
+		return CommentActionRequest_CommentID_DEFAULT
+	}
+	return *p.CommentID
 }
 
 var fieldIDToName_CommentActionRequest = map[int16]string{
@@ -6653,6 +6611,14 @@ var fieldIDToName_CommentActionRequest = map[int16]string{
 	5: "comment_id",
 }
 
+func (p *CommentActionRequest) IsSetCommentText() bool {
+	return p.CommentText != nil
+}
+
+func (p *CommentActionRequest) IsSetCommentID() bool {
+	return p.CommentID != nil
+}
+
 func (p *CommentActionRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
@@ -6660,8 +6626,6 @@ func (p *CommentActionRequest) Read(iprot thrift.TProtocol) (err error) {
 	var issetToken bool = false
 	var issetVideoID bool = false
 	var issetActionType bool = false
-	var issetCommentText bool = false
-	var issetCommentID bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -6715,7 +6679,6 @@ func (p *CommentActionRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetCommentText = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -6726,7 +6689,6 @@ func (p *CommentActionRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetCommentID = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -6758,16 +6720,6 @@ func (p *CommentActionRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetActionType {
 		fieldId = 3
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetCommentText {
-		fieldId = 4
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetCommentID {
-		fieldId = 5
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -6819,7 +6771,7 @@ func (p *CommentActionRequest) ReadField4(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.CommentText = v
+		p.CommentText = &v
 	}
 	return nil
 }
@@ -6828,7 +6780,7 @@ func (p *CommentActionRequest) ReadField5(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.CommentID = v
+		p.CommentID = &v
 	}
 	return nil
 }
@@ -6930,14 +6882,16 @@ WriteFieldEndError:
 }
 
 func (p *CommentActionRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("comment_text", thrift.STRING, 4); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.CommentText); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetCommentText() {
+		if err = oprot.WriteFieldBegin("comment_text", thrift.STRING, 4); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.CommentText); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -6947,14 +6901,16 @@ WriteFieldEndError:
 }
 
 func (p *CommentActionRequest) writeField5(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("comment_id", thrift.I64, 5); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.CommentID); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetCommentID() {
+		if err = oprot.WriteFieldBegin("comment_id", thrift.I64, 5); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI64(*p.CommentID); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:

@@ -57,6 +57,7 @@ func main() {
 	r := server.New(
 		server.WithHostPorts(listenAddr),
 		server.WithHandleMethodNotAllowed(true),
+		server.WithMaxRequestBodySize(1<<31),
 	)
 
 	// Recovery 错误恢复
