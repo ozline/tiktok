@@ -13,6 +13,7 @@ import (
 	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/errno"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 // Feed .
@@ -137,6 +138,11 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	resp := new(api.PublishActionResponse)
 
 	file, err := c.FormFile("data")
+
+	if !utils.IsVideoFile(file) {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage("not video file"))
+		return
+	}
 
 	if err != nil {
 		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))

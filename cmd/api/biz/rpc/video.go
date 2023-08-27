@@ -27,7 +27,7 @@ func InitVideoRPC() {
 		constants.VideoServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithMuxConnection(constants.MuxConnection),
-		client.WithRPCTimeout(constants.RPCTimeout),
+		client.WithRPCTimeout(constants.RPCTimeout*100),
 		client.WithConnectTimeout(constants.ConnectTimeout),
 		client.WithFailureRetry(retry.NewFailurePolicy()),
 		client.WithResolver(r),

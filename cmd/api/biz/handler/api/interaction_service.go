@@ -82,8 +82,9 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 	comment, err := rpc.CommentAction(ctx, &interaction.CommentActionRequest{
 		VideoId:     req.VideoID,
 		ActionType:  req.ActionType,
-		CommentText: &req.CommentText,
-		CommentId:   &req.CommentID,
+		CommentText: req.CommentText,
+		CommentId:   req.CommentID,
+		Token:       req.Token,
 	})
 
 	if err != nil {
