@@ -10,9 +10,9 @@ import (
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"github.com/ozline/tiktok/cmd/video/dal"
-	video "github.com/ozline/tiktok/cmd/video/kitex_gen/video/videoservice"
 	"github.com/ozline/tiktok/cmd/video/rpc"
 	"github.com/ozline/tiktok/config"
+	video "github.com/ozline/tiktok/kitex_gen/video/videoservice"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/tracer"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -63,6 +63,7 @@ func main() {
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 			ServiceName: constants.VideoServiceName,
 		}),
+		server.WithMuxTransport(),
 		server.WithServiceAddr(addr),
 		server.WithRegistry(r),
 		server.WithLimit(&limit.Option{

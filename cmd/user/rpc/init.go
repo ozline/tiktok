@@ -1,9 +1,9 @@
 package rpc
 
 import (
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video/videoservice"
 	"github.com/ozline/tiktok/kitex_gen/follow/followservice"
 	"github.com/ozline/tiktok/kitex_gen/interaction/interactionservice"
+	"github.com/ozline/tiktok/kitex_gen/video/videoservice"
 )
 
 var (

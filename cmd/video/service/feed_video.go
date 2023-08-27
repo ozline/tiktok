@@ -5,10 +5,10 @@ import (
 
 	"github.com/ozline/tiktok/cmd/video/dal/cache"
 	"github.com/ozline/tiktok/cmd/video/dal/db"
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/cmd/video/rpc"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/kitex_gen/video"
 	"golang.org/x/sync/errgroup"
 )
 

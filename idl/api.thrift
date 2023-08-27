@@ -157,8 +157,8 @@ struct CommentActionRequest {
     1: required string token,
     2: required i64 video_id,
     3: required i64 action_type,
-    4: required string comment_text,
-    5: required i64 comment_id,
+    4: optional string comment_text,
+    5: optional i64 comment_id,
 }
 
 struct CommentActionResponse {
