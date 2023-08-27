@@ -64,3 +64,15 @@ func GetCommentCount(ctx context.Context, req *interaction.CommentCountRequest) 
 
 	return resp.CommentCount, nil
 }
+func GetVideoIsFavorite(ctx context.Context, req *interaction.InteractionServiceIsFavoriteArgs) (isFavorite bool, err error) {
+	resp, err := interactionClient.IsFavorite(ctx, req.Req)
+
+	if err != nil {
+		return false, err
+	}
+	if resp.Base.Code != errno.SuccessCode {
+		return false, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+	}
+
+	return resp.IsFavorite, nil
+}

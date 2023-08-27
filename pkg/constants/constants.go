@@ -45,6 +45,7 @@ const (
 	MaxVideoSize    = 300000
 	MaxListLength   = 100
 	MaxIdleConns    = 10
+	MaxGoroutines   = 10
 	MaxOpenConns    = 100
 	ConnMaxLifetime = 10 * time.Second
 

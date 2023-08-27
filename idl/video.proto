@@ -47,18 +47,13 @@ message FeedResponse{
 }
 
 message PutVideoRequest{
-    bytes video_block = 1; //分块的视频文件
-    bytes cover = 2;       //封面文件
-    int64 user_id = 3;     //用户ID
-    int64 block_id = 4;    //分块的id
-    bool isFinished =5;    //发送给服务端判断视频是否传输完成，
-    string title = 6;      //视频标题
-    string token = 7;      //token
+    bytes video_file = 1; //视频文件
+    string title = 2;      //视频标题
+    string token = 3;      //token
 }
 
 message PutVideoResponse{
     BaseResp base = 1;
-    int64 state = 2;        //0 表示接收失败 1表示接收成功但未完成，2表示全部接收完成
 }
 
 message GetFavoriteVideoInfoRequest{
@@ -103,7 +98,7 @@ message GetVideoIDByUidResponse{
 
 service VideoService {
     rpc Feed(FeedRequest) returns (FeedResponse){};
-    rpc PutVideo(stream PutVideoRequest) returns (stream PutVideoResponse){};
+    rpc PutVideo(PutVideoRequest) returns (PutVideoResponse){};
     rpc GetFavoriteVideoInfo(GetFavoriteVideoInfoRequest)returns (GetFavoriteVideoInfoResponse){};
     rpc GetPublishList(GetPublishListRequest)returns (GetPublishListResponse){};
     rpc GetWorkCount(GetWorkCountRequest)returns (GetWorkCountResponse){};
