@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ozline/tiktok/pkg/constants"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
@@ -28,13 +30,13 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 		if err != nil {
 			return nil, err
 		}
-		for _, rComment := range *rComments {
+		for i := 0; i < len(*rComments); i++ {
 			var comment db.Comment
-			_, err = comment.UnmarshalMsg([]byte(rComment.Member.(string)))
+			_, err = comment.UnmarshalMsg([]byte((*rComments)[i].Member.(string)))
 			if err != nil {
 				return nil, err
 			}
-			comment.CreatedAt = time.Unix(int64(rComment.Score), 0)
+			comment.CreatedAt = time.Unix(int64((*rComments)[i].Score), 0)
 			comments = append(comments, comment)
 		}
 	} else {
@@ -53,9 +55,11 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 
 	eg, ctx := errgroup.WithContext(s.ctx)
 	commentList := make([]*interaction.Comment, len(comments))
-	for index, data := range comments {
-		comment := data
-		commentIndex := index
+	ch := make(chan struct{}, constants.MaxGoroutines)
+	for i := 0; i < len(comments); i++ {
+		comment := comments[i]
+		commentIndex := i
+		ch <- struct{}{}
 		eg.Go(func() error {
 			defer func() {
 				if e := recover(); e != nil {
@@ -68,6 +72,7 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 			})
 			rComment := pack.Comment(&comment, userInfo)
 			commentList[commentIndex] = rComment
+			<-ch
 			return err
 		})
 	}

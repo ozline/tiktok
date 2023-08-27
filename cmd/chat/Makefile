@@ -19,4 +19,8 @@ gen:
 
 .PHONY: test
 test:
-	cd test && go test -v
+	cd ../../test/chat && go test -v
+.PHONY: coverage
+coverage:
+	cd service && go test -coverprofile=../coverage/coverage.out
+	go tool cover -html=./coverage/coverage.out -o ./coverage/coverage.html

@@ -3,7 +3,9 @@ package constants
 import "time"
 
 const (
+	// auth
 	JWTValue = "MTAxNTkwMTg1Mw=="
+	StartID  = 10000
 
 	// redis
 	ReidsDB_Chat       = 1
@@ -43,6 +45,7 @@ const (
 	MaxVideoSize    = 300000
 	MaxListLength   = 100
 	MaxIdleConns    = 10
+	MaxGoroutines   = 10
 	MaxOpenConns    = 100
 	ConnMaxLifetime = 10 * time.Second
 

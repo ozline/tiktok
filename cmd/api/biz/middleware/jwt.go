@@ -6,6 +6,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/ozline/tiktok/cmd/api/biz/pack"
+	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
 )
@@ -13,6 +14,11 @@ import (
 func AuthToken() app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		token, ok := c.GetQuery("token")
+
+		if !ok {
+			token, ok = c.GetPostForm("token")
+		}
+
 		if !ok {
 			hlog.CtxInfof(ctx, "token is not exist clientIP: %v\n", c.ClientIP())
 			pack.SendFailResponse(c, errno.AuthorizationFailedError)
@@ -30,7 +36,13 @@ func AuthToken() app.HandlerFunc {
 			return
 		}
 
-		c.Set("current_user_id", claims.UserId)
+		if claims.UserId < constants.StartID {
+			hlog.CtxInfof(ctx, "userid invaild")
+			pack.SendFailResponse(c, errno.AuthorizationFailedError)
+			c.Abort()
+		}
+		// c.Set("current_user_id", claims.UserId)
+
 		c.Next(ctx)
 	}
 }

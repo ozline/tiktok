@@ -4,4 +4,4 @@
 *.yml text eol=lf
 *.thrift text eol=lf
 *.proto text eol=lf
-Makefile test eol=lf
+Makefile text eol=lf
