@@ -45,12 +45,21 @@ func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest
 				klog.Error(e)
 			}
 		}()
-		exist, err := cache.IsExistComment(s.ctx, key)
+		err := cache.Delete(s.ctx, key)
+		return err
+	})
+	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
+		ok, _, err := cache.GetCount(ctx, key)
 		if err != nil {
 			return err
 		}
-		if exist == 1 {
-			err = cache.DeleteComments(s.ctx, key)
+		if ok {
+			err = cache.AddCount(ctx, -1, key)
 		}
 		return err
 	})

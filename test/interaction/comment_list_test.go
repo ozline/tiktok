@@ -22,13 +22,14 @@ func testCommentList(t *testing.T) {
 		Token:   token,
 	}
 
-	_, err := interactionService.GetComments(req)
+	resp, err := interactionService.GetComments(req, 0)
 
 	if err != nil {
 		t.Logf("err: [%v] \n", err)
 		t.Error(err)
 		t.Fail()
 	}
+	t.Log(resp)
 	t.Log("------------testCommentList success---------------")
 }
 
@@ -39,7 +40,7 @@ func benchmarkCommentList(b *testing.B) {
 	}
 
 	for i := 0; i < b.N; i++ {
-		_, err := interactionService.GetComments(req)
+		_, err := interactionService.GetComments(req, 0)
 		if err != nil {
 			b.Error(err)
 		}
