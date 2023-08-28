@@ -73,7 +73,7 @@ func GetUserFavoriteVideos(ctx context.Context, userID int64) ([]int64, error) {
 	}
 
 	// get favorite video id list
-	videoIDList := make([]int64, 0, 10)
+	videoIDList := make([]int64, 0, len(items))
 	for _, item := range items {
 		videoId, _ := strconv.ParseInt(item, 10, 64)
 		videoIDList = append(videoIDList, videoId)
