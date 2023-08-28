@@ -563,7 +563,6 @@ func (p *MessagePostRequest) FastRead(buf []byte) (int, error) {
 	var fieldId int16
 	var issetToken bool = false
 	var issetToUserId bool = false
-	var issetFromUserId bool = false
 	var issetContent bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
@@ -612,23 +611,8 @@ func (p *MessagePostRequest) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.I64 {
-				l, err = p.FastReadField3(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-				issetFromUserId = true
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 4:
 			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField4(buf[offset:])
+				l, err = p.FastReadField3(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
@@ -641,23 +625,9 @@ func (p *MessagePostRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
-		case 5:
-			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField5(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 6:
+		case 4:
 			if fieldTypeId == thrift.I64 {
-				l, err = p.FastReadField6(buf[offset:])
+				l, err = p.FastReadField4(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
@@ -699,13 +669,8 @@ func (p *MessagePostRequest) FastRead(buf []byte) (int, error) {
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetFromUserId {
-		fieldId = 3
-		goto RequiredFieldNotSetError
-	}
-
 	if !issetContent {
-		fieldId = 4
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -756,20 +721,6 @@ func (p *MessagePostRequest) FastReadField2(buf []byte) (int, error) {
 func (p *MessagePostRequest) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
-	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-
-		p.FromUserId = v
-
-	}
-	return offset, nil
-}
-
-func (p *MessagePostRequest) FastReadField4(buf []byte) (int, error) {
-	offset := 0
-
 	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -781,20 +732,7 @@ func (p *MessagePostRequest) FastReadField4(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *MessagePostRequest) FastReadField5(buf []byte) (int, error) {
-	offset := 0
-
-	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-		p.CreateTime = &v
-
-	}
-	return offset, nil
-}
-
-func (p *MessagePostRequest) FastReadField6(buf []byte) (int, error) {
+func (p *MessagePostRequest) FastReadField4(buf []byte) (int, error) {
 	offset := 0
 
 	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
@@ -817,11 +755,9 @@ func (p *MessagePostRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bi
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "MessagePostRequest")
 	if p != nil {
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
-		offset += p.fastWriteField3(buf[offset:], binaryWriter)
-		offset += p.fastWriteField6(buf[offset:], binaryWriter)
-		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
-		offset += p.fastWriteField5(buf[offset:], binaryWriter)
+		offset += p.fastWriteField1(buf[offset:], binaryWriter)
+		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -836,8 +772,6 @@ func (p *MessagePostRequest) BLength() int {
 		l += p.field2Length()
 		l += p.field3Length()
 		l += p.field4Length()
-		l += p.field5Length()
-		l += p.field6Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -864,8 +798,8 @@ func (p *MessagePostRequest) fastWriteField2(buf []byte, binaryWriter bthrift.Bi
 
 func (p *MessagePostRequest) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "from_user_id", thrift.I64, 3)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.FromUserId)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "content", thrift.STRING, 3)
+	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Content)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -873,28 +807,8 @@ func (p *MessagePostRequest) fastWriteField3(buf []byte, binaryWriter bthrift.Bi
 
 func (p *MessagePostRequest) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "content", thrift.STRING, 4)
-	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Content)
-
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	return offset
-}
-
-func (p *MessagePostRequest) fastWriteField5(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	if p.IsSetCreateTime() {
-		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "create_time", thrift.STRING, 5)
-		offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, *p.CreateTime)
-
-		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	}
-	return offset
-}
-
-func (p *MessagePostRequest) fastWriteField6(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
 	if p.IsSetActionType() {
-		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "action_type", thrift.I64, 6)
+		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "action_type", thrift.I64, 4)
 		offset += bthrift.Binary.WriteI64(buf[offset:], *p.ActionType)
 
 		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -922,8 +836,8 @@ func (p *MessagePostRequest) field2Length() int {
 
 func (p *MessagePostRequest) field3Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("from_user_id", thrift.I64, 3)
-	l += bthrift.Binary.I64Length(p.FromUserId)
+	l += bthrift.Binary.FieldBeginLength("content", thrift.STRING, 3)
+	l += bthrift.Binary.StringLengthNocopy(p.Content)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -931,28 +845,8 @@ func (p *MessagePostRequest) field3Length() int {
 
 func (p *MessagePostRequest) field4Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("content", thrift.STRING, 4)
-	l += bthrift.Binary.StringLengthNocopy(p.Content)
-
-	l += bthrift.Binary.FieldEndLength()
-	return l
-}
-
-func (p *MessagePostRequest) field5Length() int {
-	l := 0
-	if p.IsSetCreateTime() {
-		l += bthrift.Binary.FieldBeginLength("create_time", thrift.STRING, 5)
-		l += bthrift.Binary.StringLengthNocopy(*p.CreateTime)
-
-		l += bthrift.Binary.FieldEndLength()
-	}
-	return l
-}
-
-func (p *MessagePostRequest) field6Length() int {
-	l := 0
 	if p.IsSetActionType() {
-		l += bthrift.Binary.FieldBeginLength("action_type", thrift.I64, 6)
+		l += bthrift.Binary.FieldBeginLength("action_type", thrift.I64, 4)
 		l += bthrift.Binary.I64Length(*p.ActionType)
 
 		l += bthrift.Binary.FieldEndLength()

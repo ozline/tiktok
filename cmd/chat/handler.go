@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	pack "github.com/ozline/tiktok/cmd/chat/pack"
 	service "github.com/ozline/tiktok/cmd/chat/service"
@@ -16,13 +17,13 @@ type MessageServiceImpl struct{}
 // MessagePost implements the MessageServiceImpl interface.
 func (s *MessageServiceImpl) MessagePost(ctx context.Context, req *chat.MessagePostRequest) (resp *chat.MessagePostReponse, err error) {
 	resp = new(chat.MessagePostReponse)
-	_, err = utils.CheckToken(req.Token)
+	claim, err := utils.CheckToken(req.Token)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
 
-	err = service.NewChatService(ctx).SendMessage(req)
+	err = service.NewChatService(ctx).SendMessage(req, claim.UserId, time.Now().Format(time.RFC3339))
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 	}

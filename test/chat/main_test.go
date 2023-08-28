@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/ozline/tiktok/cmd/chat/dal"
 	"github.com/ozline/tiktok/cmd/chat/service"
@@ -14,6 +15,7 @@ var (
 	to_user_id   int64  = 3
 	content_get  string = "test get"
 	content_post string = "test post"
+	create_at    string = time.Now().Format(time.RFC3339)
 	chatService  *service.ChatService
 )
 
