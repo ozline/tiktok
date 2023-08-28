@@ -36,6 +36,9 @@ func (s *InteractionService) FavoriteList(req *interaction.FavoriteListRequest) 
 	if err != nil {
 		return nil, err
 	}
+	if len(videoIDList) == 0 {
+		return nil, nil
+	}
 	return rpc.GetFavoriteVideoList(s.ctx, &video.GetFavoriteVideoInfoRequest{
 		VideoId: videoIDList,
 		Token:   req.Token,
