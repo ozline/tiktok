@@ -250,30 +250,30 @@ struct MessageActionResponse {
 
 
 service BasicService {
-    FeedResponse Feed(1: FeedRequest req) (api.get="/douyin/feed")
+    FeedResponse Feed(1: FeedRequest req) (api.get="/douyin/feed/")
 
-    UserRegisterResponse UserRegister(1: UserRegisterRequest req) (api.post="/douyin/user/register")
-    UserLoginResponse UserLogin(1: UserLoginRequest req) (api.post="/douyin/user/login")
-    UserResponse UserInfo(1: UserRequest req) (api.get="/douyin/user")
+    UserRegisterResponse UserRegister(1: UserRegisterRequest req) (api.post="/douyin/user/register/")
+    UserLoginResponse UserLogin(1: UserLoginRequest req) (api.post="/douyin/user/login/")
+    UserResponse UserInfo(1: UserRequest req) (api.get="/douyin/user/")
 
-    PublishActionResponse PublishAction(1: PublishActionRequest req) (api.post="/douyin/publish/action")
-    PublishListResponse PublishList(1: PublishListRequest req) (api.get="/douyin/publish/list")
+    PublishActionResponse PublishAction(1: PublishActionRequest req) (api.post="/douyin/publish/action/")
+    PublishListResponse PublishList(1: PublishListRequest req) (api.get="/douyin/publish/list/")
 }
 
 service InteractionService {
-    FavoriteActionResponse FavoriteAction(1: FavoriteActionRequest req) (api.post="/douyin/favorite/action")
-    FavoriteListResponse FavoriteList(1: FavoriteListRequest req) (api.get="/douyin/favorite/list")
+    FavoriteActionResponse FavoriteAction(1: FavoriteActionRequest req) (api.post="/douyin/favorite/action/")
+    FavoriteListResponse FavoriteList(1: FavoriteListRequest req) (api.get="/douyin/favorite/list/")
 
-    CommentActionResponse CommentAction(1: CommentActionRequest req) (api.post="/douyin/comment/action")
-    CommentListResponse CommentList(1: CommentListRequest req) (api.get="/douyin/comment/list")
+    CommentActionResponse CommentAction(1: CommentActionRequest req) (api.post="/douyin/comment/action/")
+    CommentListResponse CommentList(1: CommentListRequest req) (api.get="/douyin/comment/list/")
 }
 
 service SocialService {
     RelationActionResponse RelationAction(1: RelationActionRequest req) (api.post="/douyin/relation/action/")
-    RelationFollowListResponse RelationFollowList(1: RelationFollowListRequest req) (api.get="/douyin/relation/follow/list")
-    RelationFollowerListResponse RelationFollowerList(1: RelationFollowerListRequest req) (api.get="/douyin/relation/follower/list")
-    RelationFriendListResponse RelationFriendList(1: RelationFriendListRequest req) (api.get="/douyin/relation/friend/list")
+    RelationFollowListResponse RelationFollowList(1: RelationFollowListRequest req) (api.get="/douyin/relation/follow/list/")
+    RelationFollowerListResponse RelationFollowerList(1: RelationFollowerListRequest req) (api.get="/douyin/relation/follower/list/")
+    RelationFriendListResponse RelationFriendList(1: RelationFriendListRequest req) (api.get="/douyin/relation/friend/list/")
 
-    MessageActionResponse MessageAction(1: MessageActionRequest req) (api.post="/douyin/message/action")
-    MessageChatResponse MessageChat(1: MessageChatRequest req) (api.get="/douyin/message/chat")
+    MessageActionResponse MessageAction(1: MessageActionRequest req) (api.post="/douyin/message/action/")
+    MessageChatResponse MessageChat(1: MessageChatRequest req) (api.get="/douyin/message/chat/")
 }
