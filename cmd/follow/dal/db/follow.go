@@ -34,6 +34,7 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 	// db中查询不到,创建关注
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		follow.Id = SF.NextVal()
+		follow.Status = 1
 		return DB.WithContext(ctx).Create(follow).Error
 	} else if err != nil {
 		return err
@@ -52,11 +53,11 @@ func FollowAction(ctx context.Context, follow *Follow) error {
 
 // 取消关注
 func UnFollowAction(ctx context.Context, follow *Follow) error {
-	followOrNot, err := IsFollow(ctx, follow.UserID, follow.ToUserID)
-	if err != nil {
-		return err
-	} else if !followOrNot {
+	_, err := IsFollow(ctx, follow.UserID, follow.ToUserID)
+	if errors.Is(err, RecordNotFound) {
 		return errno.NotFollowError
+	} else if err != nil {
+		return err
 	}
 	// 修改db中的status
 	err = DB.WithContext(ctx).Model(&Follow{}).
@@ -162,11 +163,9 @@ func FollowerCount(ctx context.Context, uid int64) (int64, error) {
 }
 
 func IsFollow(ctx context.Context, uid, tid int64) (bool, error) {
-	var count int64
 	err := DB.WithContext(ctx).Model(&Follow{}).
-		Where("user_id = ? AND to_user_id = ? AND status = ?", uid, tid, constants.FollowAction).
-		Count(&count).Error
-	if count == 0 { // db中也查不到
+		Where("user_id = ? AND to_user_id = ? AND status = ?", uid, tid, constants.FollowAction).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) { // db中也查不到
 		return false, RecordNotFound
 	} else if err != nil {
 		return false, err
