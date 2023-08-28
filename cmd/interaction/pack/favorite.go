@@ -51,10 +51,10 @@ func BuildVideos(datas []*video.Video) []*interaction.Video {
 		return nil
 	}
 
-	videos := make([]*interaction.Video, 5, 10)
+	videos := make([]*interaction.Video, 0, len(datas))
 
-	for _, item := range datas {
-		videos = append(videos, BuildVideo(item))
+	for _, data := range datas {
+		videos = append(videos, BuildVideo(data))
 	}
 	return videos
 }

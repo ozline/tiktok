@@ -35,13 +35,13 @@ func UpdateFavoriteStatus(ctx context.Context, userID int64, videoID int64, stat
 }
 
 func GetVideosByUserId(ctx context.Context, userID int64) ([]int64, error) {
-	videos := make([]int64, 0, 10)
 	var favs []Favorite
 	if err := DB.Table(constants.FavoriteTableName).WithContext(ctx).
 		Where("user_id = ? AND status = 1", userID).Find(&favs).Error; err != nil {
 		return nil, err
 	}
 
+	videos := make([]int64, 0, len(favs))
 	for _, fav := range favs {
 		videos = append(videos, fav.VideoID)
 	}

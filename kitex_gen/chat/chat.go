@@ -678,12 +678,10 @@ func (p *Message) Field5DeepEqual(src *string) bool {
 }
 
 type MessagePostRequest struct {
-	Token      string  `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
-	ToUserId   int64   `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
-	FromUserId int64   `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
-	Content    string  `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
-	CreateTime *string `thrift:"create_time,5,optional" frugal:"5,optional,string" json:"create_time,omitempty"`
-	ActionType *int64  `thrift:"action_type,6,optional" frugal:"6,optional,i64" json:"action_type,omitempty"`
+	Token      string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
+	ToUserId   int64  `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
+	Content    string `thrift:"content,3,required" frugal:"3,required,string" json:"content"`
+	ActionType *int64 `thrift:"action_type,4,optional" frugal:"4,optional,i64" json:"action_type,omitempty"`
 }
 
 func NewMessagePostRequest() *MessagePostRequest {
@@ -702,21 +700,8 @@ func (p *MessagePostRequest) GetToUserId() (v int64) {
 	return p.ToUserId
 }
 
-func (p *MessagePostRequest) GetFromUserId() (v int64) {
-	return p.FromUserId
-}
-
 func (p *MessagePostRequest) GetContent() (v string) {
 	return p.Content
-}
-
-var MessagePostRequest_CreateTime_DEFAULT string
-
-func (p *MessagePostRequest) GetCreateTime() (v string) {
-	if !p.IsSetCreateTime() {
-		return MessagePostRequest_CreateTime_DEFAULT
-	}
-	return *p.CreateTime
 }
 
 var MessagePostRequest_ActionType_DEFAULT int64
@@ -733,14 +718,8 @@ func (p *MessagePostRequest) SetToken(val string) {
 func (p *MessagePostRequest) SetToUserId(val int64) {
 	p.ToUserId = val
 }
-func (p *MessagePostRequest) SetFromUserId(val int64) {
-	p.FromUserId = val
-}
 func (p *MessagePostRequest) SetContent(val string) {
 	p.Content = val
-}
-func (p *MessagePostRequest) SetCreateTime(val *string) {
-	p.CreateTime = val
 }
 func (p *MessagePostRequest) SetActionType(val *int64) {
 	p.ActionType = val
@@ -749,14 +728,8 @@ func (p *MessagePostRequest) SetActionType(val *int64) {
 var fieldIDToName_MessagePostRequest = map[int16]string{
 	1: "token",
 	2: "to_user_id",
-	3: "from_user_id",
-	4: "content",
-	5: "create_time",
-	6: "action_type",
-}
-
-func (p *MessagePostRequest) IsSetCreateTime() bool {
-	return p.CreateTime != nil
+	3: "content",
+	4: "action_type",
 }
 
 func (p *MessagePostRequest) IsSetActionType() bool {
@@ -769,7 +742,6 @@ func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	var issetToken bool = false
 	var issetToUserId bool = false
-	var issetFromUserId bool = false
 	var issetContent bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
@@ -809,19 +781,8 @@ func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.I64 {
-				if err = p.ReadField3(iprot); err != nil {
-					goto ReadFieldError
-				}
-				issetFromUserId = true
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 4:
 			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField4(iprot); err != nil {
+				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
 				issetContent = true
@@ -830,19 +791,9 @@ func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
-		case 5:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField5(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 6:
+		case 4:
 			if fieldTypeId == thrift.I64 {
-				if err = p.ReadField6(iprot); err != nil {
+				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -874,13 +825,8 @@ func (p *MessagePostRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetFromUserId {
-		fieldId = 3
-		goto RequiredFieldNotSetError
-	}
-
 	if !issetContent {
-		fieldId = 4
+		fieldId = 3
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -920,15 +866,6 @@ func (p *MessagePostRequest) ReadField2(iprot thrift.TProtocol) error {
 }
 
 func (p *MessagePostRequest) ReadField3(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
-		return err
-	} else {
-		p.FromUserId = v
-	}
-	return nil
-}
-
-func (p *MessagePostRequest) ReadField4(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
@@ -937,16 +874,7 @@ func (p *MessagePostRequest) ReadField4(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *MessagePostRequest) ReadField5(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		p.CreateTime = &v
-	}
-	return nil
-}
-
-func (p *MessagePostRequest) ReadField6(iprot thrift.TProtocol) error {
+func (p *MessagePostRequest) ReadField4(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
@@ -975,14 +903,6 @@ func (p *MessagePostRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField4(oprot); err != nil {
 			fieldId = 4
-			goto WriteFieldError
-		}
-		if err = p.writeField5(oprot); err != nil {
-			fieldId = 5
-			goto WriteFieldError
-		}
-		if err = p.writeField6(oprot); err != nil {
-			fieldId = 6
 			goto WriteFieldError
 		}
 
@@ -1039,10 +959,10 @@ WriteFieldEndError:
 }
 
 func (p *MessagePostRequest) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("from_user_id", thrift.I64, 3); err != nil {
+	if err = oprot.WriteFieldBegin("content", thrift.STRING, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.FromUserId); err != nil {
+	if err := oprot.WriteString(p.Content); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1056,44 +976,8 @@ WriteFieldEndError:
 }
 
 func (p *MessagePostRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("content", thrift.STRING, 4); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Content); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
-}
-
-func (p *MessagePostRequest) writeField5(oprot thrift.TProtocol) (err error) {
-	if p.IsSetCreateTime() {
-		if err = oprot.WriteFieldBegin("create_time", thrift.STRING, 5); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.CreateTime); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
-}
-
-func (p *MessagePostRequest) writeField6(oprot thrift.TProtocol) (err error) {
 	if p.IsSetActionType() {
-		if err = oprot.WriteFieldBegin("action_type", thrift.I64, 6); err != nil {
+		if err = oprot.WriteFieldBegin("action_type", thrift.I64, 4); err != nil {
 			goto WriteFieldBeginError
 		}
 		if err := oprot.WriteI64(*p.ActionType); err != nil {
@@ -1105,9 +989,9 @@ func (p *MessagePostRequest) writeField6(oprot thrift.TProtocol) (err error) {
 	}
 	return nil
 WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
 WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
 }
 
 func (p *MessagePostRequest) String() string {
@@ -1129,16 +1013,10 @@ func (p *MessagePostRequest) DeepEqual(ano *MessagePostRequest) bool {
 	if !p.Field2DeepEqual(ano.ToUserId) {
 		return false
 	}
-	if !p.Field3DeepEqual(ano.FromUserId) {
+	if !p.Field3DeepEqual(ano.Content) {
 		return false
 	}
-	if !p.Field4DeepEqual(ano.Content) {
-		return false
-	}
-	if !p.Field5DeepEqual(ano.CreateTime) {
-		return false
-	}
-	if !p.Field6DeepEqual(ano.ActionType) {
+	if !p.Field4DeepEqual(ano.ActionType) {
 		return false
 	}
 	return true
@@ -1158,33 +1036,14 @@ func (p *MessagePostRequest) Field2DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *MessagePostRequest) Field3DeepEqual(src int64) bool {
-
-	if p.FromUserId != src {
-		return false
-	}
-	return true
-}
-func (p *MessagePostRequest) Field4DeepEqual(src string) bool {
+func (p *MessagePostRequest) Field3DeepEqual(src string) bool {
 
 	if strings.Compare(p.Content, src) != 0 {
 		return false
 	}
 	return true
 }
-func (p *MessagePostRequest) Field5DeepEqual(src *string) bool {
-
-	if p.CreateTime == src {
-		return true
-	} else if p.CreateTime == nil || src == nil {
-		return false
-	}
-	if strings.Compare(*p.CreateTime, *src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *MessagePostRequest) Field6DeepEqual(src *int64) bool {
+func (p *MessagePostRequest) Field4DeepEqual(src *int64) bool {
 
 	if p.ActionType == src {
 		return true

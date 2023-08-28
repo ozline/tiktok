@@ -15,15 +15,12 @@ func testPostMessage(t *testing.T) {
 	if err != nil {
 		klog.Info(err)
 	}
-	now := time.Now().Format(time.DateTime)
 	req := &chat.MessagePostRequest{
-		Token:      token,
-		FromUserId: from_user_id,
-		ToUserId:   to_user_id,
-		Content:    content_post,
-		CreateTime: &now,
+		Token:    token,
+		ToUserId: to_user_id,
+		Content:  content_post,
 	}
-	err = chatService.SendMessage(req)
+	err = chatService.SendMessage(req, from_user_id, create_at)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
@@ -40,15 +37,12 @@ func benchmarkPostMessage(b *testing.B) {
 	// b.N = 10
 	for i := 0; i < b.N; i++ {
 		for i := 0; i < 2000; i++ {
-			now := time.Now().Format(time.DateTime)
 			req := &chat.MessagePostRequest{
-				Token:      token,
-				FromUserId: from_user_id,
-				ToUserId:   to_user_id,
-				Content:    content_post + "-->" + strconv.FormatInt(int64(i), 10),
-				CreateTime: &now,
+				Token:    token,
+				ToUserId: to_user_id,
+				Content:  content_post + "-->" + strconv.FormatInt(int64(i), 10),
 			}
-			err = chatService.SendMessage(req)
+			err = chatService.SendMessage(req, from_user_id, create_at)
 			if err != nil {
 				b.Error(err)
 				b.Fail()

@@ -26,4 +26,10 @@ var (
 
 	// Video
 	FileUploadError = NewErrNo(FileUploadErrorCode, "upload meet error")
+
+	// Follow
+	FollowYourselfError = NewErrNo(FollowYourselfErrorCode, "you should not follow yourself")
+	NotFollowError      = NewErrNo(NotFollowErrorCode, "you are not following this user")
+	AlreadyFollowError  = NewErrNo(AlreadyFollowErrorCode, "you already follow this user")
+	UserNotFoundError   = NewErrNo(ParamErrorCode, "user not found")
 )
