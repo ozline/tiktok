@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 	"gorm.io/gorm"
 )
 
@@ -55,7 +56,7 @@ func UnFollowAction(ctx context.Context, follow *Follow) error {
 	if err != nil {
 		return err
 	} else if !followOrNot {
-		return errors.New("you are not following this user")
+		return errno.NotFollowError
 	}
 	// 修改db中的status
 	err = DB.WithContext(ctx).Model(&Follow{}).

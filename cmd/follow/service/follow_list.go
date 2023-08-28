@@ -12,6 +12,7 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 )
 
 // FollowList View the follow list
@@ -33,7 +34,6 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 	} else if len(*followList) == 0 { // redis中查不到再查db
 		followList, err = db.FollowListAction(s.ctx, req.UserId)
 		if errors.Is(err, db.RecordNotFound) { // db中也查不到
-			klog.Info("you are not following anyone")
 			return &userList, nil
 		} else if err != nil {
 			return nil, err
@@ -76,7 +76,7 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 			mu.Unlock()
 		}(id, req, &userList, &wg, &mu)
 		if isErr {
-			return nil, errors.New("RPC call error")
+			return nil, errno.ServiceError
 		}
 	}
 

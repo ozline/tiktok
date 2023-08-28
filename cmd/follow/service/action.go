@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -30,7 +29,7 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 
 	// 禁止自己关注自己
 	if claim.UserId == req.ToUserId {
-		return errors.New("you should not follow yourself")
+		return errno.FollowYourselfError
 	}
 
 	// 判断是否目标用户是否存在
@@ -41,7 +40,7 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 
 	if err != nil {
 		klog.Info(err)
-		return errors.New("user not found")
+		return errno.UserNotFoundError
 	}
 
 	action := &db.Follow{

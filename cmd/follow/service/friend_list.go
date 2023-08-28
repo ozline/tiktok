@@ -13,6 +13,7 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/errno"
 )
 
 // FriendList Viewing friends list
@@ -34,7 +35,6 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 	} else if len(*userList) == 0 { // redis中查不到再查db
 		userList, err = db.FriendListAction(s.ctx, req.UserId)
 		if errors.Is(err, db.RecordNotFound) { // db中也查不到
-			klog.Info("you do not have any friends")
 			return &friendList, nil
 		} else if err != nil {
 			return nil, err
@@ -95,7 +95,7 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 			mu.Unlock()
 		}(userID, req, &friendList, &wg, &mu)
 		if isErr {
-			return nil, errors.New("RPC call error")
+			return nil, errno.ServiceError
 		}
 	}
 

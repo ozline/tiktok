@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -25,8 +26,7 @@ func FollowAction(ctx context.Context, uid, tid int64) error {
 	if err != nil {
 		return err
 	} else if exist { // 存在说明已关注
-		klog.Info("you already follow this user")
-		return errors.New("you already follow this user")
+		return errno.AlreadyFollowError
 	}
 
 	// 不存在，进行关注操作
@@ -49,7 +49,7 @@ func UnFollowAction(ctx context.Context, uid, tid int64) error {
 	if err != nil {
 		return err
 	} else if !exist { // redis中不存在,说明并未关注
-		return errors.New("you are not following this user")
+		return errno.NotFollowError
 	}
 
 	// 从对方的粉丝列表移除
