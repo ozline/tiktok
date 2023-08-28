@@ -30,8 +30,8 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	resp := new(api.FeedResponse)
 
 	videoList, nexttime, err := rpc.VideoFeed(ctx, &video.FeedRequest{
-		LatestTime: *req.LatestTime,
-		Token:      *req.Token,
+		LatestTime: req.LatestTime,
+		Token:      req.Token,
 	})
 
 	if err != nil {
