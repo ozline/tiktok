@@ -16,10 +16,8 @@ struct Message {
 struct MessagePostRequest {
     1: required string token
     2: required i64 to_user_id
-    3: required i64 from_user_id,
-    4: required string content,
-    5: optional string create_time,
-    6: optional i64 action_type,
+    3: required string content,
+    4:optional i64 action_type,
 }
 
 struct MessagePostReponse {
