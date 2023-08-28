@@ -161,12 +161,18 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 	// 上传视频
 	eg.Go(func() error {
 		err = service.NewVideoService(ctx).UploadVideo(req, videoName)
-		return errno.FileUploadError
+		if err != nil {
+			return errno.FileUploadError
+		}
+		return nil
 	})
 	// 截取并上传封面
 	eg.Go(func() error {
 		err = service.NewVideoService(ctx).UploadCover(req, coverName)
-		return errno.FileUploadError
+		if err != nil {
+			return errno.FileUploadError
+		}
+		return nil
 	})
 	// 将视频数据写入数据库
 	eg.Go(func() error {
