@@ -3,8 +3,8 @@ package service
 import (
 	"bytes"
 
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
 	"github.com/ozline/tiktok/config"
+	"github.com/ozline/tiktok/kitex_gen/video"
 )
 
 func (s *VideoService) UploadVideo(req *video.PutVideoRequest, videoName string) (err error) {

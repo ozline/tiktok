@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/ozline/tiktok/cmd/video/dal/db"
-	"github.com/ozline/tiktok/cmd/video/kitex_gen/video"
+	"github.com/ozline/tiktok/kitex_gen/video"
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/utils"
 )
