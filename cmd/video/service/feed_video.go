@@ -68,7 +68,7 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 			// 获取commentCount
 			commentCount, err := rpc.GetCommentCount(s.ctx, &interaction.CommentCountRequest{
 				VideoId: videoList[index].Id,
-				Token:   *&req.Token,
+				Token:   req.Token,
 			})
 			if err == nil {
 				commentCountResults <- commentCount
