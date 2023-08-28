@@ -20,16 +20,18 @@ type VideoServiceImpl struct{}
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
 	resp = new(video.FeedResponse)
-	if req.LatestTime == 0 {
-		req.LatestTime = time.Now().Unix()
+	if req.LatestTime == nil {
+		currentTime := time.Now().Unix()
+		req.LatestTime = &currentTime
 	}
-	if req.Token == "" {
-		req.Token, err = utils.CreateToken(10000)
+	if req.Token == nil {
+		req.Token = new(string)
+		*req.Token, err = utils.CreateToken(10000)
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(errno.ParamError)
 		}
 	}
-	if _, err := utils.CheckToken(req.Token); err != nil {
+	if _, err := utils.CheckToken(*req.Token); err != nil {
 		resp.Base = pack.BuildBaseResp(errno.AuthorizationFailedError)
 		return resp, nil
 	}
@@ -159,12 +161,12 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 	// 上传视频
 	eg.Go(func() error {
 		err = service.NewVideoService(ctx).UploadVideo(req, videoName)
-		return err
+		return errno.FileUploadError
 	})
 	// 截取并上传封面
 	eg.Go(func() error {
 		err = service.NewVideoService(ctx).UploadCover(req, coverName)
-		return err
+		return errno.FileUploadError
 	})
 	// 将视频数据写入数据库
 	eg.Go(func() error {

@@ -298,12 +298,14 @@ ReadFieldError:
 }
 
 func (x *FeedRequest) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.LatestTime, offset, err = fastpb.ReadInt64(buf, _type)
+	tmp, offset, err := fastpb.ReadInt64(buf, _type)
+	x.LatestTime = &tmp
 	return offset, err
 }
 
 func (x *FeedRequest) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Token, offset, err = fastpb.ReadString(buf, _type)
+	tmp, offset, err := fastpb.ReadString(buf, _type)
+	x.Token = &tmp
 	return offset, err
 }
 
@@ -985,7 +987,7 @@ func (x *FeedRequest) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *FeedRequest) fastWriteField1(buf []byte) (offset int) {
-	if x.LatestTime == 0 {
+	if x.LatestTime == nil {
 		return offset
 	}
 	offset += fastpb.WriteInt64(buf[offset:], 1, x.GetLatestTime())
@@ -993,7 +995,7 @@ func (x *FeedRequest) fastWriteField1(buf []byte) (offset int) {
 }
 
 func (x *FeedRequest) fastWriteField2(buf []byte) (offset int) {
-	if x.Token == "" {
+	if x.Token == nil {
 		return offset
 	}
 	offset += fastpb.WriteString(buf[offset:], 2, x.GetToken())
@@ -1520,7 +1522,7 @@ func (x *FeedRequest) Size() (n int) {
 }
 
 func (x *FeedRequest) sizeField1() (n int) {
-	if x.LatestTime == 0 {
+	if x.LatestTime == nil {
 		return n
 	}
 	n += fastpb.SizeInt64(1, x.GetLatestTime())
@@ -1528,7 +1530,7 @@ func (x *FeedRequest) sizeField1() (n int) {
 }
 
 func (x *FeedRequest) sizeField2() (n int) {
-	if x.Token == "" {
+	if x.Token == nil {
 		return n
 	}
 	n += fastpb.SizeString(2, x.GetToken())
