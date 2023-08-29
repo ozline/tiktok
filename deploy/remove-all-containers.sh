@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source common.sh
 
 containers_to_stop=$(docker ps -aq --filter "ancestor=$IMAGE_NAME")
