@@ -2,7 +2,8 @@ name: server deploy
 
 on:
   workflow_run:
-    workflows: [build and push docker image to aliyun]
+    workflows:
+      - "build and push docker image to aliyun"
     types:
       - completed
 
@@ -19,4 +20,4 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ./deploy
-            sh restart-service-all.sh
+            sh restart-service.sh

@@ -23,6 +23,5 @@ ENV service api
 WORKDIR /app
 COPY --from=builder /app/output /app/output
 COPY --from=builder /app/config /app/config
-COPY --from=builder /app/deploy /app
 
 CMD ["sh", "./docker-entrypoint.sh"]
