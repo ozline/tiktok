@@ -59,7 +59,7 @@ func GetUserByUsername(ctx context.Context, username string) (*User, error) {
 		// add some logs
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
+			return nil, errors.New("User not found")
 		}
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func GetUserByID(ctx context.Context, userid int64) (*User, error) {
 		// add some logs
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("User not found")
+			return nil, errno.UserNotFoundError
 		}
 		return nil, err
 	}
