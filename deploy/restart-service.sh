@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source remove-all-containers.sh
 
 SERVICE_TO_START=${1:-api} # get specific service

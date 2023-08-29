@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 IMAGE_NAME="registry.cn-hangzhou.aliyuncs.com/ozline/tiktok:v1"
 

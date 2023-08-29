@@ -1,64 +1,125 @@
 # tiktok
 
-**tiktok** is a distributed **simple-tiktok** backend based on RPC and HTTP protocols using Kitex + Hertz + Etcd + MySQL + Jaeger + Docker + Thrift
+**tiktok** is a distributed **simple-tiktok** backend based on RPC and HTTP protocols using Kitex + Hertz + etcd + MySQL + Jaeger + Docker + Thrift + Prometheus + Grafana
+
+# Feature
+
+- Extremely easy to use and deploy.
+- Relatively mature CI/CD.
+- Relatively high code quality
+- Safety Considerations
+- Performance Optimization for Interfaces
 
 # Quick start
 
-## Basic environment and config
+We will introduce how to quickly start this project using Docker. If you need to build and run it locally, please refer to: [start-by-local](./docs/start-by-local.md)
 
-We can use the docker-compose we wrote to quickly set up the runtime environment.
-
-```bash
-docker-compose up -d
-```
-
-After that, we need to update the config file. You just need to do the following two things:
-1. Open `./config/config_example.yaml` and **complete** the configuration **according to the comments** in the file (This is not much, most of it we have already set up for you.).
-2. Rename the above file as `config.yaml`.
-
-## Build and run
-
-We have greatly simplified the commands using Makefile, and all you need to do is:
-1. We have 6 services: `api`, `user`, `follow`, `chat`, `video`, and `interaction`. To run a specific service, go to the root directory and execute it by **make**
+Due to the script I have written, the process has been greatly simplified. You just need to use the following command to quickly start the environment and run the program in a containerized manner.
 
 ```bash
-make api # or others
+    make env-up      # launch environment, env-down for remove
+    make docker      # build docker-image
+    sh docker-run.sh # launch all services(carrying the service name allows you to start a specified service)
 ```
-2. Start each of the 6 services one by one (this may require opening 6 or more terminals).
-3. Makefile will automatically help you build the binary program and the necessary script configuration, and move these artifacts to the `output` folder in the root directory. Finally, it will automatically run them for you.
 
-## Test & send request by yourself
+then you can send HTTP request on `localhost:10001` for test or others things
 
-To facilitate your testing (even though it does not comply with go test specifications), we have placed all the test files in the `test` directory under the root directory. You only need to run the following program to let go test automatically execute the tests for you.
+# Quick deploy
+
+We use a fully automated process to streamline the workload, so you can always use our Docker image packaged with the latest code.
+
+You need to **install and start Docker**, and at the same time, you need to **configure the corresponding server environment**. If it is just for testing deployment, you can directly use `docker-compose.yml` to start. This way, you don't need to modify the config file either.
 
 ```bash
-go test ./test/...
+    cd deploy             # or you can only move this dir to your server rather than git clone all codes
+    mkdir -p config
+    cd config
+    touch config.yaml     # you can simply copy the examples in the config directory and make modifications according to the instructions inside.
+    touch prometheus.yaml # same as above
+    cd ..
+    sh restart-service-all.sh # start all services
 ```
 
-you can also send request by yourself, just step in `.postman` folder and import json file into postman!
+The script will automatically pull the latest image from Aliyun ACR, find and delete the running containers, and re-run them with the latest image.
 
+Then you can send HTTP request on `localhost:10001` for test or others things
 
-# Basic operation
+# Architecture
 
-We use docker to create project's dev environment. So before everything, we need to start docker in project root:
+## Overall
+```bash
+.
+├── Dockerfile
+├── LICENSE
+├── Makefile              # some useful commands
+├── README.md
+├── cmd                   # microservices
+├── config                # for run-directly config and config-example
+├── deploy                # for deploy
+├── docker-compose.ci.yml # for ci env
+├── docker-compose.yml
+├── docker-run.sh         # for local docker-run
+├── docs
+├── go.mod
+├── go.sum
+├── idl                   # interface definition
+├── kitex_gen
+├── pkg
+│   ├── constants         # store any consts
+│   ├── errno             # custom error
+│   ├── middleware        # common middleware
+│   ├── tracer            # for jaeger
+│   └── utils             # useful funcs
+└── test
+```
+
+## Gateway/api service
 
 ```bash
-docker-compose up -d # set environment
-docker-compose down  # unset
+.
+├── Makefile
+├── biz
+│   ├── handler     # solve request/send response
+│   ├── middleware
+│   ├── model
+│   ├── pack        # pack response
+│   ├── router      # for route
+│   └── rpc         # send rpc request to microservices
+├── build.sh
+├── main.go
+├── output          # build binary
+├── router.go
+├── router_gen.go
+└── script
 ```
 
-Then, we should launch all of the different miceoservices.
-
-We step in every microservice's folder: **./cmd**，in microservice's workspace, we start it by :
-
+## Microservices
 ```bash
-# FOR API
-make     # build and serve
-make new # create new hertz project
-make gen # update existing hertz project
-
-# FOR OTHERS
-make        # build and serve
-make gen    # create/update kitex projects
-make test   # test your code
+.
+├── Makefile        # useful commands
+├── build.sh        # build binary
+├── dal
+│   ├── cache       # redis
+│   ├── db          # MySQL
+│   └── mq          # RabbitMQ
+├── handler.go
+├── kitex_info.yaml
+├── main.go
+├── output          # build binary
+├── pack            # pack response
+├── rpc             # send request to other services
+├── script
+├── coverage        # coverage test(some service not exist)
+└── service
 ```
+
+
+# Test interfaces
+
+you can drop `.postman/tiktok.openapi.json` to **postman** then start this project and test
+
+# Contribute & Question
+
+you can send Pull Request(PR) for contribute, I will quickly response
+
+If you have any questions, you can create an issue.

@@ -1,0 +1,847 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "tiktok",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "基础接口"
+    },
+    {
+      "name": "互动接口"
+    },
+    {
+      "name": "社交接口"
+    }
+  ],
+  "paths": {
+    "/user/register": {
+      "post": {
+        "summary": "用户注册",
+        "x-apifox-folder": "基础接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "基础接口"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "账号",
+                    "example": "ozline"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "密码",
+                    "example": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-102732930-run"
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "用户登录",
+        "x-apifox-folder": "基础接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "基础接口"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "账号",
+                    "example": "ozline"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "密码",
+                    "example": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-102739333-run"
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "用户信息",
+        "x-apifox-folder": "基础接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "基础接口"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "用户id",
+            "required": false,
+            "example": "10001",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "鉴权token",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-102742832-run"
+      }
+    },
+    "/relation/action/": {
+      "post": {
+        "summary": "关注操作",
+        "x-apifox-folder": "社交接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "社交接口"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "to_user_id": {
+                    "type": "string"
+                  },
+                  "action_type": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-104183861-run"
+      }
+    },
+    "/relation/follow/list": {
+      "get": {
+        "summary": "关注列表",
+        "x-apifox-folder": "社交接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "社交接口"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10000",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105030886-run"
+      }
+    },
+    "/relation/follower/list": {
+      "get": {
+        "summary": "粉丝列表",
+        "x-apifox-folder": "社交接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "社交接口"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10001",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105031909-run"
+      }
+    },
+    "/relation/friend/list": {
+      "get": {
+        "summary": "好友列表",
+        "x-apifox-folder": "社交接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "社交接口"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10000",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105031914-run"
+      }
+    },
+    "/message/action": {
+      "post": {
+        "summary": "发送消息",
+        "x-apifox-folder": "社交接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "社交接口"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "to_user_id": {
+                    "type": "string"
+                  },
+                  "action_type": {
+                    "type": "integer",
+                    "description": "似乎只有1"
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105031965-run"
+      }
+    },
+    "/message/chat": {
+      "get": {
+        "summary": "聊天记录",
+        "x-apifox-folder": "社交接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "社交接口"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_user_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105032099-run"
+      }
+    },
+    "/favorite/action": {
+      "post": {
+        "summary": "点赞操作",
+        "x-apifox-folder": "互动接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "互动接口"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNjkzNzMzODY5LCJpYXQiOjE2OTMxMjkwNjksImlzcyI6InRpa3RvayJ9.gJmy4PGfp5_S_G3epUbBPabjPPqhXRKrWpT2_vIRzts"
+                  },
+                  "video_id": {
+                    "type": "string",
+                    "example": "483675103821824000"
+                  },
+                  "action_type": {
+                    "type": "string",
+                    "description": "// 1-点赞, 2-取消点赞",
+                    "example": "1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105032201-run"
+      }
+    },
+    "/favorite/list/": {
+      "get": {
+        "summary": "喜欢列表",
+        "x-apifox-folder": "互动接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "互动接口"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10000",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNjkzNzMzODY5LCJpYXQiOjE2OTMxMjkwNjksImlzcyI6InRpa3RvayJ9.gJmy4PGfp5_S_G3epUbBPabjPPqhXRKrWpT2_vIRzts",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105032218-run"
+      }
+    },
+    "/comment/action": {
+      "post": {
+        "summary": "评论操作",
+        "x-apifox-folder": "互动接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "互动接口"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "video_id": {
+                    "type": "string",
+                    "example": "483675103821824000"
+                  },
+                  "action_type": {
+                    "type": "string",
+                    "description": "1-发布评论，2-删除评论",
+                    "example": "1"
+                  },
+                  "comment_text": {
+                    "type": "string",
+                    "example": "我想睡觉"
+                  },
+                  "comment_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105032331-run"
+      }
+    },
+    "/comment/list": {
+      "get": {
+        "summary": "评论列表",
+        "x-apifox-folder": "互动接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "互动接口"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "video_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105032547-run"
+      }
+    },
+    "/feed/": {
+      "get": {
+        "summary": "视频流接口",
+        "x-apifox-folder": "基础接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "基础接口"
+        ],
+        "parameters": [
+          {
+            "name": "latest_time",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105032619-run"
+      }
+    },
+    "/publish/action/": {
+      "post": {
+        "summary": "投稿接口",
+        "x-apifox-folder": "基础接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "基础接口"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "string",
+                    "example": "file:///Users/ozliinex/Downloads/Fst5-h6WwAAc9nE.jpeg",
+                    "format": "binary"
+                  },
+                  "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAwMCwiZXhwIjoxNjkzNzI5ODUyLCJpYXQiOjE2OTMxMjUwNTIsImlzcyI6InRpa3RvayJ9.hYsEzX4qDOrcJIS42dDAngqudXZhVlXr7WaeeXcaV7o"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "test!!!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105032672-run"
+      }
+    },
+    "/publish/list": {
+      "get": {
+        "summary": "发布列表",
+        "x-apifox-folder": "基础接口",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "基础接口"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "10000",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/3151771/apis/api-105914252-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "servers": [
+    {
+      "url": "http://localhost:10001/douyin",
+      "description": "开发环境"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/pack"
 	"github.com/ozline/tiktok/cmd/video/service"
 	"github.com/ozline/tiktok/config"
@@ -37,6 +38,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 	}
 	videoList, userList, favoriteCountList, commentCountList, isFavoriteList, err := service.NewVideoService(ctx).FeedVideo(req)
 	if err != nil {
+		klog.Error(err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -62,6 +64,7 @@ func (s *VideoServiceImpl) GetFavoriteVideoInfo(ctx context.Context, req *video.
 	}
 	videoList, userList, favoriteCountList, commentCountList, err := service.NewVideoService(ctx).GetFavoriteVideoInfo(req)
 	if err != nil {
+		klog.Error(err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -87,6 +90,7 @@ func (s *VideoServiceImpl) GetPublishList(ctx context.Context, req *video.GetPub
 
 	videoList, userList, favoriteCountList, commentCountList, isFavoriteList, err := service.NewVideoService(ctx).GetPublishVideoInfo(req)
 	if err != nil {
+		klog.Error(err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -113,6 +117,7 @@ func (s *VideoServiceImpl) GetWorkCount(ctx context.Context, req *video.GetWorkC
 
 	workCount, err := service.NewVideoService(ctx).GetWorkCount(req)
 	if err != nil {
+		klog.Error(err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -138,6 +143,7 @@ func (s *VideoServiceImpl) GetVideoIDByUid(ctx context.Context, req *video.GetVi
 
 	videoIDList, err := service.NewVideoService(ctx).GetVideoIDByUid(req)
 	if err != nil {
+		klog.Error(err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -162,6 +168,7 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 	eg.Go(func() error {
 		err = service.NewVideoService(ctx).UploadVideo(req, videoName)
 		if err != nil {
+			klog.Error(err)
 			return errno.FileUploadError
 		}
 		return nil
@@ -170,6 +177,7 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 	eg.Go(func() error {
 		err = service.NewVideoService(ctx).UploadCover(req, coverName)
 		if err != nil {
+			klog.Error(err)
 			return errno.FileUploadError
 		}
 		return nil
@@ -179,6 +187,9 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 		playURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
 		coverURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
 		_, err = service.NewVideoService(ctx).CreateVideo(req, playURL, coverURL)
+		if err != nil {
+			klog.Error(err)
+		}
 		return err
 	})
 	if err := eg.Wait(); err != nil {
