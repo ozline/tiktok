@@ -15,7 +15,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.ACCESSKEYID }}
-          key: ${{ secrets.ACCESSKEYSECRET }}
+          password: ${{ secrets.ACCESSKEYSECRET }}
           port: ${{ secrets.PORT }}
           script: |
             cd ./deploy
