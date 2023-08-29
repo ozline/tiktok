@@ -6,6 +6,8 @@ SERVICE_TO_START=${1:-all} # default start all
 
 DIR=$(cd $(dirname $0); pwd)
 
+SERVICES=(api user chat follow interaction video)
+
 remove_container() {
     container_status=$(docker inspect -f '{{.State.Status}}' "$1")
     if [ "$container_status" == "running" ]; then
@@ -45,11 +47,9 @@ else
 fi
 
 if [ "$SERVICE_TO_START" == "all" ]; then
-    for service in api user chat follow interaction video; do
-        echo "Starting container for $service..."
+    for service in "${SERVICES[@]}"; do
         start_container $service
     done
 else
-    echo "Starting container for $SERVICE_TO_START..."
     start_container $SERVICE_TO_START
 fi
