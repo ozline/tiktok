@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source remove-all-containers.sh
 
 echo "Pulling the latest image..."
