@@ -2,7 +2,7 @@ name: server deploy
 
 on:
   workflow_run:
-    workflows: [Run Tests]
+    workflows: [build and push docker image to aliyun]
     types:
       - completed
 
