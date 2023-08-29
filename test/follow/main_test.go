@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ozline/tiktok/cmd/follow/dal"
+	"github.com/ozline/tiktok/cmd/follow/rpc"
 	"github.com/ozline/tiktok/cmd/follow/service"
 	"github.com/ozline/tiktok/config"
 )
@@ -21,6 +22,7 @@ var (
 func TestMain(m *testing.M) {
 	config.InitForTest()
 	dal.Init()
+	rpc.Init()
 
 	followService = service.NewFollowService(context.Background())
 
