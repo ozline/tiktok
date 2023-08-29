@@ -184,8 +184,8 @@ func (s *VideoServiceImpl) PutVideo(ctx context.Context, req *video.PutVideoRequ
 	})
 	// 将视频数据写入数据库
 	eg.Go(func() error {
-		playURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
-		coverURL := fmt.Sprintf("%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
+		playURL := fmt.Sprintf("https://%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, videoName)
+		coverURL := fmt.Sprintf("https://%s/%s/%s", config.OSS.Endpoint, config.OSS.MainDirectory, coverName)
 		_, err = service.NewVideoService(ctx).CreateVideo(req, playURL, coverURL)
 		if err != nil {
 			klog.Error(err)
