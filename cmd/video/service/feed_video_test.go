@@ -23,10 +23,12 @@ func TestFeedVideo(t *testing.T) {
 		t.Fail()
 	}
 	videoService := service.NewVideoService(context.Background())
+	testTime := new(int64)
+	*testTime = 1693101739
 	// 第一次从数据库读取，并写入redis
 	_, _, _, _, _, err = videoService.FeedVideo(&video.FeedRequest{
-		LatestTime: 1693101739,
-		Token:      token,
+		LatestTime: testTime,
+		Token:      &token,
 	})
 	if err != nil {
 		t.Error(err)
@@ -36,8 +38,8 @@ func TestFeedVideo(t *testing.T) {
 	time.Sleep(time.Second)
 	// 第二次直接从redis读取
 	_, _, _, _, _, err = videoService.FeedVideo(&video.FeedRequest{
-		LatestTime: 1693101739,
-		Token:      token,
+		LatestTime: testTime,
+		Token:      &token,
 	})
 	if err != nil {
 		t.Error(err)

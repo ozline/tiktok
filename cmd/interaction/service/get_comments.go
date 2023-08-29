@@ -4,20 +4,18 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ozline/tiktok/pkg/constants"
-
 	"github.com/cloudwego/kitex/pkg/klog"
-
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/pack"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/user"
+	"github.com/ozline/tiktok/pkg/constants"
 	"golang.org/x/sync/errgroup"
 )
 
-func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([]*interaction.Comment, error) {
+func (s *InteractionService) GetComments(req *interaction.CommentListRequest, times int) ([]*interaction.Comment, error) {
 	var comments []db.Comment
 	key := strconv.FormatInt(req.VideoId, 10)
 	exist, err := cache.IsExistComment(s.ctx, key)
@@ -30,6 +28,9 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 		if err != nil {
 			return nil, err
 		}
+		if len(*rComments) == 1 && (*rComments)[0].Score == 0 {
+			return []*interaction.Comment{}, nil
+		}
 		for i := 0; i < len(*rComments); i++ {
 			var comment db.Comment
 			_, err = comment.UnmarshalMsg([]byte((*rComments)[i].Member.(string)))
@@ -40,6 +41,17 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 			comments = append(comments, comment)
 		}
 	} else {
+		lockKey := cache.GetCommentNXKey(key)
+		ok, err := cache.Lock(s.ctx, lockKey)
+		if err != nil {
+			return nil, err
+		}
+		if !ok && times < constants.MaxRetryTimes {
+			klog.Infof("get %v times", times+1)
+			time.Sleep(constants.LockWaitTime)
+			return s.GetComments(req, times+1)
+		}
+
 		comments, err = db.GetCommentsByVideoID(s.ctx, req.VideoId)
 		if err != nil {
 			return nil, err
@@ -47,6 +59,19 @@ func (s *InteractionService) GetComments(req *interaction.CommentListRequest) ([
 
 		if len(comments) != 0 {
 			err = cache.AddComments(s.ctx, key, &comments)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			klog.Infof("no comments for video %d", req.VideoId)
+			err = cache.AddNoData(s.ctx, key)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if ok {
+			err = cache.Delete(s.ctx, lockKey)
 			if err != nil {
 				return nil, err
 			}
