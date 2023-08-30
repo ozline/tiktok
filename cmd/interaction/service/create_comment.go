@@ -42,7 +42,7 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 				klog.Error(e)
 			}
 		}()
-		err := cache.Delete(ctx, key)
+		err := cache.Unlink(ctx, key)
 		return err
 	})
 	eg.Go(func() error {
