@@ -75,12 +75,13 @@ func (s *FollowService) FollowList(req *follow.FollowListRequest) (*[]*follow.Us
 			*userList = append(*userList, follow)
 			mu.Unlock()
 		}(id, req, &userList, &wg, &mu)
-		if isErr {
-			return nil, errno.ServiceError
-		}
 	}
 
 	wg.Wait()
+
+	if isErr {
+		return nil, errno.ServiceError
+	}
 
 	return &userList, nil
 }

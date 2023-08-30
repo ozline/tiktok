@@ -26,6 +26,7 @@ func (s *FollowServiceImpl) Action(ctx context.Context, req *follow.ActionReques
 	if err := service.NewFollowService(ctx).Action(req); err != nil {
 		klog.Error(err)
 		resp.Base = pack.BuildBaseResp(err)
+		return resp, nil
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
