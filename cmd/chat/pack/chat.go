@@ -1,18 +1,20 @@
 package pack
 
 import (
+	"time"
+
 	"github.com/ozline/tiktok/cmd/chat/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/chat"
 )
 
 func BuildMessage(data []*db.Message) []*chat.Message {
 	if data == nil {
-		return nil
+		return make([]*chat.Message, 0)
 	}
 
-	res := make([]*chat.Message, len(data))
+	res := make([]*chat.Message, 0)
 	for _, val := range data {
-		create_time := val.CreatedAt.Format("2006-01-02 15:04:05")
+		create_time := val.CreatedAt.Format(time.DateTime)
 		message := &chat.Message{
 			Id:         val.Id,
 			ToUserId:   val.ToUserId,

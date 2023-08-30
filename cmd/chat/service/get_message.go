@@ -23,6 +23,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		// 查询 a->b的消息
 		mem, err := cache.MessageGet(c.ctx, key)
 		if err != nil {
+			klog.Info(err)
 			return nil, err
 		}
 		// 暂时用forrange
@@ -46,6 +47,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 	if ok := cache.MessageExist(c.ctx, revkey); ok != 0 {
 		mem, err := cache.MessageGet(c.ctx, revkey)
 		if err != nil {
+			klog.Info(err)
 			return nil, err
 		}
 		// 暂时用forrange
@@ -74,15 +76,18 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 	messages, ok, err := db.GetMessageList(c.ctx, req.ToUserId, user_id)
 
 	if err != nil {
+		klog.Info(err)
 		return nil, err
 	}
 	if ok {
 		mq_message, err := sonic.Marshal(messages)
 		if err != nil {
+			klog.Info(err)
 			return nil, err
 		}
 		err = mq.MessageMQCli.Publish(c.ctx, string(mq_message))
 		if err != nil {
+			klog.Info(err)
 			return messages, err
 		}
 	}

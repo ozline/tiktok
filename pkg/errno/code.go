@@ -23,4 +23,5 @@ const (
 	FollowYourselfErrorCode    = 10010 // 关注自己
 	NotFollowErrorCode         = 10011 // 尚未取关
 	AlreadyFollowErrorCode     = 10012 // 已经关注
+	CharacterLimitErrorCode    = 10013 // 消息字数错误
 )
