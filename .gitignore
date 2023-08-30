@@ -68,6 +68,3 @@ dumped_hertz_remote_config.json
 
 # config
 config/config.yaml
-
-# Deploy
-deploy/config

@@ -17,9 +17,12 @@ We will introduce how to quickly start this project using Docker. If you need to
 Due to the script I have written, the process has been greatly simplified. You just need to use the following command to quickly start the environment and run the program in a containerized manner.
 
 ```bash
-    make env-up      # launch environment, env-down for remove
-    make docker      # build docker-image
-    sh docker-run.sh # launch all services(carrying the service name allows you to start a specified service)
+make env-up      # launch environment, env-down for remove
+make docker      # build docker-image
+sh docker-run.sh # launch all services
+
+# if you just want to launch specific service, use
+sh docker-run.sh api # or others
 ```
 
 then you can send HTTP request on `localhost:10001` for test or others things
@@ -28,21 +31,21 @@ then you can send HTTP request on `localhost:10001` for test or others things
 
 We use a fully automated process to streamline the workload, so you can always use our Docker image packaged with the latest code.
 
-You need to **install and start Docker**, and at the same time, you need to **configure the corresponding server environment**. If it is just for testing deployment, you can directly use `docker-compose.yml` to start. This way, you don't need to modify the config file either.
-
 ```bash
-    cd deploy             # or you can only move this dir to your server rather than git clone all codes
-    mkdir -p config
-    cd config
-    touch config.yaml     # you can simply copy the examples in the config directory and make modifications according to the instructions inside.
-    touch prometheus.yaml # same as above
-    cd ..
-    sh restart-service-all.sh # start all services
+deploy
+├── config              # same as this projects
+│   ├── config.yaml
+│   ├── prometheus.yml
+│   └── sql             # for mysql init
+│       ├── init.sql
+│       └── user.sql
+├── docker-compose.yml  # for environment, same
+└── restart-service.sh  # deploy scripts
 ```
 
 The script will automatically pull the latest image from Aliyun ACR, find and delete the running containers, and re-run them with the latest image.
 
-Then you can send HTTP request on `localhost:10001` for test or others things
+If you want a specific tutorial on how to use it, please visit: [deploy docs](./deploy/README.md)
 
 # Architecture
 
