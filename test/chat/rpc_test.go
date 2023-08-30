@@ -1,14 +1,11 @@
 package test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/cloudwego/kitex/client"
-	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/ozline/tiktok/kitex_gen/chat/messageservice"
 	"github.com/ozline/tiktok/pkg/constants"
-	"github.com/ozline/tiktok/pkg/utils"
 )
 
 func testRpc(t *testing.T) {
