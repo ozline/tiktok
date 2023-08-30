@@ -33,6 +33,6 @@ var (
 	AlreadyFollowError  = NewErrNo(AlreadyFollowErrorCode, "you already follow this user")
 	UserNotFoundError   = NewErrNo(ParamErrorCode, "user not found")
 
-	//chat
+	// Chat
 	CharacterLimitError = NewErrNo(CharacterLimitErrorCode, "character limit error")
 )
