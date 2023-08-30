@@ -22,7 +22,7 @@ type VideoServiceImpl struct{}
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
 	resp = new(video.FeedResponse)
 	if req.LatestTime == nil {
-		currentTime := time.Now().Unix()
+		currentTime := time.Now().UnixMilli()
 		req.LatestTime = &currentTime
 	}
 	if req.Token == nil {
