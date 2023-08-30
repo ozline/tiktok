@@ -145,7 +145,7 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 		return resp, nil
 	}
 
-	commentsResp, err := service.NewInteractionService(ctx).GetComments(req)
+	commentsResp, err := service.NewInteractionService(ctx).GetComments(req, 0)
 
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
@@ -169,7 +169,7 @@ func (s *InteractionServiceImpl) CommentCount(ctx context.Context, req *interact
 		}
 	}
 
-	count, err := service.NewInteractionService(ctx).CountComments(req)
+	count, err := service.NewInteractionService(ctx).CountComments(req, 0)
 	if err != nil {
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil

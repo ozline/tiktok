@@ -1,10 +1,10 @@
 #!/bin/bash
 
-IMAGE_NAME="registry.cn-hangzhou.aliyuncs.com/ozline/tiktok:v1"
+IMAGE_NAME="tiktok"
+SERVICE_TO_START=${1:-all} # default start all
+
 
 DIR=$(cd $(dirname $0); pwd)
-
-SERVICE_TO_START=${1:-all} # default start all
 
 SERVICES=(api user chat follow interaction video)
 
@@ -45,9 +45,6 @@ else
         remove_container $container_id
     done
 fi
-
-echo "Pulling the latest image..."
-docker pull "$IMAGE_NAME"
 
 if [ "$SERVICE_TO_START" == "all" ]; then
     for service in "${SERVICES[@]}"; do

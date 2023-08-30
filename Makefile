@@ -50,3 +50,7 @@ build-all:
 		echo "$(PERFIX) building $$var service"; \
 		make $$var ci=1; \
 	done
+
+.PHONY: docker
+docker-build:
+	docker build -t tiktok .

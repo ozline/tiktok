@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"strconv"
+	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/video/dal/db"
@@ -14,7 +15,7 @@ func AddVideoList(ctx context.Context, videoList []db.Video, latestTime int64) {
 	if err != nil {
 		klog.Error(err)
 	}
-	err = RedisClient.Set(ctx, strconv.FormatInt(latestTime, 10), videoJson, 0).Err()
+	err = RedisClient.Set(ctx, strconv.FormatInt(latestTime, 10), videoJson, time.Minute*10).Err()
 	if err != nil {
 		klog.Error(err)
 	}

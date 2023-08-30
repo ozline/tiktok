@@ -35,14 +35,14 @@ func TestCommentsGet(t *testing.T) {
 		Token:   token,
 	}
 
-	_, err = interactionService.GetComments(req2)
+	_, err = interactionService.GetComments(req2, 0)
 
 	if err != nil {
 		t.Logf("err: [%v] \n", err)
 		t.Error(err)
 		t.Fail()
 	}
-	_, err = interactionService.GetComments(req2)
+	_, err = interactionService.GetComments(req2, 0)
 
 	if err != nil {
 		t.Logf("err: [%v] \n", err)

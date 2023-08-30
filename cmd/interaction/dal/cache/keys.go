@@ -1,6 +1,10 @@
 package cache
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/ozline/tiktok/pkg/constants"
+)
 
 var keyPattern = "%s::%d"
 
@@ -10,4 +14,16 @@ func GetVideoKey(videoID int64) string {
 
 func GetUserKey(userID int64) string {
 	return fmt.Sprintf(keyPattern, "favorite", userID)
+}
+
+func GetCommentNXKey(videoID string) string {
+	return fmt.Sprintf("%s:%s", constants.CommentNXKey, videoID)
+}
+
+func GetCountKey(videoID string) string {
+	return fmt.Sprintf("%s:%s", constants.CommentCountKey, videoID)
+}
+
+func GetCountNXKey(videoID string) string {
+	return fmt.Sprintf("%s:%s", constants.CountNXKey, videoID)
 }

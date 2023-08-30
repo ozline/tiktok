@@ -38,7 +38,7 @@ func TestCommentCount(t *testing.T) {
 		VideoId: 1,
 		Token:   &token,
 	}
-	_, err := interactionService.CountComments(req)
+	_, err := interactionService.CountComments(req, 0)
 	if err != nil {
 		t.Logf("err: [%v] \n", err)
 		t.Error(err)

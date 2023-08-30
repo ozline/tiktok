@@ -13,7 +13,13 @@ const (
 	RedisDBInteraction = 3
 	RedisDBVideo       = 4
 	CommentExpiredTime = 1 * time.Hour
-
+	NoDataExpiredTime  = 1 * time.Minute
+	LockTime           = 1 * time.Second
+	LockWaitTime       = 5 * time.Millisecond
+	MaxRetryTimes      = 3
+	CommentCountKey    = "count"
+	CommentNXKey       = "commentNX"
+	CountNXKey         = "countNX"
 	// RPC
 	MuxConnection  = 1
 	RPCTimeout     = 3 * time.Second
