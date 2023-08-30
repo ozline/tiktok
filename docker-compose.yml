@@ -126,16 +126,16 @@ services:
         image: gcr.io/cadvisor/cadvisor
         container_name: cadvisor
         restart: always
-        platform: linux/amd64
-        volumes:
-            - /:/rootfs:ro
-            - /var/run:/var/run:rw
-            - /sys:/sys:ro
-            - /var/lib/docker/:/var/lib/docker:ro
-        ports:
+       platform: linux/amd64
+       volumes:
+           - /:/rootfs:ro
+           - /var/run:/var/run:rw
+           - /sys:/sys:ro
+          - /var/lib/docker/:/var/lib/docker:ro
+       ports:
             - 8899:8080
-        networks:
-            - tiktok
+       networks:
+           - tiktok
 
     redis-exporter:
         image: oliver006/redis_exporter

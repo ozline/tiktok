@@ -30,9 +30,9 @@ struct MessageListRequest {
 }
 
 struct MessageListResponse {      
-    1: BaseResp base
-    2: list<Message> message_list //  ->按时间倒序排列
-    3: i64 total
+    1: required BaseResp base
+    2: optional list<Message> message_list //  ->按时间倒序排列
+    3: optional i64 total
 }
 
 service MessageService {
