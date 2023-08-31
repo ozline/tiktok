@@ -1,0 +1,23 @@
+name: server deploy
+
+on:
+  workflow_run:
+    workflows:
+      - "build and push docker image to aliyun"
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.ACCESSKEYID }}
+          password: ${{ secrets.ACCESSKEYSECRET }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ./deploy
+            sh restart-service.sh

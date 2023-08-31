@@ -42,12 +42,21 @@ func (s *InteractionService) CreateComment(req *interaction.CommentActionRequest
 				klog.Error(e)
 			}
 		}()
-		exist, err := cache.IsExistComment(ctx, key)
+		err := cache.Unlink(ctx, key)
+		return err
+	})
+	eg.Go(func() error {
+		defer func() {
+			if e := recover(); e != nil {
+				klog.Error(e)
+			}
+		}()
+		ok, _, err := cache.GetCount(ctx, key)
 		if err != nil {
 			return err
 		}
-		if exist == 1 {
-			err = cache.DeleteComments(ctx, key)
+		if ok {
+			err = cache.AddCount(ctx, 1, key)
 		}
 		return err
 	})

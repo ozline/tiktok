@@ -3,10 +3,10 @@ name: basic-test
 on:
   push:
     branches:
-      - dev
+      - main
   pull_request:
     branches:
-      - dev
+      - main
 
 jobs:
   build-all:
@@ -36,9 +36,6 @@ jobs:
   run-test:
     needs: build-all
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [user, video, chat, interaction, follow]
     steps:
 
       - name: Checkout code
@@ -57,8 +54,23 @@ jobs:
         with:
           compose-file: "./docker-compose.ci.yml"
 
-      - name: Run local server
-        run: nohup sh ./output/${{ matrix.service }}/bootstrap.sh > nohup.out 2> nohup.err < /dev/null &
+      - name: Run local api server
+        run: nohup sh ./output/api/bootstrap.sh > nohup1.out 2> nohup1.err < /dev/null &
+
+      - name: Run local user server
+        run: nohup sh ./output/user/bootstrap.sh > nohup2.out 2> nohup2.err < /dev/null &
+
+      - name: Run local interaction server
+        run: nohup sh ./output/interaction/bootstrap.sh > nohup3.out 2> nohup3.err < /dev/null &
+
+      - name: Run local follow server
+        run: nohup sh ./output/follow/bootstrap.sh > nohup4.out 2> nohup4.err < /dev/null &
+
+      - name: Run local video server
+        run: nohup sh ./output/video/bootstrap.sh > nohup5.out 2> nohup5.err < /dev/null &
+
+      - name: Run local chat server
+        run: nohup sh ./output/chat/bootstrap.sh > nohup6.out 2> nohup6.err < /dev/null &
 
       - name: Run test
-        run: go test -v ./test/${{ matrix.service }}/...
+        run: go test -v ./test/...

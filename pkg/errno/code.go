@@ -20,4 +20,8 @@ const (
 	LikeAlreadyExistErrorCode  = 10007 // 已点赞
 	LikeNoExistErrorCode       = 10008 // 未点赞
 	FileUploadErrorCode        = 10009 // 文件上传
+	FollowYourselfErrorCode    = 10010 // 关注自己
+	NotFollowErrorCode         = 10011 // 尚未取关
+	AlreadyFollowErrorCode     = 10012 // 已经关注
+	CharacterLimitErrorCode    = 10013 // 消息字数错误
 )

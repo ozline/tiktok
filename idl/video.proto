@@ -36,8 +36,8 @@ message Video{
 }
 
 message FeedRequest{
-    int64 latest_time = 1;
-    string token = 2;
+    optional int64 latest_time = 1;
+    optional string token = 2;
 }
 
 message FeedResponse{

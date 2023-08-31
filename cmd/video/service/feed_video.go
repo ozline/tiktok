@@ -16,21 +16,21 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 	var videoList []db.Video
 	var err error
 
-	if exist, err := cache.IsExistVideoInfo(s.ctx, req.LatestTime); exist == 1 {
+	if exist, err := cache.IsExistVideoInfo(s.ctx, *req.LatestTime); exist == 1 {
 		if err != nil {
 			return nil, nil, nil, nil, nil, err
 		}
-		videoList, err = cache.GetVideoList(s.ctx, req.LatestTime)
+		videoList, err = cache.GetVideoList(s.ctx, *req.LatestTime)
 		if err != nil {
 			return nil, nil, nil, nil, nil, err
 		}
 	} else {
-		formattedTime := time.Unix(req.LatestTime, 0).Format("2006-01-02 15:04:05")
-		videoList, err := db.GetVideoInfoByTime(s.ctx, formattedTime)
+		formattedTime := time.UnixMilli(*req.LatestTime).Format("2006-01-02 15:04:05")
+		videoList, err = db.GetVideoInfoByTime(s.ctx, formattedTime)
 		if err != nil {
 			return nil, nil, nil, nil, nil, err
 		}
-		go cache.AddVideoList(s.ctx, videoList, req.LatestTime)
+		go cache.AddVideoList(s.ctx, videoList, *req.LatestTime)
 	}
 	// 创建错误组
 	var eg errgroup.Group
@@ -46,7 +46,7 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 			// 获取user信息
 			userInfo, err := rpc.GetUser(s.ctx, &user.InfoRequest{
 				UserId: videoList[index].UserID,
-				Token:  req.Token,
+				Token:  *req.Token,
 			})
 			if err == nil {
 				userResults <- userInfo
@@ -57,7 +57,7 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 			// 获取favoriteCount
 			favoriteCount, err := rpc.GetVideoFavoriteCount(s.ctx, &interaction.VideoFavoritedCountRequest{
 				VideoId: videoList[index].Id,
-				Token:   req.Token,
+				Token:   *req.Token,
 			})
 			if err == nil {
 				favoriteCountResults <- favoriteCount
@@ -68,7 +68,7 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 			// 获取commentCount
 			commentCount, err := rpc.GetCommentCount(s.ctx, &interaction.CommentCountRequest{
 				VideoId: videoList[index].Id,
-				Token:   &req.Token,
+				Token:   req.Token,
 			})
 			if err == nil {
 				commentCountResults <- commentCount
@@ -80,7 +80,7 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 			isFavorite, err := rpc.GetVideoIsFavorite(s.ctx, &interaction.InteractionServiceIsFavoriteArgs{Req: &interaction.IsFavoriteRequest{
 				UserId:  videoList[index].UserID,
 				VideoId: videoList[index].Id,
-				Token:   req.Token,
+				Token:   *req.Token,
 			}})
 			if err == nil {
 				isFavoriteResults <- isFavorite

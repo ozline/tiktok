@@ -3,7 +3,6 @@ package test
 import (
 	"strconv"
 	"testing"
-	"time"
 
 	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -41,21 +40,18 @@ func benchmarkGetAndPostMessage(b *testing.B) {
 	}
 	for i := 0; i < b.N; i++ {
 		b.Logf("----epoch:%v ----", i)
-		for i := 0; i < 2000; i++ {
+		for i := 0; i < 100; i++ {
 			_, err := chatService.GetMessages(req, from_user_id)
 			if err != nil {
 				b.Error(err)
 				b.Fail()
 			}
-			now := time.Now().Format(time.DateTime)
 			req_post := &chat.MessagePostRequest{
-				Token:      token,
-				FromUserId: from_user_id,
-				ToUserId:   to_user_id,
-				Content:    content_get + "-->" + strconv.FormatInt(int64(i), 10),
-				CreateTime: &now,
+				Token:    token,
+				ToUserId: to_user_id,
+				Content:  content_get + "-->" + strconv.FormatInt(int64(i), 10),
 			}
-			err = chatService.SendMessage(req_post)
+			err = chatService.SendMessage(req_post, from_user_id, create_at)
 			if err != nil {
 				b.Error(err)
 				b.Fail()

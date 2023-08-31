@@ -62,14 +62,14 @@ func AddComment(ctx context.Context, key string, comment *db.Comment) (err error
 }
 
 func AddComments(ctx context.Context, key string, comments *[]db.Comment) (err error) {
-	var zComments []redis.Z
-	for _, comment := range *comments {
-		data, err := comment.MarshalMsg(nil)
+	zComments := make([]redis.Z, len(*comments))
+	for i := 0; i < len(*comments); i++ {
+		data, err := (*comments)[i].MarshalMsg(nil)
 		if err != nil {
 			klog.Error(err)
 			return err
 		}
-		zComments = append(zComments, redis.Z{Score: float64(comment.CreatedAt.Unix()), Member: data})
+		zComments[i] = redis.Z{Score: float64((*comments)[i].CreatedAt.Unix()), Member: data}
 	}
 	pipe := RedisClient.TxPipeline()
 	err = pipe.ZAdd(ctx, key, zComments...).Err()
@@ -98,6 +98,35 @@ func AddComments(ctx context.Context, key string, comments *[]db.Comment) (err e
 	return err
 }
 
+func AddNoData(ctx context.Context, key string) (err error) {
+	zData := redis.Z{}
+	pipe := RedisClient.TxPipeline()
+	err = pipe.ZAdd(ctx, key, zData).Err()
+	if err != nil {
+		klog.Error(err)
+		return err
+	}
+	err = pipe.Expire(ctx, key, constants.NoDataExpiredTime).Err()
+	if err != nil {
+		klog.Error(err)
+		return err
+	}
+	cmders, err := pipe.Exec(ctx)
+	if err != nil {
+		klog.Error(err)
+		return err
+	}
+	for _, cmder := range cmders {
+		err = cmder.Err()
+		if err != nil {
+			klog.Error(err)
+			return err
+		}
+	}
+	klog.Infof("Add NoData: videoId %v \n", key)
+	return err
+}
+
 func DeleteComment(ctx context.Context, key string, comment *db.Comment) (err error) {
 	data, err := comment.MarshalMsg(nil)
 	if err != nil {
@@ -113,24 +142,28 @@ func DeleteComment(ctx context.Context, key string, comment *db.Comment) (err er
 	return
 }
 
-func CountComments(ctx context.Context, key string) (count int64, err error) {
-	lastTime, err := RedisClient.TTL(ctx, key).Result()
-	if err != nil {
-		return 0, err
+func GetCount(ctx context.Context, key string) (ok bool, count string, err error) {
+	count, err = RedisClient.Get(ctx, GetCountKey(key)).Result()
+	if err == redis.Nil {
+		klog.Infof("Count comment: videoId %v count nil ! \n", key)
+		return false, count, nil
 	}
-	if lastTime < constants.CommentExpiredTime/2 {
-		err = RedisClient.Expire(ctx, key, constants.CommentExpiredTime).Err()
-		if err != nil {
-			return 0, err
-		}
+	if err == nil {
+		klog.Infof("Count comment: videoId %v count %v \n", key, count)
+	} else {
+		klog.Error(err)
 	}
-	count, err = RedisClient.ZCard(ctx, key).Result()
+	return true, count, err
+}
+
+func SetCount(ctx context.Context, key string, count int64) (err error) {
+	err = RedisClient.Set(ctx, GetCountKey(key), count, constants.CommentExpiredTime).Err()
 	if err != nil {
 		klog.Error(err)
-	} else {
-		klog.Infof("Count comment: videoId %v count %v \n", key, count)
+		return err
 	}
-	return
+	klog.Infof("Set Count: videoId %v \n", key)
+	return err
 }
 
 func IsExistComment(ctx context.Context, key string) (exist int64, err error) {
@@ -143,12 +176,42 @@ func IsExistComment(ctx context.Context, key string) (exist int64, err error) {
 	return
 }
 
-func DeleteComments(ctx context.Context, key string) (err error) {
+func Delete(ctx context.Context, key string) (err error) {
 	err = RedisClient.Del(ctx, key).Err()
 	if err != nil {
 		klog.Error(err)
 	} else {
-		klog.Infof("Delete comments: videoId %v \n", key)
+		klog.Infof("Delete : %v \n", key)
+	}
+	return
+}
+
+func Unlink(ctx context.Context, key string) (err error) {
+	err = RedisClient.Unlink(ctx, key).Err()
+	if err != nil {
+		klog.Error(err)
+	} else {
+		klog.Infof("Unlink : %v \n", key)
+	}
+	return
+}
+
+func Lock(ctx context.Context, key string) (ok bool, err error) {
+	ok, err = RedisClient.SetNX(ctx, key, 1, constants.LockTime).Result()
+	if err != nil {
+		klog.Error(err)
+	} else {
+		klog.Infof("Lock: set %v %v \n", key, ok)
+	}
+	return
+}
+
+func AddCount(ctx context.Context, increment int64, videoID string) (err error) {
+	err = RedisClient.IncrBy(ctx, GetCountKey(videoID), increment).Err()
+	if err != nil {
+		klog.Error(err)
+	} else {
+		klog.Infof("Add count: videoId %v increment %v\n", videoID, increment)
 	}
 	return
 }

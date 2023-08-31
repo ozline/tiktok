@@ -9,9 +9,11 @@ import (
 )
 
 func testFeed(t *testing.T) {
+	testTime := new(int64)
+	*testTime = 1693101739
 	videoList, userList, favoriteCountList, commentCountList, isFavoriteList, err := videoService.FeedVideo(&video.FeedRequest{
-		LatestTime: 1693010318,
-		Token:      token,
+		LatestTime: testTime,
+		Token:      &token,
 	})
 	if err != nil {
 		t.Error(err)

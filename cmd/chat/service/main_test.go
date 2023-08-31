@@ -3,12 +3,17 @@ package service
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/ozline/tiktok/cmd/chat/dal"
 	"github.com/ozline/tiktok/config"
 )
 
-var chatservice *ChatService
+var (
+	chatservice *ChatService
+	create_at   string = time.Now().Format(time.RFC3339)
+	ac_type     int64  = 1
+)
 
 const (
 	content      string = "cover test"

@@ -19,51 +19,93 @@ func Register(r *server.Hertz) {
 	root := r.Group("/", rootMw()...)
 	{
 		_douyin := root.Group("/douyin", _douyinMw()...)
-		_douyin.GET("/feed", append(_feedMw(), api.Feed)...)
-		_douyin.GET("/user", append(_userinfoMw(), api.UserInfo)...)
 		{
 			_comment := _douyin.Group("/comment", _commentMw()...)
-			_comment.POST("/action", append(_commentactionMw(), api.CommentAction)...)
-			_comment.GET("/list", append(_commentlistMw(), api.CommentList)...)
+			{
+				_action := _comment.Group("/action", _actionMw()...)
+				_action.POST("/", append(_commentactionMw(), api.CommentAction)...)
+			}
+			{
+				_list := _comment.Group("/list", _listMw()...)
+				_list.GET("/", append(_commentlistMw(), api.CommentList)...)
+			}
 		}
 		{
 			_favorite := _douyin.Group("/favorite", _favoriteMw()...)
-			_favorite.POST("/action", append(_favoriteactionMw(), api.FavoriteAction)...)
-			_favorite.GET("/list", append(_favoritelistMw(), api.FavoriteList)...)
+			{
+				_action0 := _favorite.Group("/action", _action0Mw()...)
+				_action0.POST("/", append(_favoriteactionMw(), api.FavoriteAction)...)
+			}
+			{
+				_list0 := _favorite.Group("/list", _list0Mw()...)
+				_list0.GET("/", append(_favoritelistMw(), api.FavoriteList)...)
+			}
+		}
+		{
+			_feed := _douyin.Group("/feed", _feedMw()...)
+			_feed.GET("/", append(_feed0Mw(), api.Feed)...)
 		}
 		{
 			_message := _douyin.Group("/message", _messageMw()...)
-			_message.POST("/action", append(_messageactionMw(), api.MessageAction)...)
-			_message.GET("/chat", append(_messagechatMw(), api.MessageChat)...)
+			{
+				_action1 := _message.Group("/action", _action1Mw()...)
+				_action1.POST("/", append(_messageactionMw(), api.MessageAction)...)
+			}
+			{
+				_chat := _message.Group("/chat", _chatMw()...)
+				_chat.GET("/", append(_messagechatMw(), api.MessageChat)...)
+			}
 		}
 		{
 			_publish := _douyin.Group("/publish", _publishMw()...)
-			_publish.POST("/action", append(_publishactionMw(), api.PublishAction)...)
-			_publish.GET("/list", append(_publishlistMw(), api.PublishList)...)
+			{
+				_action2 := _publish.Group("/action", _action2Mw()...)
+				_action2.POST("/", append(_publishactionMw(), api.PublishAction)...)
+			}
+			{
+				_list1 := _publish.Group("/list", _list1Mw()...)
+				_list1.GET("/", append(_publishlistMw(), api.PublishList)...)
+			}
 		}
 		{
 			_relation := _douyin.Group("/relation", _relationMw()...)
 			{
-				_action := _relation.Group("/action", _actionMw()...)
-				_action.POST("/", append(_relationactionMw(), api.RelationAction)...)
+				_action3 := _relation.Group("/action", _action3Mw()...)
+				_action3.POST("/", append(_relationactionMw(), api.RelationAction)...)
 			}
 			{
 				_follow := _relation.Group("/follow", _followMw()...)
-				_follow.GET("/list", append(_relationfollowlistMw(), api.RelationFollowList)...)
+				{
+					_list2 := _follow.Group("/list", _list2Mw()...)
+					_list2.GET("/", append(_relationfollowlistMw(), api.RelationFollowList)...)
+				}
 			}
 			{
 				_follower := _relation.Group("/follower", _followerMw()...)
-				_follower.GET("/list", append(_relationfollowerlistMw(), api.RelationFollowerList)...)
+				{
+					_list3 := _follower.Group("/list", _list3Mw()...)
+					_list3.GET("/", append(_relationfollowerlistMw(), api.RelationFollowerList)...)
+				}
 			}
 			{
 				_friend := _relation.Group("/friend", _friendMw()...)
-				_friend.GET("/list", append(_relationfriendlistMw(), api.RelationFriendList)...)
+				{
+					_list4 := _friend.Group("/list", _list4Mw()...)
+					_list4.GET("/", append(_relationfriendlistMw(), api.RelationFriendList)...)
+				}
 			}
 		}
 		{
 			_user := _douyin.Group("/user", _userMw()...)
-			_user.POST("/login", append(_userloginMw(), api.UserLogin)...)
-			_user.POST("/register", append(_userregisterMw(), api.UserRegister)...)
+			_user.GET("/", append(_userinfoMw(), api.UserInfo)...)
+			{
+				_login := _user.Group("/login", _loginMw()...)
+				_login.POST("/", append(_userloginMw(), api.UserLogin)...)
+			}
+			{
+				_register := _user.Group("/register", _registerMw()...)
+				_register.POST("/", append(_userregisterMw(), api.UserRegister)...)
+			}
 		}
 	}
 }
