@@ -34,5 +34,4 @@ func Init() {
 	if RedisDB == nil {
 		panic(errors.New("[redis init error]"))
 	}
-
 }
