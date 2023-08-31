@@ -127,7 +127,8 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 			continue
 		}
 		key := strconv.FormatInt(message.FromUserId, 10) + "-" + strconv.FormatInt(message.ToUserId, 10)
-		err = cache.MessageInsert(context.TODO(), key, float64(message.CreatedAt.Unix()), string(req.Body))
+		revkey := strconv.FormatInt(message.ToUserId, 10) + "-" + strconv.FormatInt(message.FromUserId, 10)
+		err = cache.MessageInsert(context.TODO(), key, revkey, float64(message.CreatedAt.Unix()), string(req.Body))
 		if err != nil {
 			klog.Info(err)
 			continue

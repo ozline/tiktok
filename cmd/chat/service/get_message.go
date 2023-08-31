@@ -73,23 +73,21 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		return messageList, nil
 	}
 
-	messages, ok, err := db.GetMessageList(c.ctx, req.ToUserId, user_id)
-
+	messages, err := db.GetMessageList(c.ctx, req.ToUserId, user_id)
 	if err != nil {
 		klog.Info(err)
 		return nil, err
 	}
-	if ok {
-		mq_message, err := sonic.Marshal(messages)
-		if err != nil {
-			klog.Info(err)
-			return nil, err
-		}
-		err = mq.MessageMQCli.Publish(c.ctx, string(mq_message))
-		if err != nil {
-			klog.Info(err)
-			return messages, err
-		}
+	//将crea
+	mq_message, err := sonic.Marshal(messages)
+	if err != nil {
+		klog.Info(err)
+		return nil, err
+	}
+	err = mq.MessageMQCli.Publish(c.ctx, string(mq_message))
+	if err != nil {
+		klog.Info(err)
+		return messages, err
 	}
 
 	return messages, nil

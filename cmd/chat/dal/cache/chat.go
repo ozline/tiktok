@@ -8,7 +8,7 @@ import (
 	redis "github.com/redis/go-redis/v9"
 )
 
-func MessageInsert(ctx context.Context, key string, score float64, member string) error {
+func MessageInsert(ctx context.Context, key string, revkey string, score float64, member string) error {
 	// 先判断是否key是否存在，如果存在则判断过期时间是否小于十天，小于则加时间，大于则不加时间
 	if ok := MessageExist(ctx, key); ok != 0 {
 		err := RedisDB.ZAdd(context.TODO(), key, redis.Z{
@@ -27,6 +27,10 @@ func MessageInsert(ctx context.Context, key string, score float64, member string
 			if err != nil {
 				return err
 			}
+			err = RedisDB.Expire(ctx, revkey, time.Hour*24*30).Err()
+			if err != nil {
+				return err
+			}
 			return nil
 		}
 	}
@@ -39,6 +43,10 @@ func MessageInsert(ctx context.Context, key string, score float64, member string
 		return err
 	}
 	err = RedisDB.Expire(ctx, key, time.Hour*24*30).Err()
+	if err != nil {
+		return err
+	}
+	err = RedisDB.Expire(ctx, revkey, time.Hour*24*30).Err()
 	if err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/kitex_gen/chat"
 	"gorm.io/gorm"
 	"gorm.io/hints"
 )
@@ -27,9 +28,13 @@ type MiddleMessage struct {
 	CreatedAt  string
 	UpdatedAt  string
 }
+type MessageBuild struct {
+	MessageElem *Message
+	MessageList []*chat.Message
+}
 type MessageArray []*Message
 
-func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, bool, error) {
+func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) ([]*Message, error) {
 	messageListFormMysql := make([]*Message, 0)
 	err := DB.WithContext(ctx).Clauses(hints.UseIndex("to_user_id", "from_user_id")).
 		Select("id", "to_user_id", "from_user_id", "content", "created_at").
@@ -40,12 +45,12 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		// add some logs
 		klog.Info("err happen")
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, false, errors.New("user not found")
+			return nil, errors.New("user not found")
 		}
-		return nil, false, err
+		return nil, err
 	}
 	// 回写redis --先返回信息，然后送到mq进行异步处理
-	return messageListFormMysql, true, nil
+	return messageListFormMysql, nil
 }
 
 func (d *DBAction) InsertMessage(message *Message) error {
