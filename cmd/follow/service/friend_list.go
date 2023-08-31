@@ -94,12 +94,13 @@ func (s *FollowService) FriendList(req *follow.FriendListRequest) (*[]*follow.Fr
 			*userList = append(*userList, friendUser)
 			mu.Unlock()
 		}(userID, req, &friendList, &wg, &mu)
-		if isErr {
-			return nil, errno.ServiceError
-		}
 	}
 
 	wg.Wait()
+
+	if isErr {
+		return nil, errno.ServiceError
+	}
 
 	return &friendList, nil
 }

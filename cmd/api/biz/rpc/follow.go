@@ -50,7 +50,7 @@ func RelationAction(ctx context.Context, req *follow.ActionRequest) error {
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return nil
@@ -64,7 +64,7 @@ func FollowList(ctx context.Context, req *follow.FollowListRequest) ([]*follow.U
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return nil, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return resp.UserList, nil
@@ -78,7 +78,7 @@ func FollowerList(ctx context.Context, req *follow.FollowerListRequest) ([]*foll
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return nil, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return resp.UserList, nil
@@ -92,7 +92,7 @@ func FriendList(ctx context.Context, req *follow.FriendListRequest) ([]*follow.F
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return nil, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return resp.UserList, nil

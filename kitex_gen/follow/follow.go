@@ -10,8 +10,8 @@ import (
 )
 
 type BaseResp struct {
-	Code int64   `thrift:"code,1,required" frugal:"1,required,i64" json:"code"`
-	Msg  *string `thrift:"msg,2,optional" frugal:"2,optional,string" json:"msg,omitempty"`
+	Code int64  `thrift:"code,1,required" frugal:"1,required,i64" json:"code"`
+	Msg  string `thrift:"msg,2,required" frugal:"2,required,string" json:"msg"`
 }
 
 func NewBaseResp() *BaseResp {
@@ -26,18 +26,13 @@ func (p *BaseResp) GetCode() (v int64) {
 	return p.Code
 }
 
-var BaseResp_Msg_DEFAULT string
-
 func (p *BaseResp) GetMsg() (v string) {
-	if !p.IsSetMsg() {
-		return BaseResp_Msg_DEFAULT
-	}
-	return *p.Msg
+	return p.Msg
 }
 func (p *BaseResp) SetCode(val int64) {
 	p.Code = val
 }
-func (p *BaseResp) SetMsg(val *string) {
+func (p *BaseResp) SetMsg(val string) {
 	p.Msg = val
 }
 
@@ -46,15 +41,12 @@ var fieldIDToName_BaseResp = map[int16]string{
 	2: "msg",
 }
 
-func (p *BaseResp) IsSetMsg() bool {
-	return p.Msg != nil
-}
-
 func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetCode bool = false
+	var issetMsg bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -86,6 +78,7 @@ func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetMsg = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -107,6 +100,11 @@ func (p *BaseResp) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetCode {
 		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetMsg {
+		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -140,7 +138,7 @@ func (p *BaseResp) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Msg = &v
+		p.Msg = v
 	}
 	return nil
 }
@@ -196,16 +194,14 @@ WriteFieldEndError:
 }
 
 func (p *BaseResp) writeField2(oprot thrift.TProtocol) (err error) {
-	if p.IsSetMsg() {
-		if err = oprot.WriteFieldBegin("msg", thrift.STRING, 2); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.Msg); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("msg", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Msg); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -243,14 +239,9 @@ func (p *BaseResp) Field1DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *BaseResp) Field2DeepEqual(src *string) bool {
+func (p *BaseResp) Field2DeepEqual(src string) bool {
 
-	if p.Msg == src {
-		return true
-	} else if p.Msg == nil || src == nil {
-		return false
-	}
-	if strings.Compare(*p.Msg, *src) != 0 {
+	if strings.Compare(p.Msg, src) != 0 {
 		return false
 	}
 	return true
