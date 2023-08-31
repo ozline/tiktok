@@ -15,6 +15,9 @@ func CommonMiddleware(next endpoint.Endpoint) endpoint.Endpoint {
 	return func(ctx context.Context, req, resp interface{}) (err error) {
 		ri := rpcinfo.GetRPCInfo(ctx)
 
+		// get reql request
+		klog.Infof("real request: %v\n", req)
+
 		// get remote service information
 		klog.Infof("remote service name: %s, remote method: %s\n", ri.To().ServiceName(), ri.To().Method())
 

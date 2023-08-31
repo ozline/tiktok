@@ -227,7 +227,7 @@ struct RelationFriendListResponse {
 struct MessageChatRequest {
     1: required string token,
     2: required i64 to_user_id,
-    3: required i64 pre_msg_time, // 上次最新消息的时间
+    // 3: required i64 pre_msg_time, // 上次最新消息的时间
 }
 
 struct MessageChatResponse {
