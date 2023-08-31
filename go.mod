@@ -16,6 +16,8 @@ require (
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/opentracing/opentracing-go v1.2.0
+	github.com/panjf2000/ants v1.3.0
+	github.com/panjf2000/ants/v2 v2.8.1
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/spf13/viper v1.16.0

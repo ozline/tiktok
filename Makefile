@@ -52,5 +52,5 @@ build-all:
 	done
 
 .PHONY: docker
-docker-build:
+docker:
 	docker build -t tiktok .

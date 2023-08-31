@@ -20,6 +20,9 @@ RUN apk update --no-cache && apk add --no-cache ca-certificates tzdata
 ENV TZ Asia/Shanghai
 ENV service api
 
+RUN apk update
+RUN apk add --no-cache ffmpeg
+
 WORKDIR /app
 COPY --from=builder /app/output /app/output
 COPY --from=builder /app/config /app/config
