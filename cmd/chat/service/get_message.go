@@ -78,7 +78,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		klog.Info(err)
 		return nil, err
 	}
-	//将crea
+
 	mq_message, err := sonic.Marshal(messages)
 	if err != nil {
 		klog.Info(err)
