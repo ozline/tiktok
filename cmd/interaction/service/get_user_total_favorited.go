@@ -29,7 +29,7 @@ func (s *InteractionService) GetUserTotalFavorited(req *interaction.UserTotalFav
 			// recover panic
 			defer func() {
 				if e := recover(); e != nil {
-					klog.Infof("recover panic :", e)
+					klog.Errorf("recover panic :", e)
 				}
 				wg.Done()
 			}()

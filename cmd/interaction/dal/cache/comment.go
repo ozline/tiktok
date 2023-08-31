@@ -186,6 +186,16 @@ func Delete(ctx context.Context, key string) (err error) {
 	return
 }
 
+func Unlink(ctx context.Context, key string) (err error) {
+	err = RedisClient.Unlink(ctx, key).Err()
+	if err != nil {
+		klog.Error(err)
+	} else {
+		klog.Infof("Unlink : %v \n", key)
+	}
+	return
+}
+
 func Lock(ctx context.Context, key string) (ok bool, err error) {
 	ok, err = RedisClient.SetNX(ctx, key, 1, constants.LockTime).Result()
 	if err != nil {

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/cmd/interaction/pack"
 	"github.com/ozline/tiktok/cmd/interaction/service"
 	interaction "github.com/ozline/tiktok/kitex_gen/interaction"
@@ -33,12 +34,14 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	// 1 like
 	case constants.Like:
 		if err := service.NewInteractionService(ctx).Like(req, claims.UserId); err != nil {
+			klog.Errorf("err: %v", err)
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
 	// 2 dislike
 	case constants.Dislike:
 		if err := service.NewInteractionService(ctx).Dislike(req, claims.UserId); err != nil {
+			klog.Errorf("err: %v", err)
 			resp.Base = pack.BuildBaseResp(err)
 			return resp, nil
 		}
@@ -59,6 +62,7 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 
 	videoList, err := service.NewInteractionService(ctx).FavoriteList(req)
 	if err != nil {
+		klog.Errorf("err: %v", err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -191,6 +195,7 @@ func (s *InteractionServiceImpl) VideoFavoritedCount(ctx context.Context, req *i
 
 	likeCount, err := service.NewInteractionService(ctx).GetVideoFavoritedCount(req)
 	if err != nil {
+		klog.Errorf("err: %v", err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -211,6 +216,7 @@ func (s *InteractionServiceImpl) UserFavoriteCount(ctx context.Context, req *int
 
 	likeCount, err := service.NewInteractionService(ctx).GetUserFavoriteCount(req)
 	if err != nil {
+		klog.Errorf("err: %v", err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -232,6 +238,7 @@ func (s *InteractionServiceImpl) UserTotalFavorited(ctx context.Context, req *in
 	total, err := service.NewInteractionService(ctx).GetUserTotalFavorited(req)
 
 	if err != nil {
+		klog.Errorf("err: %v", err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
@@ -252,6 +259,7 @@ func (s *InteractionServiceImpl) IsFavorite(ctx context.Context, req *interactio
 
 	exist, err := service.NewInteractionService(ctx).IsFavorite(req)
 	if err != nil {
+		klog.Errorf("err: %v", err)
 		resp.Base = pack.BuildBaseResp(err)
 		return resp, nil
 	}
