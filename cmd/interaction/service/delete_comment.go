@@ -45,7 +45,7 @@ func (s *InteractionService) DeleteComment(req *interaction.CommentActionRequest
 				klog.Error(e)
 			}
 		}()
-		err := cache.Delete(s.ctx, key)
+		err := cache.Unlink(s.ctx, key)
 		return err
 	})
 	eg.Go(func() error {

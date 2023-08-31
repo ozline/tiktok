@@ -25,7 +25,7 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 			return nil, nil, nil, nil, nil, err
 		}
 	} else {
-		formattedTime := time.Unix(*req.LatestTime, 0).Format("2006-01-02 15:04:05")
+		formattedTime := time.UnixMilli(*req.LatestTime).Format("2006-01-02 15:04:05")
 		videoList, err = db.GetVideoInfoByTime(s.ctx, formattedTime)
 		if err != nil {
 			return nil, nil, nil, nil, nil, err
