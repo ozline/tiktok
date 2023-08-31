@@ -29,16 +29,6 @@ type etcd struct {
 	Addr string
 }
 
-type config struct {
-	Server    server
-	Snowflake snowflake
-	MySQL     mySQL
-	Etcd      etcd
-	RabbitMQ  rabbitMQ
-	Redis     redis
-	OSS       oss
-}
-
 type rabbitMQ struct {
 	Addr     string
 	Username string
@@ -56,4 +46,20 @@ type oss struct {
 	AccessKeySecret string `mapstructure:"accessKey-secret"`
 	BucketName      string
 	MainDirectory   string `mapstructure:"main-directory"`
+}
+
+type elasticsearch struct {
+	Addr string
+	Host string
+}
+
+type config struct {
+	Server        server
+	Snowflake     snowflake
+	MySQL         mySQL
+	Etcd          etcd
+	RabbitMQ      rabbitMQ
+	Redis         redis
+	OSS           oss
+	Elasticsearch elasticsearch
 }

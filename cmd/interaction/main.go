@@ -2,26 +2,34 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
+	"github.com/elastic/go-elasticsearch"
+	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
+	"github.com/ozline/tiktok/cmd/api/biz/middleware/es"
 	"github.com/ozline/tiktok/cmd/interaction/dal"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/config"
 	interaction "github.com/ozline/tiktok/kitex_gen/interaction/interactionservice"
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/eslogrus"
 	"github.com/ozline/tiktok/pkg/tracer"
 	"github.com/ozline/tiktok/pkg/utils"
+	"github.com/sirupsen/logrus"
 )
 
 var (
 	path       *string
 	listenAddr string // listen port
+
+	EsClient *elasticsearch.Client
 )
 
 func Init() {
@@ -33,6 +41,32 @@ func Init() {
 	rpc.Init()
 	dal.Init()
 	tracer.InitJaeger(constants.InteractionServiceName)
+
+	EsInit()
+	klog.SetLevel(klog.LevelDebug)
+	klog.SetLogger(kitexlogrus.NewLogger(kitexlogrus.WithHook(es.EsHookLog())))
+}
+
+func EsHookLog() *eslogrus.ElasticHook {
+	hook, err := eslogrus.NewElasticHook(EsClient, config.Elasticsearch.Host, logrus.DebugLevel, constants.InteractionServiceName)
+	if err != nil {
+		panic(err)
+	}
+
+	return hook
+}
+
+// InitEs 初始化es
+func EsInit() {
+	esConn := fmt.Sprintf("http://%s", config.Elasticsearch.Addr)
+	cfg := elasticsearch.Config{
+		Addresses: []string{esConn},
+	}
+	client, err := elasticsearch.NewClient(cfg)
+	if err != nil {
+		panic(err)
+	}
+	EsClient = client
 }
 
 func main() {

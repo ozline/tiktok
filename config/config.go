@@ -8,14 +8,15 @@ import (
 )
 
 var (
-	Server    *server
-	Mysql     *mySQL
-	Snowflake *snowflake
-	Service   *service
-	Etcd      *etcd
-	RabbitMQ  *rabbitMQ
-	Redis     *redis
-	OSS       *oss
+	Server        *server
+	Mysql         *mySQL
+	Snowflake     *snowflake
+	Service       *service
+	Etcd          *etcd
+	RabbitMQ      *rabbitMQ
+	Redis         *redis
+	OSS           *oss
+	Elasticsearch *elasticsearch
 )
 
 func Init(path string, service string) {
@@ -54,6 +55,7 @@ func configMapping(srv string) {
 	RabbitMQ = &c.RabbitMQ
 	Redis = &c.Redis
 	OSS = &c.OSS
+	Elasticsearch = &c.Elasticsearch
 	Service = GetService(srv)
 }
 
