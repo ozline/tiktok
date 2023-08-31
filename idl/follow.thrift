@@ -2,7 +2,7 @@ namespace go follow
 
 struct BaseResp {
     1: required i64 code,
-    2: optional string msg,
+    2: required string msg,
 }
 
 struct User {

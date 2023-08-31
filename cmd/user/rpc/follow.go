@@ -50,7 +50,7 @@ func GetFollowCount(ctx context.Context, req *follow.FollowCountRequest) (int64,
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return -1, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return -1, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return *resp.FollowCount, nil
@@ -64,7 +64,7 @@ func GetFollowerCount(ctx context.Context, req *follow.FollowerCountRequest) (in
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return -1, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return -1, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return *resp.FollowerCount, nil
@@ -78,7 +78,7 @@ func IsFollow(ctx context.Context, req *follow.IsFollowRequest) (bool, error) {
 	}
 
 	if resp.Base.Code != errno.SuccessCode {
-		return false, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
+		return false, errno.NewErrNo(resp.Base.Code, resp.Base.Msg)
 	}
 
 	return resp.IsFollow, nil
