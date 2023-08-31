@@ -11,12 +11,13 @@ import (
 
 func GetComments(ctx context.Context, key string) (comments *[]redis.Z, err error) {
 	pipe := RedisClient.TxPipeline()
-	err = pipe.TTL(ctx, key).Err()
+	commentKey := GetCommentKey(key)
+	err = pipe.TTL(ctx, commentKey).Err()
 	if err != nil {
 		klog.Error(err)
 		return nil, err
 	}
-	err = pipe.ZRevRangeWithScores(ctx, key, 0, -1).Err()
+	err = pipe.ZRevRangeWithScores(ctx, commentKey, 0, -1).Err()
 	if err != nil {
 		klog.Error(err)
 		return nil, err
@@ -36,7 +37,7 @@ func GetComments(ctx context.Context, key string) (comments *[]redis.Z, err erro
 	lastTime := cmders[0].(*redis.DurationCmd).Val()
 	rComments := cmders[1].(*redis.ZSliceCmd).Val()
 	if lastTime < constants.CommentExpiredTime/2 {
-		err = RedisClient.Expire(ctx, key, constants.CommentExpiredTime).Err()
+		err = RedisClient.Expire(ctx, commentKey, constants.CommentExpiredTime).Err()
 		if err != nil {
 			klog.Error(err)
 			return nil, err
@@ -62,6 +63,7 @@ func AddComment(ctx context.Context, key string, comment *db.Comment) (err error
 }
 
 func AddComments(ctx context.Context, key string, comments *[]db.Comment) (err error) {
+	commentKey := GetCommentKey(key)
 	zComments := make([]redis.Z, len(*comments))
 	for i := 0; i < len(*comments); i++ {
 		data, err := (*comments)[i].MarshalMsg(nil)
@@ -72,12 +74,12 @@ func AddComments(ctx context.Context, key string, comments *[]db.Comment) (err e
 		zComments[i] = redis.Z{Score: float64((*comments)[i].CreatedAt.Unix()), Member: data}
 	}
 	pipe := RedisClient.TxPipeline()
-	err = pipe.ZAdd(ctx, key, zComments...).Err()
+	err = pipe.ZAdd(ctx, commentKey, zComments...).Err()
 	if err != nil {
 		klog.Error(err)
 		return err
 	}
-	err = pipe.Expire(ctx, key, constants.CommentExpiredTime).Err()
+	err = pipe.Expire(ctx, commentKey, constants.CommentExpiredTime).Err()
 	if err != nil {
 		klog.Error(err)
 		return err
@@ -101,12 +103,13 @@ func AddComments(ctx context.Context, key string, comments *[]db.Comment) (err e
 func AddNoData(ctx context.Context, key string) (err error) {
 	zData := redis.Z{}
 	pipe := RedisClient.TxPipeline()
-	err = pipe.ZAdd(ctx, key, zData).Err()
+	commentKey := GetCommentKey(key)
+	err = pipe.ZAdd(ctx, commentKey, zData).Err()
 	if err != nil {
 		klog.Error(err)
 		return err
 	}
-	err = pipe.Expire(ctx, key, constants.NoDataExpiredTime).Err()
+	err = pipe.Expire(ctx, commentKey, constants.NoDataExpiredTime).Err()
 	if err != nil {
 		klog.Error(err)
 		return err
@@ -167,7 +170,8 @@ func SetCount(ctx context.Context, key string, count int64) (err error) {
 }
 
 func IsExistComment(ctx context.Context, key string) (exist int64, err error) {
-	exist, err = RedisClient.Exists(ctx, key).Result()
+	commentKey := GetCommentKey(key)
+	exist, err = RedisClient.Exists(ctx, commentKey).Result()
 	if err != nil {
 		klog.Error(err)
 	} else {
@@ -187,7 +191,8 @@ func Delete(ctx context.Context, key string) (err error) {
 }
 
 func Unlink(ctx context.Context, key string) (err error) {
-	err = RedisClient.Unlink(ctx, key).Err()
+	commentKey := GetCommentKey(key)
+	err = RedisClient.Unlink(ctx, commentKey).Err()
 	if err != nil {
 		klog.Error(err)
 	} else {
