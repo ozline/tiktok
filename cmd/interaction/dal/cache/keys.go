@@ -21,7 +21,11 @@ func GetCommentNXKey(videoID string) string {
 }
 
 func GetCountKey(videoID string) string {
-	return fmt.Sprintf("%s:%s", constants.CommentCountKey, videoID)
+	return fmt.Sprintf("%s:%s", constants.CountKey, videoID)
+}
+
+func GetCommentKey(videoID string) string {
+	return fmt.Sprintf("%s:%s", constants.CommentKey, videoID)
 }
 
 func GetCountNXKey(videoID string) string {

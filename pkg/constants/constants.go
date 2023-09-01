@@ -17,7 +17,8 @@ const (
 	LockTime           = 1 * time.Second
 	LockWaitTime       = 5 * time.Millisecond
 	MaxRetryTimes      = 3
-	CommentCountKey    = "count"
+	CountKey           = "count"
+	CommentKey         = "comment"
 	CommentNXKey       = "commentNX"
 	CountNXKey         = "countNX"
 	// RPC

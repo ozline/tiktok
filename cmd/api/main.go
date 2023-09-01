@@ -14,6 +14,7 @@ import (
 	hertzUtils "github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/ozline/tiktok/cmd/api/biz/middleware/es"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
 	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -22,6 +23,8 @@ import (
 	"github.com/ozline/tiktok/pkg/utils"
 
 	hertzSentinel "github.com/hertz-contrib/opensergo/sentinel/adapter"
+
+	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 )
 
 var (
@@ -37,6 +40,12 @@ func Init() {
 
 	rpc.Init()
 	tracer.InitJaeger(constants.APIServiceName)
+
+	es.Init()
+
+	// set log
+	klog.SetLevel(klog.LevelDebug)
+	klog.SetLogger(kitexlogrus.NewLogger(kitexlogrus.WithHook(es.EsHookLog())))
 }
 
 func main() {

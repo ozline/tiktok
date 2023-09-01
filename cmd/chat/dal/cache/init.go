@@ -5,14 +5,12 @@ import (
 	"time"
 
 	"github.com/ozline/tiktok/config"
-	"github.com/panjf2000/ants/v2"
 	redis "github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 var (
-	RedisDB  *redis.Client
-	AntsPool *ants.PoolWithFunc
+	RedisDB *redis.Client
 )
 
 type Message struct {

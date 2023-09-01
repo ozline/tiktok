@@ -11,15 +11,16 @@ require (
 	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/hertz v0.6.7
 	github.com/cloudwego/kitex v0.6.2
+	github.com/elastic/go-elasticsearch v0.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/hertz-contrib/opensergo v0.0.1
+	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20230819133448-76093321aa8e
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/panjf2000/ants v1.3.0
-	github.com/panjf2000/ants/v2 v2.8.1
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/redis/go-redis/v9 v9.0.5
+	github.com/sirupsen/logrus v1.9.2
 	github.com/spf13/viper v1.16.0
 	github.com/tinylib/msgp v1.1.8
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
@@ -27,6 +28,11 @@ require (
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.3
 	gorm.io/hints v1.1.2
+)
+
+require (
+	go.opentelemetry.io/otel v1.16.0 // indirect
+	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 )
 
 require (
