@@ -12,7 +12,10 @@ func InitJaeger(service string) {
 	cfg, _ := jaegerconfig.FromEnv()
 	cfg.ServiceName = service
 
-	tracer, _, err := cfg.NewTracer(jaegerconfig.Logger(jaeger.StdLogger))
+	tracer, _, err := cfg.NewTracer(
+		jaegerconfig.Logger(jaeger.StdLogger),
+		jaegerconfig.ZipkinSharedRPCSpan(true),
+	)
 
 	if err != nil {
 		panic(fmt.Sprintf("cannot init jaeger: %v\n", err))

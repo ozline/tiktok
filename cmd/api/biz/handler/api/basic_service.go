@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/h2non/filetype"
 	api "github.com/ozline/tiktok/cmd/api/biz/model/api"
 	"github.com/ozline/tiktok/cmd/api/biz/pack"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
@@ -139,13 +140,14 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 
 	file, err := c.FormFile("data")
 
-	if !utils.IsVideoFile(file) {
-		pack.SendFailResponse(c, errno.FileUploadError.WithMessage("not video file"))
+	if err != nil {
+		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
 		return
 	}
 
-	if err != nil {
-		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
+	// check header
+	if !utils.IsVideoFile(file) {
+		pack.SendFailResponse(c, errno.NotVideoFile)
 		return
 	}
 
@@ -161,6 +163,10 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		pack.SendFailResponse(c, errno.FileUploadError.WithMessage(err.Error()))
 		return
+	}
+
+	if !filetype.IsVideo(byteContainer) {
+		pack.SendFailResponse(c, errno.NotVideoFile)
 	}
 
 	err = rpc.VideoPublish(ctx, &video.PutVideoRequest{

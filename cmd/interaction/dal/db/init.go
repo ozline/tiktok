@@ -2,12 +2,12 @@ package db
 
 import (
 	"github.com/ozline/tiktok/pkg/constants"
+	"github.com/ozline/tiktok/pkg/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-
-	"github.com/ozline/tiktok/pkg/utils"
+	gormopentracing "gorm.io/plugin/opentracing"
 )
 
 var DB *gorm.DB
@@ -27,6 +27,10 @@ func Init() {
 		})
 
 	if err != nil {
+		panic(err)
+	}
+
+	if err = DB.Use(gormopentracing.New()); err != nil {
 		panic(err)
 	}
 

@@ -26,6 +26,7 @@ var (
 
 	// Video
 	FileUploadError = NewErrNo(FileUploadErrorCode, "upload meet error")
+	NotVideoFile    = NewErrNo(FileUploadError.ErrorCode, "not video file")
 
 	// Follow
 	FollowYourselfError = NewErrNo(FollowYourselfErrorCode, "you should not follow yourself")
