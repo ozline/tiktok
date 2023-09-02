@@ -168,7 +168,7 @@ services:
             - tiktok
 
     cadvisor:
-        image: gcr.io/cadvisor/cadvisor
+        image: google/cadvisor:latest
         container_name: cadvisor
         restart: always
         platform: linux/amd64
