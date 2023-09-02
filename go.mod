@@ -13,6 +13,7 @@ require (
 	github.com/cloudwego/kitex v0.6.2
 	github.com/elastic/go-elasticsearch v0.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/hertz-contrib/gzip v0.0.1
 	github.com/hertz-contrib/opensergo v0.0.1
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20230819133448-76093321aa8e
 	github.com/kitex-contrib/registry-etcd v0.1.0

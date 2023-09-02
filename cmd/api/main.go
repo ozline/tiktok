@@ -14,6 +14,9 @@ import (
 	hertzUtils "github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/hertz-contrib/gzip"
+	hertzSentinel "github.com/hertz-contrib/opensergo/sentinel/adapter"
+	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"github.com/ozline/tiktok/cmd/api/biz/middleware/es"
 	"github.com/ozline/tiktok/cmd/api/biz/rpc"
 	"github.com/ozline/tiktok/config"
@@ -21,10 +24,6 @@ import (
 	"github.com/ozline/tiktok/pkg/errno"
 	"github.com/ozline/tiktok/pkg/tracer"
 	"github.com/ozline/tiktok/pkg/utils"
-
-	hertzSentinel "github.com/hertz-contrib/opensergo/sentinel/adapter"
-
-	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 )
 
 var (
@@ -71,6 +70,9 @@ func main() {
 
 	// Recovery 错误恢复
 	r.Use(recovery.Recovery(recovery.WithRecoveryHandler(recoveryHandler)))
+
+	// Gzip
+	r.Use(gzip.Gzip(gzip.BestSpeed))
 
 	// Sentinel 流量治理
 	r.Use(hertzSentinel.SentinelServerMiddleware(
