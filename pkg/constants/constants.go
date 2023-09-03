@@ -7,6 +7,9 @@ const (
 	JWTValue = "MTAxNTkwMTg1Mw=="
 	StartID  = 10000
 
+	// Viper config
+	// etcdAddress = "http://127.0.0.1:2379"
+
 	// redis
 	ReidsDB_Chat       = 1
 	RedisDBFollow      = 2
