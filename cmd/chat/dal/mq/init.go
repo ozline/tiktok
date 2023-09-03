@@ -23,6 +23,7 @@ type MiddleMessage struct {
 	ToUserId   int64
 	FromUserId int64
 	Content    string
+	IsRead     int
 	CreatedAt  string
 }
 
@@ -39,7 +40,7 @@ func InitRabbitMQ() {
 	}
 	dial, err := amqp.Dial(Rmq.mqurl)
 	if err != nil {
-		klog.Info(err)
+		klog.Error(err)
 		return
 	}
 	Rmq.conn = dial

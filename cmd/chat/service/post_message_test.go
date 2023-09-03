@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/ozline/tiktok/pkg/utils"
 )
@@ -12,7 +11,8 @@ import (
 func testPostMessage(t *testing.T) {
 	token, err := utils.CreateToken(from_user_id)
 	if err != nil {
-		klog.Info(err)
+		t.Error(err)
+		t.Fail()
 	}
 	req := &chat.MessagePostRequest{
 		Token:      token,
