@@ -13,7 +13,6 @@ import (
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
-	"github.com/ozline/tiktok/cmd/api/biz/middleware/es"
 	"github.com/ozline/tiktok/cmd/video/dal"
 	"github.com/ozline/tiktok/cmd/video/rpc"
 	"github.com/ozline/tiktok/config"
@@ -43,11 +42,11 @@ func Init() {
 
 	EsInit()
 	klog.SetLevel(klog.LevelDebug)
-	klog.SetLogger(kitexlogrus.NewLogger(kitexlogrus.WithHook(es.EsHookLog())))
+	klog.SetLogger(kitexlogrus.NewLogger(kitexlogrus.WithHook(EsHookLog())))
 }
 
 func EsHookLog() *eslogrus.ElasticHook {
-	hook, err := eslogrus.NewElasticHook(EsClient, config.Elasticsearch.Host, logrus.DebugLevel, constants.FollowServiceName)
+	hook, err := eslogrus.NewElasticHook(EsClient, config.Elasticsearch.Host, logrus.DebugLevel, constants.VideoServiceName)
 	if err != nil {
 		panic(err)
 	}
