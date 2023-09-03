@@ -25,8 +25,8 @@ type MiddleMessage struct {
 	ToUserId   int64
 	FromUserId int64
 	Content    string
+	IsRead     int
 	CreatedAt  string
-	UpdatedAt  string
 }
 type MessageBuild struct {
 	MessageElem *Message
@@ -43,7 +43,7 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		Find(&messageListFormMysql).Error
 	if err != nil {
 		// add some logs
-		klog.Info("err happen")
+		klog.Error("err happen")
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("user not found")
 		}
