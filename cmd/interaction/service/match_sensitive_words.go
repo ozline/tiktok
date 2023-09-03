@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/cloudwego/kitex/pkg/klog"
+
 	"github.com/ozline/tiktok/cmd/interaction/dal/sensitive_words"
 )
 
@@ -17,9 +19,9 @@ type ResponseBody struct {
 }
 
 func (s *InteractionService) MatchSensitiveWords(text string) (bool, error) {
-	ok := sensitive_words.St.Match(text)
-	if ok {
-		return ok, nil
+	fail := sensitive_words.St.Match(text)
+	if fail {
+		return fail, nil
 	}
 
 	requestBody := fmt.Sprintf(`{"ColaKey":"enB54tE5dI55Qv169215005005221MuejeU6z","wordStr": "%s","isStrict":"1"}`, text)
@@ -34,8 +36,12 @@ func (s *InteractionService) MatchSensitiveWords(text string) (bool, error) {
 
 	body, _ := io.ReadAll(resp.Body)
 	var res ResponseBody
-	if err = json.Unmarshal([]byte(string(body)), &res); err != nil {
+	if err = json.Unmarshal(body, &res); err != nil {
 		return false, err
+	}
+	if res.Code != 0 {
+		klog.Warnf("sensitive-words api error : %v", res.Msg)
+		return false, nil
 	}
 	return !res.IsPass, nil
 }
