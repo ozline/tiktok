@@ -94,12 +94,12 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return resp, nil
 		}
 
-		ok, err := commentService.MatchSensitiveWords(*req.CommentText)
+		fail, err := commentService.MatchSensitiveWords(*req.CommentText)
 		if err != nil {
 			resp.Base = pack.BuildBaseResp(errno.SensitiveWordsHTTPError)
 			return resp, nil
 		}
-		if ok {
+		if fail {
 			resp.Base = pack.BuildBaseResp(errno.SensitiveWordsError)
 			return resp, nil
 		}
