@@ -32,10 +32,13 @@ func testGetMessage(t *testing.T) {
 	time.Sleep(1 * time.Second)
 	req.Token = token
 	req.ToUserId = from_user_id
-	_, err = chatservice.GetMessages(req, to_user_id)
+	msg, err := chatservice.GetMessages(req, to_user_id)
 	if err != nil {
 		t.Error(err)
 		t.Fail()
+	}
+	for _, v := range msg {
+		t.Log(v)
 	}
 	time.Sleep(1 * time.Second)
 }

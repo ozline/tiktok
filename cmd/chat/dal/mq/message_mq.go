@@ -115,6 +115,7 @@ func (r *MessageMQ) dealWithMessageToCache(msg <-chan amqp.Delivery) {
 			continue
 		}
 		for _, val := range message {
+			val.IsRead = 1
 			mes, _ := sonic.Marshal(val)
 			key := strconv.FormatInt(val.FromUserId, 10) + "-" + strconv.FormatInt(val.ToUserId, 10)
 			cre_time, _ := time.ParseInLocation("2006-01-02T15:04:05Z", val.CreatedAt, time.Local)

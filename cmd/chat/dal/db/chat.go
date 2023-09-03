@@ -25,8 +25,8 @@ type MiddleMessage struct {
 	ToUserId   int64
 	FromUserId int64
 	Content    string
+	IsRead     int
 	CreatedAt  string
-	UpdatedAt  string
 }
 type MessageBuild struct {
 	MessageElem *Message

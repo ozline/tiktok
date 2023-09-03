@@ -10,6 +10,7 @@ import (
 	"github.com/ozline/tiktok/cmd/chat/dal/db"
 	"github.com/ozline/tiktok/cmd/chat/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/chat"
+	"github.com/redis/go-redis/v9"
 )
 
 // Get Messages history list
@@ -19,6 +20,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 	// RedisDB.WithContext(ctx)
 	key := strconv.FormatInt(req.ToUserId, 10) + "-" + strconv.FormatInt(user_id, 10)
 	revkey := strconv.FormatInt(user_id, 10) + "-" + strconv.FormatInt(req.ToUserId, 10)
+	no_empty := 0
 	if ok := cache.MessageExist(c.ctx, key); ok != 0 {
 		// 查询 a->b的消息
 		mem, err := cache.MessageGet(c.ctx, key)
@@ -26,7 +28,9 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 			klog.Info(err)
 			return nil, err
 		}
-		// 暂时用forrange
+		if len(mem) != 0 {
+			no_empty = 1
+		}
 		for _, val := range mem {
 			tempMessage := new(db.MiddleMessage)
 			message := new(db.Message)
@@ -35,7 +39,31 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 				klog.Info(err)
 				return nil, err
 			}
+			klog.Info("isread====>", tempMessage.IsRead, "====>", tempMessage.Id)
+			if tempMessage.IsRead == 1 {
+				klog.Info("isread branch")
+				continue
+			}
 			err = db.Convert(message, tempMessage)
+			if err != nil {
+				klog.Info(err)
+				return nil, err
+			}
+			err = cache.RedisDB.ZRem(c.ctx, key, val).Err()
+			if err != nil {
+				klog.Info(err)
+				return nil, err
+			}
+			tempMessage.IsRead = 1
+			redis_msg, err := sonic.Marshal(tempMessage)
+			if err != nil {
+				klog.Info(err)
+				return nil, err
+			}
+			err = cache.RedisDB.ZAdd(c.ctx, key, redis.Z{
+				Score:  float64(message.CreatedAt.UnixMilli()),
+				Member: string(redis_msg),
+			}).Err()
 			if err != nil {
 				klog.Info(err)
 				return nil, err
@@ -50,7 +78,9 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 			klog.Info(err)
 			return nil, err
 		}
-		// 暂时用forrange
+		if len(mem) != 0 {
+			no_empty = 1
+		}
 		for _, val := range mem {
 			tempMessage := new(db.MiddleMessage)
 			message := new(db.Message)
@@ -59,7 +89,31 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 				klog.Info(err)
 				return nil, err
 			}
+			klog.Info("isread====>", tempMessage.IsRead, "====>", tempMessage.Id)
+			if tempMessage.IsRead == 1 {
+				klog.Info("isread branch")
+				continue
+			}
 			err = db.Convert(message, tempMessage)
+			if err != nil {
+				klog.Info(err)
+				return nil, err
+			}
+			err = cache.RedisDB.ZRem(c.ctx, key, val).Err()
+			if err != nil {
+				klog.Info(err)
+				return nil, err
+			}
+			tempMessage.IsRead = 1
+			redis_msg, err := sonic.Marshal(tempMessage)
+			if err != nil {
+				klog.Info(err)
+				return nil, err
+			}
+			err = cache.RedisDB.ZAdd(c.ctx, key, redis.Z{
+				Score:  float64(message.CreatedAt.UnixMilli()),
+				Member: string(redis_msg),
+			}).Err()
 			if err != nil {
 				klog.Info(err)
 				return nil, err
@@ -72,7 +126,10 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		sort.Sort(messageList)
 		return messageList, nil
 	}
-
+	if no_empty == 1 {
+		// 没有新消息
+		return nil, nil
+	}
 	messages, err := db.GetMessageList(c.ctx, req.ToUserId, user_id)
 	if err != nil {
 		klog.Info(err)
