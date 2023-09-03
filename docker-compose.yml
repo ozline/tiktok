@@ -62,14 +62,27 @@ services:
             - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_API=3
+            - ALLOW_NONE_AUTHENTICATION=yes
+        # command: ["etcd", "--config-file=/config/config.yaml"]
+        # volumes:
+        #     - ./config:/config
         networks:
             - tiktok
 
     etcd-keeper:
         hostname: etcdkeeper
         image: evildecay/etcdkeeper
+        environment:
+            - ETCD_HOSTS=http://etcd:2379
+            - SW_STORAGE_ETCD_CLUSTER_NODES=etcd:2379
+            - HOST=0.0.0.0
+            - HOSTNAME=etcd-keeper
+        links:
+            - etcd
         ports:
             - 8099:8080
+        depends_on:
+            - etcd
         networks:
             - tiktok
 
