@@ -13,6 +13,8 @@ require (
 	github.com/cloudwego/kitex v0.6.2
 	github.com/elastic/go-elasticsearch v0.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/h2non/filetype v1.1.3
+	github.com/hertz-contrib/gzip v0.0.1
 	github.com/hertz-contrib/opensergo v0.0.1
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20230819133448-76093321aa8e
 	github.com/kitex-contrib/registry-etcd v0.1.0
@@ -28,6 +30,7 @@ require (
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.3
 	gorm.io/hints v1.1.2
+	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
 require (

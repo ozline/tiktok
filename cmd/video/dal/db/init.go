@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	gormopentracing "gorm.io/plugin/opentracing"
 )
 
 var DB *gorm.DB
@@ -30,10 +31,17 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
+
+	if err = DB.Use(gormopentracing.New()); err != nil {
+		panic(err)
+	}
+
 	sqlDB, err := DB.DB()
+
 	if err != nil {
 		panic(err)
 	}
+
 	sqlDB.SetMaxIdleConns(constants.MaxIdleConns)       // 最大闲置连接数
 	sqlDB.SetMaxOpenConns(constants.MaxConnections)     // 最大连接数
 	sqlDB.SetConnMaxLifetime(constants.ConnMaxLifetime) // 最大可复用时间
