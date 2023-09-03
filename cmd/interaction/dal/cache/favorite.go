@@ -6,7 +6,7 @@ import (
 )
 
 func IsVideoLikeExist(ctx context.Context, videoID int64, userID int64) (bool, error) {
-	exist, err := RedisClient.SIsMember(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Result()
+	exist, err := RedisClient.SIsMember(ctx, GetVideoLikeCountKey(videoID), strconv.FormatInt(userID, 10)).Result()
 	if err != nil {
 		return exist, err
 	}
@@ -16,11 +16,11 @@ func IsVideoLikeExist(ctx context.Context, videoID int64, userID int64) (bool, e
 func AddVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
 	pipe := RedisClient.TxPipeline()
 	// add video like
-	if err := pipe.SAdd(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
+	if err := pipe.SAdd(ctx, GetVideoLikeCountKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
 		return err
 	}
 	// add user like
-	if err := pipe.SAdd(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
+	if err := pipe.SAdd(ctx, GetUserLikeKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
 		return err
 	}
 
@@ -34,10 +34,10 @@ func AddVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
 func ReduceVideoLikeCount(ctx context.Context, videoID int64, userID int64) error {
 	pipe := RedisClient.TxPipeline()
 	// unlike the video
-	if err := pipe.SRem(ctx, GetVideoKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
+	if err := pipe.SRem(ctx, GetVideoLikeCountKey(videoID), strconv.FormatInt(userID, 10)).Err(); err != nil {
 		return err
 	}
-	if err := pipe.SRem(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
+	if err := pipe.SRem(ctx, GetUserLikeKey(userID), strconv.FormatInt(videoID, 10)).Err(); err != nil {
 		return err
 	}
 
@@ -49,7 +49,7 @@ func ReduceVideoLikeCount(ctx context.Context, videoID int64, userID int64) erro
 }
 
 func GetVideoLikeCount(ctx context.Context, videoID int64) (int64, error) {
-	count, err := RedisClient.SCard(ctx, GetVideoKey(videoID)).Result()
+	count, err := RedisClient.SCard(ctx, GetVideoLikeCountKey(videoID)).Result()
 	if err != nil {
 		return 0, err
 	}
@@ -57,7 +57,7 @@ func GetVideoLikeCount(ctx context.Context, videoID int64) (int64, error) {
 }
 
 func GetUserFavoriteVideos(ctx context.Context, userID int64) ([]int64, error) {
-	items, err := RedisClient.SMembers(ctx, GetUserKey(userID)).Result()
+	items, err := RedisClient.SMembers(ctx, GetUserLikeKey(userID)).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -74,13 +74,13 @@ func GetUserFavoriteVideos(ctx context.Context, userID int64) ([]int64, error) {
 func UpdateFavoriteVideoList(ctx context.Context, userID int64, videoIDList []int64) error {
 	var err error
 	for _, videoID := range videoIDList {
-		err = RedisClient.SAdd(ctx, GetUserKey(userID), strconv.FormatInt(videoID, 10)).Err()
+		err = RedisClient.SAdd(ctx, GetUserLikeKey(userID), strconv.FormatInt(videoID, 10)).Err()
 	}
 	return err
 }
 
 func GetUserFavoriteCount(ctx context.Context, userID int64) (int64, error) {
-	count, err := RedisClient.SCard(ctx, GetUserKey(userID)).Result()
+	count, err := RedisClient.SCard(ctx, GetUserLikeKey(userID)).Result()
 	if err != nil {
 		return 0, err
 	}

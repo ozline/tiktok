@@ -20,6 +20,8 @@ const (
 	LockTime           = 1 * time.Second
 	LockWaitTime       = 5 * time.Millisecond
 	MaxRetryTimes      = 3
+	UserLikeKey        = "user:like"
+	VideoLikeCountKey  = "video:like:count"
 	CountKey           = "count"
 	CommentKey         = "comment"
 	CommentNXKey       = "commentNX"
