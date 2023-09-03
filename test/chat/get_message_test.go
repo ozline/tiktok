@@ -23,12 +23,9 @@ func testGetMessage(t *testing.T) {
 		t.Error(err)
 		t.Fail()
 	}
-	t.Log("---------------------------")
 	t.Log(resp)
 	for _, v := range resp {
-		t.Log("---------------------------")
 		t.Log(v)
-		t.Log("---------------------------")
 	}
 }
 

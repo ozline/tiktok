@@ -40,7 +40,7 @@ func InitRabbitMQ() {
 	}
 	dial, err := amqp.Dial(Rmq.mqurl)
 	if err != nil {
-		klog.Info(err)
+		klog.Error(err)
 		return
 	}
 	Rmq.conn = dial

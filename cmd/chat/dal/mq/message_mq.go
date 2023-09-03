@@ -29,6 +29,7 @@ func NewMessageMQ(queueName string) *MessageMQ {
 
 	ch, err := messageMQCli.conn.Channel()
 	if err != nil {
+		klog.Error(err)
 		return nil
 	}
 	messageMQCli.channel = ch

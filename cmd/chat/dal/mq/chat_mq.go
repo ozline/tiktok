@@ -30,6 +30,7 @@ func NewChatMQ(queueName string) *ChatMQ {
 
 	ch, err := ChatMQCli.conn.Channel()
 	if err != nil {
+		klog.Error(err)
 		return nil
 	}
 	ChatMQCli.channel = ch
@@ -82,6 +83,7 @@ func (r *ChatMQ) Consumer() {
 	_, err := r.channel.QueueDeclare(r.queueName, false, false, false, false, nil)
 
 	if err != nil {
+		klog.Error(err)
 		return
 	}
 	msg, err := r.channel.Consume(
@@ -99,7 +101,7 @@ func (r *ChatMQ) Consumer() {
 		nil,
 	)
 	if err != nil {
-		klog.Info(err)
+		klog.Error(err)
 		return
 	}
 	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
@@ -112,25 +114,25 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 		middle_message := new(MiddleMessage)
 		err := sonic.Unmarshal(req.Body, middle_message)
 		if err != nil {
-			klog.Info(err)
+			klog.Error(err)
 			continue
 		}
 		message := new(cache.Message)
 		err = convertForMysql(message, middle_message)
 		if err != nil {
-			klog.Info(err)
+			klog.Error(err)
 			continue
 		}
 		err = db.DB.Create(&message).Error
 		if err != nil {
-			klog.Info(err)
+			klog.Error(err)
 			continue
 		}
 		key := strconv.FormatInt(message.FromUserId, 10) + "-" + strconv.FormatInt(message.ToUserId, 10)
 		revkey := strconv.FormatInt(message.ToUserId, 10) + "-" + strconv.FormatInt(message.FromUserId, 10)
 		err = cache.MessageInsert(context.TODO(), key, revkey, float64(message.CreatedAt.Unix()), string(req.Body))
 		if err != nil {
-			klog.Info(err)
+			klog.Error(err)
 			continue
 		}
 	}
