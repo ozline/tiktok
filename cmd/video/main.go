@@ -47,7 +47,7 @@ func Init() {
 }
 
 func EsHookLog() *eslogrus.ElasticHook {
-	hook, err := eslogrus.NewElasticHook(EsClient, config.Elasticsearch.Host, logrus.DebugLevel, constants.FollowServiceName)
+	hook, err := eslogrus.NewElasticHook(EsClient, config.Elasticsearch.Host, logrus.DebugLevel, constants.VideoServiceName)
 	if err != nil {
 		panic(err)
 	}
