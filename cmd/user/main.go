@@ -14,6 +14,7 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/ozline/tiktok/cmd/user/dal"
+	"github.com/ozline/tiktok/cmd/user/rpc"
 	"github.com/ozline/tiktok/config"
 	user "github.com/ozline/tiktok/kitex_gen/user/userservice"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -39,6 +40,8 @@ func Init() {
 	// others
 	dal.Init()
 	tracer.InitJaeger(constants.UserServiceName)
+
+	rpc.Init()
 
 	EsInit()
 	klog.SetLevel(klog.LevelDebug)

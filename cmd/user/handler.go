@@ -97,6 +97,6 @@ func (s *UserServiceImpl) Info(ctx context.Context, req *user.InfoRequest) (resp
 	}
 
 	resp.Base = pack.BuildBaseResp(nil)
-	resp.User = pack.User(userResp)
+	resp.User = userResp
 	return
 }
