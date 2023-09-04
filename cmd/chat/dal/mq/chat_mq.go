@@ -104,7 +104,6 @@ func (r *ChatMQ) Consumer() {
 		klog.Error(err)
 		return
 	}
-	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
 	go r.DealWithMessageToUser(msg)
 	forever := make(chan bool)
 	<-forever
