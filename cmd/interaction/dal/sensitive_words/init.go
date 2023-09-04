@@ -12,9 +12,9 @@ import (
 
 var St *utils.SensitiveTrie
 
-func Init() {
+func Init(path string) {
 	St = utils.NewSensitiveTrie()
-	fileHandle, err := os.OpenFile("cmd/interaction/dal/sensitive_words/words.txt", os.O_RDONLY, 0666)
+	fileHandle, err := os.OpenFile(path+"/words.txt", os.O_RDONLY, 0666)
 	if err != nil {
 		klog.Warn(err)
 		return
