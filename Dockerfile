@@ -27,6 +27,5 @@ WORKDIR /app
 COPY --from=builder /app/output /app/output
 COPY --from=builder /app/config /app/config
 COPY --from=builder /app/docker-entrypoint.sh /app/docker-entrypoint.sh
-COPY --from=builder /app/cmd/interaction/dal/sensitive_words/words.txt /app/cmd/interaction/dal/sensitive_words/words.txt
 
 CMD ["sh", "./docker-entrypoint.sh"]
