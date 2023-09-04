@@ -23,6 +23,7 @@ func testGetMessage(t *testing.T) {
 		t.Error(err)
 		t.Fail()
 	}
+	t.Log(resp)
 	for _, v := range resp {
 		t.Log(v)
 	}
