@@ -12,6 +12,7 @@ import (
 	"github.com/ozline/tiktok/cmd/chat/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/chat"
 	"github.com/redis/go-redis/v9"
+	"golang.org/x/sync/errgroup"
 )
 
 // Get Messages history list
@@ -75,42 +76,50 @@ func cacheMessageDeal(ctx context.Context, key string, isempty *int) (db.Message
 		if len(mem) != 0 {
 			*isempty = 1
 		}
+		var eg errgroup.Group
 		for _, val := range mem {
-			tempMessage := new(db.MiddleMessage)
-			message := new(db.Message)
-			err = sonic.Unmarshal([]byte(val), &tempMessage)
-			if err != nil {
-				klog.Error(err)
-				return nil, err
-			}
-			if tempMessage.IsRead == 1 {
-				continue
-			}
-			err = db.Convert(message, tempMessage)
-			if err != nil {
-				klog.Error(err)
-				return nil, err
-			}
-			err = cache.RedisDB.ZRem(ctx, key, val).Err()
-			if err != nil {
-				klog.Error(err)
-				return nil, err
-			}
-			tempMessage.IsRead = 1
-			redis_msg, err := sonic.Marshal(tempMessage)
-			if err != nil {
-				klog.Error(err)
-				return nil, err
-			}
-			err = cache.RedisDB.ZAdd(ctx, key, redis.Z{
-				Score:  float64(message.CreatedAt.UnixMilli()),
-				Member: string(redis_msg),
-			}).Err()
-			if err != nil {
-				klog.Error(err)
-				return nil, err
-			}
-			msg_array = append(msg_array, message)
+			temp_val := val
+			eg.Go(func() error {
+				tempMessage := new(db.MiddleMessage)
+				message := new(db.Message)
+				err = sonic.Unmarshal([]byte(temp_val), &tempMessage)
+				if err != nil {
+					klog.Error(err)
+					return err
+				}
+				if tempMessage.IsRead == 1 {
+					return nil
+				}
+				err = db.Convert(message, tempMessage)
+				if err != nil {
+					klog.Error(err)
+					return err
+				}
+				err = cache.RedisDB.ZRem(ctx, key, temp_val).Err()
+				if err != nil {
+					klog.Error(err)
+					return err
+				}
+				tempMessage.IsRead = 1
+				redis_msg, err := sonic.Marshal(tempMessage)
+				if err != nil {
+					klog.Error(err)
+					return err
+				}
+				err = cache.RedisDB.ZAdd(ctx, key, redis.Z{
+					Score:  float64(message.CreatedAt.UnixMilli()),
+					Member: string(redis_msg),
+				}).Err()
+				if err != nil {
+					klog.Error(err)
+					return err
+				}
+				msg_array = append(msg_array, message)
+				return nil
+			})
+		}
+		if err := eg.Wait(); err != nil {
+			return nil, err
 		}
 	}
 	return msg_array, nil
