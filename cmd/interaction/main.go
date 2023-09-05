@@ -38,7 +38,7 @@ func Init() {
 	config.Init(*path, constants.InteractionServiceName)
 
 	rpc.Init()
-	dal.Init()
+	dal.Init(*path)
 	tracer.InitJaeger(constants.InteractionServiceName)
 
 	EsInit()

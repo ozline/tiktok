@@ -6,8 +6,8 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/dal/sensitive_words"
 )
 
-func Init() {
+func Init(path string) {
 	db.Init()
 	cache.Init()
-	sensitive_words.Init()
+	sensitive_words.Init(path)
 }
