@@ -58,8 +58,8 @@ func GetFavoriteCount(ctx context.Context, req *interaction.UserFavoriteCountReq
 	return resp.LikeCount, nil
 }
 
-func GetTotalFavorited(ctx context.Context, req *interaction.VideoFavoritedCountRequest) (int64, error) {
-	resp, err := interactionClient.VideoFavoritedCount(ctx, req)
+func GetTotalFavorited(ctx context.Context, req *interaction.UserTotalFavoritedRequest) (int64, error) {
+	resp, err := interactionClient.UserTotalFavorited(ctx, req)
 
 	if err != nil {
 		return -1, err
@@ -69,5 +69,5 @@ func GetTotalFavorited(ctx context.Context, req *interaction.VideoFavoritedCount
 		return -1, errno.NewErrNo(resp.Base.Code, *resp.Base.Msg)
 	}
 
-	return resp.LikeCount, nil
+	return resp.TotalFavorited, nil
 }
