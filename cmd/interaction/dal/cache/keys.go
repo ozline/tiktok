@@ -7,14 +7,14 @@ import (
 	"github.com/ozline/tiktok/pkg/constants"
 )
 
-var keyPattern = "%s::%d"
+var keyPattern = "%s:%d"
 
-func GetVideoKey(videoID int64) string {
-	return fmt.Sprintf(keyPattern, "favorited", videoID)
+func GetVideoLikeCountKey(videoID int64) string {
+	return fmt.Sprintf(keyPattern, constants.VideoLikeCountKey, videoID)
 }
 
-func GetUserKey(userID int64) string {
-	return fmt.Sprintf(keyPattern, "favorite", userID)
+func GetUserLikeKey(userID int64) string {
+	return fmt.Sprintf(keyPattern, constants.UserLikeKey, userID)
 }
 
 func GetCommentNXKey(videoID string) string {

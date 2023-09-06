@@ -16,10 +16,13 @@ const (
 	RedisDBInteraction = 3
 	RedisDBVideo       = 4
 	CommentExpiredTime = 1 * time.Hour
+	LikeExpiredTime    = 1 * time.Hour
 	NoDataExpiredTime  = 1 * time.Minute
 	LockTime           = 1 * time.Second
 	LockWaitTime       = 5 * time.Millisecond
 	MaxRetryTimes      = 3
+	UserLikeKey        = "user:like"
+	VideoLikeCountKey  = "video:like:count"
 	CountKey           = "count"
 	CommentKey         = "comment"
 	CommentNXKey       = "commentNX"
