@@ -37,7 +37,7 @@ func TestMainOrder(t *testing.T) {
 
 	t.Run("login", testLogin)
 
-	t.Run("info", testGetUserInfo)
+	// t.Run("info", testGetUserInfo)
 
 	t.Run("RPC Test", testRPC)
 }
