@@ -9,12 +9,18 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/kitex_gen/video"
+	"github.com/ozline/tiktok/pkg/utils"
 	"golang.org/x/sync/errgroup"
 )
 
 func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.User, []int64, []int64, []bool, error) {
 	var videoList []db.Video
 	var err error
+	var claims *utils.Claims
+
+	if claims, err = utils.CheckToken(*req.Token); err != nil {
+		return nil, nil, nil, nil, nil, err
+	}
 
 	if exist, err := cache.IsExistVideoInfo(s.ctx, *req.LatestTime); exist == 1 {
 		if err != nil {
@@ -73,7 +79,8 @@ func (s *VideoService) FeedVideo(req *video.FeedRequest) ([]db.Video, []*user.Us
 			}
 			// 获取isFavorite
 			isFavorite, err := rpc.GetVideoIsFavorite(s.ctx, &interaction.InteractionServiceIsFavoriteArgs{Req: &interaction.IsFavoriteRequest{
-				UserId:  videoList[index].UserID,
+				// UserId:  videoList[index].UserID,
+				UserId:  claims.UserId,
 				VideoId: videoList[index].Id,
 				Token:   *req.Token,
 			}})
