@@ -10,6 +10,5 @@ func Init() {
 	db.Init()
 	cache.Init()
 	mq.InitRabbitMQ()
-	mq.InitMessageMQ()
 	mq.InitChatMQ()
 }

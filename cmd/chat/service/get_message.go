@@ -4,6 +4,7 @@ import (
 	"context"
 	"sort"
 	"strconv"
+	"time"
 
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -11,7 +12,6 @@ import (
 	"github.com/ozline/tiktok/cmd/chat/dal/db"
 	"github.com/ozline/tiktok/cmd/chat/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/chat"
-	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -23,6 +23,8 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 	key := strconv.FormatInt(req.ToUserId, 10) + "-" + strconv.FormatInt(user_id, 10)
 	revkey := strconv.FormatInt(user_id, 10) + "-" + strconv.FormatInt(req.ToUserId, 10)
 	no_empty := 0
+	mq.Mu.Lock()
+	defer mq.Mu.Unlock()
 	msg_array, err := cacheMessageDeal(c.ctx, key, &no_empty)
 	if err != nil {
 		klog.Error(err)
@@ -37,13 +39,15 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 	messageList = append(messageList, rev_msg_array...)
 	if len(messageList) > 0 {
 		// 合并排序
+		klog.Info("sort")
 		sort.Sort(messageList)
 		return messageList, nil
-	}
-	if no_empty == 1 {
+	} else if no_empty > 0 {
 		// 没有新消息
+		klog.Info("no new")
 		return nil, nil
 	}
+	klog.Info("db search")
 	messages, err := db.GetMessageList(c.ctx, req.ToUserId, user_id)
 	if err != nil {
 		klog.Error(err)
@@ -55,12 +59,25 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		klog.Error(err)
 		return nil, err
 	}
-	err = mq.MessageMQCli.Publish(c.ctx, string(mq_message))
+	message := make([]*mq.MiddleMessage, 0)
+	err = sonic.Unmarshal(mq_message, &message)
 	if err != nil {
 		klog.Error(err)
-		return messages, err
+		return nil, err
 	}
 
+	for _, val := range message {
+		val.IsRead = 1
+		mes, _ := sonic.Marshal(val)
+		key := strconv.FormatInt(val.FromUserId, 10) + "-" + strconv.FormatInt(val.ToUserId, 10)
+		cre_time, _ := time.ParseInLocation(time.RFC3339, val.CreatedAt, time.Local)
+
+		err := cache.RedisDB.HSet(context.TODO(), key, cre_time.UnixMilli(), mes).Err()
+		if err != nil {
+			klog.Info(err)
+			continue
+		}
+	}
 	return messages, nil
 }
 
@@ -95,21 +112,18 @@ func cacheMessageDeal(ctx context.Context, key string, isempty *int) (db.Message
 					klog.Error(err)
 					return err
 				}
-				err = cache.RedisDB.ZRem(ctx, key, temp_val).Err()
-				if err != nil {
-					klog.Error(err)
-					return err
-				}
 				tempMessage.IsRead = 1
 				redis_msg, err := sonic.Marshal(tempMessage)
 				if err != nil {
 					klog.Error(err)
 					return err
 				}
-				err = cache.RedisDB.ZAdd(ctx, key, redis.Z{
-					Score:  float64(message.CreatedAt.UnixMilli()),
-					Member: string(redis_msg),
-				}).Err()
+				cre_time, err := time.ParseInLocation(time.RFC3339, tempMessage.CreatedAt, time.Local)
+				if err != nil {
+					klog.Error(err)
+					return err
+				}
+				err = cache.RedisDB.HSet(ctx, key, cre_time.UnixMilli(), redis_msg).Err()
 				if err != nil {
 					klog.Error(err)
 					return err
