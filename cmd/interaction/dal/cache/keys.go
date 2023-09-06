@@ -6,7 +6,7 @@ import (
 	"github.com/ozline/tiktok/pkg/constants"
 )
 
-var keyPattern = "%s::%d"
+var keyPattern = "%s:%d"
 
 func GetVideoLikeCountKey(videoID int64) string {
 	return fmt.Sprintf(keyPattern, constants.VideoLikeCountKey, videoID)
