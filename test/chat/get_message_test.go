@@ -42,7 +42,7 @@ func testPolling(t *testing.T) {
 	}
 	res := make([]*db.Message, 0)
 	var eg errgroup.Group
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 30; i++ {
 		eg.Go(func() error {
 			resp, err := chatService.GetMessages(req, from_user_id)
 			if err != nil {

@@ -7,7 +7,6 @@ import (
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/kitex_gen/chat"
-	"github.com/ozline/tiktok/pkg/errno"
 	"gorm.io/gorm"
 	"gorm.io/hints"
 )
@@ -26,7 +25,7 @@ type MiddleMessage struct {
 	ToUserId   int64
 	FromUserId int64
 	Content    string
-	IsRead     int
+	IsReadNum  []int64
 	CreatedAt  string
 }
 type MessageBuild struct {
@@ -44,10 +43,10 @@ func GetMessageList(ctx context.Context, to_user_id int64, from_user_id int64) (
 		Find(&messageListFormMysql).Error
 	if err != nil {
 		// add some logs
-		klog.Error("err happen ==>", err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errno.UserExistedError
+			return nil, errors.New("user not found")
 		}
+		klog.Errorf("get message_list error: %v\n", err)
 		return nil, err
 	}
 	// 回写redis --先返回信息，然后送到mq进行异步处理
