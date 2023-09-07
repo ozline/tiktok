@@ -75,7 +75,7 @@ func testPolling(t *testing.T) {
 	}
 	for _, v := range res {
 		t.Log("=======================")
-		t.Log("message content===>", v.Content)
+		t.Log("content===>", v.Content)
 	}
 	t.Log("count===>", len(res))
 }
