@@ -8,6 +8,7 @@ import (
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/user"
 	"github.com/ozline/tiktok/kitex_gen/video"
+	"github.com/ozline/tiktok/pkg/utils"
 )
 
 // GetUser check token and get user's info
@@ -37,7 +38,15 @@ func (s *UserService) GetUser(req *user.InfoRequest) (*user.User, error) {
 	}
 
 	// 是否关注
-	userResp.IsFollow, err = rpc.IsFollow(s.ctx, &follow.IsFollowRequest{UserId: userModel.Id, Token: req.Token})
+	claims, err := utils.CheckToken(req.Token)
+
+	if err != nil {
+		return nil, err
+	}
+
+	userResp.IsFollow, err = rpc.IsFollow(s.ctx, &follow.IsFollowRequest{UserId: claims.UserId, Token: req.Token, ToUserId: userModel.Id})
+
+	// klog.Infof("current userid: %v, to userid: %v, isfollow: %v\n", claims.UserId, userModel.Id, userResp.IsFollow)
 
 	if err != nil {
 		return nil, err

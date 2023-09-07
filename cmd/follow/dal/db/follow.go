@@ -163,13 +163,20 @@ func FollowerCount(ctx context.Context, uid int64) (int64, error) {
 }
 
 func IsFollow(ctx context.Context, uid, tid int64) (bool, error) {
-	err := DB.WithContext(ctx).Model(&Follow{}).
-		Where("user_id = ? AND to_user_id = ? AND status = ?", uid, tid, constants.FollowAction).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) { // db中也查不到
-		return false, RecordNotFound
-	} else if err != nil {
+	var followModel *Follow
+
+	err := DB.WithContext(ctx).
+		Model(&Follow{}).
+		Select("status").
+		Where("user_id = ? AND to_user_id = ?", uid, tid).
+		First(&followModel).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) { // db中也查不到
+			return false, RecordNotFound
+		}
 		return false, err
 	}
 
-	return true, nil
+	return followModel.Status == int64(constants.FollowAction), nil
 }

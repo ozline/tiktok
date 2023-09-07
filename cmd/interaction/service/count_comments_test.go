@@ -22,7 +22,7 @@ var (
 
 func TestMain(m *testing.M) {
 	config.InitForTest()
-	dal.Init("./config")
+	dal.Init("../../../config")
 	interactionService = NewInteractionService(context.Background())
 
 	userId = 10000

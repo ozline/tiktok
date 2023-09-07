@@ -1,6 +1,7 @@
 package mq
 
 import (
+	"sync"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -32,7 +33,10 @@ type RabbitMQ struct {
 	mqurl string
 }
 
-var Rmq *RabbitMQ
+var (
+	Rmq *RabbitMQ
+	Mu  sync.Mutex
+)
 
 func InitRabbitMQ() {
 	Rmq = &RabbitMQ{

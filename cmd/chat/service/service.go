@@ -1,6 +1,8 @@
 package service
 
-import "context"
+import (
+	"context"
+)
 
 type ChatService struct {
 	ctx context.Context
