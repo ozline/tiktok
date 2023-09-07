@@ -25,13 +25,13 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 	key := strconv.FormatInt(req.ToUserId, 10) + "-" + strconv.FormatInt(user_id, 10)
 	revkey := strconv.FormatInt(user_id, 10) + "-" + strconv.FormatInt(req.ToUserId, 10)
 	no_empty := 0
-	msg_array, err := cacheMessageDeal(c.ctx, key, &no_empty, user_id)
+	msg_array, err := cacheMessageDeal(c.ctx, key,revkey ,&no_empty, user_id)
 	if err != nil {
 		klog.Error(err)
 		return nil, err
 	}
 	messageList = append(messageList, msg_array...)
-	rev_msg_array, err := cacheMessageDeal(c.ctx, revkey, &no_empty, user_id)
+	rev_msg_array, err := cacheMessageDeal(c.ctx, revkey,key, &no_empty, user_id)
 	if err != nil {
 		klog.Error(err)
 		return nil, err
@@ -72,7 +72,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		key := strconv.FormatInt(val.FromUserId, 10) + "-" + strconv.FormatInt(val.ToUserId, 10)
 		cre_time, _ := time.ParseInLocation(time.RFC3339, val.CreatedAt, time.Local)
 
-		err := cache.RedisDB.HSet(context.TODO(), key, cre_time.UnixMilli(), mes).Err()
+		err := cache.MessageInsert(c.ctx, key,revkey ,cre_time.UnixMilli(), string(mes))
 		if err != nil {
 			klog.Info(err)
 			continue
@@ -81,7 +81,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 	return messages, nil
 }
 
-func cacheMessageDeal(ctx context.Context, key string, isempty *int, user_id int64) (db.MessageArray, error) {
+func cacheMessageDeal(ctx context.Context, key string,revkey string ,isempty *int, user_id int64) (db.MessageArray, error) {
 	msg_array := make(db.MessageArray, 0)
 	if ok := cache.MessageExist(ctx, key); ok != 0 {
 		// 查询 a->b的消息
@@ -130,7 +130,7 @@ func cacheMessageDeal(ctx context.Context, key string, isempty *int, user_id int
 					klog.Error(err)
 					return err
 				}
-				err = cache.RedisDB.HSet(ctx, key, cre_time.UnixMilli(), redis_msg).Err()
+				err = cache.MessageInsert(ctx, key,revkey ,cre_time.UnixMilli(), string(redis_msg))
 				if err != nil {
 					klog.Error(err)
 					return err
