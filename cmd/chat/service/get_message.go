@@ -17,14 +17,14 @@ import (
 
 // Get Messages history list
 func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) ([]*db.Message, error) {
+	mq.Mu.Lock()
+	defer mq.Mu.Unlock()
 	messageList := make(db.MessageArray, 0)
 	// redis  ZSET
 	// RedisDB.WithContext(ctx)
 	key := strconv.FormatInt(req.ToUserId, 10) + "-" + strconv.FormatInt(user_id, 10)
 	revkey := strconv.FormatInt(user_id, 10) + "-" + strconv.FormatInt(req.ToUserId, 10)
 	no_empty := 0
-	mq.Mu.Lock()
-	defer mq.Mu.Unlock()
 	msg_array, err := cacheMessageDeal(c.ctx, key, &no_empty, user_id)
 	if err != nil {
 		klog.Error(err)
@@ -47,7 +47,7 @@ func (c *ChatService) GetMessages(req *chat.MessageListRequest, user_id int64) (
 		klog.Info("no new")
 		return nil, nil
 	}
-	klog.Info("db search")
+	klog.Info("db search no_empty==", no_empty, "  len(message_List)=", messageList.Len())
 	messages, err := db.GetMessageList(c.ctx, req.ToUserId, user_id)
 	if err != nil {
 		klog.Error(err)
