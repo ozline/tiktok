@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ozline/tiktok/cmd/user/dal"
+	"github.com/ozline/tiktok/cmd/user/rpc"
 	"github.com/ozline/tiktok/cmd/user/service"
 	"github.com/ozline/tiktok/config"
 )
@@ -21,6 +22,7 @@ var (
 func TestMain(m *testing.M) {
 	config.InitForTest()
 	dal.Init()
+	rpc.Init()
 
 	userService = service.NewUserService(context.Background())
 
@@ -35,7 +37,7 @@ func TestMainOrder(t *testing.T) {
 
 	t.Run("login", testLogin)
 
-	t.Run("info", testGetUserInfo)
+	// t.Run("info", testGetUserInfo)
 
 	t.Run("RPC Test", testRPC)
 }

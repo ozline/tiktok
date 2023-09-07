@@ -19,7 +19,7 @@ func (s *InteractionService) IsFavorite(req *interaction.IsFavoriteRequest) (boo
 		return exist, nil
 	}
 	// read from mysql
-	err = db.IsFavoriteExist(s.ctx, req.UserId, req.VideoId)
+	err = db.IsFavorited(s.ctx, req.UserId, req.VideoId, 1)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return false, nil
 	}

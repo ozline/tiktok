@@ -13,6 +13,7 @@ import (
 // 判断关注数据是否存在于redis
 func IsFollow(ctx context.Context, uid, tid int64) (bool, error) {
 	exist, err := RedisClient.SIsMember(ctx, FollowListKey(uid), strconv.FormatInt(tid, 10)).Result()
+
 	if err != nil {
 		klog.Infof("err: %v", err)
 		return exist, err

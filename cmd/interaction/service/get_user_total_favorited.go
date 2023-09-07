@@ -4,8 +4,6 @@ import (
 	"sync"
 
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
-	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/kitex_gen/video"
@@ -33,11 +31,10 @@ func (s *InteractionService) GetUserTotalFavorited(req *interaction.UserTotalFav
 				}
 				wg.Done()
 			}()
-			likeCount, err := cache.GetVideoLikeCount(s.ctx, videoID)
-			if likeCount == 0 {
-				// read from mysql
-				likeCount, err = db.GetVideoLikeCount(s.ctx, videoID)
-			}
+			likeCount, err := s.GetVideoFavoritedCount(&interaction.VideoFavoritedCountRequest{
+				VideoId: videoID,
+				Token:   req.Token,
+			})
 			if err != nil {
 				errChan <- err
 			}
