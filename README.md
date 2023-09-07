@@ -1,5 +1,7 @@
 # tiktok
 
+English | [简体中文](./docs/zh-cn.md)
+
 **tiktok** is a distributed **simple-tiktok** backend based on RPC and HTTP protocols using Kitex + Hertz + etcd + MySQL + Jaeger + Docker + Thrift + Prometheus + Grafana + Elasticsearch + Kibana
 
 # Feature
@@ -18,7 +20,7 @@
 
 We will introduce how to quickly start this project using Docker. If you need to build and run it locally, please refer to: [start-by-local](./docs/start-by-local.md)
 
-Due to the script I have written, the process has been greatly simplified. You just need to use the following command to quickly start the environment and run the program in a containerized manner.
+Due to the script we have written, the process has been greatly simplified. You just need to use the following command to quickly start the environment and run the program in a containerized manner.
 
 ```bash
 make env-up      # launch environment, env-down for remove
@@ -35,10 +37,13 @@ then you can send HTTP request on `localhost:10001` for test or others things
 
 We use a fully automated process to streamline the workload, so you can always use our Docker image packaged with the latest code.
 
+You can directly copy the `deploy` folder of our project to the server you expect to deploy. The folder structure is roughly as follows
+
 ```bash
 deploy
 ├── config              # same as this projects
 │   ├── config.yaml
+│   ├── words.txt       # sensitive word list
 │   ├── prometheus.yml
 │   └── sql             # for mysql init
 │       ├── init.sql
@@ -139,8 +144,13 @@ you can drop `.postman/tiktok.openapi.json` to **postman** then start this proje
 ![grafana](docs/img/grafana.png)
 
 
-# Contribute & Question
+# Contributor
 
-you can send Pull Request(PR) for contribute, I will quickly response
+Fuzhou University west2-online studio golang team
 
-If you have any questions, you can create an issue.
+- [ozline](https://github.com/ozline)
+- [XZ0730](https://github.com/XZ0730)
+- [wushiling50](https://github.com/wushiling50)
+- [jiuxia211](https://github.com/jiuxia211)
+- [notacommonperson](https://github.com/notacommonperson)
+- [jkskj](https://github.com/jkskj)
