@@ -130,9 +130,17 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 			Mu.Unlock()
 			continue
 		}
+
 		key := strconv.FormatInt(message.FromUserId, 10) + "-" + strconv.FormatInt(message.ToUserId, 10)
 		revkey := strconv.FormatInt(message.ToUserId, 10) + "-" + strconv.FormatInt(message.FromUserId, 10)
-		err = cache.MessageInsert(context.TODO(), key, revkey, message.CreatedAt.UnixMilli(), string(req.Body))
+		middle_message.IsReadNum = append(middle_message.IsReadNum, middle_message.FromUserId)
+		msg, err := sonic.Marshal(middle_message)
+		if err != nil {
+			klog.Error(err)
+			Mu.Unlock()
+			continue
+		}
+		err = cache.MessageInsert(context.TODO(), key, revkey, message.CreatedAt.UnixMilli(), string(msg))
 		if err != nil {
 			klog.Error(err)
 			Mu.Unlock()

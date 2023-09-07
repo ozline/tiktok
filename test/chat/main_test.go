@@ -33,6 +33,8 @@ func TestMainOrder(t *testing.T) {
 
 	t.Run("post_message", testPostMessage)
 
+	t.Run("get_message", testGetMessage)
+
 	t.Run("polling", testPolling)
 
 	t.Run("db", testDB)
