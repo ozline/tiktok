@@ -10,6 +10,10 @@
 - Safety Considerations
 - Performance Optimization for Interfaces
 
+# Architecture
+
+![architecture](./docs/img/architecture.png)
+
 # Quick start
 
 We will introduce how to quickly start this project using Docker. If you need to build and run it locally, please refer to: [start-by-local](./docs/start-by-local.md)
@@ -47,7 +51,7 @@ The script will automatically pull the latest image from Aliyun ACR, find and de
 
 If you want a specific tutorial on how to use it, please visit: [deploy docs](./deploy/README.md)
 
-# Architecture
+# Project structure
 
 ## Overall
 ```bash
@@ -117,9 +121,23 @@ If you want a specific tutorial on how to use it, please visit: [deploy docs](./
 ```
 
 
-# Test interfaces
+# Test
 
 you can drop `.postman/tiktok.openapi.json` to **postman** then start this project and test
+
+# Visualization example
+
+## Jaeger
+
+![jaeger](docs/img/jaeger.png)
+![jaeger-dag](docs/img/jaeger-dag.png)
+
+## Kibana + Elasticsearch
+![kibana](docs/img/kibana.png)
+
+## Grafana + Prometheus
+![grafana](docs/img/grafana.png)
+
 
 # Contribute & Question
 
