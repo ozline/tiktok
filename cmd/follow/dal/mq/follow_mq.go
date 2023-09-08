@@ -74,6 +74,7 @@ func (f *FollowMQ) Consume(ctx context.Context) (<-chan amqp.Delivery, error) {
 }
 
 // TODO:sync resolve msg
+
 // type SyncFollow struct {
 // }
 
