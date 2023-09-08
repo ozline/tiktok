@@ -14,11 +14,13 @@ func (s *VideoService) GetFavoriteVideoInfo(req *video.GetFavoriteVideoInfoReque
 
 	// 创建错误组
 	var eg errgroup.Group
+	type result struct {
+		userInfo      *user.User
+		favoriteCount int64
+		commentCount  int64
+	}
+	results := make([]result, len(videoList))
 	// 并发调用获取user信息、favoriteCount和commentCount
-	userResults := make(chan *user.User, len(videoList))
-	favoriteCountResults := make(chan int64, len(videoList))
-	commentCountResults := make(chan int64, len(videoList))
-	// // 并发调用获取user信息、favoriteCount和commentCount
 	for i := 0; i < len(videoList); i++ {
 		index := i // 在闭包中使用本地副本以避免竞态条件
 		eg.Go(func() error {
@@ -27,9 +29,7 @@ func (s *VideoService) GetFavoriteVideoInfo(req *video.GetFavoriteVideoInfoReque
 				UserId: videoList[index].UserID,
 				Token:  req.Token,
 			})
-			if err == nil {
-				userResults <- userInfo
-			} else {
+			if err != nil {
 				return err
 			}
 
@@ -38,9 +38,7 @@ func (s *VideoService) GetFavoriteVideoInfo(req *video.GetFavoriteVideoInfoReque
 				VideoId: videoList[index].Id,
 				Token:   req.Token,
 			})
-			if err == nil {
-				favoriteCountResults <- favoriteCount
-			} else {
+			if err != nil {
 				return err
 			}
 
@@ -49,12 +47,14 @@ func (s *VideoService) GetFavoriteVideoInfo(req *video.GetFavoriteVideoInfoReque
 				VideoId: videoList[index].Id,
 				Token:   &req.Token,
 			})
-			if err == nil {
-				commentCountResults <- commentCount
-			} else {
+			if err != nil {
 				return err
 			}
-
+			results[index] = result{
+				userInfo:      userInfo,
+				favoriteCount: favoriteCount,
+				commentCount:  commentCount,
+			}
 			return nil
 		})
 	}
@@ -63,24 +63,15 @@ func (s *VideoService) GetFavoriteVideoInfo(req *video.GetFavoriteVideoInfoReque
 		return nil, nil, nil, nil, err
 	}
 
-	// 关闭通道
-	close(userResults)
-	close(favoriteCountResults)
-	close(commentCountResults)
-	// 从通道中提取结果
 	var userList []*user.User
-	for userInfo := range userResults {
-		userList = append(userList, userInfo)
-	}
-
 	var favoriteCountList []int64
-	for favoriteCount := range favoriteCountResults {
-		favoriteCountList = append(favoriteCountList, favoriteCount)
+	var commentCountList []int64
+
+	for _, result := range results {
+		userList = append(userList, result.userInfo)
+		favoriteCountList = append(favoriteCountList, result.favoriteCount)
+		commentCountList = append(commentCountList, result.commentCount)
 	}
 
-	var commentCountList []int64
-	for commentCount := range commentCountResults {
-		commentCountList = append(commentCountList, commentCount)
-	}
 	return videoList, userList, favoriteCountList, commentCountList, err
 }

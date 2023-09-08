@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 	"time"
@@ -18,7 +19,7 @@ func testPostMessage(t *testing.T) {
 	req := &chat.MessagePostRequest{
 		Token:    token,
 		ToUserId: to_user_id,
-		Content:  content_post,
+		Content:  fmt.Sprintf("test post %d", time.Now().Unix()),
 	}
 	err = chatService.SendMessage(req, from_user_id, create_at)
 	if err != nil {

@@ -24,6 +24,12 @@ func IsFavoriteExist(ctx context.Context, userID int64, videoID int64) error {
 		Where("user_id = ? AND video_id = ?", userID, videoID).First(&fav).Error
 }
 
+func IsFavorited(ctx context.Context, userID int64, videoID int64, status int64) error {
+	var fav Favorite
+	return DB.Table(constants.FavoriteTableName).WithContext(ctx).
+		Where("user_id = ? AND video_id = ? AND status = ?", userID, videoID, status).First(&fav).Error
+}
+
 func FavoriteCreate(ctx context.Context, fav *Favorite) error {
 	fav.ID = SF.NextVal()
 	return DB.Table(constants.FavoriteTableName).WithContext(ctx).Create(fav).Error

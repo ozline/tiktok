@@ -104,6 +104,7 @@ func (r *ChatMQ) Consumer() {
 		klog.Error(err)
 		return
 	}
+	klog.Info("[*] Waiting for messages,To exit press CTRL+C")
 	go r.DealWithMessageToUser(msg)
 	forever := make(chan bool)
 	<-forever
@@ -122,18 +123,30 @@ func (c *ChatMQ) DealWithMessageToUser(msg <-chan amqp.Delivery) {
 			klog.Error(err)
 			continue
 		}
+		Mu.Lock()
 		err = db.DB.Create(&message).Error
 		if err != nil {
 			klog.Error(err)
+			Mu.Unlock()
 			continue
 		}
+
 		key := strconv.FormatInt(message.FromUserId, 10) + "-" + strconv.FormatInt(message.ToUserId, 10)
 		revkey := strconv.FormatInt(message.ToUserId, 10) + "-" + strconv.FormatInt(message.FromUserId, 10)
-		err = cache.MessageInsert(context.TODO(), key, revkey, float64(message.CreatedAt.Unix()), string(req.Body))
+		middle_message.IsReadNum = append(middle_message.IsReadNum, middle_message.FromUserId)
+		msg, err := sonic.Marshal(middle_message)
 		if err != nil {
 			klog.Error(err)
+			Mu.Unlock()
 			continue
 		}
+		err = cache.MessageInsert(context.TODO(), key, revkey, message.CreatedAt.UnixMilli(), string(msg))
+		if err != nil {
+			klog.Error(err)
+			Mu.Unlock()
+			continue
+		}
+		Mu.Unlock()
 	}
 }
 
@@ -142,7 +155,7 @@ func convertForMysql(message *cache.Message, tempMessage *MiddleMessage) (err er
 	message.ToUserId = tempMessage.ToUserId
 	message.FromUserId = tempMessage.FromUserId
 	message.Content = tempMessage.Content
-	message.CreatedAt, err = time.Parse(time.RFC3339, tempMessage.CreatedAt)
+	message.CreatedAt, err = time.ParseInLocation(time.RFC3339, tempMessage.CreatedAt, time.Local)
 	if err != nil {
 		return err
 	}

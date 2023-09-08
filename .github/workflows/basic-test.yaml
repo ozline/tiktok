@@ -1,9 +1,6 @@
 name: basic-test
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -72,5 +69,17 @@ jobs:
       - name: Run local chat server
         run: nohup sh ./output/chat/bootstrap.sh > nohup6.out 2> nohup6.err < /dev/null &
 
-      - name: Run test
-        run: go test -v ./test/...
+      - name: Run user test
+        run: sleep 30 && go test -v ./test/user/...
+
+      - name: Run video test
+        run: go test -v ./test/video/...
+
+      - name: Run interaction test
+        run: go test -v ./test/interaction/...
+
+      - name: Run follow test
+        run: go test -v ./test/follow/...
+
+      - name: Run chat test
+        run: go test -v ./test/chat/...

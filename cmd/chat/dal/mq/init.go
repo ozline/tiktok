@@ -1,6 +1,7 @@
 package mq
 
 import (
+	"sync"
 	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -23,7 +24,7 @@ type MiddleMessage struct {
 	ToUserId   int64
 	FromUserId int64
 	Content    string
-	IsRead     int
+	IsReadNum  []int64
 	CreatedAt  string
 }
 
@@ -32,7 +33,10 @@ type RabbitMQ struct {
 	mqurl string
 }
 
-var Rmq *RabbitMQ
+var (
+	Rmq *RabbitMQ
+	Mu  sync.Mutex
+)
 
 func InitRabbitMQ() {
 	Rmq = &RabbitMQ{

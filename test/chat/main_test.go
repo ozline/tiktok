@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	from_user_id int64  = 2
-	to_user_id   int64  = 3
+	from_user_id int64  = 3
+	to_user_id   int64  = 2
 	content_get  string = "test get"
 	content_post string = "test post"
 	create_at    string = time.Now().Format(time.RFC3339)
@@ -32,6 +32,10 @@ func TestMainOrder(t *testing.T) {
 	t.Run("get_message", testGetMessage)
 
 	t.Run("post_message", testPostMessage)
+
+	t.Run("get_message", testGetMessage)
+
+	t.Run("polling", testPolling)
 
 	t.Run("db", testDB)
 
