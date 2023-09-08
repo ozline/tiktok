@@ -19,7 +19,7 @@ func (c *ChatService) SendMessage(req *chat.MessagePostRequest, user_id int64, c
 		Id:         db.SF.NextVal(),
 		ToUserId:   req.ToUserId,
 		FromUserId: user_id,
-		IsRead:     0,
+		IsReadNum:  make([]int64, 0),
 		Content:    req.Content,
 		CreatedAt:  create_at,
 	}
