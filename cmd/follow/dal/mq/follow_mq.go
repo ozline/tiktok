@@ -74,20 +74,30 @@ func (f *FollowMQ) Consume(ctx context.Context) (<-chan amqp.Delivery, error) {
 }
 
 // TODO:sync resolve msg
+func (s *SyncFollow) SyncFollowMQ(ctx context.Context) error {
+	defer FollowMQCli.ReleaseRes()
+	msgs, err := FollowMQCli.Consume(ctx)
+	if err != nil {
+		return err
+	}
 
-// type SyncFollow struct {
-// }
+	var forever chan struct{}
 
-// func (s *SyncFollow) RunTaskCreate(ctx context.Context) error {
-// 	msgs, err := FollowMQCli.Consume(ctx)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	var forever chan struct{}
+	go func() {
+		for msg := range msgs {
+			klog.Infof("Resolve msg: %s", msg.Body)
+			// TODO:落库处理
+			msg.Ack(false)
+		}
+	}()
 
-// 	//TODO:
+	<-forever
 
-// 	<-forever
+	return nil
+}
 
-// 	return nil
-// }
+// 释放资源,建议获取实例后配合defer使用
+func (f *FollowMQ) ReleaseRes() {
+	f.conn.Close()
+	f.channel.Close()
+}

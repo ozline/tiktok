@@ -1,6 +1,8 @@
 package mq
 
 import (
+	"context"
+
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/pkg/utils"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -16,6 +18,9 @@ type FollowMQ struct {
 	channel   *amqp.Channel
 	exchange  string
 	queueName string
+}
+
+type SyncFollow struct {
 }
 
 var (
@@ -43,6 +48,9 @@ func Init() {
 		klog.Error(err)
 		return
 	}
+
+	ctx := context.Background()
+	go run(ctx)
 }
 
 func FollowMQInit() (*FollowMQ, error) {
@@ -56,4 +64,12 @@ func FollowMQInit() (*FollowMQ, error) {
 		channel:   ch,
 		queueName: "FollowQueue", // 加入consts
 	}, nil
+}
+
+func run(ctx context.Context) {
+	fSync := new(SyncFollow)
+	err := fSync.SyncFollowMQ(ctx)
+	if err != nil {
+		klog.Infof("RunTaskCreate:%s", err)
+	}
 }
