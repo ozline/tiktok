@@ -2,6 +2,7 @@ package mq
 
 import (
 	"context"
+	"sync"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/ozline/tiktok/pkg/utils"
@@ -26,6 +27,7 @@ type SyncFollow struct {
 var (
 	Rmq         *RabbitMQ
 	FollowMQCli *FollowMQ
+	Mu          sync.Mutex
 )
 
 func Init() {
@@ -56,6 +58,7 @@ func Init() {
 func FollowMQInit() (*FollowMQ, error) {
 	ch, err := Rmq.conn.Channel()
 	if err != nil {
+		klog.Error(err)
 		return nil, err
 	}
 
@@ -70,6 +73,6 @@ func run(ctx context.Context) {
 	fSync := new(SyncFollow)
 	err := fSync.SyncFollowMQ(ctx)
 	if err != nil {
-		klog.Infof("RunTaskCreate:%s", err)
+		klog.Errorf("SyncFollowMQ:%s", err)
 	}
 }
