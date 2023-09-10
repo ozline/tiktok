@@ -21,9 +21,6 @@ type FollowMQ struct {
 	queueName string
 }
 
-type SyncFollow struct {
-}
-
 var (
 	Rmq         *RabbitMQ
 	FollowMQCli *FollowMQ

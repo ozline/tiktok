@@ -2,11 +2,9 @@ package mq
 
 import (
 	"context"
-	"time"
 
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/ozline/tiktok/cmd/follow/dal/cache"
 	"github.com/ozline/tiktok/cmd/follow/dal/db"
 	"github.com/ozline/tiktok/kitex_gen/follow"
 	"github.com/ozline/tiktok/pkg/constants"
@@ -111,12 +109,6 @@ func action(ctx context.Context, req *follow.ActionRequest) error {
 	Mu.Lock()
 	switch req.ActionType {
 	case constants.FollowAction:
-		// 数据写入redis
-		if err := cache.FollowAction(ctx, action.UserID, action.ToUserID); err != nil {
-			klog.Error(err)
-			Mu.Unlock()
-			return err
-		}
 		// 数据写入db/更改db数据
 		if err = db.FollowAction(ctx, action); err != nil {
 			klog.Error(err)
@@ -126,13 +118,6 @@ func action(ctx context.Context, req *follow.ActionRequest) error {
 	case constants.UnFollowAction:
 		// 更改db数据
 		if err = db.UnFollowAction(ctx, action); err != nil {
-			klog.Error(err)
-			Mu.Unlock()
-			return err
-		}
-		time.Sleep(10 * time.Millisecond) // 延迟删除缓存中的数据
-		// 删除redis中的数据
-		if err = cache.UnFollowAction(ctx, action.UserID, action.ToUserID); err != nil {
 			klog.Error(err)
 			Mu.Unlock()
 			return err
@@ -148,39 +133,6 @@ func action(ctx context.Context, req *follow.ActionRequest) error {
 	}
 
 	Mu.Unlock()
-	return nil
-}
-
-// TODO:sync resolve msg,
-// add group,
-// maybe need to move this func into a new package
-func (s *SyncFollow) SyncFollowMQ(ctx context.Context) error {
-	defer FollowMQCli.ReleaseRes()
-
-	msgs, err := FollowMQCli.Consume(ctx)
-	if err != nil {
-		klog.Error(err)
-		return err
-	}
-
-	var forever chan struct{}
-
-	go func() {
-		for msg := range msgs {
-			klog.Infof("Resolve msg: %s", msg.Body)
-
-			err := FollowMQCli.FollowActionInsert(ctx, msg)
-			if err != nil {
-				klog.Errorf("Insert follow action: %s", err)
-				continue
-			}
-
-			msg.Ack(false)
-		}
-	}()
-
-	<-forever
-
 	return nil
 }
 
