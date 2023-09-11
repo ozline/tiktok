@@ -92,12 +92,32 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 }
 
 func worker(ctx context.Context, uid int64) {
-	now := time.Now()
+	defer func() {
+		close(actionChanGroup[uid])
+		delete(actionChanGroup, uid)
+	}()
 	reqSlice := make([]*follow.ActionRequest, 0, 10)
 
-	for req := range actionChanGroup[uid] {
-		reqSlice = append(reqSlice, req)
-		if len(reqSlice) >= 10 || time.Since(now) > 10*time.Minute {
+	for {
+		select {
+		case req := <-actionChanGroup[uid]:
+			reqSlice = append(reqSlice, req)
+			if len(reqSlice) >= 10 {
+				for _, actionReq := range reqSlice {
+					action_meaasge, err := sonic.Marshal(actionReq)
+					if err != nil {
+						klog.Error(err)
+					}
+
+					// 消息推送到队列中
+					err = mq.FollowMQCli.Publish(ctx, string(action_meaasge))
+					if err != nil {
+						klog.Error(err)
+					}
+				}
+				return
+			}
+		case <-time.After(10 * time.Minute):
 			for _, actionReq := range reqSlice {
 				action_meaasge, err := sonic.Marshal(actionReq)
 				if err != nil {
@@ -110,8 +130,6 @@ func worker(ctx context.Context, uid int64) {
 					klog.Error(err)
 				}
 			}
-			close(actionChanGroup[uid])
-			delete(actionChanGroup, uid)
 			return
 		}
 	}
