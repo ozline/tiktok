@@ -56,7 +56,7 @@ func (s *FollowService) Action(req *follow.ActionRequest) error {
 		mu.Lock()
 		actionChan = make(chan *follow.ActionRequest)
 		actionChanGroup[claim.UserId] = actionChan
-		klog.Infof("user id : %s, goroutine set up")
+		klog.Infof("user id : %s, goroutine set up", claim.Id)
 		go worker(s.ctx, claim.UserId)
 		mu.Unlock()
 	}
@@ -98,7 +98,7 @@ func worker(ctx context.Context, uid int64) {
 	for req := range actionChanGroup[uid] {
 		reqSlice = append(reqSlice, req)
 		if len(reqSlice) >= 10 || time.Since(now) > 10*time.Minute {
-			for actionReq := range reqSlice {
+			for _, actionReq := range reqSlice {
 				action_meaasge, err := sonic.Marshal(actionReq)
 				if err != nil {
 					klog.Error(err)

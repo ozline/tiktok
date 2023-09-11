@@ -75,7 +75,7 @@ func (f *FollowMQ) Consume(ctx context.Context) (<-chan amqp.Delivery, error) {
 		return nil, err
 	}
 
-	klog.Info("consume msg success")
+	klog.Info("msg consumer setup")
 	return msgs, nil
 }
 
