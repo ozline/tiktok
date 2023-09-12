@@ -11,7 +11,6 @@ import (
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
 	"github.com/ozline/tiktok/cmd/interaction/dal/mq"
 	"gorm.io/gorm"
-
 )
 
 type SyncTask struct{}
@@ -35,7 +34,6 @@ func (*SyncTask) RunSyncLike(ctx context.Context) {
 
 	// process likeData with mysql
 	go func() {
-
 		timer := time.NewTimer(30 * time.Minute)
 		likes := make([]*mq.LikeEvent, 0, 100)
 
@@ -118,5 +116,5 @@ func MQLikeEventToMysql(ctx context.Context, likes []*mq.LikeEvent) (err error) 
 			err = db.UpdateFavoriteStatus(ctx, like.UserID, like.VideoID, like.Status)
 		}
 	}
-	return
+	return err
 }
