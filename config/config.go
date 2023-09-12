@@ -1,11 +1,12 @@
 package config
 
 import (
-	"log"
-
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	_ "github.com/spf13/viper/remote"
+	"log"
+	"time"
 )
 
 var (
@@ -25,10 +26,6 @@ var (
 func Init(path string, service string) {
 	runtime_viper.SetConfigType("yaml")
 	runtime_viper.AddConfigPath(path)
-
-	// use etcd for config save
-	// viper.AddRemoteProvider("etcd", "http://127.0.0.1:2379", "/config/config.yaml")
-
 	klog.Infof("config path: %v\n", path)
 
 	if err := runtime_viper.ReadInConfig(); err != nil {
@@ -47,6 +44,40 @@ func Init(path string, service string) {
 		klog.Infof("config file changed: %v\n", e.String())
 	})
 	runtime_viper.WatchConfig()
+}
+
+func InitRemote(endpoint string, path string, service string) {
+	runtime_viper.AddRemoteProvider("etcd", endpoint, path)
+	runtime_viper.SetConfigType("yaml")
+
+	klog.Infof("config endpoint: %v\n", endpoint)
+
+	if err := runtime_viper.ReadRemoteConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			klog.Fatal("could not find config files")
+		} else {
+			klog.Fatal("read config error")
+		}
+		klog.Fatal(err)
+	}
+
+	configMapping(service)
+
+	// 持续监听配置
+	go func() {
+		for {
+			time.Sleep(time.Second * 5)
+			err := runtime_viper.WatchRemoteConfig()
+			if err != nil {
+				klog.Fatal("unable to read the remote config: %v", err)
+				continue
+			}
+			configMapping(service)
+		}
+	}()
+	runtime_viper.OnConfigChange(func(e fsnotify.Event) {
+		klog.Infof("config file changed: %v\n", e.String())
+	})
 }
 
 func configMapping(srv string) {
