@@ -19,11 +19,4 @@ if [ ! -d "$KITEX_LOG_DIR/rpc" ]; then
     mkdir -p "$KITEX_LOG_DIR/rpc"
 fi
 
-export JAEGER_DISABLED=false
-export JAEGER_SAMPLER_TYPE="const"
-export JAEGER_SAMPLER_PARAM=1
-export JAEGER_REPORTER_LOG_SPANS=true
-export JAEGER_AGENT_HOST="127.0.0.1"
-export JAEGER_AGENT_PORT=6831
-
 exec "$CURDIR/bin/chat" -config $CONFIG_PATH
