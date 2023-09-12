@@ -63,6 +63,8 @@ services:
             - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_API=3
+        volumes:
+            - ./config:/var/lib/etcd/conf/config.yaml
         networks:
             - tiktok
 
