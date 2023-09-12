@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -47,7 +48,7 @@ func Init(path string, service string) {
 }
 
 func InitRemote(endpoint string, path string, service string) {
-	runtime_viper.AddRemoteProvider("etcd", endpoint, path)
+	runtime_viper.AddRemoteProvider("etcd", fmt.Sprintf("%s:4001", endpoint), path)
 	runtime_viper.SetConfigType("yaml")
 
 	klog.Infof("config endpoint: %v\n", endpoint)
@@ -60,9 +61,8 @@ func InitRemote(endpoint string, path string, service string) {
 		}
 		klog.Fatal(err)
 	}
-
+	//init config
 	configMapping(service)
-
 	// 持续监听配置
 	go func() {
 		for {

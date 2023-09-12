@@ -29,7 +29,7 @@ services:
         image: "redis:latest"
         restart: always
         ports:
-            - 6379:6379
+            - "6379:6379"
         volumes:
             - /usr/local/redis/conf/redis.conf:/var/lib/redis/conf/redis.conf
             - /usr/local/redis/data:/data
@@ -43,8 +43,8 @@ services:
         container_name: rabiitmq
         image: "rabbitmq:latest"
         ports:
-            - 5672:5672
-            - 15672:15672
+            - "5672:5672"
+            - "15672:15672"
         environment:
             - RABBITMQ_DEFAULT_USER=tiktok
             - RABBITMQ_DEFAULT_PASS=tiktok
@@ -56,8 +56,9 @@ services:
         image: "quay.io/coreos/etcd:v3.5.5"
         restart: always
         ports:
-            - 2379:2379
-            - 2380:2380
+            - "2379:2379"
+            - "2380:2380"
+            - "4001:4001"
         environment:
             - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
@@ -69,7 +70,7 @@ services:
         hostname: etcdkeeper
         image: evildecay/etcdkeeper
         ports:
-            - 8099:8080
+            - "8099:8080"
         networks:
             - tiktok
 
@@ -123,8 +124,8 @@ services:
         image: "jaegertracing/all-in-one:latest"
         restart: always
         ports:
-            - 16686:16686
-            - 6831:6831/udp
+            - "16686:16686"
+            - "6831:6831/udp"
         networks:
             - tiktok
 
@@ -136,7 +137,7 @@ services:
         volumes:
             - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
         ports:
-            - 9090:9090
+            - "9090:9090"
         networks:
             - tiktok
 
@@ -145,7 +146,7 @@ services:
         container_name: alertmanager
         restart: always
         ports:
-            - 9093:9093
+            - "9093:9093"
         networks:
             - tiktok
 
@@ -154,7 +155,7 @@ services:
         container_name: grafana
         restart: always
         ports:
-            - 3000:3000
+            - "3000:3000"
         networks:
             - tiktok
 
@@ -163,7 +164,7 @@ services:
         container_name: node-exporter
         restart: always
         ports:
-            - 9100:9100
+            - "9100:9100"
         networks:
             - tiktok
 
@@ -178,7 +179,7 @@ services:
             - /sys:/sys:ro
             - /var/lib/docker/:/var/lib/docker:ro
         ports:
-            - 8899:8080
+            - "8899:8080"
         networks:
             - tiktok
 
@@ -187,7 +188,7 @@ services:
         container_name: redis-exporter
         restart: always
         ports:
-            - 9121:9121
+            - "9121:9121"
         command:
             - "--redis.addr=redis://127.0.0.1:6379"
         networks:
@@ -198,7 +199,7 @@ services:
         container_name: mysql-exporter
         restart: always
         ports:
-            - 9104:9104
+            - "9104:9104"
         environment:
             DATA_SOURCE_NAME: 'exporter:123456@(127.0.0.1:3306)'
         networks:
