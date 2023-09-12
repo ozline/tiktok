@@ -7,6 +7,17 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+type LikeEvent struct {
+	UserID  int64
+	VideoID int64
+	Status  int64
+}
+
+func (mq *InteractionMQ) Release() {
+	mq.channel.Close()
+	mq.conn.Close()
+}
+
 func (mq *InteractionMQ) SendMessageToMQ(ctx context.Context, body []byte) error {
 	queue, err := mq.channel.QueueDeclare(
 		mq.name,
@@ -43,7 +54,7 @@ func (mq *InteractionMQ) SendMessageToMQ(ctx context.Context, body []byte) error
 	return nil
 }
 
-func (mq *InteractionMQ) ConsumeMessage(ctx context.Context) error {
+func (mq *InteractionMQ) ConsumeMessage(ctx context.Context) (<-chan amqp.Delivery, error) {
 	queue, err := mq.channel.QueueDeclare(
 		mq.name,
 		true,
@@ -54,7 +65,7 @@ func (mq *InteractionMQ) ConsumeMessage(ctx context.Context) error {
 	)
 	if err != nil {
 		klog.Errorf("declare like queue err: %v", err)
-		return err
+		return nil, err
 	}
 
 	msg, err := mq.channel.Consume(
@@ -67,10 +78,10 @@ func (mq *InteractionMQ) ConsumeMessage(ctx context.Context) error {
 		nil)
 	if err != nil {
 		klog.Errorf("failed to register a consumer : %v", err)
-		return err
+		return nil, err
 	}
 	// TODO: put likeData into mysql with goroutine
 
 	klog.Infof("consume msg succeed: %v", msg)
-	return nil
+	return msg, nil
 }

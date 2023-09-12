@@ -13,6 +13,7 @@ type RabbitMQ struct {
 }
 
 type InteractionMQ struct {
+	RabbitMQ
 	name    string
 	channel *amqp.Channel
 }
@@ -35,7 +36,6 @@ func Init() {
 
 	mqClient.conn = conn
 	LikeMQ, err = NewInteractionMQ(constants.LikeQueueName)
-
 	if err != nil {
 		klog.Errorf("mq init error: %v", err)
 		panic(err)
