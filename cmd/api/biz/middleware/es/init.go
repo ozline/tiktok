@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/ozline/tiktok/config"
 	"github.com/ozline/tiktok/pkg/constants"
 	"github.com/ozline/tiktok/pkg/eslogrus"
 	"github.com/sirupsen/logrus"
-
-	elasticsearch "github.com/elastic/go-elasticsearch"
 )
 
 var (

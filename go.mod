@@ -11,7 +11,7 @@ require (
 	github.com/cloudwego/fastpb v0.0.4
 	github.com/cloudwego/hertz v0.6.7
 	github.com/cloudwego/kitex v0.6.2
-	//github.com/elastic/go-elasticsearch v0.0.0
+	github.com/elastic/go-elasticsearch/v8 v8.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/h2non/filetype v1.1.3
 	github.com/hertz-contrib/gzip v0.0.1

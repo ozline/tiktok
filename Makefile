@@ -6,7 +6,7 @@ OUTPUT_PATH = $(DIR)/output
 
 SERVICES := api user follow interaction video chat
 service = $(word 1, $@)
-
+endpoint = $(word 2, $@)
 # mock gen
 MOCKS := user_mock
 mock = $(word 1, $@)
@@ -29,7 +29,7 @@ $(SERVICES):
 	@echo "$(PERFIX) Build $(service) target completed"
 ifndef ci
 	@echo "$(PERFIX) Automatic run server"
-	sh $(OUTPUT_PATH)/$(service)/bootstrap.sh
+	sh $(OUTPUT_PATH)/$(service)/bootstrap.sh $(endpoint)
 endif
 
 

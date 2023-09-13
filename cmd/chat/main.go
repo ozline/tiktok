@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"net"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
-	"github.com/elastic/go-elasticsearch"
+	"github.com/elastic/go-elasticsearch/v8"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
@@ -26,15 +27,17 @@ import (
 var (
 	path       *string
 	listenAddr string // listen port
-
-	EsClient *elasticsearch.Client
+	EsClient   *elasticsearch.Client
+	remotePath *string
+	endpoint   *string
 )
 
 func Init() {
 	// config init
-	path = flag.String("config", "./config", "config path")
+	remotePath = flag.String("rc", "./config", "remote config path")
+	endpoint = flag.String("e", "0.0.0.0", "endpoint")
 	flag.Parse()
-	config.Init(*path, constants.ChatServiceName)
+	config.InitRemote(*endpoint, *remotePath, constants.ChatServiceName)
 
 	dal.Init()
 	tracer.InitJaeger(constants.ChatServiceName)

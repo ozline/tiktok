@@ -1,12 +1,14 @@
 #! /usr/bin/env bash
 CURDIR=$(cd $(dirname $0); pwd)
 CONFIG_PATH=$(dirname $(dirname $CURDIR))/config
-
-if [ "X$1" != "X" ]; then
-    RUNTIME_ROOT=$1
-else
-    RUNTIME_ROOT=${CURDIR}
-fi
+REMOTE_CONFIG_PATH = /var/lib/etcd/conf/config.yaml
+ENDPOINT = $1
+RUNTIME_ROOT=${CURDIR}
+#if [ "X$1" != "X" ]; then
+#    RUNTIME_ROOT=$1
+#else
+#    RUNTIME_ROOT=${CURDIR}
+#fi
 
 export KITEX_RUNTIME_ROOT=$RUNTIME_ROOT
 export KITEX_LOG_DIR="$RUNTIME_ROOT/log"
@@ -19,4 +21,4 @@ if [ ! -d "$KITEX_LOG_DIR/rpc" ]; then
     mkdir -p "$KITEX_LOG_DIR/rpc"
 fi
 
-exec "$CURDIR/bin/chat" -config $CONFIG_PATH
+exec "$CURDIR/bin/chat" -config $CONFIG_PATH -rc $REMOTE_CONFIG_PATH -e $ENDPOINT

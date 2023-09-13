@@ -9,7 +9,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
-	"github.com/elastic/go-elasticsearch"
+	"github.com/elastic/go-elasticsearch/v8"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
@@ -27,15 +27,17 @@ import (
 var (
 	path       *string
 	listenAddr string // listen port
-
-	EsClient *elasticsearch.Client
+	remotePath *string
+	endpoint   *string
+	EsClient   *elasticsearch.Client
 )
 
 func Init() {
 	// config init
-	path = flag.String("config", "./config", "config path")
+	remotePath = flag.String("rc", "./config", "remote config path")
+	endpoint = flag.String("e", "0.0.0.0", "endpoint")
 	flag.Parse()
-	config.Init(*path, constants.InteractionServiceName)
+	config.InitRemote(*endpoint, *remotePath, constants.InteractionServiceName)
 
 	rpc.Init()
 	dal.Init(*path)

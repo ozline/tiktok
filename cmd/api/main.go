@@ -27,15 +27,17 @@ import (
 )
 
 var (
-	path       *string
 	listenAddr string // listen port
+	remotePath *string
+	endpoint   *string
 )
 
 func Init() {
 	// config init
-	path = flag.String("config", "./config", "config path")
+	remotePath = flag.String("rc", "./config", "remote config path")
+	endpoint = flag.String("e", "0.0.0.0", "endpoint")
 	flag.Parse()
-	config.Init(*path, constants.APIServiceName)
+	config.InitRemote(*endpoint, *remotePath, constants.APIServiceName)
 
 	rpc.Init()
 	tracer.InitJaeger(constants.APIServiceName)
