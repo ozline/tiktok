@@ -8,27 +8,6 @@ SERVICE_TO_START=${1:-all} # default start all
 
 SERVICES=(api user chat follow interaction video)
 
-KEY="jaeger-host"
-CONFIGPATH="./config/config.yaml"
-function read_key(){
-    flag=0
-    cat $1 | while read LINE
-    do 
-        if [ $flag == 0 ];then
-            if [ "$(echo $LINE | grep "$KEY:")" != "" ];then
-                if [ "$(echo $LINE | grep -E ' ')" != "" ];then
-                	echo "$LINE" | awk -F " " '{print $2}'
-                	continue
-            	else
-                	continue
-            	fi
-            fi
-        fi
-    done
-}
-jaegerhost=($(read_key $CONFIGPATH))
-export JAEGER_AGENT_HOST=${jaegerhost}
-
 remove_container() {
     container_status=$(docker inspect -f '{{.State.Status}}' "$1")
     if [ "$container_status" == "running" ]; then
