@@ -7,8 +7,6 @@ snowflake:
   worker-id: 0
   datancenter-id: 0
 
-jaeger-host: "127.0.0.1"
-
 mysql:
   addr: 127.0.0.1:3306
   database: tiktok
