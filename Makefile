@@ -29,7 +29,7 @@ $(SERVICES):
 	@echo "$(PERFIX) Build $(service) target completed"
 ifndef ci
 	@echo "$(PERFIX) Automatic run server"
-	sh $(OUTPUT_PATH)/$(service)/bootstrap.sh
+	sh standalone-entrypoint.sh $(service)
 endif
 
 
