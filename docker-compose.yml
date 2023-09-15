@@ -63,11 +63,12 @@ services:
             - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_API=3
             - ALLOW_NONE_AUTHENTICATION=yes
-        # command: ["etcd", "--config-file=/config/config.yaml"]
-        # volumes:
-        #     - ./config:/config
+        volumes:
+            - ./docker:/script
+            - ./config:/config
         networks:
             - tiktok
+        entrypoint: ["sh", "-c", "chmod +x /script/etcd-monitor.sh && /script/etcd-monitor.sh & exec etcd"]
 
     etcd-keeper:
         hostname: etcdkeeper
