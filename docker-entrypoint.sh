@@ -29,6 +29,6 @@ export JAEGER_REPORTER_LOG_SPANS=true
 export JAEGER_AGENT_HOST=$(read_key $CONFIGPATH "jaeger-host")
 export JAEGER_AGENT_PORT=$(read_key $CONFIGPATH "jaeger-port")
 
-export ETCD_ADDR=$(read_key $CONFIG_PATH "etcd-addr")
+export ETCD_ADDR=$(read_key $CONFIGPATH "etcd-addr")
 
 sh ./output/${service}/bootstrap.sh
