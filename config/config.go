@@ -1,11 +1,15 @@
 package config
 
 import (
+	"errors"
 	"log"
+	"os"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+
+	_ "github.com/spf13/viper/remote"
 )
 
 var (
@@ -26,21 +30,33 @@ func Init(path string, service string) {
 	runtime_viper.SetConfigType("yaml")
 	runtime_viper.AddConfigPath(path)
 
+	etcdAddr := os.Getenv("ETCD_ADDR")
+
+	if etcdAddr == "" {
+		panic(errors.New("not found etcd addr in env"))
+	}
+
 	// use etcd for config save
-	// viper.AddRemoteProvider("etcd", "http://127.0.0.1:2379", "/config/config.yaml")
+	err := runtime_viper.AddRemoteProvider("etcd3", etcdAddr, "/config/config.yaml")
+
+	if err != nil {
+		panic(err)
+	}
 
 	klog.Infof("config path: %v\n", path)
 
-	if err := runtime_viper.ReadInConfig(); err != nil {
+	if err := runtime_viper.ReadRemoteConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			klog.Fatal("could not find config files")
 		} else {
-			klog.Fatal("read config error")
+			klog.Fatal("read config error: %v", err)
 		}
 		klog.Fatal(err)
 	}
 
 	configMapping(service)
+
+	klog.Infof("all keys: %v\n", runtime_viper.AllKeys())
 
 	// 持续监听配置
 	runtime_viper.OnConfigChange(func(e fsnotify.Event) {
