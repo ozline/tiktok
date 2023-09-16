@@ -22,7 +22,7 @@ while true; do
 
   if [ "$current_hash" != "$previous_hash" ]; then
     etcdctl put /config/config.yaml -- < /config/config.yaml
-    echo "sopt update, config updated in etcd. $(date +'%Y-%m-%d %H:%M:%S')"
+    echo "spot update, config updated in etcd. $(date +'%Y-%m-%d %H:%M:%S')"
     previous_hash="$current_hash"
   fi
 

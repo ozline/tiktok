@@ -19,6 +19,7 @@ services:
             - TZ=Asia/Shanghai
         volumes:
             - ./config/sql:/docker-entrypoint-initdb.d/
+            - ./data/mysql:/var/lib/mysql
         ports:
             - "3306:3306"
         networks:
@@ -31,8 +32,7 @@ services:
         ports:
             - 6379:6379
         volumes:
-            - /usr/local/redis/conf/redis.conf:/var/lib/redis/conf/redis.conf
-            - /usr/local/redis/data:/data
+            - ./data/redis:/data
         environment:
             - REDIS_PASSWORD=tiktok
             - ALLOW_EMPTY_PASSWORD=no
@@ -48,6 +48,8 @@ services:
         environment:
             - RABBITMQ_DEFAULT_USER=tiktok
             - RABBITMQ_DEFAULT_PASS=tiktok
+        volumes:
+            - ./data/rabbitmq:/var/lib/rabbitmq
         networks:
             - tiktok
 
@@ -62,14 +64,29 @@ services:
             - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_API=3
+            - ALLOW_NONE_AUTHENTICATION=yes
+        volumes:
+            - ./docker:/script
+            - ./config:/config
+            - ./data/etcd:/etcd-data
         networks:
             - tiktok
+        entrypoint: ["sh", "-c", "chmod +x /script/etcd-monitor.sh && /script/etcd-monitor.sh & exec etcd"]
 
     etcd-keeper:
         hostname: etcdkeeper
         image: evildecay/etcdkeeper
+        environment:
+            - ETCD_HOSTS=http://etcd:2379
+            - SW_STORAGE_ETCD_CLUSTER_NODES=etcd:2379
+            - HOST=0.0.0.0
+            - HOSTNAME=etcd-keeper
+        links:
+            - etcd
         ports:
             - 8099:8080
+        depends_on:
+            - etcd
         networks:
             - tiktok
 
@@ -94,8 +111,8 @@ services:
                 soft: -1
                 hard: -1
         volumes:
-            - /usr/local/elasticsearch/data:/usr/local/elasticsearch/data
-            - /usr/local/elasticsearch/config/es/config:/usr/local/elasticsearch/config
+            - ./config/elasticsearch:/usr/share/elasticsearch/config
+            - ./data/elasticsearch:/usr/share/elasticsearch/data
         ports:
             - "9200:9200"
         restart: always
@@ -115,6 +132,9 @@ services:
             - elasticsearch
         ports:
             - "5601:5601"
+        volumes:
+            - ./config/kibana:/usr/share/kibana/config
+            - ./data/kibana:/usr/share/kibana/data
         networks:
             - tiktok
 
@@ -125,6 +145,9 @@ services:
         ports:
             - 16686:16686
             - 6831:6831/udp
+        volumes:
+            - ./data/jaeger:/var/lib/jaeger
+            - ./config/jaeger:/etc/jaeger
         networks:
             - tiktok
 
@@ -134,18 +157,9 @@ services:
         hostname: prometheus
         restart: always
         volumes:
-            - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+            - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
         ports:
             - 9090:9090
-        networks:
-            - tiktok
-
-    alertmanager:  #预警模块
-        image: prom/alertmanager
-        container_name: alertmanager
-        restart: always
-        ports:
-            - 9093:9093
         networks:
             - tiktok
 
@@ -155,6 +169,17 @@ services:
         restart: always
         ports:
             - 3000:3000
+        volumes:
+            - ./config/grafana:/etc/grafana
+        networks:
+            - tiktok
+
+    alertmanager:  #预警模块
+        image: prom/alertmanager
+        container_name: alertmanager
+        restart: always
+        ports:
+            - 9093:9093
         networks:
             - tiktok
 
