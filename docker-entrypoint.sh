@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CONFIGPATH="./config/config.yaml"
+CONFIG_PATH="./config/config.yaml"
 
 function read_key() {
     local key="$2"
@@ -19,16 +19,6 @@ function read_key() {
     done < "$1"
 }
 
-
-# JAEGER
-export JAEGER_DISABLED=false
-export JAEGER_SAMPLER_TYPE="const"
-export JAEGER_SAMPLER_PARAM=1
-export JAEGER_REPORTER_LOG_SPANS=true
-
-export JAEGER_AGENT_HOST=$(read_key $CONFIGPATH "jaeger-host")
-export JAEGER_AGENT_PORT=$(read_key $CONFIGPATH "jaeger-port")
-
-export ETCD_ADDR=$(read_key $CONFIGPATH "etcd-addr")
+export ETCD_ADDR=$(read_key $CONFIG_PATH "etcd-addr")
 
 sh ./output/${service}/bootstrap.sh

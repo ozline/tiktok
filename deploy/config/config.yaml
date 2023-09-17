@@ -1,3 +1,10 @@
+# NOTICE: copy and rename this file to config.yaml
+# NOTICE: some cofig need to complete
+
+# nodes ony need to set this item
+etcd-addr: 172.16.232.8:2379
+
+# etcd server need to complete these items
 server:
   jwt-secret: MTAxNTkwMTg1Mw==
   version: "1.0"
@@ -14,6 +21,7 @@ mysql:
   password: tiktok
   charset: utf8mb4
 
+# you need to complete this config to use video service
 oss:
   endpoint:
   accessKey-id:
@@ -25,12 +33,6 @@ elasticsearch:
   addr: 127.0.0.1:9200
   host: 127.0.0.1
 
-jaeger-host: 127.0.0.1
-jaeger-port: 6831
-
-etcd:
-  addr: 127.0.0.1:2379
-
 rabbitmq:
   addr: 127.0.0.1:5672
   username: tiktok
@@ -40,6 +42,10 @@ redis:
   addr: 127.0.0.1:6379
   password: tiktok
 
+jaeger:
+  addr: 127.0.0.1:6831
+
+# if you deploy in different machines, remember to modify IP.
 services:
   api:
     name: api

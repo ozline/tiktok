@@ -22,16 +22,6 @@ function read_key() {
     done < "$1"
 }
 
-
-# JAEGER
-export JAEGER_DISABLED=false
-export JAEGER_SAMPLER_TYPE="const"
-export JAEGER_SAMPLER_PARAM=1
-export JAEGER_REPORTER_LOG_SPANS=true
-
-export JAEGER_AGENT_HOST=$(read_key $CONFIG_PATH "jaeger-host")
-export JAEGER_AGENT_PORT=$(read_key $CONFIG_PATH "jaeger-port")
-
 export ETCD_ADDR=$(read_key $CONFIG_PATH "etcd-addr")
 
 

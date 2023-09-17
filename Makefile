@@ -15,6 +15,7 @@ PERFIX = "[Makefile]"
 
 .PHONY: env-up
 env-up:
+	sh init.sh
 	docker-compose up -d
 
 .PHONY: env-down
