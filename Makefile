@@ -15,6 +15,7 @@ PERFIX = "[Makefile]"
 
 .PHONY: env-up
 env-up:
+	sh init.sh
 	docker-compose up -d
 
 .PHONY: env-down
@@ -29,7 +30,7 @@ $(SERVICES):
 	@echo "$(PERFIX) Build $(service) target completed"
 ifndef ci
 	@echo "$(PERFIX) Automatic run server"
-	sh $(OUTPUT_PATH)/$(service)/bootstrap.sh
+	sh standalone-entrypoint.sh $(service)
 endif
 
 

@@ -61,5 +61,11 @@ services:
             - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
             - ETCD_API=3
+            - ALLOW_NONE_AUTHENTICATION=yes
+        volumes:
+            - ./docker:/script
+            - ./config/etcd:/config
+            - ./data/etcd:/etcd-data
         networks:
             - tiktok
+        entrypoint: ["sh", "-c", "chmod +x /script/etcd-monitor.sh && /script/etcd-monitor.sh & exec etcd"]

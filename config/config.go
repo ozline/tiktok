@@ -1,11 +1,15 @@
 package config
 
 import (
+	"errors"
 	"log"
+	"os"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+
+	_ "github.com/spf13/viper/remote"
 )
 
 var (
@@ -13,6 +17,7 @@ var (
 	Mysql         *mySQL
 	Snowflake     *snowflake
 	Service       *service
+	Jaeger        *jaeger
 	Etcd          *etcd
 	RabbitMQ      *rabbitMQ
 	Redis         *redis
@@ -26,21 +31,35 @@ func Init(path string, service string) {
 	runtime_viper.SetConfigType("yaml")
 	runtime_viper.AddConfigPath(path)
 
+	etcdAddr := os.Getenv("ETCD_ADDR")
+
+	if etcdAddr == "" {
+		panic(errors.New("not found etcd addr in env"))
+	}
+
+	Etcd = &etcd{Addr: etcdAddr}
+
 	// use etcd for config save
-	// viper.AddRemoteProvider("etcd", "http://127.0.0.1:2379", "/config/config.yaml")
+	err := runtime_viper.AddRemoteProvider("etcd3", Etcd.Addr, "/config/config.yaml")
+
+	if err != nil {
+		panic(err)
+	}
 
 	klog.Infof("config path: %v\n", path)
 
-	if err := runtime_viper.ReadInConfig(); err != nil {
+	if err := runtime_viper.ReadRemoteConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			klog.Fatal("could not find config files")
 		} else {
-			klog.Fatal("read config error")
+			klog.Fatal("read config error: %v", err)
 		}
 		klog.Fatal(err)
 	}
 
 	configMapping(service)
+
+	klog.Infof("all keys: %v\n", runtime_viper.AllKeys())
 
 	// 持续监听配置
 	runtime_viper.OnConfigChange(func(e fsnotify.Event) {
@@ -59,7 +78,7 @@ func configMapping(srv string) {
 	Server = &c.Server
 	Server.Secret = []byte(runtime_viper.GetString("server.jwt-secret"))
 
-	Etcd = &c.Etcd
+	Jaeger = &c.Jaeger
 	Mysql = &c.MySQL
 	RabbitMQ = &c.RabbitMQ
 	Redis = &c.Redis
@@ -89,6 +108,10 @@ func InitForTest() {
 		Version: "1.0",
 		Name:    "tiktok",
 		Secret:  []byte("MTAxNTkwMTg1Mw=="),
+	}
+
+	Jaeger = &jaeger{
+		Addr: "127.0.0.1:6831",
 	}
 
 	Etcd = &etcd{
