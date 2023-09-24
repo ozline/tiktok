@@ -57,7 +57,6 @@ func EsHookLog() *eslogrus.ElasticHook {
 	return hook
 }
 
-// InitEs 初始化es
 func EsInit() {
 	esConn := fmt.Sprintf("http://%s", config.Elasticsearch.Addr)
 	cfg := elasticsearch.Config{

@@ -7,6 +7,8 @@ import (
 	"flag"
 	"fmt"
 
+	sentinel "github.com/alibaba/sentinel-golang/api"
+	"github.com/alibaba/sentinel-golang/core/flow"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -39,6 +41,8 @@ func Init() {
 
 	rpc.Init()
 	tracer.InitJaeger(constants.APIServiceName)
+
+	initSentinel()
 
 	es.Init()
 
@@ -77,7 +81,7 @@ func main() {
 	// Sentinel 流量治理
 	r.Use(hertzSentinel.SentinelServerMiddleware(
 		hertzSentinel.WithServerResourceExtractor(func(c context.Context, ctx *app.RequestContext) string {
-			return "server_test"
+			return "api"
 		}),
 		hertzSentinel.WithServerBlockFallback(func(ctx context.Context, c *app.RequestContext) {
 			hlog.CtxInfof(ctx, "frequent requests have been rejected by the gateway. clientIP: %v\n", c.ClientIP())
@@ -100,4 +104,24 @@ func recoveryHandler(ctx context.Context, c *app.RequestContext, err interface{}
 		"code":    errno.ServiceErrorCode,
 		"message": fmt.Sprintf("[Recovery] err=%v\nstack=%s", err, stack),
 	})
+}
+
+func initSentinel() {
+	err := sentinel.InitDefault()
+	if err != nil {
+		hlog.Fatalf("Unexpected error: %+v", err)
+	}
+	_, err = flow.LoadRules([]*flow.Rule{
+		{
+			Resource:               "api",
+			Threshold:              0.0,
+			TokenCalculateStrategy: flow.Direct,
+			ControlBehavior:        flow.Reject,
+			StatIntervalInMs:       1000,
+		},
+	})
+	if err != nil {
+		hlog.Fatalf("Unexpected error: %+v", err)
+		return
+	}
 }
