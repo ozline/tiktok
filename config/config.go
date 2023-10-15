@@ -29,8 +29,6 @@ var (
 
 func Init(path string, service string) {
 	runtime_viper.SetConfigType("yaml")
-	runtime_viper.AddConfigPath(path)
-
 	etcdAddr := os.Getenv("ETCD_ADDR")
 
 	if etcdAddr == "" {

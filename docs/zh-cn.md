@@ -4,6 +4,13 @@
 
 tiktok 是一个基于HTTP和RPC协议, 分布式架构的简单抖音后端. 它使用到了 Kitex、Hertz、etcd、MySQL、Jaeger、Docker、Thrift、Prometheus、Grafana、Elasticsearch和Kibana
 
+# 材料
+
+这个项目来源于字节跳动青训营，我们在这里附上我们答辩的材料和回放
+
+[答辩文档](https://west2-online.feishu.cn/docx/Bk20dtIHYoqfDCxnKw6c6eeMnih)
+[答辩回放](https://www.bilibili.com/video/BV1Ep4y1P7ZT)
+
 # 特性
 
 - 极度容易的上手和部署
@@ -152,5 +159,5 @@ deploy
 - [XZ0730](https://github.com/XZ0730)
 - [wushiling50](https://github.com/wushiling50)
 - [jiuxia211](https://github.com/jiuxia211)
-- [notacommonperson](https://github.com/notacommonperson)
+- [Ricky](https://github.com/Ricky-chen1)
 - [jkskj](https://github.com/jkskj)
