@@ -1,13 +1,12 @@
 package service
 
 import (
-	"errors"
+	"encoding/json"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
-	"github.com/ozline/tiktok/cmd/interaction/dal/db"
+	"github.com/ozline/tiktok/cmd/interaction/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/pkg/errno"
-	"gorm.io/gorm"
 )
 
 func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userID int64) error {
@@ -30,25 +29,16 @@ func (s *InteractionService) Like(req *interaction.FavoriteActionRequest, userID
 		}
 	}
 
-	err = db.IsFavorited(s.ctx, userID, req.VideoId, 1)
-	if err == nil {
-		return errno.LikeAlreadyExistError
+	// send like msg to mq
+	like := &mq.LikeEvent{
+		UserID:  userID,
+		VideoID: req.VideoId,
+		Status:  1,
 	}
-	// write into mysql
-	err = db.IsFavoriteExist(s.ctx, userID, req.VideoId)
-	// no exist
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		fav := &db.Favorite{
-			VideoID: req.VideoId,
-			UserID:  userID,
-			Status:  1,
-		}
-		return db.FavoriteCreate(s.ctx, fav)
-	}
-	// not gorm.ErrRecordNotFound error
+	likeBody, err := json.Marshal(like)
 	if err != nil {
 		return err
 	}
-	// exist
-	return db.UpdateFavoriteStatus(s.ctx, userID, req.VideoId, 1)
+
+	return mq.LikeMQ.SendMessageToMQ(s.ctx, likeBody)
 }

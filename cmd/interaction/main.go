@@ -14,6 +14,7 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 	trace "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/ozline/tiktok/cmd/interaction/dal"
+	"github.com/ozline/tiktok/cmd/interaction/dal/mq/task"
 	"github.com/ozline/tiktok/cmd/interaction/rpc"
 	"github.com/ozline/tiktok/config"
 	interaction "github.com/ozline/tiktok/kitex_gen/interaction/interactionservice"
@@ -70,6 +71,8 @@ func EsInit() {
 
 func main() {
 	Init()
+	// listening MQ to consume like
+	go task.RunSyncMQ()
 
 	r, err := etcd.NewEtcdRegistry([]string{config.Etcd.Addr})
 
