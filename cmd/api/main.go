@@ -33,7 +33,7 @@ var (
 	listenAddr string // listen port
 )
 
-func Init() {
+func Init() 
 	// config init
 	path = flag.String("config", "./config", "config path")
 	flag.Parse()
@@ -49,7 +49,7 @@ func Init() {
 	// set log
 	klog.SetLevel(klog.LevelDebug)
 	klog.SetLogger(kitexlogrus.NewLogger(kitexlogrus.WithHook(es.EsHookLog())))
-}
+
 
 func main() {
 	Init()

@@ -1,3 +1,5 @@
+> **INFO: This project has ended development in December 2023 and has entered the Archived state. We have done a more "software engineering" project based on this project, [west2-online/fzuhelper-server](https://github.com/west2-online/fzuhelper). It is used by real users (teachers and students in the whole school), and it is more refreshing and elegant, please refer to it.**
+
 # tiktok
 
 English | [简体中文](./docs/zh-cn.md)
