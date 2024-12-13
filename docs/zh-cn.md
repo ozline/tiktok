@@ -1,4 +1,4 @@
-> **目前本项目不再维护，我们也已经在 2023 年 9 月封锁了这个仓库，我们在 2024 年开始开发有真实用户场景且基于这个项目进一步改良的福大助手后端([fzuhelper-server](https://west2-online/fzuhelepr)，如果您想参考，请访问它，它同样使用了 Hertz 和 Kitex。**
+> **目前本项目不再维护，我们也已经在 2023 年 9 月封锁了这个仓库，我们在 2024 年开始开发有真实用户场景且基于这个项目进一步改良的福大助手后端([west2-online/fzuhelper-server](https://github.com/west2-online/fzuhelper-server)，如果您想参考，请访问它，它同样使用了 Hertz 和 Kitex。**
 
 # tiktok
 
