@@ -10,6 +10,9 @@ const (
 	// Viper config
 	// etcdAddress = "http://127.0.0.1:2379"
 
+	// mq
+	LikeQueueName = "LikeQueue"
+
 	// redis
 	ReidsDB_Chat       = 1
 	RedisDBFollow      = 2

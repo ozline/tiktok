@@ -1,10 +1,12 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/ozline/tiktok/cmd/interaction/dal/cache"
 	"github.com/ozline/tiktok/cmd/interaction/dal/db"
+	"github.com/ozline/tiktok/cmd/interaction/dal/mq"
 	"github.com/ozline/tiktok/kitex_gen/interaction"
 	"github.com/ozline/tiktok/pkg/errno"
 	"gorm.io/gorm"
@@ -32,6 +34,16 @@ func (s *InteractionService) Dislike(req *interaction.FavoriteActionRequest, use
 		}
 	}
 
-	// write into mysql
-	return db.UpdateFavoriteStatus(s.ctx, userID, req.VideoId, 0)
+	// send dislike msg to mq
+	disLike := &mq.LikeEvent{
+		UserID:  userID,
+		VideoID: req.VideoId,
+		Status:  0,
+	}
+	disLikeBody, err := json.Marshal(disLike)
+	if err != nil {
+		return err
+	}
+
+	return mq.LikeMQ.SendMessageToMQ(s.ctx, disLikeBody)
 }
